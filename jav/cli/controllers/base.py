@@ -2,6 +2,8 @@
 
 from cement.ext.ext_argparse import ArgparseController, expose
 
+from jav.core.javRun import Run
+
 class javBaseController(ArgparseController):
     class Meta:
         label = 'base'
@@ -9,12 +11,11 @@ class javBaseController(ArgparseController):
         arguments = [
             (
                 ['-d', '--dry-run'],
-                dict(help='Do not send message to slack', dest='foo', action='store')
+                dict(help='Do not send message to slack', action='store_true')
             )
         ]
 
-    @expose(help="Use this command to run the script")
+    @expose(help='Use this command to run the script')
     def run(self):
-        self.app.log.info("Inside MyBaseController.command1()")
-
-
+        run = Run(self.app.log)
+        run.main()
