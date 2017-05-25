@@ -6,3 +6,4 @@ slackweb
 tabulate
 python-dateutil
 pytz
+numpy

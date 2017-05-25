@@ -21,7 +21,12 @@ class Config(object):
     def initConfig(self):
         self.log.info('Config.initConfig(): Unable to find config file, initializing')
         defaultConfig = {
-            'date_end' : '2017-01-01'
+            'history_weeks' : 12
+            , 'cache_filepath': self.configPath + 'data.jsonl'
+            , 'jira_username' : 'USERNAME'
+            , 'jira_password' : 'PASSWORD'
+            , 'jira_host' : 'HOST'
+            , 'jira_jql_velocity' : 'JQL_VELOCITY_QUERY'
         }
         self.currentConfig = self.writeConfig(defaultConfig)
 
@@ -48,7 +53,7 @@ class Config(object):
             return self.currentConfig[key]
 
     def importConfig(self):
-        self.log.info('Config.getConfig(): Importing settings from config')
+        self.log.info('Config.getConfig(): Importing settings from config file: ' + self.configFilepath)
         with open(self.configFilepath, 'r') as ymlfile:
             cfg = yaml.load(ymlfile)
         return cfg
