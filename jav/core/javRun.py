@@ -7,9 +7,9 @@ from jav.core.javMsg import Msg
 
 
 class Run(object):
-    """ 
+    ''' 
         Main class used to run the script
-    """
+    '''
 
     def __init__(self, log, dry_run):
         self.log = log

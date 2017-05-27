@@ -8,7 +8,7 @@ import copy
 import numpy
 
 class importData(object):
-    """ This class is used to obtain data used for processing
+    ''' This class is used to obtain data used for processing
 
     Args:
         log: A class, the logging interface
@@ -18,7 +18,7 @@ class importData(object):
 
     Attributes:
         tbc
-    """
+    '''
 
     def __init__(self, log, config):
         self.log = log
@@ -46,11 +46,11 @@ class importData(object):
         return velocity
 
     def loadDailyDataCache(self):
-        """
+        '''
         Load data from the cache into an ordered dict.
         
         :return: An OrderedDict containing daily results 
-        """
+        '''
         self.log.info('importData.loadDailyDataCache(): Loading to load data from cache file: ' + self.cache_filepath)
         daily_data = collections.OrderedDict()
         if os.path.isfile(self.cache_filepath):
@@ -109,13 +109,13 @@ class importData(object):
         issues_list = self.jira.getRemainingTickets().json()
         jira_points_field = self.config.getConfig('jira_field_points')
         remaining = {}
-        remaining["points"] = 0
-        for issue in issues_list["issues"]:
+        remaining['points'] = 0
+        for issue in issues_list['issues']:
             try:
-                remaining["points"] = remaining["points"] + issue["fields"][jira_points_field]
+                remaining['points'] = remaining['points'] + issue['fields'][jira_points_field]
             except Exception as ex:
                 # KeyError
-                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+                template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
                 message = template.format(type(ex).__name__, ex.args)
                 self.log.info('WARNING: Ticket missing story points')
                 self.log.info(message)
@@ -123,9 +123,9 @@ class importData(object):
 
         points = []
         for data_idx in daily_data:
-            points.append(daily_data[data_idx]["points"])
+            points.append(daily_data[data_idx]['points'])
 
-        remaining["average_daily_points"] = round(numpy.mean(points), 1)
-        remaining["effort_days"] = round(remaining["points"] / remaining["average_daily_points"], 1)
+        remaining['average_daily_points'] = round(numpy.mean(points), 1)
+        remaining['effort_days'] = round(remaining['points'] / remaining['average_daily_points'], 1)
 
         return remaining

@@ -6,7 +6,7 @@ import jsonschema
 
 class Config(object):
     ''' 
-        tbc
+        Class in charge to configuration management
     '''
 
     def __init__(self, log):

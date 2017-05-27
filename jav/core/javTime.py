@@ -13,10 +13,9 @@ class Time(object):
     def getCurrentDate(self):
         return datetime.now(pytz.timezone('America/Toronto'))
 
-    """
-        Search for the oldest Monday past number of history_weeks
-    """
+
     def getEndDate(self):
+        '''Search for the oldest Monday past number of history_weeks'''
         history_weeks = self.config.getConfig('history_weeks')
         self.log.info('Time.getEndDate(): Looking back: ' + str(history_weeks) + ' weeks')
 
