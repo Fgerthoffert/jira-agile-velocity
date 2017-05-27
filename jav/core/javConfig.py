@@ -3,31 +3,25 @@ from os.path import expanduser
 import os
 import json
 import jsonschema
-
+import copy
 
 class Config(object):
     ''' 
-        Class in charge to configuration management
+        Class in charge to configuration management        
     '''
 
     def __init__(self, log):
         self.log = log
-        self.configPath = expanduser('~') + '/.jav/'
-        self.configFilename = 'config.yml'
-        self.configFilepath = self.configPath + self.configFilename
-        self.currentConfig = None
-
-        if os.path.isdir(self.configPath) is False or os.path.isfile(self.configFilepath) is False:
-            self.initConfig()
-        elif os.path.isfile(self.configFilepath):
-            self.currentConfig = self.importConfig()
-
-        self.schema = {
+        self.__config_path = expanduser('~') + '/.jav/'
+        self.__config_filename = 'config.yml'
+        self.__config_filepath = self.__config_path + self.__config_filename
+        self.__config = None
+        self.__schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#'
             , 'title': 'configObj'
             , 'description': 'Configuration values '
             , 'type': 'object'
-            , 'additionalProperties': True
+            , 'additionalProperties': False
             , 'properties': {
                 'history_weeks': {
                     'type': ['number']
@@ -37,7 +31,7 @@ class Config(object):
                 , 'cache_filepath': {
                     'type': ['string']
                     , 'description': 'Path of the cache file'
-                    , 'default': self.configPath + 'data.jsonl'
+                    , 'default': self.__config_path + 'data.jsonl'
                 }
                 , 'jira_username': {
                     'type': ['string', 'null']
@@ -78,17 +72,72 @@ class Config(object):
             }
         }
 
-    def getSchema(self):
-        return self.schema
+        if os.path.isdir(self.__config_path) is False or os.path.isfile(self.__config_filepath) is False:
+            self.init_config()
+        elif os.path.isfile(self.__config_filepath):
+            self.load_config()
 
-    def setConfig(self, key, value):
-        self.currentConfig[key] = value
-        jsonschema.validate(self.currentConfig, self.schema)
+    @property
+    def schema(self):
+        return self.__schema
+
+    @property
+    def config(self):
+        return self.__config
+
+    @config.setter
+    def config(self, config_obj):
+        try:
+            jsonschema.validate(config_obj, self.schema)
+        except Exception as ex:
+            # ValidationError
+            self.log.error('The requested configuration update is not valid according to the schema')
+            template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
+            message = template.format(type(ex).__name__, ex.args)
+            self.log.error(message)
+            exit()
+
+        self.__config = config_obj
+        return self.__config
+
+    def get_config_value(self, key):
+        return self.config[key]
+
+    def set_config_value(self, key, value):
+        '''Updates a key/value pair in the config, verify it against the schema before updating config'''
+        value_init = self.config[key]
+        config_tmp = copy.deepcopy(self.config)
+        config_tmp[key] = value
+        self.config = config_tmp
+        self.log.info('Config.set_config_value: Updated config value: ' + key + ' from: ' + value_init + ' to: ' + value)
+        return self.config[key]
+
+    def load_config(self):
+        '''Load content of the YML config file'''
+        self.log.info('Config.open_config: Opening settings from config file: ' + self.__config_filepath)
+        with open(self.__config_filepath, 'r') as ymlfile:
+            cfg = yaml.safe_load(ymlfile)
+        self.config = cfg
+        return self.config
+
+    def write_config(self):
+        '''Write config into a YML config file'''
+        self.log.info('Config.write_config(): Writing config file to: ' + self.__config_filepath)
+        self.log.info('Config.write_config(): Content:' + json.dumps(config))
+        if not os.path.isdir(self.__config_path):
+            os.mkdir(self.__config_path)
+
+        config_file = open(self.__config_filepath, 'w')
+        yaml.dump(self.__config, config_file, default_flow_style=False)
+
+        return self.config
+
+    # Need to re-write section below, to get defaults from schema, prompt when empty and load into config object
 
     def getDefaultConfig(self):
         defaultConfig = {
             'history_weeks': 12
-            , 'cache_filepath': self.configPath + 'data.jsonl'
+            , 'cache_filepath': self.__config_path + 'data.jsonl'
             , 'jira_username': None
             , 'jira_password': None
             , 'jira_host': None
@@ -98,40 +147,9 @@ class Config(object):
             , 'slack_channel': None
             , 'slack_webhook': None
         }
-
         return defaultConfig
 
-    def initConfig(self):
-        self.log.info('Config.initConfig(): Unable to find config file, initializing')
-        self.currentConfig = self.writeConfig(self.getDefaultConfig())
-
-    def writeConfig(self, config):
-        self.log.info('Config.writeConfig(): Writing config file')
-        self.log.info('Config Object: ' + json.dumps(config))
-        if not os.path.isdir(self.configPath):
-            os.mkdir(self.configPath)
-
-        configFile = open(self.configFilepath, 'w')
-        yaml.dump(config, configFile, default_flow_style=False)
-
-        return config
-
-    def getConfig(self, key):
-        if self.currentConfig is None:
-            self.currentConfig = self.importConfig()
-
-        jsonschema.validate(self.currentConfig, self.schema)
-
-        if key not in self.currentConfig:
-            self.log.error('Config.getConfig(): Key not found in config file: ' + key)
-            exit()
-
-        else:
-            return self.currentConfig[key]
-
-    def importConfig(self):
-        self.log.info('Config.getConfig(): Importing settings from config file: ' + self.configFilepath)
-        with open(self.configFilepath, 'r') as ymlfile:
-            cfg = yaml.safe_load(ymlfile)
-
-        return cfg
+    def init_config(self):
+        self.log.info('Config.init_config(): Unable to find config file, initializing')
+        self.config = self.getDefaultConfig()
+        self.write_config()

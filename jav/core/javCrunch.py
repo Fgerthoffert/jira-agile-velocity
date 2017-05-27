@@ -46,7 +46,7 @@ class Crunch(object):
     def getDailyAverageWeek(self, daily_data):
         '''For each day, going back over a pre-configured number of weeks, calculate daily average'''
         work_data = {}
-        history_weeks = self.config.getConfig('history_weeks')
+        history_weeks = self.config.get_config_value('history_weeks')
         history_days = int(history_weeks) * 7
         for current_day_data in daily_data:
             time_delta = self.time.getCurrentDate() - daily_data[current_day_data]['datetime']
@@ -78,7 +78,7 @@ class Crunch(object):
     def getWeeklyData(self, daily_data):
         '''For each day, going back over a pre-configured number of weeks, calculate daily average'''
         work_data = collections.OrderedDict()
-        history_weeks = self.config.getConfig('history_weeks')
+        history_weeks = self.config.get_config_value('history_weeks')
         history_days = int(history_weeks) * 7
         today_week_name = self.time.getCurrentDate().strftime('%Y.W%W')
 

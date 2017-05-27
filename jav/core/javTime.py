@@ -16,7 +16,7 @@ class Time(object):
 
     def getEndDate(self):
         '''Search for the oldest Monday past number of history_weeks'''
-        history_weeks = self.config.getConfig('history_weeks')
+        history_weeks = self.config.get_config_value('history_weeks')
         self.log.info('Time.getEndDate(): Looking back: ' + str(history_weeks) + ' weeks')
 
         tentative_date = self.getCurrentDate() - timedelta(weeks=history_weeks)

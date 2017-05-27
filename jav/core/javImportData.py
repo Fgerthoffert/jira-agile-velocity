@@ -23,7 +23,7 @@ class importData(object):
     def __init__(self, log, config):
         self.log = log
         self.config = config
-        self.cache_filepath = self.config.getConfig('cache_filepath')
+        self.cache_filepath = self.config.get_config_value('cache_filepath')
         self.jira = Jira(self.log, self.config)
 
     def writeJson(self, file, stats):
@@ -110,7 +110,7 @@ class importData(object):
     def getRemainingWork(self, daily_data):
         self.log.info('importData.getRemainingWork(): Obtaining remaining work')
         issues_list = self.jira.getRemainingTickets().json()
-        jira_points_field = self.config.getConfig('jira_field_points')
+        jira_points_field = self.config.get_config_value('jira_field_points')
         remaining = {}
         remaining['points'] = 0
         for issue in issues_list['issues']:
