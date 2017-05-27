@@ -5,7 +5,7 @@ from datetime import tzinfo, timedelta, datetime
 from jav.core.javJira import Jira
 import dateutil.parser
 import copy
-
+import numpy
 
 class importData(object):
     """ This class is used to obtain data used for processing
@@ -90,7 +90,7 @@ class importData(object):
                 # Add skip working day
                 if date_current.strftime('%A') != 'Sunday' and date_current.strftime('%A') != 'Saturday':
                     self.log.info('importData.refreshDailyDataCache(): ' + date_current.strftime('%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Obtaining daily data')
-                    issues_list = self.jira.getTickets(date_current).json()
+                    issues_list = self.jira.getCompletedTickets(date_current).json()
                     self.log.info('importData.refreshDailyDataCache(): ' + date_current.strftime('%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Calculating stats')
                     dailyObj = self.calculateVelocity(issues_list)
                     dailyObj['datetime'] = date_current.isoformat()
@@ -104,3 +104,24 @@ class importData(object):
 
         return daily_data
 
+    def getRemainingWork(self, daily_data):
+        self.log.info('importData.getRemainingWork(): Obtaining remaining work')
+        issues_list = self.jira.getRemainingTickets().json()
+        jira_points_field = self.config.getConfig('jira_field_points')
+        remaining = {}
+        remaining["points"] = 0
+        for issue in issues_list["issues"]:
+            try:
+                remaining["points"] = remaining["points"] + issue["fields"][jira_points_field]
+            except:
+                self.log.info('WARNING: Ticket missing story points')
+                self.log.info(json.dumps(issue))
+
+        points = []
+        for data_idx in daily_data:
+            points.append(daily_data[data_idx]["points"])
+
+        remaining["average_daily_points"] = round(numpy.mean(points), 1)
+        remaining["effort_days"] = round(remaining["points"] / remaining["average_daily_points"], 1)
+
+        return remaining

@@ -23,10 +23,14 @@ class Config(object):
         defaultConfig = {
             'history_weeks' : 12
             , 'cache_filepath': self.configPath + 'data.jsonl'
-            , 'jira_username' : 'USERNAME'
-            , 'jira_password' : 'PASSWORD'
-            , 'jira_host' : 'HOST'
-            , 'jira_jql_velocity' : 'JQL_VELOCITY_QUERY'
+            , 'jira_username' : None
+            , 'jira_password' : None
+            , 'jira_host' : None
+            , 'jira_jql_velocity' : None
+            , 'jira_jql_remaining' : None
+            , 'jira_field_points': 'customfield_10002'
+            , 'slack_channel' : None
+            , 'slack_webhook' : None
         }
         self.currentConfig = self.writeConfig(defaultConfig)
 

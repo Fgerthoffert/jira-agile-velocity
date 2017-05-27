@@ -9,9 +9,13 @@ class Jira(object):
         self.log = log
         self.config = config
 
-    def getTickets(self, date_current):
-        self.log.info('Jira.getTickets(): Getting tickets from Jira for date: ' + date_current.strftime("%Y-%m-%d"))
-        return self.call(self.config.getConfig('jira_jql_velocity') + " during(\"" + date_current.strftime("%Y-%m-%d") + "\", \"" + date_current.strftime("%Y-%m-%d") + "\")")
+    def getCompletedTickets(self, date_current):
+        self.log.info('Jira.getCompletedTickets(): Getting completed tickets from Jira for date: ' + date_current.strftime("%Y-%m-%d"))
+        return self.call(self.config.getConfig('jira_jql_velocity') + ' during(\"' + date_current.strftime("%Y-%m-%d") + '\", \"' + date_current.strftime("%Y-%m-%d") + '\")')
+
+    def getRemainingTickets(self):
+        self.log.info('Jira.getTickets(): Getting remaining tickets from Jira')
+        return self.call(self.config.getConfig('jira_jql_remaining'))
 
     def call(self, jql_query):
         headers = {

@@ -13,10 +13,6 @@ class Time(object):
     def getCurrentDate(self):
         return datetime.now(pytz.timezone('America/Toronto'))
 
-    def getStartDate(self):
-        return
-        self.log.info('Jira.getTickets(): Getting tickets from Jira for date: ' + date_current.strftime("%Y-%m-%d"))
-
     """
         Search for the oldest Monday past number of history_weeks
     """
