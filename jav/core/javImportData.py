@@ -35,12 +35,15 @@ class importData(object):
         velocity['points'] = 0
         velocity['tickets'] = 0
         for issue in issues_list['issues']:
-            if issue['fields']['issuetype']['name'] != 'Sub-task':
-                try:
-                    velocity['points'] = int(velocity['points'] + issue['fields']['customfield_10002'])
-                except:
-                    self.log.info('WARNING: Ticket missing story points')
-                    self.log.info(json.dumps(issue))
+            try:
+                velocity['points'] = int(velocity['points'] + issue['fields']['customfield_10002'])
+            except Exception as ex:
+                # KeyError
+                template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
+                message = template.format(type(ex).__name__, ex.args)
+                self.log.info('WARNING: Ticket missing story points')
+                self.log.info(message)
+                self.log.info(json.dumps(issue))
 
             velocity['tickets'] = velocity['tickets'] + 1
         return velocity
