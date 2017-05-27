@@ -5,10 +5,11 @@ import json
 import jsonschema
 import copy
 
+
 class Config(object):
-    ''' 
+    """ 
         Class in charge to configuration management        
-    '''
+    """
 
     def __init__(self, log):
         self.log = log
@@ -98,22 +99,22 @@ class Config(object):
             exit()
 
         self.__config = config_obj
-        return self.__config
 
     def get_config_value(self, key):
         return self.config[key]
 
     def set_config_value(self, key, value):
-        '''Updates a key/value pair in the config, verify it against the schema before updating config'''
+        """Updates a key/value pair in the config, verify it against the schema before updating config"""
         value_init = self.config[key]
         config_tmp = copy.deepcopy(self.config)
         config_tmp[key] = value
         self.config = config_tmp
-        self.log.info('Config.set_config_value: Updated config value: ' + key + ' from: ' + value_init + ' to: ' + value)
+        self.log.info(
+            'Config.set_config_value: Updated config: ' + key + ' from: ' + value_init + ' to: ' + value)
         return self.config[key]
 
     def load_config(self):
-        '''Load content of the YML config file'''
+        """Load content of the YML config file"""
         self.log.info('Config.open_config: Opening settings from config file: ' + self.__config_filepath)
         with open(self.__config_filepath, 'r') as ymlfile:
             cfg = yaml.safe_load(ymlfile)
@@ -121,9 +122,9 @@ class Config(object):
         return self.config
 
     def write_config(self):
-        '''Write config into a YML config file'''
+        """Write config into a YML config file"""
         self.log.info('Config.write_config(): Writing config file to: ' + self.__config_filepath)
-        self.log.info('Config.write_config(): Content:' + json.dumps(config))
+        self.log.info('Config.write_config(): Content:' + json.dumps(self.config))
         if not os.path.isdir(self.__config_path):
             os.mkdir(self.__config_path)
 
@@ -134,8 +135,8 @@ class Config(object):
 
     # Need to re-write section below, to get defaults from schema, prompt when empty and load into config object
 
-    def getDefaultConfig(self):
-        defaultConfig = {
+    def get_default_config(self):
+        default_config = {
             'history_weeks': 12
             , 'cache_filepath': self.__config_path + 'data.jsonl'
             , 'jira_username': None
@@ -147,9 +148,9 @@ class Config(object):
             , 'slack_channel': None
             , 'slack_webhook': None
         }
-        return defaultConfig
+        return default_config
 
     def init_config(self):
         self.log.info('Config.init_config(): Unable to find config file, initializing')
-        self.config = self.getDefaultConfig()
+        self.config = self.get_default_config()
         self.write_config()
