@@ -24,13 +24,17 @@ class Jira(object):
         params = (
             ("jql", jql_query),
         )
-
         try:
-            tickets = requests.get(self.config.getConfig('jira_host') + "/rest/api/2/search", headers=headers, params=params, auth=(self.config.getConfig('jira_username'), self.config.getConfig('jira_password')))
-        except:
+            tickets = requests.get(self.config.getConfig('jira_host') + "/rest/api/2/search", headers=headers,
+                                   params=params,
+                                   auth=(
+                                   self.config.getConfig('jira_username'), self.config.getConfig('jira_password')))
+        except Exception as ex:
+            #ConnectionError
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
             self.log.error('Jira.call(): Unable to communicate with remote JIRA server, exiting... ')
+            self.log.error(message)
             exit()
 
         return tickets
-
-

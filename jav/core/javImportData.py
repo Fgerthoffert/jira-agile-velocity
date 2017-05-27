@@ -113,8 +113,12 @@ class importData(object):
         for issue in issues_list["issues"]:
             try:
                 remaining["points"] = remaining["points"] + issue["fields"][jira_points_field]
-            except:
+            except Exception as ex:
+                # KeyError
+                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
                 self.log.info('WARNING: Ticket missing story points')
+                self.log.info(message)
                 self.log.info(json.dumps(issue))
 
         points = []
