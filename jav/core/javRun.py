@@ -7,9 +7,9 @@ from jav.core.javMsg import Msg
 
 
 class Run(object):
-    ''' 
+    """ 
         Main class used to run the script
-    '''
+    """
 
     def __init__(self, log, dry_run):
         self.log = log
@@ -28,14 +28,14 @@ class Run(object):
 
         loader = importData(self.log, self.config)
         # Import existing data (if any) into a Python object
-        previous_data = loader.loadDailyDataCache()
+        previous_data = loader.load_dailydata_cache()
         # Refresh the cache by checking if additional days can be added
-        daily_data = loader.refreshDailyDataCache(previous_data, date_start, date_end)
+        daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
 
-        current_week_data = self.crunch.getCurrentWeek(daily_data)
-        days_data = self.crunch.getDailyAverageWeek(daily_data)
-        weeks_data = self.crunch.getWeeklyData(daily_data)
-        remaining_work = loader.getRemainingWork(daily_data)
+        current_week_data = self.crunch.get_current_week(daily_data)
+        days_data = self.crunch.get_dailyavg_week(daily_data)
+        weeks_data = self.crunch.get_weekly_data(daily_data)
+        remaining_work = loader.get_remaining_work(daily_data)
 
         tabulate_days = self.tabulate.generateDays(current_week_data, days_data, weeks_data)
         tabulate_weeks = self.tabulate.generateWeeks(current_week_data, weeks_data)

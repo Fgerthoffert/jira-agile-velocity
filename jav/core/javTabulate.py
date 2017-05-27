@@ -1,9 +1,9 @@
 import tabulate
 
 class Tabulate(object):
-    ''' 
+    """ 
         Class used to format messages using tabulate
-    '''
+    """
 
     def __init__(self, log, config):
         self.log = log

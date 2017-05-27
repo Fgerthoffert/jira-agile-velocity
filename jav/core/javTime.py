@@ -2,9 +2,9 @@ from datetime import timedelta, datetime
 import pytz
 
 class Time(object):
-    ''' 
+    """ 
         Class in charge or handling various time-related functions
-    '''
+    """
 
     def __init__(self, log, config):
         self.log = log
@@ -15,7 +15,7 @@ class Time(object):
 
 
     def getEndDate(self):
-        '''Search for the oldest Monday past number of history_weeks'''
+        """Search for the oldest Monday past number of history_weeks"""
         history_weeks = self.config.get_config_value('history_weeks')
         self.log.info('Time.getEndDate(): Looking back: ' + str(history_weeks) + ' weeks')
 

@@ -1,19 +1,19 @@
 import requests
 
 class Jira(object):
-    ''' 
+    """ 
         Handle connection to JIRA
-    '''
+    """
 
     def __init__(self, log, config):
         self.log = log
         self.config = config
 
-    def getCompletedTickets(self, date_current):
-        self.log.info('Jira.getCompletedTickets(): Getting completed tickets from Jira for date: ' + date_current.strftime("%Y-%m-%d"))
+    def get_completed_tickets(self, date_current):
+        self.log.info('Jira.get_completed_tickets(): Getting completed tickets from Jira for date: ' + date_current.strftime("%Y-%m-%d"))
         return self.call(self.config.get_config_value('jira_jql_velocity') + ' during(\"' + date_current.strftime("%Y-%m-%d") + '\", \"' + date_current.strftime("%Y-%m-%d") + '\")')
 
-    def getRemainingTickets(self):
+    def get_remaining_tickets(self):
         self.log.info('Jira.getTickets(): Getting remaining tickets from Jira')
         return self.call(self.config.get_config_value('jira_jql_remaining'))
 

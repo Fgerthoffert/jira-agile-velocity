@@ -1,22 +1,23 @@
 import numpy
 import collections
 
+
 class Crunch(object):
-    ''' 
+    """ 
         Receive data and crunch numbers
-    '''
+    """
 
     def __init__(self, log, config, time):
         self.log = log
         self.config = config
         self.time = time
 
-    def getCurrentWeek(self, daily_data):
-        ''' For the current week, return an array containing:
+    def get_current_week(self, daily_data):
+        """ For the current week, return an array containing:
 
          - Each day total completed story points
          - Current daily average or completed story points for the week
-        '''
+        """
         work_data = {}
         work_data['total'] = 0
         avg = []
@@ -42,9 +43,8 @@ class Crunch(object):
 
         return work_data
 
-
-    def getDailyAverageWeek(self, daily_data):
-        '''For each day, going back over a pre-configured number of weeks, calculate daily average'''
+    def get_dailyavg_week(self, daily_data):
+        """For each day, going back over a pre-configured number of weeks, calculate daily average"""
         work_data = {}
         history_weeks = self.config.get_config_value('history_weeks')
         history_days = int(history_weeks) * 7
@@ -60,12 +60,14 @@ class Crunch(object):
                     work_data[current_day_name]['max'] = None
                     work_data[current_day_name]['min'] = None
 
-                if work_data[current_day_name]['max'] == None or daily_data[current_day_data]['points'] > max(work_data[current_day_name]['values']):
+                if work_data[current_day_name]['max'] == None or daily_data[current_day_data]['points'] > max(
+                        work_data[current_day_name]['values']):
                     work_data[current_day_name]['max'] = {}
                     work_data[current_day_name]['max']['datetime'] = daily_data[current_day_data]['datetime']
                     work_data[current_day_name]['max']['value'] = int(daily_data[current_day_data]['points'])
 
-                if work_data[current_day_name]['min'] == None or daily_data[current_day_data]['points'] < min(work_data[current_day_name]['values']):
+                if work_data[current_day_name]['min'] == None or daily_data[current_day_data]['points'] < min(
+                        work_data[current_day_name]['values']):
                     work_data[current_day_name]['min'] = {}
                     work_data[current_day_name]['min']['datetime'] = daily_data[current_day_data]['datetime']
                     work_data[current_day_name]['min']['value'] = int(daily_data[current_day_data]['points'])
@@ -74,9 +76,8 @@ class Crunch(object):
                 work_data[current_day_name]['avg'] = int(numpy.mean(work_data[current_day_name]['values']))
         return work_data
 
-
-    def getWeeklyData(self, daily_data):
-        '''For each day, going back over a pre-configured number of weeks, calculate daily average'''
+    def get_weekly_data(self, daily_data):
+        """For each day, going back over a pre-configured number of weeks, calculate daily average"""
         work_data = collections.OrderedDict()
         history_weeks = self.config.get_config_value('history_weeks')
         history_days = int(history_weeks) * 7
@@ -95,16 +96,21 @@ class Crunch(object):
 
                     work_data[current_week_name]['values'].append(daily_data[current_day_data]['points'])
                     work_data[current_week_name]['avg'] = int(numpy.mean(work_data[current_week_name]['values']))
-                    work_data[current_week_name]['sum'] = work_data[current_week_name]['sum'] + daily_data[current_day_data]['points']
+                    work_data[current_week_name]['sum'] = work_data[current_week_name]['sum'] + \
+                                                          daily_data[current_day_data]['points']
 
         # Get smallest and biggest week
         work_data['period'] = {}
         work_data['period']['max'] = None
         work_data['period']['min'] = None
         for week_idx in work_data:
-            if 'sum' in work_data[week_idx] and (work_data['period']['max'] == None or work_data['period']['max'] < work_data[week_idx]['sum']):
+            if 'sum' in work_data[week_idx] and (
+                            work_data['period']['max'] == None or work_data['period']['max'] < work_data[week_idx][
+                        'sum']):
                 work_data['period']['max'] = work_data[week_idx]['sum']
-            if 'sum' in work_data[week_idx] and (work_data['period']['min'] == None or work_data['period']['min'] > work_data[week_idx]['sum']):
+            if 'sum' in work_data[week_idx] and (
+                            work_data['period']['min'] == None or work_data['period']['min'] > work_data[week_idx][
+                        'sum']):
                 work_data['period']['min'] = work_data[week_idx]['sum']
 
         return work_data

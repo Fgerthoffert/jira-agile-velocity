@@ -1,9 +1,9 @@
 from jav.core.javConfig import Config
 
 class Setup(object):
-    ''' 
+    """ 
         Classed used to setup the script (fill various settings)
-    '''
+    """
 
     def __init__(self, log):
         self.log = log
