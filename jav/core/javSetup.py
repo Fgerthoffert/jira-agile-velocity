@@ -2,7 +2,7 @@ from jav.core.javConfig import Config
 
 class Setup(object):
     """ 
-        tbc
+        Classed used to setup the script (fill various settings)
     """
 
     def __init__(self, log):

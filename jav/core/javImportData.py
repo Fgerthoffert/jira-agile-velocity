@@ -1,7 +1,7 @@
 import collections
 import json
 import os
-from datetime import tzinfo, timedelta, datetime
+from datetime import timedelta
 from jav.core.javJira import Jira
 import dateutil.parser
 import copy

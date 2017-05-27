@@ -1,6 +1,3 @@
-from datetime import tzinfo, timedelta, datetime
-import dateutil.parser
-
 from jav.core.javConfig import Config
 from jav.core.javImportData import importData
 from jav.core.javTime import Time
@@ -11,7 +8,7 @@ from jav.core.javMsg import Msg
 
 class Run(object):
     """ 
-        tbc
+        Main class used to run the script
     """
 
     def __init__(self, log, dry_run):

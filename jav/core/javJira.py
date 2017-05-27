@@ -2,7 +2,7 @@ import requests
 
 class Jira(object):
     ''' 
-        tbc
+        Handle connection to JIRA
     '''
 
     def __init__(self, log, config):

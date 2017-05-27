@@ -1,9 +1,8 @@
 import tabulate
-import collections
 
 class Tabulate(object):
     ''' 
-        tbc
+        Class used to format messages using tabulate
     '''
 
     def __init__(self, log, config):

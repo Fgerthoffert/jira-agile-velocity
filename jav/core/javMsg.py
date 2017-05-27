@@ -2,7 +2,7 @@ import slackweb
 
 class Msg(object):
     ''' 
-        tbc
+        Display messages to console or send to slack depending of the user selected mode
     '''
 
     def __init__(self, log, config, dry_run):

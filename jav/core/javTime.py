@@ -3,7 +3,7 @@ import pytz
 
 class Time(object):
     ''' 
-        tbc
+        Class in charge or handling various time-related functions
     '''
 
     def __init__(self, log, config):
@@ -19,8 +19,6 @@ class Time(object):
     def getEndDate(self):
         history_weeks = self.config.getConfig('history_weeks')
         self.log.info('Time.getEndDate(): Looking back: ' + str(history_weeks) + ' weeks')
-
-        #history_days = int(history_weeks)*7
 
         tentative_date = self.getCurrentDate() - timedelta(weeks=history_weeks)
         self.log.info('Time.getEndDate(): Tentative date is: ' + tentative_date.isoformat())
