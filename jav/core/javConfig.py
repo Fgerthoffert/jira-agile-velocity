@@ -8,7 +8,7 @@ import copy
 
 class Config(object):
     """ 
-        Class in charge to configuration management        
+        Class in charge to configuration management
     """
 
     def __init__(self, log):
