@@ -28,7 +28,7 @@ class Tabulate(object):
         self.config = config
 
     @staticmethod
-    def generate_days(self, current_week_data, days_data, weeks_data):
+    def generate_days(current_week_data, days_data, weeks_data):
         tab_headers = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Week Total']
         tab_content = [
             ['This Week'
@@ -91,7 +91,7 @@ class Tabulate(object):
         return tabulate.tabulate(tab_content, headers=tab_headers, tablefmt='fancy_grid')
 
     @staticmethod
-    def generate_remaining(self, remaining_work, current_week_data, weeks_data):
+    def generate_remaining(remaining_work, current_week_data, weeks_data):
         tab_headers = ['', 'All Time', 'Last Week', 'This Week']
         tab_content = [
             ['Points / Day'

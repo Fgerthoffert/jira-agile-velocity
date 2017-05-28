@@ -4,7 +4,7 @@ from jav.core.javLogConfig import LogConfig
 
 class Setup(object):
     """
-        Classe used to setup the script (fill configuration settings)
+        Used to setup the script (fill configuration settings)
     """
 
     def __init__(self, log, app_config):

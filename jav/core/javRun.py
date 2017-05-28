@@ -5,6 +5,7 @@ from jav.core.javCrunch import Crunch
 from jav.core.javTabulate import Tabulate
 from jav.core.javMsg import Msg
 from jav.core.javLogConfig import LogConfig
+from jav.core.javStatsWeek import StatsWeek
 
 
 class Run(object):
@@ -36,6 +37,10 @@ class Run(object):
         daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
         # Write back the data cache to file after clearing any existing one
         loader.write_dailydata_cache(daily_data)
+
+        stats_week = StatsWeek(self.log, self.config, daily_data)
+        stats_week.main()
+        exit()
 
         current_week_data = self.crunch.get_current_week(daily_data)
         days_data = self.crunch.get_dailyavg_week(daily_data)
