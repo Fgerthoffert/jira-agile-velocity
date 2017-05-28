@@ -8,14 +8,12 @@ import copy
 import numpy
 
 
-class importData(object):
+class ImportData(object):
     """ This class is used to obtain data used for processing
 
     Args:
         log: A class, the logging interface
-        appConfig: A class, the app config interface
-        config_dir: A string, filesystem location of the configuration directory
-    	sourceId: Source ID of the source to capture
+        config: A class, the app config interface
 
     Attributes:
         tbc
@@ -27,8 +25,9 @@ class importData(object):
         self.cache_filepath = self.config.get_config_value('cache_filepath')
         self.jira = Jira(self.log, self.config)
 
-    def write_json(self, file, stats):
-        with open(file, 'a+') as fileToWrite:
+    @staticmethod
+    def write_json(filepath, stats):
+        with open(filepath, 'a+') as fileToWrite:
             fileToWrite.write(json.dumps(stats) + '\n')
 
     def calculate_velocity(self, issues_list):
@@ -55,27 +54,26 @@ class importData(object):
         
         :return: An OrderedDict containing daily results 
         """
-        self.log.info('importData.load_dailydata_cache(): Loading to load data from cache file: ' + self.cache_filepath)
+        self.log.info('ImportData.load_dailydata_cache(): Loading to load data from cache file: ' + self.cache_filepath)
         daily_data = collections.OrderedDict()
         if os.path.isfile(self.cache_filepath):
             for line in open(self.cache_filepath).readlines():
-                currentStatsLine = json.loads(line)
-                currentStatsLine['datetime'] = dateutil.parser.parse(currentStatsLine['datetime'])
-                dict_idx = currentStatsLine['datetime'].strftime('%Y%m%d')
-                daily_data[dict_idx] = currentStatsLine
+                current_stats_line = json.loads(line)
+                current_stats_line['datetime'] = dateutil.parser.parse(current_stats_line['datetime'])
+                dict_idx = current_stats_line['datetime'].strftime('%Y%m%d')
+                daily_data[dict_idx] = current_stats_line
         else:
-            self.log.info('importData.load_dailydata_cache(): Nothing to load, cache file does not exist')
+            self.log.info('ImportData.load_dailydata_cache(): Nothing to load, cache file does not exist')
 
         self.log.debug(daily_data)
         return daily_data
 
     def refresh_dailydata_cache(self, daily_data_cache, date_start, date_end):
-        self.log.info('importData.refresh_dailydata_cache(): start')
+        self.log.info('ImportData.refresh_dailydata_cache(): start')
         daily_data = collections.OrderedDict()
 
         date_current = date_start
-        while (1):
-            dailyObj = {}
+        while 1:
             date_current = date_current - timedelta(days=1)
             dict_idx = date_current.strftime('%Y%m%d')
 
@@ -84,40 +82,39 @@ class importData(object):
             for current_day_data in daily_data_cache:
                 if date_current.strftime('%Y-%m-%d') == daily_data_cache[current_day_data]['datetime'].strftime(
                         '%Y-%m-%d'):
-                    dailyObj = copy.deepcopy(daily_data_cache[current_day_data])
-                    dailyObj['datetime'] = daily_data_cache[current_day_data]['datetime'].isoformat()
-                    self.write_json(self.cache_filepath, dailyObj)
+                    daily_obj = copy.deepcopy(daily_data_cache[current_day_data])
+                    daily_obj['datetime'] = daily_data_cache[current_day_data]['datetime'].isoformat()
+                    self.write_json(self.cache_filepath, daily_obj)
                     daily_data[dict_idx] = daily_data_cache[current_day_data]
-                    self.log.info('importData.refresh_dailydata_cache(): ' + date_current.strftime(
+                    self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Already in cache')
                     item_found = True
 
-            if item_found == False:
+            if not item_found:
                 # Add skip working day
                 if date_current.strftime('%A') != 'Sunday' and date_current.strftime('%A') != 'Saturday':
-                    self.log.info('importData.refresh_dailydata_cache(): ' + date_current.strftime(
+                    self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Obtaining daily data')
                     issues_list = self.jira.get_completed_tickets(date_current).json()
-                    self.log.info('importData.refresh_dailydata_cache(): ' + date_current.strftime(
+                    self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Calculating stats')
-                    dailyObj = self.calculate_velocity(issues_list)
-                    dailyObj['datetime'] = date_current.isoformat()
-                    self.write_json(self.cache_filepath, dailyObj)
-                    daily_data[dict_idx] = dailyObj
+                    daily_obj = self.calculate_velocity(issues_list)
+                    daily_obj['datetime'] = date_current.isoformat()
+                    self.write_json(self.cache_filepath, daily_obj)
+                    daily_data[dict_idx] = daily_obj
                     daily_data[dict_idx]['datetime'] = dateutil.parser.parse(daily_data[dict_idx]['datetime'])
 
             if date_current.strftime('%Y-%m-%d') < date_end.strftime('%Y-%m-%d'):
-                self.log.info('importData.refresh_dailydata_cache(): All data collected')
+                self.log.info('ImportData.refresh_dailydata_cache(): All data collected')
                 break
 
         return daily_data
 
     def get_remaining_work(self, daily_data):
-        self.log.info('importData.get_remaining_work(): Obtaining remaining work')
+        self.log.info('ImportData.get_remaining_work(): Obtaining remaining work')
         issues_list = self.jira.get_remaining_tickets().json()
         jira_points_field = self.config.get_config_value('jira_field_points')
-        remaining = {}
-        remaining['points'] = 0
+        remaining = {'points': 0}
         for issue in issues_list['issues']:
             try:
                 remaining['points'] = remaining['points'] + issue['fields'][jira_points_field]

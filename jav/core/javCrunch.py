@@ -18,8 +18,7 @@ class Crunch(object):
          - Each day total completed story points
          - Current daily average or completed story points for the week
         """
-        work_data = {}
-        work_data['total'] = 0
+        work_data = {'total': 0}
         avg = []
         current_week = self.time.get_current_date().strftime('%Y.%W')
         for current_day_data in daily_data:
@@ -60,13 +59,13 @@ class Crunch(object):
                     work_data[current_day_name]['max'] = None
                     work_data[current_day_name]['min'] = None
 
-                if work_data[current_day_name]['max'] == None or daily_data[current_day_data]['points'] > max(
+                if work_data[current_day_name]['max'] is None or daily_data[current_day_data]['points'] > max(
                         work_data[current_day_name]['values']):
                     work_data[current_day_name]['max'] = {}
                     work_data[current_day_name]['max']['datetime'] = daily_data[current_day_data]['datetime']
                     work_data[current_day_name]['max']['value'] = int(daily_data[current_day_data]['points'])
 
-                if work_data[current_day_name]['min'] == None or daily_data[current_day_data]['points'] < min(
+                if work_data[current_day_name]['min'] is None or daily_data[current_day_data]['points'] < min(
                         work_data[current_day_name]['values']):
                     work_data[current_day_name]['min'] = {}
                     work_data[current_day_name]['min']['datetime'] = daily_data[current_day_data]['datetime']
@@ -105,11 +104,11 @@ class Crunch(object):
         work_data['period']['min'] = None
         for week_idx in work_data:
             if 'sum' in work_data[week_idx] and (
-                            work_data['period']['max'] == None or work_data['period']['max'] < work_data[week_idx][
+                            work_data['period']['max'] is None or work_data['period']['max'] < work_data[week_idx][
                         'sum']):
                 work_data['period']['max'] = work_data[week_idx]['sum']
             if 'sum' in work_data[week_idx] and (
-                            work_data['period']['min'] == None or work_data['period']['min'] > work_data[week_idx][
+                            work_data['period']['min'] is None or work_data['period']['min'] > work_data[week_idx][
                         'sum']):
                 work_data['period']['min'] = work_data[week_idx]['sum']
 

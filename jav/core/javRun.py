@@ -1,5 +1,5 @@
 from jav.core.javConfig import Config
-from jav.core.javImportData import importData
+from jav.core.javImportData import ImportData
 from jav.core.javTime import Time
 from jav.core.javCrunch import Crunch
 from jav.core.javTabulate import Tabulate
@@ -26,7 +26,7 @@ class Run(object):
         self.log.info('run.main(): Start Date: ' + date_start.strftime('%Y-%m-%d'))
         self.log.info('run.main(): End Date: ' + date_end.strftime('%Y-%m-%d'))
 
-        loader = importData(self.log, self.config)
+        loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
         previous_data = loader.load_dailydata_cache()
         # Refresh the cache by checking if additional days can be added

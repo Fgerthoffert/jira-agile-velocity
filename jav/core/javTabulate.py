@@ -1,5 +1,6 @@
 import tabulate
 
+
 class Tabulate(object):
     """ 
         Class used to format messages using tabulate
@@ -9,8 +10,9 @@ class Tabulate(object):
         self.log = log
         self.config = config
 
-    def get_trend_day(self, current_week_data, days_data, current_day):
-        if current_week_data[current_day] == None:
+    @staticmethod
+    def get_trend_day(current_week_data, days_data, current_day):
+        if current_week_data[current_day] is None:
             return 'N/A'
         elif current_week_data[current_day] > days_data[current_day]['avg']:
             return 'UP'
@@ -22,7 +24,8 @@ class Tabulate(object):
             return 'DOWN'
             # return ':bangbang: :arrow_lower_right:'
 
-    def get_first_value(self, data):
+    @staticmethod
+    def get_first_value(data):
         for idx in data:
             return data[idx]
 
@@ -72,7 +75,8 @@ class Tabulate(object):
         ]
         return tabulate.tabulate(tab_content, headers=tab_headers, tablefmt='fancy_grid')
 
-    def generate_weeks(self, current_week_data, weeks_data):
+    @staticmethod
+    def generate_weeks(current_week_data, weeks_data):
         tab_headers = ['']
         tab_content = [['Total'], ['Daily. Avg']]
         for item in list(weeks_data.items())[::-1]:
@@ -94,7 +98,7 @@ class Tabulate(object):
                 , remaining_work['average_daily_points']
                 , self.get_first_value(weeks_data)['avg']
                 , current_week_data['average']
-             ]
+            ]
             , ['Days to Completion'
                 , remaining_work['effort_days']
                 , round(remaining_work['points'] / self.get_first_value(weeks_data)['avg'], 1)
