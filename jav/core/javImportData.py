@@ -51,8 +51,8 @@ class ImportData(object):
     def load_dailydata_cache(self):
         """
         Load data from the cache into an ordered dict.
-        
-        :return: An OrderedDict containing daily results 
+
+        :return: An OrderedDict containing daily results
         """
         self.log.info('ImportData.load_dailydata_cache(): Loading to load data from cache file: ' + self.cache_filepath)
         daily_data = collections.OrderedDict()
