@@ -37,7 +37,7 @@ class Run(object):
         weeks_data = self.crunch.get_weekly_data(daily_data)
         remaining_work = loader.get_remaining_work(daily_data)
 
-        tabulate_days = self.tabulate.generateDays(current_week_data, days_data, weeks_data)
-        tabulate_weeks = self.tabulate.generateWeeks(current_week_data, weeks_data)
-        tabulate_remaining = self.tabulate.generateRemaining(remaining_work, current_week_data, weeks_data)
+        tabulate_days = self.tabulate.generate_days(current_week_data, days_data, weeks_data)
+        tabulate_weeks = self.tabulate.generate_weeks(current_week_data, weeks_data)
+        tabulate_remaining = self.tabulate.generate_remaining(remaining_work, current_week_data, weeks_data)
         self.msg.publish(remaining_work, tabulate_remaining, tabulate_days, tabulate_weeks)
