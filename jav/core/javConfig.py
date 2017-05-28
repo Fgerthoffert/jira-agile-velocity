@@ -100,6 +100,10 @@ class Config(object):
 
         self.__config = config_obj
 
+    @property
+    def config_path(self):
+        return self.__config_path
+
     def get_config_value(self, key):
         return self.config[key]
 

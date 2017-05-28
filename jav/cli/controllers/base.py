@@ -4,6 +4,7 @@ from cement.ext.ext_argparse import ArgparseController, expose
 
 from jav.core.javRun import Run
 from jav.core.javSetup import Setup
+from jav.core.javClear import Clear
 
 class javBaseController(ArgparseController):
     class Meta:
@@ -18,10 +19,15 @@ class javBaseController(ArgparseController):
 
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
-        run = Run(self.app.log, self.app.pargs.dry_run)
+        run = Run(self.app.log, self.app.pargs.dry_run, self.app.config)
         run.main()
 
     @expose(help='Enter setup mode and provide configuration parameters (jira creds, slack details)')
     def setup(self):
-        setup = Setup(self.app.log)
+        setup = Setup(self.app.log, self.app.config)
         setup.main()
+
+    @expose(help='Clear previous data (USE WITH CAUTION)')
+    def clear(self):
+        clear = Clear(self.app.log, self.app.config)
+        clear.main()

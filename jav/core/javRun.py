@@ -11,7 +11,7 @@ class Run(object):
         Main class used to run the script
     """
 
-    def __init__(self, log, dry_run):
+    def __init__(self, log, dry_run, app_config):
         self.log = log
         self.dry_run = dry_run
         self.config = Config(self.log)
@@ -19,6 +19,14 @@ class Run(object):
         self.crunch = Crunch(self.log, self.config, self.time)
         self.tabulate = Tabulate(self.log, self.config)
         self.msg = Msg(self.log, self.config, self.dry_run)
+
+        # This section is used to set-up log files
+        self.app_config = app_config
+        self.app_config.set(self.log._meta.config_section, 'file', self.config.config_path + 'run.log')
+        self.app_config.set(self.log._meta.config_section, 'rotate', True)
+        self.app_config.set(self.log._meta.config_section, 'max_bytes', 512000)
+        self.app_config.set(self.log._meta.config_section, 'max_files', 10)
+        self.log._setup_file_log()
 
     def main(self):
         date_start = self.time.get_current_date()
