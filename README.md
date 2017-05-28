@@ -1,0 +1,2 @@
+# jira-agile-velocity
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/65cf614a1b374a41a6ae09996c59701c)](https://www.codacy.com/app/NCI-GDC/jira-agile-velocity?utm_source=github.com&utm_medium=referral&utm_content=Fgerthoffert/jira-agile-velocity&utm_campaign=badger)
