@@ -1,4 +1,5 @@
 from jav.core.javConfig import Config
+from jav.core.javLogConfig import LogConfig
 
 
 class Setup(object):
@@ -9,14 +10,8 @@ class Setup(object):
     def __init__(self, log, app_config):
         self.log = log
         self.config = Config(self.log)
+        self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'setup.log')
 
-        # This section is used to set-up log files
-        self.app_config = app_config
-        self.app_config.set(self.log._meta.config_section, 'file', self.config.config_path + 'setup.log')
-        self.app_config.set(self.log._meta.config_section, 'rotate', True)
-        self.app_config.set(self.log._meta.config_section, 'max_bytes', 512000)
-        self.app_config.set(self.log._meta.config_section, 'max_files', 10)
-        self.log._setup_file_log()
 
     def main(self):
         self.log.info('Initiating App Setup')

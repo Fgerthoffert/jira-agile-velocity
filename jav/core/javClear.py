@@ -1,4 +1,5 @@
 from jav.core.javConfig import Config
+from jav.core.javLogConfig import LogConfig
 import os
 
 class Clear(object):
@@ -9,14 +10,7 @@ class Clear(object):
     def __init__(self, log, app_config):
         self.log = log
         self.config = Config(self.log)
-
-        # This section is used to set-up log files
-        self.app_config = app_config
-        self.app_config.set(self.log._meta.config_section, 'file', self.config.config_path + 'clear.log')
-        self.app_config.set(self.log._meta.config_section, 'rotate', True)
-        self.app_config.set(self.log._meta.config_section, 'max_bytes', 512000)
-        self.app_config.set(self.log._meta.config_section, 'max_files', 10)
-        self.log._setup_file_log()
+        self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'clear.log')
 
     def main(self):
         self.log.info('Clearing previously downloaded/processed data')
