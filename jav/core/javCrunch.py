@@ -21,7 +21,7 @@ class Crunch(object):
         work_data = {}
         work_data['total'] = 0
         avg = []
-        current_week = self.time.getCurrentDate().strftime('%Y.%W')
+        current_week = self.time.get_current_date().strftime('%Y.%W')
         for current_day_data in daily_data:
             if daily_data[current_day_data]['datetime'].strftime('%Y.%W') == current_week:
                 current_day_name = daily_data[current_day_data]['datetime'].strftime('%A')
@@ -49,7 +49,7 @@ class Crunch(object):
         history_weeks = self.config.get_config_value('history_weeks')
         history_days = int(history_weeks) * 7
         for current_day_data in daily_data:
-            time_delta = self.time.getCurrentDate() - daily_data[current_day_data]['datetime']
+            time_delta = self.time.get_current_date() - daily_data[current_day_data]['datetime']
             if time_delta.days <= history_days:
                 current_day_name = daily_data[current_day_data]['datetime'].strftime('%A')
 
@@ -81,10 +81,10 @@ class Crunch(object):
         work_data = collections.OrderedDict()
         history_weeks = self.config.get_config_value('history_weeks')
         history_days = int(history_weeks) * 7
-        today_week_name = self.time.getCurrentDate().strftime('%Y.W%W')
+        today_week_name = self.time.get_current_date().strftime('%Y.W%W')
 
         for current_day_data in daily_data:
-            time_delta = self.time.getCurrentDate() - daily_data[current_day_data]['datetime']
+            time_delta = self.time.get_current_date() - daily_data[current_day_data]['datetime']
             if time_delta.days <= history_days:
                 current_week_name = daily_data[current_day_data]['datetime'].strftime('%Y.W%W')
                 if today_week_name != current_week_name:

@@ -21,8 +21,8 @@ class Run(object):
         self.msg = Msg(self.log, self.config, self.dry_run)
 
     def main(self):
-        date_start = self.time.getCurrentDate()
-        date_end = self.time.getEndDate()
+        date_start = self.time.get_current_date()
+        date_end = self.time.get_end_date()
         self.log.info('run.main(): Start Date: ' + date_start.strftime('%Y-%m-%d'))
         self.log.info('run.main(): End Date: ' + date_end.strftime('%Y-%m-%d'))
 

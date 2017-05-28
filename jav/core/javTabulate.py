@@ -9,7 +9,7 @@ class Tabulate(object):
         self.log = log
         self.config = config
 
-    def getTrendDay(self, current_week_data, days_data, current_day):
+    def get_trend_day(self, current_week_data, days_data, current_day):
         if current_week_data[current_day] == None:
             return 'N/A'
         elif current_week_data[current_day] > days_data[current_day]['avg']:
@@ -22,7 +22,7 @@ class Tabulate(object):
             return 'DOWN'
             # return ':bangbang: :arrow_lower_right:'
 
-    def getFirstValue(self, data):
+    def get_first_value(self, data):
         for idx in data:
             return data[idx]
 
@@ -63,11 +63,11 @@ class Tabulate(object):
                 , weeks_data['period']['max']
                ]
             , ['Trend'
-                , self.getTrendDay(current_week_data, days_data, 'Monday')
-                , self.getTrendDay(current_week_data, days_data, 'Tuesday')
-                , self.getTrendDay(current_week_data, days_data, 'Wednesday')
-                , self.getTrendDay(current_week_data, days_data, 'Thursday')
-                , self.getTrendDay(current_week_data, days_data, 'Friday')
+                , self.get_trend_day(current_week_data, days_data, 'Monday')
+                , self.get_trend_day(current_week_data, days_data, 'Tuesday')
+                , self.get_trend_day(current_week_data, days_data, 'Wednesday')
+                , self.get_trend_day(current_week_data, days_data, 'Thursday')
+                , self.get_trend_day(current_week_data, days_data, 'Friday')
                ]
         ]
         return tabulate.tabulate(tab_content, headers=tab_headers, tablefmt='fancy_grid')
@@ -92,12 +92,12 @@ class Tabulate(object):
         tab_content = [
             ['Points / Day'
                 , remaining_work['average_daily_points']
-                , self.getFirstValue(weeks_data)['avg']
+                , self.get_first_value(weeks_data)['avg']
                 , current_week_data['average']
              ]
             , ['Days to Completion'
                 , remaining_work['effort_days']
-                , round(remaining_work['points'] / self.getFirstValue(weeks_data)['avg'], 1)
+                , round(remaining_work['points'] / self.get_first_value(weeks_data)['avg'], 1)
                 , round(remaining_work['points'] / current_week_data['average'], 1)
             ]
         ]
