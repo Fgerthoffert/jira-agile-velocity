@@ -2,7 +2,7 @@ import requests
 
 
 class Jira(object):
-    """ 
+    """
         Handle connection to JIRA
     """
 

@@ -58,17 +58,17 @@ def main():
     with app:
         try:
             app.run()
-        
+
         except exc.javError as e:
             # Catch our application errors and exit 1 (error)
             print('javError > %s' % e)
             app.exit_code = 1
-            
+
         except FrameworkError as e:
             # Catch framework errors and exit 1 (error)
             print('FrameworkError > %s' % e)
             app.exit_code = 1
-            
+
         except CaughtSignal as e:
             # Default Cement signals are SIGINT and SIGTERM, exit 0 (non-error)
             print('CaughtSignal > %s' % e)

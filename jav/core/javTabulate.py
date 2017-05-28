@@ -2,7 +2,7 @@ import tabulate
 
 
 class Tabulate(object):
-    """ 
+    """
         Class used to format messages using tabulate
     """
 

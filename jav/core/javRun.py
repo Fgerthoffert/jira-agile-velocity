@@ -7,7 +7,7 @@ from jav.core.javMsg import Msg
 
 
 class Run(object):
-    """ 
+    """
         Main class used to run the script
     """
 

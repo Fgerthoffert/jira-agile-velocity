@@ -7,7 +7,7 @@ import copy
 
 
 class Config(object):
-    """ 
+    """
         Class in charge to configuration management
     """
 

@@ -3,7 +3,7 @@ import collections
 
 
 class Crunch(object):
-    """ 
+    """
         Receive data and crunch numbers
     """
 

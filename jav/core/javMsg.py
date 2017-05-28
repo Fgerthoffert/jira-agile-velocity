@@ -2,7 +2,7 @@ import slackweb
 
 
 class Msg(object):
-    """ 
+    """
         Display messages to console or send to slack depending of the user selected mode
     """
 

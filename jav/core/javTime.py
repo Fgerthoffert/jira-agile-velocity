@@ -3,7 +3,7 @@ import pytz
 
 
 class Time(object):
-    """ 
+    """
         Class in charge or handling various time-related functions
     """
 
