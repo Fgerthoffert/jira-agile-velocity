@@ -34,6 +34,8 @@ class Run(object):
         previous_data = loader.load_dailydata_cache()
         # Refresh the cache by checking if additional days can be added
         daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
+        # Write back the data cache to file after clearing any existing one
+        loader.write_dailydata_cache(daily_data)
 
         current_week_data = self.crunch.get_current_week(daily_data)
         days_data = self.crunch.get_dailyavg_week(daily_data)

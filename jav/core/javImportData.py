@@ -22,12 +22,16 @@ class ImportData(object):
     def __init__(self, log, config):
         self.log = log
         self.config = config
-        self.cache_filepath = self.config.get_config_value('cache_filepath')
         self.jira = Jira(self.log, self.config)
 
-    @staticmethod
-    def write_json(filepath, stats):
-        with open(filepath, 'a+') as fileToWrite:
+        self.__cache_filepath = self.config.get_config_value('cache_filepath')
+
+    @property
+    def cache_filepath(self):
+        return self.__cache_filepath
+
+    def write_json(self, stats):
+        with open(self.cache_filepath, 'a+') as fileToWrite:
             fileToWrite.write(json.dumps(stats) + '\n')
 
     def calculate_velocity(self, issues_list):
@@ -47,6 +51,18 @@ class ImportData(object):
 
             velocity['tickets'] = velocity['tickets'] + 1
         return velocity
+
+    def write_dailydata_cache(self, daily_data):
+        """Write an ordered dict into a JSONL file"""
+        self.log.info('ImportData.write_dailydata_cache(): Write back daily data cache to file: ' + self.cache_filepath)
+
+        if os.path.isfile(self.cache_filepath):
+            os.remove(self.cache_filepath)
+
+        for currentdata in daily_data:
+            daily_obj = copy.deepcopy(daily_data[currentdata])
+            daily_obj['datetime'] = daily_data[currentdata]['datetime'].isoformat()
+            self.write_json(daily_obj)
 
     def load_dailydata_cache(self):
         """
@@ -68,7 +84,7 @@ class ImportData(object):
         self.log.debug(daily_data)
         return daily_data
 
-    def refresh_dailydata_cache(self, daily_data_cache, date_start, date_end):
+    def refresh_dailydata_cache(self, previous_data_cache, date_start, date_end):
         self.log.info('ImportData.refresh_dailydata_cache(): start')
         daily_data = collections.OrderedDict()
 
@@ -79,19 +95,16 @@ class ImportData(object):
 
             item_found = False
             # We check if the day is already in the file
-            for current_day_data in daily_data_cache:
-                if date_current.strftime('%Y-%m-%d') == daily_data_cache[current_day_data]['datetime'].strftime(
-                        '%Y-%m-%d'):
-                    daily_obj = copy.deepcopy(daily_data_cache[current_day_data])
-                    daily_obj['datetime'] = daily_data_cache[current_day_data]['datetime'].isoformat()
-                    self.write_json(self.cache_filepath, daily_obj)
-                    daily_data[dict_idx] = daily_data_cache[current_day_data]
-                    self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
-                        '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Already in cache')
+            for current_day_data in previous_data_cache:
+                if date_current.strftime('%Y-%m-%d') == previous_data_cache[current_day_data]['datetime'].strftime('%Y-%m-%d'):
+                    daily_obj = copy.deepcopy(previous_data_cache[current_day_data])
+                    daily_obj['datetime'] = previous_data_cache[current_day_data]['datetime'].isoformat()
+                    #self.write_json(self.cache_filepath, daily_obj)
+                    daily_data[dict_idx] = previous_data_cache[current_day_data]
+                    self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime('%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Already in cache')
                     item_found = True
 
             if not item_found:
-                # Add skip working day
                 if date_current.strftime('%A') != 'Sunday' and date_current.strftime('%A') != 'Saturday':
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Obtaining daily data')
@@ -100,7 +113,7 @@ class ImportData(object):
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Calculating stats')
                     daily_obj = self.calculate_velocity(issues_list)
                     daily_obj['datetime'] = date_current.isoformat()
-                    self.write_json(self.cache_filepath, daily_obj)
+                    #self.write_json(self.cache_filepath, daily_obj)
                     daily_data[dict_idx] = daily_obj
                     daily_data[dict_idx]['datetime'] = dateutil.parser.parse(daily_data[dict_idx]['datetime'])
 
