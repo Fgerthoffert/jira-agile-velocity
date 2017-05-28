@@ -40,7 +40,6 @@ class Run(object):
 
         stats_week = StatsWeek(self.log, self.config, daily_data)
         stats_week.main()
-        exit()
 
         current_week_data = self.crunch.get_current_week(daily_data)
         days_data = self.crunch.get_dailyavg_week(daily_data)
