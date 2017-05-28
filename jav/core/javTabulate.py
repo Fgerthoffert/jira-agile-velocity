@@ -1,6 +1,23 @@
 import tabulate
 
 
+def get_trend_day(current_week_data, days_data, current_day):
+    if current_week_data[current_day] is None:
+        return 'N/A'
+    elif current_week_data[current_day] > days_data[current_day]['avg']:
+        return 'UP'
+        # return ':clap: :arrow_upper_right:'
+    elif current_week_data[current_day] == days_data[current_day]['avg']:
+        return 'EQ'
+        # return ':ok_hand: :arrow_right:'
+    elif current_week_data[current_day] < days_data[current_day]['avg']:
+        return 'DOWN'
+        # return ':bangbang: :arrow_lower_right:'
+
+def get_first_value(data):
+    for idx in data:
+        return data[idx]
+
 class Tabulate(object):
     """
         Class used to format messages using tabulate
@@ -9,23 +26,6 @@ class Tabulate(object):
     def __init__(self, log, config):
         self.log = log
         self.config = config
-
-    def get_trend_day(self, current_week_data, days_data, current_day):
-        if current_week_data[current_day] is None:
-            return 'N/A'
-        elif current_week_data[current_day] > days_data[current_day]['avg']:
-            return 'UP'
-            # return ':clap: :arrow_upper_right:'
-        elif current_week_data[current_day] == days_data[current_day]['avg']:
-            return 'EQ'
-            # return ':ok_hand: :arrow_right:'
-        elif current_week_data[current_day] < days_data[current_day]['avg']:
-            return 'DOWN'
-            # return ':bangbang: :arrow_lower_right:'
-
-    def get_first_value(self, data):
-        for idx in data:
-            return data[idx]
 
     def generate_days(self, current_week_data, days_data, weeks_data):
         tab_headers = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Week Total']
@@ -64,11 +64,11 @@ class Tabulate(object):
                 , weeks_data['period']['max']
                ]
             , ['Trend'
-                , self.get_trend_day(current_week_data, days_data, 'Monday')
-                , self.get_trend_day(current_week_data, days_data, 'Tuesday')
-                , self.get_trend_day(current_week_data, days_data, 'Wednesday')
-                , self.get_trend_day(current_week_data, days_data, 'Thursday')
-                , self.get_trend_day(current_week_data, days_data, 'Friday')
+                , get_trend_day(current_week_data, days_data, 'Monday')
+                , get_trend_day(current_week_data, days_data, 'Tuesday')
+                , get_trend_day(current_week_data, days_data, 'Wednesday')
+                , get_trend_day(current_week_data, days_data, 'Thursday')
+                , get_trend_day(current_week_data, days_data, 'Friday')
                ]
         ]
         return tabulate.tabulate(tab_content, headers=tab_headers, tablefmt='fancy_grid')
@@ -94,12 +94,12 @@ class Tabulate(object):
         tab_content = [
             ['Points / Day'
                 , remaining_work['average_daily_points']
-                , self.get_first_value(weeks_data)['avg']
+                , get_first_value(weeks_data)['avg']
                 , current_week_data['average']
             ]
             , ['Days to Completion'
                 , remaining_work['effort_days']
-                , round(remaining_work['points'] / self.get_first_value(weeks_data)['avg'], 1)
+                , round(remaining_work['points'] / get_first_value(weeks_data)['avg'], 1)
                 , round(remaining_work['points'] / current_week_data['average'], 1)
             ]
         ]
