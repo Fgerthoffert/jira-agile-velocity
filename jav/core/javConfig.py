@@ -16,7 +16,7 @@ class Config(object):
         self.__config_path = expanduser('~') + '/.jav/'
         self.__config_filename = 'config.yml'
         self.__config_filepath = self.__config_path + self.__config_filename
-        self.__config = None
+        self.__config = {}
         self.__schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#'
             , 'title': 'configObj'
@@ -26,7 +26,7 @@ class Config(object):
             , 'properties': {
                 'history_weeks': {
                     'type': ['number']
-                    , 'description': 'Number of weeks of history to process from current date'
+                    , 'description': 'Number of weeks of history, from current date to collect data from'
                     , 'default': 12
                 }
                 , 'cache_filepath': {
@@ -35,29 +35,29 @@ class Config(object):
                     , 'default': self.__config_path + 'data.jsonl'
                 }
                 , 'jira_username': {
-                    'type': ['string', 'null']
+                    'type': ['string']
                     , 'description': 'JIRA Username used for the API call'
                 }
                 , 'jira_password': {
-                    'type': ['string', 'null']
+                    'type': ['string']
                     , 'description': 'JIRA Password used for the API call'
                 }
                 , 'jira_host': {
-                    'type': ['string', 'null']
+                    'type': ['string']
                     , 'description': 'Remote JIRA Hostname (https://jira.yourdomain.tld)'
                 }
                 , 'jira_jql_velocity': {
-                    'type': ['string', 'null']
+                    'type': ['string']
                     , 'description': 'JIRA JQL Query used to track story points completion '
                                      '(for example: project = WORK and status changed to Done)'
                 }
                 , 'jira_jql_remaining': {
-                    'type': ['string', 'null']
+                    'type': ['string']
                     , 'description': 'JIRA JQL Query used to determine remaining work '
                                      '(for example: sprint in openSprints() and type in (Story, Task, Defect))'
                 }
                 , 'jira_field_points': {
-                    'type': ['string', 'null']
+                    'type': ['string']
                     , 'description': 'Field used by JIRA to store Story Points'
                     , 'default': 'customfield_10002'
                 }
@@ -105,12 +105,14 @@ class Config(object):
 
     def set_config_value(self, key, value):
         """Updates a key/value pair in the config, verify it against the schema before updating config"""
-        value_init = self.config[key]
+        value_init = None
+        if self.config is not None and key in self.config:
+            value_init = self.config[key]
         config_tmp = copy.deepcopy(self.config)
         config_tmp[key] = value
         self.config = config_tmp
         self.log.info(
-            'Config.set_config_value: Updated config: ' + key + ' from: ' + value_init + ' to: ' + value)
+            'Updated config: ' + key + ' from: ' + str(value_init) + ' to: ' + str(value))
         return self.config[key]
 
     def load_config(self):
@@ -133,24 +135,43 @@ class Config(object):
 
         return self.config
 
-    # Need to re-write section below, to get defaults from schema, prompt when empty and load into config object
-
-    def get_default_config(self):
-        default_config = {
-            'history_weeks': 12
-            , 'cache_filepath': self.__config_path + 'data.jsonl'
-            , 'jira_username': None
-            , 'jira_password': None
-            , 'jira_host': None
-            , 'jira_jql_velocity': None
-            , 'jira_jql_remaining': None
-            , 'jira_field_points': 'customfield_10002'
-            , 'slack_channel': None
-            , 'slack_webhook': None
-        }
-        return default_config
-
     def init_config(self):
-        self.log.info('Config.init_config(): Unable to find config file, initializing')
-        self.config = self.get_default_config()
+        self.log.info('Unable to find config file, initializing')
+        self.log.info('Press Enter for [default], CTRL+C to exit')
+        config_schema = self.schema['properties']
+        for config_key in config_schema:
+            config_value = self.init_config_value(config_key)
+            self.set_config_value(config_key, config_value)
         self.write_config()
+
+    def init_config_value(self, config_key):
+        value_default = None
+        value_current = None
+        value_suggested = None
+        if 'default' in self.schema['properties'][config_key]:
+            value_default = self.schema['properties'][config_key]['default']
+
+        if self.config is not None and config_key in self.config:
+            value_current = self.config[config_key]
+
+        self.log.info(config_key + ' - ' + self.schema['properties'][config_key]['description'])
+        self.log.info('Current Value: ' + str(value_current) + ' Default Value: ' + str(value_default))
+        if value_current is None and value_default is not None:
+            value_suggested = value_default
+        elif value_current is not None:
+            value_suggested = value_current
+        config_value = input('[' + str(value_suggested) + ']:')
+
+        if config_value == '' and value_suggested is not None:
+            config_value = value_suggested
+        elif config_value == '' and 'null' not in self.schema['properties'][config_key]['type']:
+            self.log.warn('This value cannot be empty, please enter a value')
+            config_value = self.init_config_value(config_key)
+
+        if 'string' in self.schema['properties'][config_key]['type']:
+            config_value = str(config_value)
+        elif 'number' in self.schema['properties'][config_key]['type']:
+            config_value = int(config_value)
+
+        return config_value
+
