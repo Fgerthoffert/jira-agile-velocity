@@ -36,20 +36,8 @@ class ImportData(object):
 
     def calculate_velocity(self, issues_list):
         velocity = collections.OrderedDict()
-        velocity['points'] = 0
-        velocity['tickets'] = 0
-        for issue in issues_list['issues']:
-            try:
-                velocity['points'] = int(velocity['points'] + issue['fields']['customfield_10002'])
-            except Exception as ex:
-                # KeyError
-                template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
-                message = template.format(type(ex).__name__, ex.args)
-                self.log.info('WARNING: Ticket missing story points')
-                self.log.info(message)
-                self.log.info(json.dumps(issue))
-
-            velocity['tickets'] = velocity['tickets'] + 1
+        velocity['points'] = self.count_story_points(issues_list['issues'])
+        velocity['tickets'] = len(issues_list['issues'])
         return velocity
 
     def write_dailydata_cache(self, daily_data):
@@ -123,14 +111,13 @@ class ImportData(object):
 
         return daily_data
 
-    def get_remaining_work(self, daily_data):
-        self.log.info('ImportData.get_remaining_work(): Obtaining remaining work')
-        issues_list = self.jira.get_remaining_tickets().json()
+    def count_story_points(self, issues_list):
+        self.log.info('ImportData.count_story_points(): Counting total story points in a list of tickets')
         jira_points_field = self.config.get_config_value('jira_field_points')
-        remaining = {'points': 0}
-        for issue in issues_list['issues']:
+        points = 0
+        for issue in issues_list:
             try:
-                remaining['points'] = remaining['points'] + issue['fields'][jira_points_field]
+                points = points + issue['fields'][jira_points_field]
             except Exception as ex:
                 # KeyError
                 template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
@@ -138,7 +125,14 @@ class ImportData(object):
                 self.log.info('WARNING: Ticket missing story points')
                 self.log.info(message)
                 self.log.info(json.dumps(issue))
+        return int(points)
 
+
+    def get_remaining_work(self, daily_data):
+        self.log.info('ImportData.get_remaining_work(): Obtaining remaining work')
+        issues_list = self.jira.get_remaining_tickets().json()
+        remaining = {'points': 0}
+        remaining['points'] = self.count_story_points(issues_list['issues'])
         points = []
         for data_idx in daily_data:
             points.append(daily_data[data_idx]['points'])

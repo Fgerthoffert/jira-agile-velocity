@@ -11,8 +11,7 @@ class Time(object):
         self.log = log
         self.config = config
 
-    @staticmethod
-    def get_current_date():
+    def get_current_date(self):
         return datetime.now(pytz.timezone('America/Toronto'))
 
     def get_end_date(self):

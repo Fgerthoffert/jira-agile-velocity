@@ -10,8 +10,7 @@ class Tabulate(object):
         self.log = log
         self.config = config
 
-    @staticmethod
-    def get_trend_day(current_week_data, days_data, current_day):
+    def get_trend_day(self, current_week_data, days_data, current_day):
         if current_week_data[current_day] is None:
             return 'N/A'
         elif current_week_data[current_day] > days_data[current_day]['avg']:
@@ -24,8 +23,7 @@ class Tabulate(object):
             return 'DOWN'
             # return ':bangbang: :arrow_lower_right:'
 
-    @staticmethod
-    def get_first_value(data):
+    def get_first_value(self, data):
         for idx in data:
             return data[idx]
 
