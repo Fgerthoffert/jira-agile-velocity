@@ -61,7 +61,7 @@ class StatsDay(object):
                             same_weekday = True
                             self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day]['points'])
 
-                        if self.days[day_txt][stats_type]['all']['values'] != []:
+                        if self.days[day_txt][stats_type]['all']['values']:
                             self.days[day_txt][stats_type]['all']['avg'] = int(
                                 numpy.mean(self.days[day_txt][stats_type]['all']['values']))
                             self.days[day_txt][stats_type]['all']['min'] = min(
