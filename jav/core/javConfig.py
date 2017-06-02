@@ -70,6 +70,12 @@ class Config(object):
                     'type': ['string', 'null']
                     , 'description': 'Slack webhook (https://api.slack.com/incoming-webhooks)'
                 }
+                , 'rolling_stats': {
+                    'type': 'array'
+                    , 'description': 'Array of weeks to group stats by. For example average over the past 4 weeks, past 8 weeks etc...'
+                    , 'default': [4, 8]
+                }
+
             }
         }
 

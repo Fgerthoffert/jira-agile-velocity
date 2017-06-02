@@ -6,6 +6,7 @@ from jav.core.javTabulate import Tabulate
 from jav.core.javMsg import Msg
 from jav.core.javLogConfig import LogConfig
 from jav.core.javStatsWeek import StatsWeek
+from jav.core.javStatsDay import StatsDay
 
 
 class Run(object):
@@ -40,6 +41,9 @@ class Run(object):
 
         stats_week = StatsWeek(self.log, self.config, daily_data)
         stats_week.main()
+
+        stats_day = StatsDay(self.log, self.config, daily_data)
+        stats_day.main()
 
         current_week_data = self.crunch.get_current_week(daily_data)
         days_data = self.crunch.get_dailyavg_week(daily_data)
