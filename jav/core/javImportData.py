@@ -5,7 +5,6 @@ from datetime import timedelta
 from jav.core.javJira import Jira
 import dateutil.parser
 import copy
-import numpy
 
 
 class ImportData(object):
@@ -154,7 +153,6 @@ class ImportData(object):
 
     def count_story_points(self, issues_list):
         self.log.info('ImportData.count_story_points(): Counting total story points in a list of tickets')
-        jira_points_field = self.config.get_config_value('jira_field_points')
         points = 0
         for issue in issues_list:
             points = points + self.get_story_point(issue)
