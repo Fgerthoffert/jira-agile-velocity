@@ -44,15 +44,13 @@ class StatsWeek(object):
                     , 'weektxt': week_txt
                     , 'stats': {}
                 }
-                #self.weeks_data[week_txt]['weeklypoints_values'] = []
             self.weeks_data[week_txt]['values'].append(self.daily_data[current_day]['points'])
             self.weeks_data[week_txt]['days'] = len(self.weeks_data[week_txt]['values'])
             self.weeks_data[week_txt]['points'] = sum(self.weeks_data[week_txt]['values'])
 
-        del self.weeks_data[week_txt]['values']
-
         # Second pass, get min and max since 'beginning of time'
         for week_txt in self.weeks_data:
+            del self.weeks_data[week_txt]['values']
             week_found = False
             for scan_week in self.weeks_data:
                 if week_found is True:
@@ -61,19 +59,26 @@ class StatsWeek(object):
                             'values': []
                         }
                     self.weeks_data[week_txt]['stats']['all']['values'].append(self.weeks_data[scan_week]['points'])
-                    self.weeks_data[week_txt]['stats']['all']['avg'] = int(numpy.mean(self.weeks_data[week_txt]['stats']['all']['values']))
-                    self.weeks_data[week_txt]['stats']['all']['max'] = max(self.weeks_data[week_txt]['stats']['all']['values'])
-                    self.weeks_data[week_txt]['stats']['all']['min'] = min(self.weeks_data[week_txt]['stats']['all']['values'])
+                    self.weeks_data[week_txt]['stats']['all']['avg'] = int(
+                        numpy.mean(self.weeks_data[week_txt]['stats']['all']['values']))
+                    self.weeks_data[week_txt]['stats']['all']['max'] = max(
+                        self.weeks_data[week_txt]['stats']['all']['values'])
+                    self.weeks_data[week_txt]['stats']['all']['min'] = min(
+                        self.weeks_data[week_txt]['stats']['all']['values'])
                     for week_idx in self.config.get_config_value('rolling_stats'):
                         if week_idx == 'all' or len(self.weeks_data[week_txt]['stats']['all']['values']) <= week_idx:
                             if week_idx not in self.weeks_data[week_txt]['stats']:
                                 self.weeks_data[week_txt]['stats'][week_idx] = {
                                     'values': []
                                 }
-                            self.weeks_data[week_txt]['stats'][week_idx]['values'].append(self.weeks_data[scan_week]['points'])
-                            self.weeks_data[week_txt]['stats'][week_idx]['avg'] = int(numpy.mean(self.weeks_data[week_txt]['stats'][week_idx]['values']))
-                            self.weeks_data[week_txt]['stats'][week_idx]['max'] = max(self.weeks_data[week_txt]['stats'][week_idx]['values'])
-                            self.weeks_data[week_txt]['stats'][week_idx]['min'] = min(self.weeks_data[week_txt]['stats'][week_idx]['values'])
+                            self.weeks_data[week_txt]['stats'][week_idx]['values'].append(
+                                self.weeks_data[scan_week]['points'])
+                            self.weeks_data[week_txt]['stats'][week_idx]['avg'] = int(
+                                numpy.mean(self.weeks_data[week_txt]['stats'][week_idx]['values']))
+                            self.weeks_data[week_txt]['stats'][week_idx]['max'] = max(
+                                self.weeks_data[week_txt]['stats'][week_idx]['values'])
+                            self.weeks_data[week_txt]['stats'][week_idx]['min'] = min(
+                                self.weeks_data[week_txt]['stats'][week_idx]['values'])
 
                 if scan_week == week_txt:
                     week_found = True
@@ -83,9 +88,11 @@ class StatsWeek(object):
             os.remove(self.weekstats_filepath)
 
         for week_txt in self.weeks_data:
-            del self.weeks_data[week_txt]['stats']['all']['values']
+            if 'all' in self.weeks_data[week_txt]['stats']:
+                del self.weeks_data[week_txt]['stats']['all']['values']
             for week_idx in self.config.get_config_value('rolling_stats'):
-                del del self.weeks_data[week_txt]['stats'][week_idx]['values']
+                if week_idx in self.weeks_data[week_txt]['stats']:
+                    del self.weeks_data[week_txt]['stats'][week_idx]['values']
             week_obj = copy.deepcopy(self.weeks_data[week_txt])
             week_obj['datetime'] = self.weeks_data[week_txt]['datetime'].isoformat()
             with open(self.weekstats_filepath, 'a+') as fileToWrite:

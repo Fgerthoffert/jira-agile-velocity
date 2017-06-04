@@ -39,11 +39,8 @@ class Run(object):
         # Write back the data cache to file after clearing any existing one
         loader.write_dailydata_cache(daily_data)
 
-        stats_week = StatsWeek(self.log, self.config, daily_data)
-        stats_week.main()
-
-        stats_day = StatsDay(self.log, self.config, daily_data)
-        stats_day.main()
+        stats_week = StatsWeek(self.log, self.config, daily_data).main()
+        stats_day = StatsDay(self.log, self.config, daily_data).main()
 
         current_week_data = self.crunch.get_current_week(daily_data)
         days_data = self.crunch.get_dailyavg_week(daily_data)
