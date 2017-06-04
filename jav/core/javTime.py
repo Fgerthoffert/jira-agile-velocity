@@ -15,7 +15,7 @@ class Time(object):
     def get_current_date():
         return datetime.now(pytz.timezone('America/Toronto'))
 
-    def get_end_date(self):
+    def get_end_date_from_weeks(self):
         """Search for the oldest Monday past number of history_weeks"""
         history_weeks = self.config.get_config_value('history_weeks')
         self.log.info('Time.get_end_date(): Looking back: ' + str(history_weeks) + ' weeks')
@@ -34,4 +34,10 @@ class Time(object):
                     break
 
         self.log.info('Time.get_end_date(): End date is: ' + tentative_date.isoformat())
+
         return end_date
+
+    def get_end_date(self):
+        """Get end_date as a datetime object from configuration"""
+        return datetime.strptime(self.config.get_config_value('end_date'), "%Y-%m-%d").date()
+

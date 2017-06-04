@@ -12,7 +12,6 @@ class Setup(object):
         self.config = Config(self.log)
         self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'setup.log')
 
-
     def main(self):
         self.log.info('Initiating App Setup')
         self.config.init_config()

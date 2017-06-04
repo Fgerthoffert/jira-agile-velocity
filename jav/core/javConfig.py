@@ -29,6 +29,11 @@ class Config(object):
                     , 'description': 'Number of weeks of history, from current date to collect data from'
                     , 'default': 12
                 }
+                , 'end_date': {
+                    'type': ['string']
+                    , 'description': 'Earliest date to collect data from'
+                    , 'default': '2017-01-01'
+                }
                 , 'cache_filepath': {
                     'type': ['string']
                     , 'description': 'Path of the cache file'

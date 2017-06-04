@@ -7,6 +7,7 @@ from jav.core.javMsg import Msg
 from jav.core.javLogConfig import LogConfig
 from jav.core.javStatsWeek import StatsWeek
 from jav.core.javStatsDay import StatsDay
+from jav.core.javStatsRemaining import StatsRemaining
 
 
 class Run(object):
@@ -24,7 +25,6 @@ class Run(object):
         self.msg = Msg(self.log, self.config, self.dry_run)
         self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'run.log')
 
-
     def main(self):
         date_start = self.time.get_current_date()
         date_end = self.time.get_end_date()
@@ -39,15 +39,21 @@ class Run(object):
         # Write back the data cache to file after clearing any existing one
         loader.write_dailydata_cache(daily_data)
 
-        stats_week = StatsWeek(self.log, self.config, daily_data).main()
-        stats_day = StatsDay(self.log, self.config, daily_data).main()
+        # Call Jira to get Remaining work
+        remaining_work = loader.get_remaining_work()
 
-        current_week_data = self.crunch.get_current_week(daily_data)
-        days_data = self.crunch.get_dailyavg_week(daily_data)
-        weeks_data = self.crunch.get_weekly_data(daily_data)
-        remaining_work = loader.get_remaining_work(daily_data)
+        # Calculate stats based on Jira Data
+        stats_weeks = StatsWeek(self.log, self.config, daily_data).main()
+        stats_days = StatsDay(self.log, self.config, daily_data).main()
+        stats_remaining = StatsRemaining(self.log, self.config, self.time, stats_weeks, remaining_work).main()
 
-        tabulate_days = self.tabulate.generate_days(current_week_data, days_data, weeks_data)
-        tabulate_weeks = self.tabulate.generate_weeks(current_week_data, weeks_data)
-        tabulate_remaining = self.tabulate.generate_remaining(remaining_work, current_week_data, weeks_data)
-        self.msg.publish(remaining_work, tabulate_remaining, tabulate_days, tabulate_weeks)
+        # {'points': 104, 'days_to_completion': {'all': 12.7, 4: 14.4, 8: 12.1, 12: 11.1, 'current': 8.5}}
+
+        # current_week_data = self.crunch.get_current_week(daily_data)
+        # days_data = self.crunch.get_dailyavg_week(daily_data)
+        # weeks_data = self.crunch.get_weekly_data(daily_data)
+
+        # tabulate_days = self.tabulate.generate_days(current_week_data, days_data, weeks_data)
+        # tabulate_weeks = self.tabulate.generate_weeks(current_week_data, weeks_data)
+        # tabulate_remaining = self.tabulate.generate_remaining(remaining_work, current_week_data, weeks_data)
+        # self.msg.publish(remaining_work, tabulate_remaining, tabulate_days, tabulate_weeks)

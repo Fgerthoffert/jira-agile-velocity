@@ -14,9 +14,11 @@ def get_trend_day(current_week_data, days_data, current_day):
         return 'DOWN'
         # return ':bangbang: :arrow_lower_right:'
 
+
 def get_first_value(data):
     for idx in data:
         return data[idx]
+
 
 class Tabulate(object):
     """
@@ -98,11 +100,11 @@ class Tabulate(object):
                 , remaining_work['average_daily_points']
                 , get_first_value(weeks_data)['avg']
                 , current_week_data['average']
-            ]
+             ]
             , ['Days to Completion'
                 , remaining_work['effort_days']
                 , round(remaining_work['points'] / get_first_value(weeks_data)['avg'], 1)
                 , round(remaining_work['points'] / current_week_data['average'], 1)
-            ]
+               ]
         ]
         return tabulate.tabulate(tab_content, headers=tab_headers, tablefmt='fancy_grid')

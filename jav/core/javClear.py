@@ -2,6 +2,7 @@ from jav.core.javConfig import Config
 from jav.core.javLogConfig import LogConfig
 import os
 
+
 class Clear(object):
     """
         Classe used to clear previously processed data
@@ -17,4 +18,3 @@ class Clear(object):
         if os.path.isfile(self.config.get_config_value('cache_filepath')):
             os.remove(self.config.get_config_value('cache_filepath'))
             self.log.info(self.config.get_config_value('cache_filepath') + ' Removed')
-

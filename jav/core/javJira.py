@@ -14,8 +14,8 @@ class Jira(object):
         self.log.info(
             'Jira.get_completed_tickets(): Getting completed tickets from Jira for date: ' + date_current.strftime(
                 "%Y-%m-%d"))
-        return self.call(self.config.get_config_value('jira_jql_velocity') + ' during(\"' + date_current.strftime(
-            "%Y-%m-%d") + '\", \"' + date_current.strftime("%Y-%m-%d") + '\")')
+        return self.call(self.config.get_config_value('jira_jql_velocity') + ' ON(\"' + date_current.strftime(
+            "%Y-%m-%d") + '\")')
 
     def get_remaining_tickets(self):
         self.log.info('Jira.get_remaining_tickets(): Getting remaining work tickets from Jira')
@@ -42,4 +42,3 @@ class Jira(object):
             self.log.error('Jira.call(): Unable to communicate with remote JIRA server, exiting... ')
             self.log.error(message)
             exit()
-
