@@ -8,3 +8,5 @@ python-dateutil
 pytz
 numpy
 jsonschema
+bokeh
+pandas

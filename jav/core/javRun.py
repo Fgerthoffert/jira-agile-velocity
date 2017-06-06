@@ -8,6 +8,7 @@ from jav.core.javLogConfig import LogConfig
 from jav.core.javStatsWeek import StatsWeek
 from jav.core.javStatsDay import StatsDay
 from jav.core.javStatsRemaining import StatsRemaining
+from jav.core.javBuildChart import BuildChart
 
 
 class Run(object):
@@ -46,6 +47,9 @@ class Run(object):
         stats_weeks = StatsWeek(self.log, self.config, daily_data).main()
         stats_days = StatsDay(self.log, self.config, daily_data).main()
         stats_remaining = StatsRemaining(self.log, self.config, self.time, stats_weeks, remaining_work).main()
+
+        #build_graph = BuildChart(self.log, self.config, stats_days).main()
+
 
         # {'points': 104, 'days_to_completion': {'all': 12.7, 4: 14.4, 8: 12.1, 12: 11.1, 'current': 8.5}}
 

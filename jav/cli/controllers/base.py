@@ -5,6 +5,7 @@ from cement.ext.ext_argparse import ArgparseController, expose
 from jav.core.javRun import Run
 from jav.core.javSetup import Setup
 from jav.core.javClear import Clear
+from jav.core.javChart import Chart
 
 class javBaseController(ArgparseController):
     class Meta:
@@ -31,3 +32,8 @@ class javBaseController(ArgparseController):
     def clear(self):
         clear = Clear(self.app.log, self.app.config)
         clear.main()
+
+    @expose(help='Create charts from cached data')
+    def chart(self):
+        chart = Chart(self.app.log, self.app.config)
+        chart.main()

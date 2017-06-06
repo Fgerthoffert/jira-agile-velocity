@@ -22,6 +22,10 @@ class StatsRemaining(object):
     def daystats_filepath(self):
         return self.__remainingstats_filepath
 
+    @property
+    def remaining_work(self):
+        return self.__remaining_work
+
     def load_stat_file(self):
         self.log.info('StatsRemaining.load_stat_file(): Loading stats from file: ' + self.daystats_filepath)
         daily_data = collections.OrderedDict()
@@ -51,9 +55,13 @@ class StatsRemaining(object):
 
         date_current = self.time.get_current_date()
 
+        print (self.remaining_work)
+
         remaining = {
-            'points': self.__remaining_work['points']
+            'points': self.remaining_work['points']
             , 'datetime': date_current
+            , 'types': self.remaining_work['types']
+            , 'assignees': self.remaining_work['assignees']
             , 'days_to_completion': {}
         }
         self.log.info('Remaining number of story points: ' + str(remaining['points']))
