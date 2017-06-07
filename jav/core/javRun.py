@@ -32,7 +32,7 @@ class Run(object):
 
         loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
-        previous_data = loader.load_dailydata_cache()
+        previous_data = loader.load_data_completion()
         # Refresh the cache by checking if additional days can be added
         daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
         # Write back the data cache to file after clearing any existing one

@@ -5,7 +5,7 @@ from datetime import timedelta
 from jav.core.javJira import Jira
 import dateutil.parser
 import copy
-
+from jav.core.javFiles import Files
 
 class ImportData(object):
     """ This class is used to obtain data used for processing
@@ -23,21 +23,15 @@ class ImportData(object):
         self.config = config
         self.jira = Jira(self.log, self.config)
 
-        self.__cache_filepath = self.config.config_path + self.config.filename_cache_completion
+    #def write_json(self, stats):
+    #    with open(self.config.config_path + self.config.filename_data_remaining, 'a+') as fileToWrite:
+    #        fileToWrite.write(json.dumps(stats) + '\n')
 
-    @property
-    def cache_filepath(self):
-        return self.__cache_filepath
-
-    def write_json(self, stats):
-        with open(self.cache_filepath, 'a+') as fileToWrite:
-            fileToWrite.write(json.dumps(stats) + '\n')
-
-    def create_json(self, filepath, json_content):
-        self.log.info('ImportData.crate_json(): Create a JSON file: ' + filepath)
-        with open(filepath, "w") as json_file:
-            json_file.write(json.dumps(json_content))
-        return True
+    # def create_json(self, filepath, json_content):
+    #     self.log.info('ImportData.crate_json(): Create a JSON file: ' + filepath)
+    #     with open(filepath, "w") as json_file:
+    #         json_file.write(json.dumps(json_content))
+    #     return True
 
     def calculate_velocity(self, issues_list):
         velocity = collections.OrderedDict()
@@ -47,32 +41,47 @@ class ImportData(object):
 
     def write_dailydata_cache(self, daily_data):
         """Write an ordered dict into a JSONL file"""
-        self.log.info('ImportData.write_dailydata_cache(): Write back daily data cache to file: ' + self.cache_filepath)
+        self.log.info('ImportData.write_dailydata_cache(): Write back daily data cache to file: ' + self.config.config_path + self.config.filename_data_completion)
 
-        if os.path.isfile(self.cache_filepath):
-            os.remove(self.cache_filepath)
+        if os.path.isfile(self.config.config_path + self.config.filename_data_completion):
+            os.remove(self.config.config_path + self.config.filename_data_completion)
 
         for currentdata in daily_data:
             daily_obj = copy.deepcopy(daily_data[currentdata])
             daily_obj['datetime'] = daily_data[currentdata]['datetime'].isoformat()
-            self.write_json(daily_obj)
+            Files(self.log).jsonl_append(self.config.config_path + self.config.filename_data_completion, daily_obj)
 
-    def load_dailydata_cache(self):
+    def load_data_remaining(self):
+        """
+        Load data from the cache into an object.
+
+        :return: An Object containing daily results
+        """
+        self.log.info('ImportData.load_data_remaining(): Loading data from cache file: ' + self.config.config_path + self.config.filename_data_remaining)
+        data_remaining = Files(self.log).json_load(self.config.config_path + self.config.filename_data_remaining)
+        if data_remaining is None:
+            self.log.info('ImportData.load_data_remaining(): Nothing to load, cache file does not exist')
+        self.log.debug(data_remaining)
+        return data_remaining
+
+    def load_data_completion(self):
         """
         Load data from the cache into an ordered dict.
 
         :return: An OrderedDict containing daily results
         """
-        self.log.info('ImportData.load_dailydata_cache(): Loading data from cache file: ' + self.cache_filepath)
-        daily_data = collections.OrderedDict()
-        if os.path.isfile(self.cache_filepath):
-            for line in open(self.cache_filepath).readlines():
-                current_stats_line = json.loads(line)
-                current_stats_line['datetime'] = dateutil.parser.parse(current_stats_line['datetime'])
-                dict_idx = current_stats_line['datetime'].strftime('%Y%m%d')
-                daily_data[dict_idx] = current_stats_line
-        else:
-            self.log.info('ImportData.load_dailydata_cache(): Nothing to load, cache file does not exist')
+        self.log.info('ImportData.load_data_completion(): Loading data from cache file: ' + self.config.config_path + self.config.filename_data_completion)
+        daily_data = Files(self.log).jsonl_load(self.config.config_path + self.config.filename_data_completion)
+
+        # daily_data = collections.OrderedDict()
+        # if os.path.isfile(self.config.config_path + self.config.filename_data_completion):
+        #     for line in open(self.config.config_path + self.config.filename_data_completion).readlines():
+        #         current_stats_line = json.loads(line)
+        #         current_stats_line['datetime'] = dateutil.parser.parse(current_stats_line['datetime'])
+        #         dict_idx = current_stats_line['datetime'].strftime('%Y%m%d')
+        #         daily_data[dict_idx] = current_stats_line
+        # else:
+        #     self.log.info('ImportData.load_data_completion(): Nothing to load, cache file does not exist')
 
         self.log.debug(daily_data)
         return daily_data
@@ -175,6 +184,6 @@ class ImportData(object):
             , 'assignees': self.assignee_count(issues_list['issues'])
         }
 
-        self.create_json(self.config.config_path + self.config.filename_cache_remaining, remaining)
+        Files(self.log).json_write(self.config.config_path + self.config.filename_data_remaining, remaining)
 
         return remaining

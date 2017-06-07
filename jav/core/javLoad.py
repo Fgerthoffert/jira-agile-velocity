@@ -18,7 +18,7 @@ class Load(object):
         self.time = Time(self.log, self.config)
         self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'load.log')
 
-    def refresh_jira(self):
+    def refresh_jira_cache(self):
         self.log.info('Load updated data from Jira into Cache')
 
         date_start = self.time.get_current_date()
@@ -28,7 +28,7 @@ class Load(object):
 
         loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
-        previous_data = loader.load_dailydata_cache()
+        previous_data = loader.load_data_completion()
         # Refresh the cache by checking if additional days can be added
         daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
         # Write back the data cache to file after clearing any existing one
@@ -39,21 +39,14 @@ class Load(object):
 
         return daily_data, remaining_work
 
-    def load_stats_file(self, filepath):
-        stats_days = collections.OrderedDict()
+    def load_jira_cache(self):
+        self.log.info('Load daily data and remaining work from cache')
+        loader = ImportData(self.log, self.config)
+        # Import existing data (if any) into a Python object
+        daily_data = loader.load_data_completion()
+        remaining_work = loader.load_data_remaining()
 
-        for line in open(filepath).readlines():
-            try:
-                currentCaptureLine = json.loads(line)
-                currentCaptureLine['datetime'] = dateutil.parser.parse(currentCaptureLine['datetime'])
-                dict_idx = currentCaptureLine['datetime'].strftime('%Y%m%d')
-                stats_days[dict_idx] = currentCaptureLine
-                self.log.info('Loaded from: ' + filepath + ' stats for: ' + currentCaptureLine['datetime'].strftime('%Y-%m-%d'))
-            except Exception as ex:
-                # KeyError
-                template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
-                message = template.format(type(ex).__name__, ex.args)
-                self.log.info('WARNING: Unable to decode json line:' + line)
-                self.log.info(message)
 
-        return stats_days
+
+        return daily_data, remaining_work
+

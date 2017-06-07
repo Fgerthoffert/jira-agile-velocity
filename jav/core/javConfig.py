@@ -16,12 +16,12 @@ class Config(object):
         self.__config_path = expanduser('~') + '/.jav/'
         self.__config_filename = 'config.yml'
         self.__config_filepath = self.__config_path + self.__config_filename
-        self.__config_filename_cache_completion = 'data_completion.jsonl'
-        self.__filename_cache_completion = 'data_completion.jsonl'
-        self.__filename_cache_remaining = 'data_remaining.json'
-        self.__filename_stats_days = 'data_remaining.json'
-        self.__filename_stats_weeks = 'data_remaining.json'
-        self.__filename_stats_remaining = 'data_remaining.json'
+
+        self.__filename_data_completion = 'data_completion.jsonl'
+        self.__filename_data_remaining = 'data_remaining.json'
+        self.__filename_stats_days = 'stats_days.jsonl'
+        self.__filename_stats_weeks = 'stats_weeks.jsonl'
+        self.__filename_stats_remaining = 'stats_remaining.jsonl'
 
         # config_init is used to record if the init method was once called
         self.__config_init = False
@@ -102,12 +102,12 @@ class Config(object):
         return self.__config_init
 
     @property
-    def filename_cache_completion(self):
-        return self.__filename_cache_completion
+    def filename_data_completion(self):
+        return self.__filename_data_completion
 
     @property
-    def filename_cache_remaining(self):
-        return self.__filename_cache_remaining
+    def filename_data_remaining(self):
+        return self.__filename_data_remaining
 
     @property
     def filename_stats_days(self):

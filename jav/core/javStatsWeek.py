@@ -3,7 +3,7 @@ import numpy
 import json
 import os
 import copy
-
+from javFiles import Files
 
 class StatsWeek(object):
     """
@@ -95,7 +95,9 @@ class StatsWeek(object):
                     del self.weeks_data[week_txt]['stats'][week_idx]['values']
             week_obj = copy.deepcopy(self.weeks_data[week_txt])
             week_obj['datetime'] = self.weeks_data[week_txt]['datetime'].isoformat()
-            with open(self.weekstats_filepath, 'a+') as fileToWrite:
-                fileToWrite.write(json.dumps(week_obj) + '\n')
+
+            Files(self.log).jsonl_append(self.weekstats_filepath, week_obj)
+            # with open(self.weekstats_filepath, 'a+') as fileToWrite:
+            #     fileToWrite.write(json.dumps(week_obj) + '\n')
 
         return self.weeks_data

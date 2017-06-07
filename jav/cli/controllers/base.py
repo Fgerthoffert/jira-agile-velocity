@@ -23,26 +23,23 @@ class javBaseController(ArgparseController):
             )
         ]
 
-    @expose(help='Get data, crunch numbers, do stuff')
-    def run(self):
-
-        run = Run(self.app.log, self.app.pargs.dry_run, self.app.config)
-        run.main()
+    @expose(help='Clear previous data (USE WITH CAUTION)')
+    def clear(self):
+        clear = Clear(self.app.log, self.app.config)
+        clear.main()
 
     @expose(help='Enter setup mode and provide configuration parameters (jira creds, slack details)')
     def setup(self):
         setup = Setup(self.app.log, self.app.config)
         setup.main()
 
-    @expose(help='Clear previous data (USE WITH CAUTION)')
-    def clear(self):
-        clear = Clear(self.app.log, self.app.config)
-        clear.main()
+    @expose(help='Load latest data from Jira into cache')
+    def load(self):
+        self.config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, self.config.config_path + 'load.log')
 
-    @expose(help='Create charts from cached data')
-    def chart(self):
-        chart = Chart(self.app.log, self.app.config)
-        chart.main()
+        load = Load(self.app.log, self.app.config)
+        load.refresh_jira_cache()
 
     @expose(help='Obtain updated data from Jira and crunch numbers')
     def crunch(self):
@@ -51,16 +48,40 @@ class javBaseController(ArgparseController):
 
         # Loading saved files into memory to be used by the component crunching numbers
         load = Load(self.app.log, self.app.config)
-        daily_data = load.load_stats_file(self.config.get_config_value('cache_filepath'))
-        remaining_work = load.load_stats_file(self.config.get_config_value('stats_remaining'))
+        daily_data, remaining_work = load.load_jira_cache()
 
+        crunch = Crunch(self.app.log, self.config)
+        crunch.crunch_stats(daily_data, remaining_work)
+
+    @expose(help='Create charts from cached data')
+    def chart(self):
+        self.config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, self.config.config_path + 'chart.log')
+
+        chart = Chart(self.app.log, self.app.config)
+        chart.main()
+
+    @expose(help='Get data, crunch numbers, do stuff')
+    def run(self):
+        self.config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, self.config.config_path + 'run.log')
+
+        # Load data from Jira
+        load = Load(self.app.log, self.app.config)
+        daily_data, remaining_work = load.refresh_jira_cache()
+
+        # Crunch numbers
         crunch = Crunch(self.app.log, self.config)
         crunch.main(daily_data, remaining_work)
 
-    @expose(help='Load latest data from Jira into cache')
-    def load(self):
-        self.config = Config(self.app.log)
-        LogConfig(self.app.log, self.app.config, self.config.config_path + 'load.log')
+        #run = Run(self.app.log, self.app.pargs.dry_run, self.app.config)
+        #run.main()
 
-        load = Load(self.app.log, self.app.config)
-        load.refresh_jira()
+
+
+
+
+
+
+
+

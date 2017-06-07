@@ -15,6 +15,6 @@ class Clear(object):
 
     def main(self):
         self.log.info('Clearing previously downloaded/processed data')
-        if os.path.isfile(self.config.config_path + self.config.filename_cache_completion):
-            os.remove(self.config.config_path + self.config.filename_cache_completion)
-            self.log.info(self.config.config_path + self.config.filename_cache_completion + ' Removed')
+        if os.path.isfile(self.config.config_path + self.config.filename_data_completion):
+            os.remove(self.config.config_path + self.config.filename_data_completion)
+            self.log.info(self.config.config_path + self.config.filename_data_completion + ' Removed')

@@ -16,13 +16,19 @@ class Crunch(object):
         self.time = Time(self.log, self.config)
 
 
-    def main(self, daily_data = None, remaining_work = None):
-        self.log.info('Refreshing data form Jira')
+    def crunch_stats(self, daily_data, remaining_work):
+        self.log.info('Crunching statistics')
 
         # Calculate stats based on Jira Data
         stats_weeks = StatsWeek(self.log, self.config, daily_data).main()
         stats_days = StatsDay(self.log, self.config, daily_data).main()
         stats_remaining = StatsRemaining(self.log, self.config, self.time, stats_weeks, remaining_work).main()
+
+        return stats_days, stats_weeks, stats_remaining
+
+    def load_stats_cache(self):
+        self.log.info('Loading previously calculated stats from cache')
+
 
     #
     # def __init__(self, log, config, time):
