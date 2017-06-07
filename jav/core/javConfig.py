@@ -31,12 +31,7 @@ class Config(object):
             , 'type': 'object'
             , 'additionalProperties': False
             , 'properties': {
-                'history_weeks': {
-                    'type': ['number']
-                    , 'description': 'Number of weeks of history, from current date to collect data from'
-                    , 'default': 12
-                }
-                , 'end_date': {
+                'end_date': {
                     'type': ['string']
                     , 'description': 'Earliest date to collect data from'
                     , 'default': '2017-01-01'
@@ -197,7 +192,8 @@ class Config(object):
             value_suggested = value_default
         elif value_current is not None:
             value_suggested = value_current
-        config_value = input('[' + str(value_suggested) + ']:')
+
+        config_value = raw_input('[' + str(value_suggested) + ']:')
 
         if config_value == '' and value_suggested is not None:
             config_value = value_suggested
