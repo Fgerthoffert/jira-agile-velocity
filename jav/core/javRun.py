@@ -1,7 +1,6 @@
 from jav.core.javConfig import Config
 from jav.core.javImportData import ImportData
 from jav.core.javTime import Time
-from jav.core.javCrunch import Crunch
 from jav.core.javTabulate import Tabulate
 from jav.core.javMsg import Msg
 from jav.core.javLogConfig import LogConfig
@@ -21,7 +20,6 @@ class Run(object):
         self.dry_run = dry_run
         self.config = Config(self.log)
         self.time = Time(self.log, self.config)
-        self.crunch = Crunch(self.log, self.config, self.time)
         self.tabulate = Tabulate(self.log, self.config)
         self.msg = Msg(self.log, self.config, self.dry_run)
         self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'run.log')

@@ -6,8 +6,13 @@ from jav.core.javRun import Run
 from jav.core.javSetup import Setup
 from jav.core.javClear import Clear
 from jav.core.javChart import Chart
+from jav.core.javCrunch import Crunch
+from jav.core.javLoad import Load
+from jav.core.javConfig import Config
+from jav.core.javLogConfig import LogConfig
 
 class javBaseController(ArgparseController):
+
     class Meta:
         label = 'base'
         description = 'Connect to Jira REST API to collect completed story points, calculate weekly velocity, and estimate completion date'
@@ -20,6 +25,7 @@ class javBaseController(ArgparseController):
 
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
+
         run = Run(self.app.log, self.app.pargs.dry_run, self.app.config)
         run.main()
 
@@ -37,3 +43,24 @@ class javBaseController(ArgparseController):
     def chart(self):
         chart = Chart(self.app.log, self.app.config)
         chart.main()
+
+    @expose(help='Obtain updated data from Jira and crunch numbers')
+    def crunch(self):
+        self.config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, self.config.config_path + 'crunch.log')
+
+        # Loading saved files into memory to be used by the component crunching numbers
+        load = Load(self.app.log, self.app.config)
+        daily_data = load.load_stats_file(self.config.get_config_value('cache_filepath'))
+        remaining_work = load.load_stats_file(self.config.get_config_value('stats_remaining'))
+
+        crunch = Crunch(self.app.log, self.config)
+        crunch.main(daily_data, remaining_work)
+
+    @expose(help='Load latest data from Jira into cache')
+    def load(self):
+        self.config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, self.config.config_path + 'load.log')
+
+        load = Load(self.app.log, self.app.config)
+        load.refresh_jira()

@@ -16,6 +16,13 @@ class Config(object):
         self.__config_path = expanduser('~') + '/.jav/'
         self.__config_filename = 'config.yml'
         self.__config_filepath = self.__config_path + self.__config_filename
+        self.__config_filename_cache_completion = 'data_completion.jsonl'
+        self.__filename_cache_completion = 'data_completion.jsonl'
+        self.__filename_cache_remaining = 'data_remaining.json'
+        self.__filename_stats_days = 'data_remaining.json'
+        self.__filename_stats_weeks = 'data_remaining.json'
+        self.__filename_stats_remaining = 'data_remaining.json'
+
         self.__config = {}
         self.__schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#'
@@ -33,11 +40,6 @@ class Config(object):
                     'type': ['string']
                     , 'description': 'Earliest date to collect data from'
                     , 'default': '2017-01-01'
-                }
-                , 'cache_filepath': {
-                    'type': ['string']
-                    , 'description': 'Path of the cache file'
-                    , 'default': self.__config_path + 'data.jsonl'
                 }
                 , 'jira_username': {
                     'type': ['string']
@@ -96,6 +98,26 @@ class Config(object):
     @property
     def config(self):
         return self.__config
+
+    @property
+    def filename_cache_completion(self):
+        return self.__filename_cache_completion
+
+    @property
+    def filename_cache_remaining(self):
+        return self.__filename_cache_remaining
+
+    @property
+    def filename_stats_days(self):
+        return self.__filename_stats_days
+
+    @property
+    def filename_stats_weeks(self):
+        return self.__filename_stats_weeks
+
+    @property
+    def filename_stats_remaining(self):
+        return self.__filename_stats_remaining
 
     @config.setter
     def config(self, config_obj):

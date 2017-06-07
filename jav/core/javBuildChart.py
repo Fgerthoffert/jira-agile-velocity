@@ -133,7 +133,7 @@ class BuildChart(object):
             plot_data
             , values='points'
             , label='assignee'
-            , title='Remaining points per Assignee (Total: ' + str(total_points) + ')'
+            , title='Remaining points per Jira Assignee (Total: ' + str(total_points) + ')'
             , tools='save,pan,box_zoom,reset'
             , legend=None
             , color='blue'

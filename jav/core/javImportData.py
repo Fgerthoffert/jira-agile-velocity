@@ -23,7 +23,7 @@ class ImportData(object):
         self.config = config
         self.jira = Jira(self.log, self.config)
 
-        self.__cache_filepath = self.config.get_config_value('cache_filepath')
+        self.__cache_filepath = self.config.config_path + self.config.filename_cache_completion
 
     @property
     def cache_filepath(self):
@@ -32,6 +32,12 @@ class ImportData(object):
     def write_json(self, stats):
         with open(self.cache_filepath, 'a+') as fileToWrite:
             fileToWrite.write(json.dumps(stats) + '\n')
+
+    def create_json(self, filepath, json_content):
+        self.log.info('ImportData.crate_json(): Create a JSON file: ' + filepath)
+        with open(filepath, "w") as json_file:
+            json_file.write(json.dumps(json_content))
+        return True
 
     def calculate_velocity(self, issues_list):
         velocity = collections.OrderedDict()
@@ -168,5 +174,7 @@ class ImportData(object):
             , 'types': self.story_types_count(issues_list['issues'])
             , 'assignees': self.assignee_count(issues_list['issues'])
         }
+
+        self.create_json(self.config.config_path + self.config.filename_cache_remaining, remaining)
 
         return remaining
