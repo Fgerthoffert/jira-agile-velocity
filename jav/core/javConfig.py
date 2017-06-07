@@ -23,6 +23,9 @@ class Config(object):
         self.__filename_stats_weeks = 'data_remaining.json'
         self.__filename_stats_remaining = 'data_remaining.json'
 
+        # config_init is used to record if the init method was once called
+        self.__config_init = False
+
         self.__config = {}
         self.__schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#'
@@ -82,7 +85,7 @@ class Config(object):
         }
 
         if os.path.isdir(self.__config_path) is False or os.path.isfile(self.__config_filepath) is False:
-            self.init_config()
+            self.__config_init = self.init_config()
         elif os.path.isfile(self.__config_filepath):
             self.load_config()
 
@@ -93,6 +96,10 @@ class Config(object):
     @property
     def config(self):
         return self.__config
+
+    @property
+    def config_init(self):
+        return self.__config_init
 
     @property
     def filename_cache_completion(self):
@@ -171,10 +178,11 @@ class Config(object):
         self.log.info('Unable to find config file, initializing')
         self.log.info('Press Enter for [default], CTRL+C to exit')
         config_schema = self.schema['properties']
-        for config_key in config_schema:
+        for config_key in sorted(config_schema):
             config_value = self.init_config_value(config_key)
             self.set_config_value(config_key, config_value)
         self.write_config()
+        return True
 
     def init_config_value(self, config_key):
         value_default = None

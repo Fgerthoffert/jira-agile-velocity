@@ -14,4 +14,8 @@ class Setup(object):
 
     def main(self):
         self.log.info('Initiating App Setup')
-        self.config.init_config()
+
+        # If conf init was called when Config class was initialized, then we don't call it again
+        # This would happen if setup is called before a config file was created
+        if self.config.config_init is False:
+            self.config.init_config()
