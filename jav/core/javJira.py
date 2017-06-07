@@ -10,16 +10,30 @@ class Jira(object):
         self.log = log
         self.config = config
 
+    def test_jira_result(self, jira_query, jira_result):
+        if 'issues' not in jira_result:
+            self.log.error('Your query appears to be incorrect')
+            self.log.error(jira_query)
+            self.log.error(jira_result)
+            exit()
+        else:
+            return True
+
     def get_completed_tickets(self, date_current):
         self.log.info(
             'Jira.get_completed_tickets(): Getting completed tickets from Jira for date: ' + date_current.strftime(
                 "%Y-%m-%d"))
-        return self.call(self.config.get_config_value('jira_jql_velocity') + ' ON(\"' + date_current.strftime(
-            "%Y-%m-%d") + '\")')
+        jira_query = self.config.get_config_value('jira_jql_velocity') + ' ON(\"' + date_current.strftime(
+            "%Y-%m-%d") + '\")'
+        result = self.call(jira_query)
+        if self.test_jira_result(jira_query, result):
+            return result
 
     def get_remaining_tickets(self):
         self.log.info('Jira.get_remaining_tickets(): Getting remaining work tickets from Jira')
-        return self.call(self.config.get_config_value('jira_jql_remaining'))
+        result = self.call(self.config.get_config_value('jira_jql_remaining'))
+        if self.test_jira_result(self.config.get_config_value('jira_jql_remaining'), result):
+            return result
 
     def call(self, jql_query):
         headers = {
