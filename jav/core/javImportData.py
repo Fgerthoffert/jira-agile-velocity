@@ -102,7 +102,7 @@ class ImportData(object):
                 if date_current.strftime('%A') != 'Sunday' and date_current.strftime('%A') != 'Saturday':
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Obtaining daily data')
-                    issues_list = self.jira.get_completed_tickets(date_current).json()
+                    issues_list = self.jira.get_completed_tickets(date_current)
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Calculating stats')
                     daily_obj = {
@@ -166,7 +166,7 @@ class ImportData(object):
 
     def get_remaining_work(self):
         self.log.info('ImportData.get_remaining_work(): Obtaining remaining work')
-        issues_list = self.jira.get_remaining_tickets().json()
+        issues_list = self.jira.get_remaining_tickets()
 
         remaining = {
             'points': self.count_story_points(issues_list['issues'])
