@@ -1,8 +1,6 @@
 import collections
 import os
 import copy
-import json
-import dateutil
 from jav.core.javFiles import Files
 
 class StatsRemaining(object):

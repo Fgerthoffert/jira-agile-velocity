@@ -105,10 +105,6 @@ class Config(object):
         return self.__schema
 
     @property
-    def config(self):
-        return self.__config
-
-    @property
     def config_init(self):
         return self.__config_init
 
@@ -131,6 +127,10 @@ class Config(object):
     @property
     def filepath_stats_remaining(self):
         return self.__filepath_stats_remaining
+
+    @property
+    def config(self):
+        return self.__config
 
     @config.setter
     def config(self, config_obj):

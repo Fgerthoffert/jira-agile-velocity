@@ -47,3 +47,10 @@ class Files(object):
         with open(filepath, 'a+') as file_to_write:
             file_to_write.write(json.dumps(content) + '\n')
 
+    @staticmethod
+    def prep_path(path):
+        if path[-1] != '/':
+            path = path + '/'
+        if not os.path.isdir(path):
+            os.makedirs(path, exist_ok=True)
+        return path

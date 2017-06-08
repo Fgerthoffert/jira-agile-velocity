@@ -9,6 +9,7 @@ from jav.core.javLoad import Load
 from jav.core.javConfig import Config
 from jav.core.javLogConfig import LogConfig
 from jav.core.javBuildChart import BuildChart
+from jav.core.javPublishGithubPage import PublishGithubPage
 
 
 class javBaseController(ArgparseController):
@@ -68,6 +69,14 @@ class javBaseController(ArgparseController):
 
         #Build charts
         BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
+
+    @expose(help='Publish charts to github pages')
+    def publish(self):
+        config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'publish.log')
+
+        PublishGithubPage(self.app.log, config).main()
+
 
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
