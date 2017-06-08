@@ -11,17 +11,18 @@ class Config(object):
         Class in charge to configuration management
     """
 
-    def __init__(self, log):
+    def __init__(self, log, config_path = expanduser('~') + '/.jav/'):
         self.log = log
-        self.__config_path = expanduser('~') + '/.jav/'
+        self.__config_path = self.prep_config_path(config_path)
         self.__config_filename = 'config.yml'
         self.__config_filepath = self.__config_path + self.__config_filename
 
-        self.__filename_data_completion = 'data_completion.jsonl'
-        self.__filename_data_remaining = 'data_remaining.json'
-        self.__filename_stats_days = 'stats_days.jsonl'
-        self.__filename_stats_weeks = 'stats_weeks.jsonl'
-        self.__filename_stats_remaining = 'stats_remaining.jsonl'
+        self.__filepath_data_completion = self.__config_path + 'data_completion.jsonl'
+        self.__filepath_data_remaining = self.__config_path + 'data_remaining.json'
+
+        self.__filepath_stats_days = self.__config_path + 'stats_days.jsonl'
+        self.__filepath_stats_weeks = self.__config_path + 'stats_weeks.jsonl'
+        self.__filepath_stats_remaining = self.__config_path + 'stats_remaining.jsonl'
 
         # config_init is used to record if the init method was once called
         self.__config_init = False
@@ -102,24 +103,24 @@ class Config(object):
         return self.__config_init
 
     @property
-    def filename_data_completion(self):
-        return self.__filename_data_completion
+    def filepath_data_completion(self):
+        return self.__filepath_data_completion
 
     @property
-    def filename_data_remaining(self):
-        return self.__filename_data_remaining
+    def filepath_data_remaining(self):
+        return self.__filepath_data_remaining
 
     @property
-    def filename_stats_days(self):
-        return self.__filename_stats_days
+    def filepath_stats_days(self):
+        return self.__filepath_stats_days
 
     @property
-    def filename_stats_weeks(self):
-        return self.__filename_stats_weeks
+    def filepath_stats_weeks(self):
+        return self.__filepath_stats_weeks
 
     @property
-    def filename_stats_remaining(self):
-        return self.__filename_stats_remaining
+    def filepath_stats_remaining(self):
+        return self.__filepath_stats_remaining
 
     @config.setter
     def config(self, config_obj):
@@ -141,6 +142,15 @@ class Config(object):
 
     def get_config_value(self, key):
         return self.config[key]
+
+    def prep_config_path(self, config_path):
+        if config_path is None:
+            config_path = expanduser('~') + '/.jav/'
+        elif config_path[-1] != '/':
+            config_path = config_path + '/'
+        if not os.path.isdir(config_path):
+            os.makedirs(config_path, exist_ok=True)
+        return config_path
 
     def set_config_value(self, key, value):
         """Updates a key/value pair in the config, verify it against the schema before updating config"""
@@ -201,7 +211,8 @@ class Config(object):
         elif value_current is not None:
             value_suggested = value_current
 
-        config_value = raw_input('[' + str(value_suggested) + ']:')
+        # Note: https://stackoverflow.com/questions/10885537/raw-input-has-been-eliminated-from-python-3-2
+        config_value = input('[' + str(value_suggested) + ']:')
 
         if config_value == '' and value_suggested is not None:
             config_value = value_suggested

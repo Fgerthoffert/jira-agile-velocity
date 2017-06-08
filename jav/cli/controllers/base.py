@@ -20,6 +20,10 @@ class javBaseController(ArgparseController):
             (
                 ['-d', '--dry-run'],
                 dict(help='Do not send message to slack', action='store_true')
+            ),
+            (
+                ['-p', '--path'],
+                dict(help='Path to the directory storing data and config, will be created if does not exist', action='store', dest='path_config')
             )
         ]
 
@@ -43,7 +47,7 @@ class javBaseController(ArgparseController):
 
     @expose(help='Obtain updated data from Jira and crunch numbers')
     def crunch(self):
-        self.config = Config(self.app.log)
+        self.config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, self.config.config_path + 'crunch.log')
 
         # Loading saved files into memory to be used by the component crunching numbers

@@ -3,6 +3,7 @@ import numpy
 import json
 import os
 import copy
+from jav.core.javFiles import Files
 
 
 class StatsDay(object):
@@ -18,7 +19,6 @@ class StatsDay(object):
         self.config = config
         self.__daily_data = daily_data
         self.__days = collections.OrderedDict()
-        self.__daystats_filepath = self.config.config_path + 'stats_days.jsonl'
 
     @property
     def daily_data(self):
@@ -27,10 +27,6 @@ class StatsDay(object):
     @property
     def days(self):
         return self.__days
-
-    @property
-    def daystats_filepath(self):
-        return self.__daystats_filepath
 
     def main(self):
         self.log.info('Calculate daily stats throughout the captured period')
@@ -92,8 +88,8 @@ class StatsDay(object):
                     day_found = True
 
         # Then write content to a JSONL file
-        if os.path.isfile(self.daystats_filepath):
-            os.remove(self.daystats_filepath)
+        if os.path.isfile(self.config.filepath_stats_days):
+            os.remove(self.config.filepath_stats_days)
 
         # Clear un-necessary array values, and write output to a JSONL file
         for current_day in self.days:
@@ -107,7 +103,6 @@ class StatsDay(object):
 
             day_obj = copy.deepcopy(self.days[current_day])
             day_obj['datetime'] = self.days[current_day]['datetime'].isoformat()
-            with open(self.daystats_filepath, 'a+') as fileToWrite:
-                fileToWrite.write(json.dumps(day_obj) + '\n')
+            Files(self.log).jsonl_append(self.config.filepath_stats_days, day_obj)
 
         return self.days

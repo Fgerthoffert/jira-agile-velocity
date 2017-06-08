@@ -3,7 +3,7 @@ import os
 import copy
 import json
 import dateutil
-
+from jav.core.javFiles import Files
 
 class StatsRemaining(object):
     """
@@ -19,32 +19,8 @@ class StatsRemaining(object):
         self.__remainingstats_filepath = self.config.config_path + 'stats_remaining.jsonl'
 
     @property
-    def daystats_filepath(self):
-        return self.__remainingstats_filepath
-
-    @property
     def remaining_work(self):
         return self.__remaining_work
-
-    def load_stat_file(self):
-        self.log.info('StatsRemaining.load_stat_file(): Loading stats from file: ' + self.daystats_filepath)
-        daily_data = collections.OrderedDict()
-        if os.path.isfile(self.daystats_filepath):
-            for line in open(self.daystats_filepath).readlines():
-                current_stats_line = json.loads(line)
-                current_stats_line['datetime'] = dateutil.parser.parse(current_stats_line['datetime'])
-                dict_idx = current_stats_line['datetime'].strftime('%Y%m%d')
-                self.log.info('StatsRemaining.load_stat_file(): Loaded stats from: ' + current_stats_line['datetime'].isoformat())
-                daily_data[dict_idx] = current_stats_line
-        else:
-            self.log.info('StatsRemaining.load_stat_file(): Nothing to load, cache file does not exist')
-
-        self.log.debug(daily_data)
-        return daily_data
-
-    def write_json(self, stats):
-        with open(self.daystats_filepath, 'a+') as fileToWrite:
-            fileToWrite.write(json.dumps(stats) + '\n')
 
     def main(self):
         """Guesstimate efforts to completion, add result to a log file"""
@@ -83,20 +59,20 @@ class StatsRemaining(object):
         dict_idx = date_current.strftime('%Y-%m-%d')
         daily_data[dict_idx] = remaining
 
-        current_data = self.load_stat_file()
+        current_data = Files(self.log).jsonl_load(self.config.filepath_stats_remaining)
 
         for current_day_data in current_data:
             if date_current.strftime('%Y-%m-%d') != current_data[current_day_data]['datetime'].strftime('%Y-%m-%d'):
                 dict_idx = current_data[current_day_data]['datetime'].strftime('%Y-%m-%d')
                 daily_data[dict_idx] = current_data[current_day_data]
 
-        if os.path.isfile(self.daystats_filepath):
-            os.remove(self.daystats_filepath)
+        if os.path.isfile(self.config.filepath_stats_remaining):
+            os.remove(self.config.filepath_stats_remaining)
 
         for currentdata in daily_data:
             daily_obj = copy.deepcopy(daily_data[currentdata])
             daily_obj['datetime'] = daily_data[currentdata]['datetime'].isoformat()
-            self.log.info('StatsRemaining.main(): Writing stats to: ' + daily_obj['datetime'])
-            self.write_json(daily_obj)
+            self.log.info('StatsRemaining.main(): Writing stats for date: ' + daily_obj['datetime'])
+            Files(self.log).jsonl_append(self.config.filepath_stats_remaining, daily_obj)
 
         return remaining

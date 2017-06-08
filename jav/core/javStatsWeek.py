@@ -3,7 +3,7 @@ import numpy
 import json
 import os
 import copy
-from javFiles import Files
+from jav.core.javFiles import Files
 
 class StatsWeek(object):
     """
@@ -17,7 +17,6 @@ class StatsWeek(object):
         self.config = config
         self.__daily_data = daily_data
         self.__weeks_data = collections.OrderedDict()
-        self.__weekstats_filepath = self.config.config_path + 'stats_weeks.jsonl'
 
     @property
     def daily_data(self):
@@ -26,10 +25,6 @@ class StatsWeek(object):
     @property
     def weeks_data(self):
         return self.__weeks_data
-
-    @property
-    def weekstats_filepath(self):
-        return self.__weekstats_filepath
 
     def main(self):
         self.log.info('Calculate weekly stats throughout the captured period')
@@ -84,8 +79,8 @@ class StatsWeek(object):
                     week_found = True
 
         # Then write content to a JSONL file
-        if os.path.isfile(self.weekstats_filepath):
-            os.remove(self.weekstats_filepath)
+        if os.path.isfile(self.config.filepath_stats_weeks):
+            os.remove(self.config.filepath_stats_weeks)
 
         for week_txt in self.weeks_data:
             if 'all' in self.weeks_data[week_txt]['stats']:
@@ -96,8 +91,7 @@ class StatsWeek(object):
             week_obj = copy.deepcopy(self.weeks_data[week_txt])
             week_obj['datetime'] = self.weeks_data[week_txt]['datetime'].isoformat()
 
-            Files(self.log).jsonl_append(self.weekstats_filepath, week_obj)
-            # with open(self.weekstats_filepath, 'a+') as fileToWrite:
-            #     fileToWrite.write(json.dumps(week_obj) + '\n')
+            Files(self.log).jsonl_append(self.config.filepath_stats_weeks, week_obj)
+
 
         return self.weeks_data
