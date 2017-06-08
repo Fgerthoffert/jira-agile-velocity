@@ -30,28 +30,28 @@ class Run(object):
         self.log.info('run.main(): Start Date: ' + date_start.strftime('%Y-%m-%d'))
         self.log.info('run.main(): End Date: ' + date_end.strftime('%Y-%m-%d'))
 
-        loader = ImportData(self.log, self.config)
-        # Import existing data (if any) into a Python object
-        previous_data = loader.load_data_completion()
-        # Refresh the cache by checking if additional days can be added
-        daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
-        # Write back the data cache to file after clearing any existing one
-        loader.write_dailydata_cache(daily_data)
-
-        # Call Jira to get Remaining work
-        remaining_work = loader.get_remaining_work()
-
-        # Calculate stats based on Jira Data
-        stats_weeks = StatsWeek(self.log, self.config, daily_data).main()
-        stats_days = StatsDay(self.log, self.config, daily_data).main()
-        stats_remaining = StatsRemaining(self.log, self.config, self.time, stats_weeks, remaining_work).main()
-
-        #build_graph = BuildChart(self.log, self.config, stats_days).main()
-
-
-        # {'points': 104, 'days_to_completion': {'all': 12.7, 4: 14.4, 8: 12.1, 12: 11.1, 'current': 8.5}}
-
-        # current_week_data = self.crunch.get_current_week(daily_data)
+        # loader = ImportData(self.log, self.config)
+        # # Import existing data (if any) into a Python object
+        # previous_data = loader.load_data_completion()
+        # # Refresh the cache by checking if additional days can be added
+        # daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
+        # # Write back the data cache to file after clearing any existing one
+        # loader.write_dailydata_cache(daily_data)
+        #
+        # # Call Jira to get Remaining work
+        # remaining_work = loader.get_remaining_work()
+        #
+        # # Calculate stats based on Jira Data
+        # stats_weeks = StatsWeek(self.log, self.config, daily_data).main()
+        # stats_days = StatsDay(self.log, self.config, daily_data).main()
+        # stats_remaining = StatsRemaining(self.log, self.config, self.time, stats_weeks, remaining_work).main()
+        #
+        # #build_graph = BuildChart(self.log, self.config, stats_days).main()
+        #
+        #
+        # # {'points': 104, 'days_to_completion': {'all': 12.7, 4: 14.4, 8: 12.1, 12: 11.1, 'current': 8.5}}
+        #
+        # # current_week_data = self.crunch.get_current_week(daily_data)
         # days_data = self.crunch.get_dailyavg_week(daily_data)
         # weeks_data = self.crunch.get_weekly_data(daily_data)
 

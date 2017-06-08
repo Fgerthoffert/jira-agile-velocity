@@ -1,9 +1,7 @@
 import collections
 import dateutil.parser
-import numpy
 import json
 import os
-import copy
 
 class Files(object):
     """
@@ -41,7 +39,8 @@ class Files(object):
         return data
 
     def jsonl_write(self, filepath, content):
-        print ('write JSONL')
+        self.log.info('Files.json_write(): Writing to file: ' + filepath)
+        self.log.info(content)
 
     def jsonl_append(self, filepath, content):
         self.log.debug('Files.jsonl_append(): Append to file: ' + filepath)

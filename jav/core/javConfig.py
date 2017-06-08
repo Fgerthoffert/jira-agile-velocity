@@ -90,6 +90,16 @@ class Config(object):
         elif os.path.isfile(self.__config_filepath):
             self.load_config()
 
+    @staticmethod
+    def prep_config_path(config_path):
+        if config_path is None:
+            config_path = expanduser('~') + '/.jav/'
+        elif config_path[-1] != '/':
+            config_path = config_path + '/'
+        if not os.path.isdir(config_path):
+            os.makedirs(config_path, exist_ok=True)
+        return config_path
+
     @property
     def schema(self):
         return self.__schema
@@ -142,15 +152,6 @@ class Config(object):
 
     def get_config_value(self, key):
         return self.config[key]
-
-    def prep_config_path(self, config_path):
-        if config_path is None:
-            config_path = expanduser('~') + '/.jav/'
-        elif config_path[-1] != '/':
-            config_path = config_path + '/'
-        if not os.path.isdir(config_path):
-            os.makedirs(config_path, exist_ok=True)
-        return config_path
 
     def set_config_value(self, key, value):
         """Updates a key/value pair in the config, verify it against the schema before updating config"""

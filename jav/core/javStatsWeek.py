@@ -1,6 +1,5 @@
 import collections
 import numpy
-import json
 import os
 import copy
 from jav.core.javFiles import Files

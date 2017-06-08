@@ -2,10 +2,8 @@
 
 from cement.ext.ext_argparse import ArgparseController, expose
 
-from jav.core.javRun import Run
 from jav.core.javSetup import Setup
 from jav.core.javClear import Clear
-from jav.core.javChart import Chart
 from jav.core.javCrunch import Crunch
 from jav.core.javLoad import Load
 from jav.core.javConfig import Config
@@ -64,11 +62,12 @@ class javBaseController(ArgparseController):
         config = Config(self.app.log)
         LogConfig(self.app.log, self.app.config, config.config_path + 'chart.log')
 
+        #Get previously crunched number from cache file
         crunch = Crunch(self.app.log, config)
         stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
 
+        #Build charts
         BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
-
 
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
@@ -83,16 +82,6 @@ class javBaseController(ArgparseController):
         crunch = Crunch(self.app.log, config)
         stats_days, stats_weeks, stats_remaining = crunch.crunch_stats(daily_data, remaining_work)
 
+        # Build Chart
         BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
-
-        #run = Run(self.app.log, self.app.pargs.dry_run, self.app.config)
-        #run.main()
-
-
-
-
-
-
-
-
 

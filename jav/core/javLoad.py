@@ -1,7 +1,3 @@
-import collections
-import json
-import dateutil.parser
-
 from jav.core.javConfig import Config
 from jav.core.javLogConfig import LogConfig
 from jav.core.javImportData import ImportData
@@ -45,8 +41,6 @@ class Load(object):
         # Import existing data (if any) into a Python object
         daily_data = loader.load_data_completion()
         remaining_work = loader.load_data_remaining()
-
-
 
         return daily_data, remaining_work
 
