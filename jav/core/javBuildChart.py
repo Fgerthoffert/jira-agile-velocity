@@ -153,7 +153,7 @@ class BuildChart(object):
                 elif rol_avg == 'all':
                     col_txt = 'All Time'
                 else:
-                    col_txt = rol_avg + ' Weeks'
+                    col_txt = str(rol_avg) + ' Weeks'
                 plot_data['rolling_avg'].append(col_txt)
                 plot_data['days'].append(stats_data[scan_day]['days_to_completion'][rol_avg])
             break

@@ -75,4 +75,4 @@ class StatsRemaining(object):
             self.log.info('StatsRemaining.main(): Writing stats for date: ' + daily_obj['datetime'])
             Files(self.log).jsonl_append(self.config.filepath_stats_remaining, daily_obj)
 
-        return remaining
+        return daily_data

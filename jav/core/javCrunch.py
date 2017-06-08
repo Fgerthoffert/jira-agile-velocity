@@ -5,6 +5,7 @@ from jav.core.javStatsWeek import StatsWeek
 from jav.core.javStatsDay import StatsDay
 from jav.core.javStatsRemaining import StatsRemaining
 from jav.core.javTime import Time
+from jav.core.javFiles import Files
 
 class Crunch(object):
     """
@@ -28,6 +29,11 @@ class Crunch(object):
 
     def load_stats_cache(self):
         self.log.info('Loading previously calculated stats from cache')
+        stats_days = Files(self.log).jsonl_load(self.config.filepath_stats_days)
+        stats_weeks = Files(self.log).jsonl_load(self.config.filepath_stats_weeks)
+        stats_remaining = Files(self.log).jsonl_load(self.config.filepath_stats_remaining)
+
+        return stats_days, stats_weeks, stats_remaining
 
 
     #

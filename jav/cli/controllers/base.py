@@ -10,6 +10,8 @@ from jav.core.javCrunch import Crunch
 from jav.core.javLoad import Load
 from jav.core.javConfig import Config
 from jav.core.javLogConfig import LogConfig
+from jav.core.javBuildChart import BuildChart
+
 
 class javBaseController(ArgparseController):
 
@@ -39,44 +41,49 @@ class javBaseController(ArgparseController):
 
     @expose(help='Load latest data from Jira into cache')
     def load(self):
-        self.config = Config(self.app.log)
-        LogConfig(self.app.log, self.app.config, self.config.config_path + 'load.log')
+        config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'load.log')
 
         load = Load(self.app.log, self.app.config)
         load.refresh_jira_cache()
 
     @expose(help='Obtain updated data from Jira and crunch numbers')
     def crunch(self):
-        self.config = Config(self.app.log, self.app.pargs.path_config)
-        LogConfig(self.app.log, self.app.config, self.config.config_path + 'crunch.log')
+        config = Config(self.app.log, self.app.pargs.path_config)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'crunch.log')
 
         # Loading saved files into memory to be used by the component crunching numbers
         load = Load(self.app.log, self.app.config)
         daily_data, remaining_work = load.load_jira_cache()
 
-        crunch = Crunch(self.app.log, self.config)
+        crunch = Crunch(self.app.log, config)
         crunch.crunch_stats(daily_data, remaining_work)
 
     @expose(help='Create charts from cached data')
     def chart(self):
-        self.config = Config(self.app.log)
-        LogConfig(self.app.log, self.app.config, self.config.config_path + 'chart.log')
+        config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'chart.log')
 
-        chart = Chart(self.app.log, self.app.config)
-        chart.main()
+        crunch = Crunch(self.app.log, config)
+        stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
+
+        BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
+
 
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
-        self.config = Config(self.app.log)
-        LogConfig(self.app.log, self.app.config, self.config.config_path + 'run.log')
+        config = Config(self.app.log)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'run.log')
 
         # Load data from Jira
         load = Load(self.app.log, self.app.config)
         daily_data, remaining_work = load.refresh_jira_cache()
 
         # Crunch numbers
-        crunch = Crunch(self.app.log, self.config)
-        crunch.main(daily_data, remaining_work)
+        crunch = Crunch(self.app.log, config)
+        stats_days, stats_weeks, stats_remaining = crunch.crunch_stats(daily_data, remaining_work)
+
+        BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
 
         #run = Run(self.app.log, self.app.pargs.dry_run, self.app.config)
         #run.main()
