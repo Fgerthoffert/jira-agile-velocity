@@ -10,4 +10,3 @@ numpy
 jsonschema
 bokeh
 pandas
-GitPython

@@ -52,5 +52,5 @@ class Files(object):
         if path[-1] != '/':
             path = path + '/'
         if not os.path.isdir(path):
-            os.makedirs(path, exist_ok=True)
+            os.makedirs(path)
         return path
