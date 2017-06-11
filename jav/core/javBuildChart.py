@@ -4,12 +4,12 @@ from bokeh.layouts import layout
 from bokeh.plotting import figure
 from jav.core.javTime import Time
 
+
 class BuildChart(object):
     def __init__(self, log, config):
         self.log = log
         self.config = config
         self.time = Time(self.log, self.config)
-
 
     def build_velocity_days(self, stats_data):
         self.log.info('Generating graph about daily effort')
@@ -187,6 +187,6 @@ class BuildChart(object):
         ], sizing_mode='stretch_both')
 
         # output to static HTML file
-        output_file(self.config.filepath_charts + 'index.html', title='Jira Metrics, built on: ' + self.time.get_current_date().isoformat())
+        output_file(self.config.filepath_charts + 'index.html',
+                    title='Jira Metrics, built on: ' + self.time.get_current_date().isoformat())
         save(bokeh_layout)
-
