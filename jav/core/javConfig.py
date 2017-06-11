@@ -24,6 +24,8 @@ class Config(object):
         self.__filepath_stats_weeks = self.__config_path + 'stats_weeks.jsonl'
         self.__filepath_stats_remaining = self.__config_path + 'stats_remaining.jsonl'
 
+        self.__filepath_charts = self.prep_config_path(self.__config_path + 'built-charts/')
+
         # config_init is used to record if the init method was once called
         self.__config_init = False
 
@@ -81,7 +83,26 @@ class Config(object):
                     , 'description': 'Array of weeks to group stats by. For example average over the past 4 weeks, past 8 weeks etc...'
                     , 'default': [4, 8]
                 }
-
+                , 'git_repo': {
+                    'type': ['string', 'null']
+                    , 'description': 'Git repository to be used to publish charts'
+                    , 'default': 'https://github.com/Fgerthoffert/test-agile-page.git'
+                }
+                , 'git_branch': {
+                    'type': ['string', 'null']
+                    , 'description': 'Git branch for the charts'
+                    , 'default': 'gh-pages'
+                }
+                , 'git_localpath': {
+                    'type': ['string', 'null']
+                    , 'description': 'Path of the git directory on the local filesystem'
+                    , 'default': '/Users/francois/Desktop/test-agile-page/'
+                }
+                , 'git_pathdirectory': {
+                    'type': ['string', 'null']
+                    , 'description': 'Directory path, within localpath to be used to copy files'
+                    , 'default': 'charts/'
+                }
             }
         }
 
@@ -127,6 +148,10 @@ class Config(object):
     @property
     def filepath_stats_remaining(self):
         return self.__filepath_stats_remaining
+
+    @property
+    def filepath_charts(self):
+        return self.__filepath_charts
 
     @property
     def config(self):
