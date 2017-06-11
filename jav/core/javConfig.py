@@ -103,6 +103,11 @@ class Config(object):
                     , 'description': 'Directory path, within localpath to be used to copy files'
                     , 'default': 'charts/'
                 }
+                , 'git_pageurl': {
+                    'type': ['string', 'null']
+                    , 'description': 'URL of the page to be sent via slack'
+                    , 'default': 'https://fgerthoffert.github.io/test-agile-page/charts/'
+                }
             }
         }
 
