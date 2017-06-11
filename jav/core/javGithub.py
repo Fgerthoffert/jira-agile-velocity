@@ -1,11 +1,11 @@
-import os
 import subprocess
-import json
+
 
 class Github(object):
     """
     This class publish the chart to github pages
     """
+
     def __init__(self, log, config):
         self.log = log
         self.config = config
@@ -268,7 +268,6 @@ class Github(object):
             return True
         except subprocess.CalledProcessError as e:
             self.log.info(e.output.decode('utf-8'))
-            self.log.info('Github.is_folder_git_repo(): Directory is not a GIT Repo, remote repo will be cloned locally')
+            self.log.info(
+                'Github.is_folder_git_repo(): Directory is not a GIT Repo, remote repo will be cloned locally')
             return False
-
-

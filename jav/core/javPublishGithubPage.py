@@ -9,24 +9,13 @@ class PublishGithubPage(object):
     """
     This class publish the chart to github pages
     """
+
     def __init__(self, log, config):
         self.log = log
         self.config = config
 
         self.github = Github(self.log, self.config)
         self.time = Time(self.log, self.config)
-
-
-    # def init_repo(self):
-    #     self.log.info('The git repo didn\'t contain any branches, initializing')
-    #     # Repo was not initialized
-    #     with open(self.config.git_localpath + 'README.md', 'w') as readme_file:
-    #         readme_file.write('# Repository for Jira Agile Velocity content')
-    #     self.github.git_init()
-    #     self.github.git_add(self.config.git_localpath + 'README.md')
-    #     self.github.git_commit('First repo commit')
-    #     self.github.git_remote_add_origin()
-    #     self.github.git_push('origin master ')
 
     def main(self):
         """This hacky function publishes chart to github pages"""
@@ -46,7 +35,8 @@ class PublishGithubPage(object):
         remote_branches = self.github.get_branches()
         if not any(self.config.get_config_value('git_branch') in s for s in remote_branches):
             # Init branch
-            self.log.warning('The remote repository does not contain branch: ' + self.config.get_config_value('git_branch'))
+            self.log.warning(
+                'The remote repository does not contain branch: ' + self.config.get_config_value('git_branch'))
             self.github.git_checkout_create(self.config.get_config_value('git_branch'))
             self.github.git_push_branch(self.config.get_config_value('git_branch'))
         elif any('* ' + self.config.get_config_value('git_branch') in s for s in remote_branches):
@@ -63,16 +53,11 @@ class PublishGithubPage(object):
             self.log.error('Unable to locate source chart file at: ' + self.config.filepath_charts + 'index.html')
             exit()
 
-        dst_path = Files.prep_path(self.config.get_config_value('git_localpath') + self.config.get_config_value('git_pathdirectory'))
+        dst_path = Files.prep_path(
+            self.config.get_config_value('git_localpath') + self.config.get_config_value('git_pathdirectory'))
         self.log.info('Preparing to copy chart file to: ' + dst_path)
         shutil.copyfile(self.config.filepath_charts + 'index.html', dst_path + 'index.html')
         self.log.info('Chart file copied')
         self.github.git_add('--all')
         self.github.git_commit('Copied chart file - ' + self.time.get_current_date().isoformat())
         self.github.git_push()
-
-
-
-
-
-
