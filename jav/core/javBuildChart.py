@@ -1,7 +1,9 @@
 import numpy as np
+
 from bokeh.charts import Bar, output_file, save
 from bokeh.layouts import layout
-from bokeh.plotting import figure
+from bokeh.plotting import figure, ColumnDataSource
+from bokeh.models import HoverTool
 from jav.core.javTime import Time
 
 
@@ -18,8 +20,10 @@ class BuildChart(object):
         x_dates = []
         y_points = []
         y_avg = []
+        x_dates_display = []
         for scan_day in stats_data:
             x_dates.append(stats_data[scan_day]['datetime'])
+            x_dates_display.append(stats_data[scan_day]['datetime'].strftime('%a %b %d, %Y'))
             y_points.append(stats_data[scan_day]['points'])
             week_idx = '4'
             if week_idx not in stats_data[scan_day]['anyday']:
@@ -32,12 +36,30 @@ class BuildChart(object):
         # prepare some data
         data_dates = np.array(x_dates, dtype=np.datetime64)
 
+        source = ColumnDataSource(
+            data=dict(
+                x_data_dates=data_dates,
+                y_points=y_points,
+                y_avg_points=y_avg,
+                x_dates_display=x_dates_display
+            )
+        )
+
+        # Declare tools
+        hover = HoverTool(
+            tooltips=[
+                ('Date', '@x_dates_display'),
+                ('Points', '@y_points'),
+                ('Average', '@y_avg_points'),
+            ]
+        )
+
         # create a new plot with a a datetime axis type
-        p = figure(width=1000, height=350, x_axis_type='datetime', tools='save,pan,box_zoom,reset')
+        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover])
 
         # add renderers
-        p.circle(data_dates, y_points, size=4, color='red', alpha=0.4, legend='Story Points')
-        p.line(data_dates, y_avg, color='blue', legend='4 Weeks Average')
+        p.circle('x_data_dates', 'y_points', size=4, color='red', alpha=0.4, legend='Story Points', source=source)
+        p.line('x_data_dates', 'y_avg_points', color='blue', legend='4 Weeks Average', source=source)
 
         # NEW: customize by setting attributes
         p.title.text = 'Daily Velocity'
@@ -58,10 +80,12 @@ class BuildChart(object):
         y_points = []
         y_avg = []
         y_weeks = []
+        daily_avg = []
         for scan_day in stats_data:
             x_dates.append(stats_data[scan_day]['datetime'])
             y_points.append(stats_data[scan_day]['points'])
             y_weeks.append(stats_data[scan_day]['weektxt'])
+            daily_avg.append(round(float(stats_data[scan_day]['points']) / 5, 1))
 
             if len(stats_data[scan_day]['stats']) > 0:
                 week_idx = '4'
@@ -75,12 +99,34 @@ class BuildChart(object):
         # prepare some data
         data_dates = np.array(x_dates, dtype=np.datetime64)
 
+        source = ColumnDataSource(
+            data=dict(
+                x_data_dates=data_dates,
+                y_points=y_points,
+                y_avg_points=y_avg,
+                y_weeks=y_weeks,
+                daily_avg=daily_avg,
+            )
+        )
+
+        # Declare tools
+        hover = HoverTool(
+            tooltips=[
+                ('Week', '@y_weeks'),
+                ('Points', '@y_points'),
+                ('Avg points per week', '@y_avg_points'),
+                ('Avg points per day', '@daily_avg'),
+            ]
+        )
+
         # create a new plot with a a datetime axis type
-        p = figure(width=1000, height=350, x_axis_type='datetime', tools='save,pan,box_zoom,reset')
+        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover])
 
         # add renderers
-        p.circle(data_dates, y_points, size=4, color='red', alpha=0.4, legend='Story Points')
-        p.line(data_dates, y_avg, color='blue', legend='4 Weeks Average')
+        #p.circle(data_dates, y_points, size=4, color='red', alpha=0.4, legend='Story Points')
+        #p.line(data_dates, y_avg, color='blue', legend='4 Weeks Average')
+        p.circle('x_data_dates', 'y_points', size=4, color='red', alpha=0.4, legend='Story Points', source=source)
+        p.line('x_data_dates', 'y_avg_points', color='blue', legend='4 Weeks Average', source=source)
 
         # NEW: customize by setting attributes
         p.title.text = 'Weekly Velocity'
