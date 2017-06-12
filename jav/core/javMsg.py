@@ -38,41 +38,50 @@ class Msg(object):
             weekly_points = stats_weeks[scan_week]['points']
             break
 
-        self.slack_msg('Hello everyone, here are your velocity stats, <' + self.config.get_config_value('git_pageurl') + '|live from Jira>.')
-        self.slack_msg('Remaining story points: ' + str(remaining_pts))
-
         if daily_points > daily_velocity['sameday']['4']['avg']:
-            trend = ':arrow_upper_right: '
+            trend_day = ':arrow_upper_right: '
         elif daily_points < daily_velocity['sameday']['4']['avg']:
-            trend = ':arrow_lower_right:'
+            trend_day = ':arrow_lower_right:'
         else:
-            trend = ':arrow_right:'
+            trend_day = ':arrow_right:'
+        if weekly_points > weekly_velocity['4']['avg']:
+            trend_week = ':arrow_upper_right: '
+        elif weekly_points < weekly_velocity['4']['avg']:
+            trend_week = ':arrow_lower_right:'
+        else:
+            trend_week = ':arrow_right:'
 
-        self.slack_msg('Completed ' + day_txt + ': ' + str(daily_points) + ' pts ['
+        self.slack_msg('Hello everyone, here are our velocity stats, <'
+                       + self.config.get_config_value('git_pageurl')
+                       + '|live from Jira>.'
+                       + '\n'
+                       + 'Remaining story points: *'
+                       + str(remaining_pts)
+                       + '*\n'
+                       + 'Completed on ' + day_txt + ': ' + str(daily_points) + ' pts ['
                        + 'Max: ' + str(daily_velocity['sameday']['4']['max'])
                        + ' / '
                        + 'Min: ' + str(daily_velocity['sameday']['4']['min'])
                        + ' / '
                        + 'Avg: ' + str(daily_velocity['sameday']['4']['avg'])
                        + '] '
-                       + trend)
-
-        if weekly_points > weekly_velocity['4']['avg']:
-            trend = ':arrow_upper_right: '
-        elif weekly_points < weekly_velocity['4']['avg']:
-            trend = ':arrow_lower_right:'
-        else:
-            trend = ':arrow_right:'
-        self.slack_msg('Completed Week ' + week_txt + ': ' + str(weekly_points) + ' pts ('
+                       + trend_day
+                       + '\n'
+                       + 'Completed on Week ' + week_txt + ': ' + str(weekly_points) + ' pts ('
                        + 'Max: ' + str(weekly_velocity['4']['max'])
                        + ' / '
                        + 'Min: ' + str(weekly_velocity['4']['min'])
                        + ' / '
                        + 'Avg: ' + str(weekly_velocity['4']['avg'])
                        + ') '
-                       + trend)
-        self.slack_msg('Days to Completion: ' + str(round(remaining['4'],1)) + ' days')
-        self.slack_msg('_Most numbers calculated over previous 4 weeks (excluding current)_')
+                       + trend_week
+                       + '\n'
+                       + 'Days to Completion: *'
+                       + str(round(remaining['4'], 1))
+                       + ' days'
+                       + '*\n'
+                       + '_Most numbers are calculated over the previous 4 weeks (excluding current day/week)_'
+                       )
 
     def slack_msg(self, msg):
         self.log.info(msg)
