@@ -250,6 +250,7 @@ class Config(object):
             config_value = input('[' + str(value_suggested) + ']:')
         except Exception as ex:
             # If exception, we consider the value to be empty (fallback to default)
+            self.log.debug(ex.message)
             config_value = ''
 
         if config_value == '' and value_suggested is not None:
