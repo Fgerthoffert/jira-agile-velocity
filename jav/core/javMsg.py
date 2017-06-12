@@ -67,7 +67,7 @@ class Msg(object):
                        + '] '
                        + trend_day
                        + '\n'
-                       + 'Completed on Week ' + week_txt + ': ' + str(weekly_points) + ' pts ('
+                       + 'Completed this week (' + week_txt + '): ' + str(weekly_points) + ' pts ('
                        + 'Max: ' + str(weekly_velocity['4']['max'])
                        + ' / '
                        + 'Min: ' + str(weekly_velocity['4']['min'])
