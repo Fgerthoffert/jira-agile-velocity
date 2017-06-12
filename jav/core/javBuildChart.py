@@ -1,5 +1,5 @@
 import numpy as np
-from bokeh.charts import Bar, output_file, show, save
+from bokeh.charts import Bar, output_file, save
 from bokeh.layouts import layout
 from bokeh.plotting import figure
 from jav.core.javTime import Time

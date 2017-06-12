@@ -63,7 +63,7 @@ class Msg(object):
             trend = ':arrow_lower_right:'
         else:
             trend = ':arrow_right:'
-        self.slack_msg('Completed ' + week_txt + ': ' + str(weekly_points) + ' pts ('
+        self.slack_msg('Completed Week ' + week_txt + ': ' + str(weekly_points) + ' pts ('
                        + 'Max: ' + str(weekly_velocity['4']['max'])
                        + ' / '
                        + 'Min: ' + str(weekly_velocity['4']['min'])
@@ -73,17 +73,6 @@ class Msg(object):
                        + trend)
         self.slack_msg('Days to Completion: ' + str(round(remaining['4'],1)) + ' days')
         self.slack_msg('_Most numbers calculated over previous 4 weeks (excluding current)_')
-        #self.slack_msg('_Legend: (Last Week / 4 weeks AVG  / All time AVG)_')
-
-        #self.slack_msg('All Time values calculated over a period of *' + str(
-        #    self.config.get_config_value('history_weeks')) + '* weeks')
-        #self.slack_msg('*Estimated remaining work*')
-        #self.slack_msg('Remaining story points: *' + str(remaining_work["points"]) + '*')
-        #self.slack_msg('```' + tabulate_remaining + '```')
-        #self.slack_msg('*This week\'s velocity*')
-        #self.slack_msg('```' + tabulate_days + ' ```')
-        #self.slack_msg('*Past weeks velocity*')
-        #self.slack_msg('```' + tabulate_weeks + ' ```')
 
     def slack_msg(self, msg):
         self.log.info(msg)
