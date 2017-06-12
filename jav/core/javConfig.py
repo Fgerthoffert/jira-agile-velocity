@@ -123,7 +123,10 @@ class Config(object):
         elif config_path[-1] != '/':
             config_path = config_path + '/'
         if not os.path.isdir(config_path):
-            os.makedirs(config_path, exist_ok=True)
+            try:
+                os.makedirs(config_path)
+            except Exception as ex:
+                print('Directory: ' + config_path + ' already exists')
         return config_path
 
     @property
@@ -243,7 +246,11 @@ class Config(object):
             value_suggested = value_current
 
         # Note: https://stackoverflow.com/questions/10885537/raw-input-has-been-eliminated-from-python-3-2
-        config_value = input('[' + str(value_suggested) + ']:')
+        try:
+            config_value = input('[' + str(value_suggested) + ']:')
+        except Exception as ex:
+            # If exception, we consider the value to be empty (fallback to default)
+            config_value = ''
 
         if config_value == '' and value_suggested is not None:
             config_value = value_suggested
