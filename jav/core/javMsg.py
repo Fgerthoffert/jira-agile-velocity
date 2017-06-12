@@ -80,7 +80,7 @@ class Msg(object):
                        + str(round(remaining['4'], 1))
                        + ' days'
                        + '*\n'
-                       + '_Most numbers are calculated over the previous 4 weeks (excluding current day/week)_'
+                       + '_Most numbers are calculated over the previous 4 weeks, excluding current day/week_'
                        )
 
     def slack_msg(self, msg):
