@@ -41,7 +41,7 @@ class StatsRemaining(object):
         self.log.info('Remaining number of story points: ' + str(remaining['points']))
         for week_stat in current_week['stats']:
             avg_points_per_day = current_week['stats'][week_stat]['avg'] / 5
-            remaining_days = round(remaining['points'] / avg_points_per_day, 1)
+            remaining_days = round(float(remaining['points']) / float(avg_points_per_day), 1)
             self.log.info('Over period: ' + str(week_stat) + ', average points per day was: ' + str(
                 avg_points_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
             remaining['days_to_completion'][week_stat] = remaining_days

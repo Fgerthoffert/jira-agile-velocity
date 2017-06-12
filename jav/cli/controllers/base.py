@@ -10,6 +10,7 @@ from jav.core.javConfig import Config
 from jav.core.javLogConfig import LogConfig
 from jav.core.javBuildChart import BuildChart
 from jav.core.javPublishGithubPage import PublishGithubPage
+from jav.core.javMsg import Msg
 
 
 class javBaseController(ArgparseController):
@@ -19,7 +20,7 @@ class javBaseController(ArgparseController):
         description = 'Connect to Jira REST API to collect completed story points, calculate weekly velocity, and estimate completion date'
         arguments = [
             (
-                ['-d', '--dry-run'],
+                ['-s', '--silent'],
                 dict(help='Do not send message to slack', action='store_true')
             ),
             (
@@ -40,7 +41,7 @@ class javBaseController(ArgparseController):
 
     @expose(help='Load latest data from Jira into cache')
     def load(self):
-        config = Config(self.app.log)
+        config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, config.config_path + 'load.log')
 
         load = Load(self.app.log, self.app.config)
@@ -60,7 +61,7 @@ class javBaseController(ArgparseController):
 
     @expose(help='Create charts from cached data')
     def chart(self):
-        config = Config(self.app.log)
+        config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, config.config_path + 'chart.log')
 
         #Get previously crunched number from cache file
@@ -72,15 +73,25 @@ class javBaseController(ArgparseController):
 
     @expose(help='Publish charts to github pages')
     def publish(self):
-        config = Config(self.app.log)
+        config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, config.config_path + 'publish.log')
 
         PublishGithubPage(self.app.log, config).main()
 
+    @expose(help='Send latest stats to the team on Slack')
+    def msg(self):
+        config = Config(self.app.log, self.app.pargs.path_config)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'msg.log')
+
+        #Get previously crunched number from cache file
+        crunch = Crunch(self.app.log, config)
+        stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
+
+        Msg(self.app.log, config, self.app.pargs.silent).publish(stats_days, stats_weeks, stats_remaining)
 
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
-        config = Config(self.app.log)
+        config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, config.config_path + 'run.log')
 
         # Load data from Jira
