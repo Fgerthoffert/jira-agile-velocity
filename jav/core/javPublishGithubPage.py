@@ -24,10 +24,12 @@ class PublishGithubPage(object):
         self.config.set_config_value('git_localpath', Files.prep_path(self.config.get_config_value('git_localpath')))
 
         if not self.github.is_folder_git_repo():
+            self.log.info('Cloning Git Repository: ' + self.config.get_config_value('git_repo'))
             self.github.git_clone()
         else:
-            self.log.info('Git repo exists')
+            self.log.info('Repository already available on local filesystem: ' + self.config.get_config_value('git_repo'))
             if self.github.git_pull() is not True:
+                self.log.info('Git Stash')
                 self.github.git_stash()
 
         # Test if requested branch exists, if not, create
@@ -38,15 +40,16 @@ class PublishGithubPage(object):
             self.log.warning(
                 'The remote repository does not contain branch: ' + self.config.get_config_value('git_branch'))
             self.github.git_checkout_create(self.config.get_config_value('git_branch'))
+            self.github.git_pull_branch(self.config.get_config_value('git_branch'), True)
             self.github.git_push_branch(self.config.get_config_value('git_branch'))
         elif any('* ' + self.config.get_config_value('git_branch') in s for s in remote_branches):
             self.log.info('Local repository already selected branch: ' + self.config.get_config_value('git_branch'))
         else:
-            self.log.info('Switching to branch:' + self.config.get_config_value('git_branch'))
-            self.github.git_checkout(self.config.get_config_value('git_branch'))
+            self.log.info('Switching to branch: ' + self.config.get_config_value('git_branch'))
+            self.github.git_checkout_f(self.config.get_config_value('git_branch'))
 
         # Next do one last pull and copy content
-        self.github.git_pull()
+        self.github.git_stash()
 
         # Then copy chart to requested directory
         if not os.path.isfile(self.config.filepath_charts + 'index.html'):
@@ -61,3 +64,7 @@ class PublishGithubPage(object):
         self.github.git_add('--all')
         self.github.git_commit('Copied chart file - ' + self.time.get_current_date().isoformat())
         self.github.git_push()
+        self.log.info('Chart pushed to: ' + self.config.get_config_value('git_pageurl'))
+
+
+

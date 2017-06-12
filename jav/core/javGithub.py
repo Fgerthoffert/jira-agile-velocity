@@ -1,5 +1,5 @@
 import subprocess
-
+import json
 
 class Github(object):
     """
@@ -19,255 +19,221 @@ class Github(object):
     def repo(self, value):
         self.__repo = value
 
-    def git_clone(self):
+    def sys_call(self, command):
         try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , 'clone'
-                    , self.config.git_repo
-                    , self.config.get_config_value('git_localpath')
-                ]
-                , stderr=subprocess.STDOUT
-            )
+            self.log.info('Github.sys_call(): Sending command: ' + json.dumps(command))
+            output = subprocess.check_output(command, stderr=subprocess.STDOUT)
             self.log.info(output.decode('utf-8'))
-            return True
+            return output
         except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_clone(): The directory you to be used for webpage publishing must be empty')
+            self.log.error('Github.sys_call(): ' + e.output.decode('utf-8'))
+            return False
+
+    def git_clone(self):
+        git_command = [
+            'git'
+            , 'clone'
+            , self.config.get_config_value('git_repo')
+            , self.config.get_config_value('git_localpath')
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_init(self):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'init'
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_init(): The directory you to be used for webpage publishing must be empty')
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'init'
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_commit(self, message):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , '--work-tree'
-                    , self.config.get_config_value('git_localpath')
-                    , 'commit'
-                    , '-m'
-                    , message
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_commit(): Unable to commit: ' + message)
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , '--work-tree'
+            , self.config.get_config_value('git_localpath')
+            , 'commit'
+            , '-m'
+            , message
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_remote_add_origin(self):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'remote'
-                    , 'add'
-                    , 'origin'
-                    , self.config.git_repo
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_remote_add_origin(): Unable to remote add branch')
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'remote'
+            , 'add'
+            , 'origin'
+            , self.config.git_repo
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
+
     def git_push_branch(self, branch):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'push'
-                    , '-u'
-                    , 'origin'
-                    , branch
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_push_branch(): Unable to push to remote repository: ' + branch)
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'push'
+            , '-u'
+            , 'origin'
+            , branch
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_push(self):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'push'
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_push(): Unable to push to remote repository')
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'push'
+        ]
+        if self.sys_call(git_command) is False:
+            exit()
+
+    def git_branch_upstream(self, branch):
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , '--work-tree'
+            , self.config.get_config_value('git_localpath')
+            , 'branch'
+            , '--set-upstream-to=origin/' + branch + ' ' + branch
+        ]
+        if self.sys_call(git_command) is False:
+            exit()
+
+    def git_pull_branch(self, branch, origin=False):
+        if origin is True:
+            branch = 'origin ' + branch
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , '--work-tree'
+            , self.config.get_config_value('git_localpath')
+            , 'pull'
+            , branch
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_pull(self):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'pull'
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.warning(e.output.decode('utf-8'))
-            self.log.warning('Github.git_pull(): Unable to pull from remote repository due to local changes')
-            return False
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , '--work-tree'
+            , self.config.get_config_value('git_localpath')
+            , 'pull'
+        ]
+        if self.sys_call(git_command) is False:
+            exit()
 
     def git_stash(self):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'stash'
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_stash(): Unable to stash')
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'stash'
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_add(self, filename):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , '--work-tree'
-                    , self.config.get_config_value('git_localpath')
-                    , 'add'
-                    , filename
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_add(): Unable to add file: ' + filename)
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , '--work-tree'
+            , self.config.get_config_value('git_localpath')
+            , 'add'
+            , filename
+        ]
+        if self.sys_call(git_command) is False:
             exit()
 
     def git_checkout_create(self, branch_name):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'checkout'
-                    , '-b'
-                    , branch_name
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_checkout_create(): Unable to create branch: ' + branch_name)
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'checkout'
+            , '-b'
+            , branch_name
+        ]
+        if self.sys_call(git_command) is False:
             exit()
+
 
     def git_checkout(self, branch_name):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'checkout'
-                    , branch_name
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            self.log.info(output.decode('utf-8'))
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.error(e.output.decode('utf-8'))
-            self.log.error('Github.git_checkout(): Unable to switch to branch branch: ' + branch_name)
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'checkout'
+            , branch_name
+        ]
+        return self.sys_call(git_command)
+
+    def git_checkout_f(self, branch_name):
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'checkout'
+            , '-f'
+            , branch_name
+        ]
+        return self.sys_call(git_command)
+
+    def git_rm_cached(self):
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'rm'
+            , '--cached'
+        ]
+        if self.sys_call(git_command) is False:
             exit()
+
 
     def get_branches(self):
-        try:
-            output = subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir'
-                    , self.config.get_config_value('git_localpath') + '.git'
-                    , 'branch'
-                ]
-                , stderr=subprocess.STDOUT
-            )
-            branches = []
-            for line in output.decode('utf-8').split('\n'):
-                if len(line) > 3:
-                    self.log.info('Github.get_branches() - Branch: ' + line + ' found')
-                    branches.append(line)
-            return branches
-        except subprocess.CalledProcessError as e:
-            self.log.info('Github.get_branches(): ' + e.output.decode('utf-8'))
-            self.log.error('Github.get_branches(): The directory you to be used for webpage publishing must be empty')
+        git_command = [
+            'git'
+            , '--git-dir'
+            , self.config.get_config_value('git_localpath') + '.git'
+            , 'branch'
+            , '-a'
+        ]
+        output = self.sys_call(git_command)
+        if output is False:
             exit()
+        print (output)
+
+        branches = []
+        for line in output.decode('utf-8').split('\n'):
+            if len(line) > 3:
+                self.log.info('Github.get_branches() - Branch: ' + line + ' found')
+                branches.append(line)
+        return branches
+
 
     def is_folder_git_repo(self):
-        self.log.info('Github.is_folder_git_repo(): ' + self.config.get_config_value('git_localpath'))
-        try:
-            subprocess.check_output(
-                [
-                    'git'
-                    , '--git-dir=' + self.config.get_config_value('git_localpath') + '.git'
-                    , 'status'
-                ]
-            )
-            return True
-        except subprocess.CalledProcessError as e:
-            self.log.info(e.output.decode('utf-8'))
-            self.log.info(
-                'Github.is_folder_git_repo(): Directory is not a GIT Repo, remote repo will be cloned locally')
-            return False
+        git_command = [
+            'git'
+            , '--git-dir=' + self.config.get_config_value('git_localpath') + '.git'
+            , 'status'
+        ]
+        return self.sys_call(git_command)
