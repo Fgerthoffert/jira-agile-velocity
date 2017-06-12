@@ -127,6 +127,7 @@ class Config(object):
                 os.makedirs(config_path)
             except Exception as ex:
                 print('Directory: ' + config_path + ' already exists')
+                print(ex.message)
         return config_path
 
     @property
