@@ -83,6 +83,12 @@ class Config(object):
                     , 'description': 'Array of weeks to group stats by. For example average over the past 4 weeks, past 8 weeks etc...'
                     , 'default': [4, 8]
                 }
+                , 'stats_metric': {
+                    'type': 'string'
+                    ,
+                    'description': 'Type of metric to be used for charts creation and messages'
+                    , 'default': 'points'
+                }
                 , 'git_repo': {
                     'type': ['string', 'null']
                     , 'description': 'Git repository to be used to publish charts'

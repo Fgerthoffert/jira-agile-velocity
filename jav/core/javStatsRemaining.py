@@ -29,8 +29,6 @@ class StatsRemaining(object):
 
         date_current = self.time.get_current_date()
 
-        print (self.remaining_work)
-
         remaining = {
             'points': self.remaining_work['points']
             , 'datetime': date_current

@@ -36,6 +36,7 @@ class StatsDay(object):
                 'datetime': self.daily_data[current_day]['datetime']
                 , 'daytxt': self.daily_data[current_day]['datetime'].strftime('%A')
                 , 'points': self.daily_data[current_day]['points']
+                , 'tickets': self.daily_data[current_day]['tickets']
                 , 'anyday': {'all': {'values': []}}
                 , 'sameday': {'all': {'values': []}}
             }

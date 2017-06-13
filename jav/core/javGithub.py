@@ -21,7 +21,7 @@ class Github(object):
 
     def sys_call(self, command):
         try:
-            self.log.info('Github.sys_call(): Sending command: ' + json.dumps(command))
+            self.log.info('Github.sys_call(): Calling: ' + json.dumps(command))
             output = subprocess.check_output(command, stderr=subprocess.STDOUT)
             self.log.info(output.decode('utf-8'))
             return output
