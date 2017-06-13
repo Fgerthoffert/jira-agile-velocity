@@ -257,7 +257,7 @@ class Config(object):
             input = raw_input
         except NameError:
             pass
-        
+
         try:
             config_value = input('[' + str(value_suggested) + ']:')
         except Exception as ex:

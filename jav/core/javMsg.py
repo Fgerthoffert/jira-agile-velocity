@@ -58,7 +58,7 @@ class Msg(object):
             metric_legend = 'Story Points'
             metric_short = 'pts'
 
-        self.slack_msg('Hello everyone, here are our velocity stats, <'
+        self.slack_msg('Howdy everyone, here are our velocity stats, <'
                        + self.config.get_config_value('git_pageurl')
                        + '|live from Jira>.'
                        + '\n'
