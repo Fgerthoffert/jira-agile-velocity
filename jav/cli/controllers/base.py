@@ -89,8 +89,8 @@ class javBaseController(ArgparseController):
 
         Msg(self.app.log, config, self.app.pargs.send).publish(stats_days, stats_weeks, stats_remaining)
 
-    @expose(help='Get data, crunch numbers, do stuff', aliases=['run'])
-    def default(self):
+    @expose(help='Get data, crunch numbers, do stuff')
+    def run(self):
         config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, config.config_path + 'run.log')
 
