@@ -30,25 +30,25 @@ class StatsRemaining(object):
         date_current = self.time.get_current_date()
 
         remaining = {
-            'points': self.remaining_work['points']
+            self.config.get_config_value('stats_metric'): self.remaining_work[self.config.get_config_value('stats_metric')]
             , 'datetime': date_current
             , 'types': self.remaining_work['types']
             , 'assignees': self.remaining_work['assignees']
             , 'days_to_completion': {}
         }
-        self.log.info('Remaining number of story points: ' + str(remaining['points']))
+        self.log.info('Remaining number of story ' + self.config.get_config_value('stats_metric') + ': ' + str(remaining[self.config.get_config_value('stats_metric')]))
         for week_stat in current_week['stats']:
-            avg_points_per_day = current_week['stats'][week_stat]['avg'] / 5
-            remaining_days = round(float(remaining['points']) / float(avg_points_per_day), 1)
-            self.log.info('Over period: ' + str(week_stat) + ', average points per day was: ' + str(
-                avg_points_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
+            avg_elements_per_day = current_week['stats'][week_stat]['avg'] / 5
+            remaining_days = round(float(remaining[self.config.get_config_value('stats_metric')]) / float(avg_elements_per_day), 1)
+            self.log.info('Over period: ' + str(week_stat) + ', average ' + self.config.get_config_value('stats_metric') + ' per day was: ' + str(
+                avg_elements_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
             remaining['days_to_completion'][week_stat] = remaining_days
 
-        current_points_per_day = current_week['points'] / current_week['days']
-        remaining_days = round(remaining['points'] / current_points_per_day, 1)
+        current_element_per_day = current_week[self.config.get_config_value('stats_metric')] / current_week['days']
+        remaining_days = round(remaining[self.config.get_config_value('stats_metric')] / current_element_per_day, 1)
         remaining['days_to_completion']['current'] = remaining_days
-        self.log.info('This week, average points per day is: ' + str(
-            current_points_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
+        self.log.info('This week, average ' + self.config.get_config_value('stats_metric') + ' per day is: ' + str(
+            current_element_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
 
         # Load previous data and add current day (if already there, replace)
         daily_data = collections.OrderedDict()

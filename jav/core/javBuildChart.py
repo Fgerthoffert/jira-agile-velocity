@@ -18,13 +18,13 @@ class BuildChart(object):
 
         # Velocity Days
         x_dates = []
-        y_points = []
+        y_values = []
         y_avg = []
         x_dates_display = []
         for scan_day in stats_data:
             x_dates.append(stats_data[scan_day]['datetime'])
             x_dates_display.append(stats_data[scan_day]['datetime'].strftime('%a %b %d, %Y'))
-            y_points.append(stats_data[scan_day]['points'])
+            y_values.append(stats_data[scan_day][self.config.get_config_value('stats_metric')])
             week_idx = '4'
             if week_idx not in stats_data[scan_day]['anyday']:
                 week_idx = 4
@@ -39,8 +39,8 @@ class BuildChart(object):
         source = ColumnDataSource(
             data=dict(
                 x_data_dates=data_dates,
-                y_points=y_points,
-                y_avg_points=y_avg,
+                y_values=y_values,
+                y_avg_values=y_avg,
                 x_dates_display=x_dates_display
             )
         )
@@ -49,24 +49,29 @@ class BuildChart(object):
         hover = HoverTool(
             tooltips=[
                 ('Date', '@x_dates_display'),
-                ('Points', '@y_points'),
-                ('Average', '@y_avg_points'),
+                (self.config.get_config_value('stats_metric').capitalize(), '@y_values'),
+                ('Average', '@y_avg_values'),
             ]
         )
 
         # create a new plot with a a datetime axis type
         p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover])
 
+        if self.config.get_config_value('stats_metric') == 'tickets':
+            metric_legend = 'Tickets'
+        else:
+            metric_legend = 'Story Points'
+
         # add renderers
-        p.circle('x_data_dates', 'y_points', size=4, color='red', alpha=0.4, legend='Story Points', source=source)
-        p.line('x_data_dates', 'y_avg_points', color='blue', legend='4 Weeks Average', source=source)
+        p.circle('x_data_dates', 'y_values', size=4, color='red', alpha=0.4, legend=metric_legend, source=source)
+        p.line('x_data_dates', 'y_avg_values', color='blue', legend='4 Weeks Average', source=source)
 
         # NEW: customize by setting attributes
         p.title.text = 'Daily Velocity'
         p.legend.location = 'top_left'
         p.grid.grid_line_alpha = 0
         p.xaxis.axis_label = 'Days (Monday-Friday)'
-        p.yaxis.axis_label = 'Story Points'
+        p.yaxis.axis_label = metric_legend
         p.ygrid.band_fill_color = 'olive'
         p.ygrid.band_fill_alpha = 0.1
 
@@ -77,15 +82,15 @@ class BuildChart(object):
 
         # Velocity Days
         x_dates = []
-        y_points = []
+        y_values = []
         y_avg = []
         y_weeks = []
         daily_avg = []
         for scan_day in stats_data:
             x_dates.append(stats_data[scan_day]['datetime'])
-            y_points.append(stats_data[scan_day]['points'])
+            y_values.append(stats_data[scan_day][self.config.get_config_value('stats_metric')])
             y_weeks.append(stats_data[scan_day]['weektxt'])
-            daily_avg.append(round(float(stats_data[scan_day]['points']) / 5, 1))
+            daily_avg.append(round(float(stats_data[scan_day][self.config.get_config_value('stats_metric')]) / 5, 1))
 
             if len(stats_data[scan_day]['stats']) > 0:
                 week_idx = '4'
@@ -102,8 +107,8 @@ class BuildChart(object):
         source = ColumnDataSource(
             data=dict(
                 x_data_dates=data_dates,
-                y_points=y_points,
-                y_avg_points=y_avg,
+                y_values=y_values,
+                y_avg_values=y_avg,
                 y_weeks=y_weeks,
                 daily_avg=daily_avg,
             )
@@ -113,27 +118,30 @@ class BuildChart(object):
         hover = HoverTool(
             tooltips=[
                 ('Week', '@y_weeks'),
-                ('Points', '@y_points'),
-                ('Avg points per week', '@y_avg_points'),
-                ('Avg points per day', '@daily_avg'),
+                (self.config.get_config_value('stats_metric').capitalize(), '@y_values'),
+                ('Avg ' + self.config.get_config_value('stats_metric') + ' per week', '@y_avg_values'),
+                ('Avg ' + self.config.get_config_value('stats_metric') + ' per day', '@daily_avg'),
             ]
         )
 
         # create a new plot with a a datetime axis type
         p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover])
 
+        if self.config.get_config_value('stats_metric') == 'tickets':
+            metric_legend = 'Tickets'
+        else:
+            metric_legend = 'Story Points'
+
         # add renderers
-        #p.circle(data_dates, y_points, size=4, color='red', alpha=0.4, legend='Story Points')
-        #p.line(data_dates, y_avg, color='blue', legend='4 Weeks Average')
-        p.circle('x_data_dates', 'y_points', size=4, color='red', alpha=0.4, legend='Story Points', source=source)
-        p.line('x_data_dates', 'y_avg_points', color='blue', legend='4 Weeks Average', source=source)
+        p.circle('x_data_dates', 'y_values', size=4, color='red', alpha=0.4, legend=metric_legend, source=source)
+        p.line('x_data_dates', 'y_avg_values', color='blue', legend='4 Weeks Average', source=source)
 
         # NEW: customize by setting attributes
         p.title.text = 'Weekly Velocity'
         p.legend.location = 'top_left'
         p.grid.grid_line_alpha = 0
         p.xaxis.axis_label = 'Weeks'
-        p.yaxis.axis_label = 'Story Points'
+        p.yaxis.axis_label = metric_legend
         p.ygrid.band_fill_color = 'olive'
         p.ygrid.band_fill_alpha = 0.1
 
@@ -145,18 +153,18 @@ class BuildChart(object):
         plot_data = {}
         for scan_day in stats_data:
             plot_data['type'] = []
-            plot_data['points'] = []
-            total_points = stats_data[scan_day]['points']
+            plot_data[self.config.get_config_value('stats_metric')] = []
+            total_metric = stats_data[scan_day][self.config.get_config_value('stats_metric')]
             for assignee in stats_data[scan_day]['types']:
                 plot_data['type'].append(stats_data[scan_day]['types'][assignee]['type'])
-                plot_data['points'].append(stats_data[scan_day]['types'][assignee]['points'])
+                plot_data[self.config.get_config_value('stats_metric')].append(stats_data[scan_day]['types'][assignee][self.config.get_config_value('stats_metric')])
             break
 
         bar = Bar(
             plot_data
-            , values='points'
+            , values=self.config.get_config_value('stats_metric')
             , label='type'
-            , title='Remaining points per Ticket Type (Total: ' + str(total_points) + ')'
+            , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Ticket Type (Total: ' + str(total_metric) + ')'
             , tools='save,pan,box_zoom,reset'
             , legend=None
             , color='green'
@@ -169,19 +177,19 @@ class BuildChart(object):
 
         plot_data = {}
         for scan_day in stats_data:
-            total_points = stats_data[scan_day]['points']
+            total_metric = stats_data[scan_day][self.config.get_config_value('stats_metric')]
             plot_data['assignee'] = []
-            plot_data['points'] = []
+            plot_data[self.config.get_config_value('stats_metric')] = []
             for assignee in stats_data[scan_day]['assignees']:
                 plot_data['assignee'].append(stats_data[scan_day]['assignees'][assignee]['displayName'])
-                plot_data['points'].append(stats_data[scan_day]['assignees'][assignee]['points'])
+                plot_data[self.config.get_config_value('stats_metric')].append(stats_data[scan_day]['assignees'][assignee][self.config.get_config_value('stats_metric')])
             break
 
         bar = Bar(
             plot_data
-            , values='points'
+            , values=self.config.get_config_value('stats_metric')
             , label='assignee'
-            , title='Remaining points per Jira Assignee (Total: ' + str(total_points) + ')'
+            , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Jira Assignee (Total: ' + str(total_metric) + ')'
             , tools='save,pan,box_zoom,reset'
             , legend=None
             , color='blue'

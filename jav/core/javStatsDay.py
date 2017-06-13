@@ -9,8 +9,8 @@ class StatsDay(object):
     """
         The main function of this class goes through all the data points and break it down by day
         It then calculate various metrics for this particular week
-        It also look in history to extract trend and evolution over time (such as evolution of the weekly story points
-        average over time)
+        It also look in history to extract trend and evolution over time (such as evolution of the weekly story points 
+        or tickets average over time)
     """
 
     def __init__(self, log, config, daily_data):
@@ -51,11 +51,11 @@ class StatsDay(object):
                     for stats_type in ['anyday', 'sameday']:
                         same_weekday = False
                         if stats_type == 'anyday':
-                            self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day]['points'])
+                            self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
                         elif self.daily_data[current_day]['datetime'].strftime('%A') == self.daily_data[scan_day][
                             'datetime'].strftime('%A') and stats_type == 'sameday':
                             same_weekday = True
-                            self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day]['points'])
+                            self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
 
                         if self.days[day_txt][stats_type]['all']['values']:
                             self.days[day_txt][stats_type]['all']['avg'] = int(
@@ -76,7 +76,7 @@ class StatsDay(object):
                             if (stats_type == 'anyday' and in_range is True) or (
                                             in_range is True and same_weekday is True):
                                 self.days[day_txt][stats_type][week_idx]['values'].append(
-                                    self.daily_data[scan_day]['points'])
+                                    self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
                                 self.days[day_txt][stats_type][week_idx]['avg'] = int(
                                     numpy.mean(self.days[day_txt][stats_type]['all']['values']))
                                 self.days[day_txt][stats_type][week_idx]['min'] = min(

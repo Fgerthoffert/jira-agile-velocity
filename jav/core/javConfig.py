@@ -85,8 +85,7 @@ class Config(object):
                 }
                 , 'stats_metric': {
                     'type': 'string'
-                    ,
-                    'description': 'Type of metric to be used for charts creation and messages'
+                    , 'description': 'Type of metric to be used to calculate stats, build charts and messages (points or tickets)'
                     , 'default': 'points'
                 }
                 , 'git_repo': {

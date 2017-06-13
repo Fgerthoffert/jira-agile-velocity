@@ -1,5 +1,5 @@
 import slackweb
-
+import json
 
 class Msg(object):
     """
@@ -25,40 +25,47 @@ class Msg(object):
         remaining = []
         for scan_day in stats_remaining:
             remaining = stats_remaining[scan_day]['days_to_completion']
-            remaining_pts = stats_remaining[scan_day]['points']
+            remaining_pts = stats_remaining[scan_day][self.config.get_config_value('stats_metric')]
             break
         for scan_day in stats_days:
             daily_velocity = stats_days[scan_day]
-            daily_points = stats_days[scan_day]['points']
+            daily_metric = stats_days[scan_day][self.config.get_config_value('stats_metric')]
             day_txt = stats_days[scan_day]['daytxt']
             break
         for scan_week in stats_weeks:
             week_txt = stats_weeks[scan_week]['weektxt']
             weekly_velocity = stats_weeks[scan_week]['stats']
-            weekly_points = stats_weeks[scan_week]['points']
+            weekly_metric = stats_weeks[scan_week][self.config.get_config_value('stats_metric')]
             break
 
-        if daily_points > daily_velocity['sameday']['4']['avg']:
+        if daily_metric > daily_velocity['sameday']['4']['avg']:
             trend_day = ':arrow_upper_right: '
-        elif daily_points < daily_velocity['sameday']['4']['avg']:
+        elif daily_metric < daily_velocity['sameday']['4']['avg']:
             trend_day = ':arrow_lower_right:'
         else:
             trend_day = ':arrow_right:'
-        if weekly_points > weekly_velocity['4']['avg']:
+        if weekly_metric > weekly_velocity['4']['avg']:
             trend_week = ':arrow_upper_right: '
-        elif weekly_points < weekly_velocity['4']['avg']:
+        elif weekly_metric < weekly_velocity['4']['avg']:
             trend_week = ':arrow_lower_right:'
         else:
             trend_week = ':arrow_right:'
+
+        if self.config.get_config_value('stats_metric') == 'tickets':
+            metric_legend = 'Tickets'
+            metric_short = 'tix'
+        else:
+            metric_legend = 'Story Points'
+            metric_short = 'pts'
 
         self.slack_msg('Hello everyone, here are our velocity stats, <'
                        + self.config.get_config_value('git_pageurl')
                        + '|live from Jira>.'
                        + '\n'
-                       + 'Remaining story points: *'
+                       + 'Remaining ' + metric_legend + ': *'
                        + str(remaining_pts)
                        + '*\n'
-                       + 'Completed on ' + day_txt + ': ' + str(daily_points) + ' pts ['
+                       + 'Completed on ' + day_txt + ': ' + str(daily_metric) + ' ' + metric_short + ' ['
                        + 'Max: ' + str(daily_velocity['sameday']['4']['max'])
                        + ' / '
                        + 'Min: ' + str(daily_velocity['sameday']['4']['min'])
@@ -67,7 +74,7 @@ class Msg(object):
                        + '] '
                        + trend_day
                        + '\n'
-                       + 'Completed this week (' + week_txt + '): ' + str(weekly_points) + ' pts ('
+                       + 'Completed this week (' + week_txt + '): ' + str(weekly_metric) + ' ' + metric_short + ' ('
                        + 'Max: ' + str(weekly_velocity['4']['max'])
                        + ' / '
                        + 'Min: ' + str(weekly_velocity['4']['min'])
@@ -80,7 +87,7 @@ class Msg(object):
                        + str(round(remaining['4'], 1))
                        + ' days'
                        + '*\n'
-                       + '_Most numbers are calculated over the previous 4 weeks, excluding current day/week_'
+                       + '_Most numbers are calculated over previous 4 weeks, excluding current day/week_'
                        )
 
     def slack_msg(self, msg):

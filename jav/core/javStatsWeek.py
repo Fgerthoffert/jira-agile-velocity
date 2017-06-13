@@ -8,7 +8,8 @@ class StatsWeek(object):
     """
         The main function of this class goes through all the data points and break it down by week
         It then calculate various metrics for this particular week
-        It also look in history to extract trend and evolution over time (such as evolution of the weekly story points average over time)
+        It also look in history to extract trend and evolution over time (such as evolution of the weekly story points 
+        or tickets average over time)
     """
 
     def __init__(self, log, config, daily_data):
@@ -38,9 +39,9 @@ class StatsWeek(object):
                     , 'weektxt': week_txt
                     , 'stats': {}
                 }
-            self.weeks_data[week_txt]['values'].append(self.daily_data[current_day]['points'])
+            self.weeks_data[week_txt]['values'].append(self.daily_data[current_day][self.config.get_config_value('stats_metric')])
             self.weeks_data[week_txt]['days'] = len(self.weeks_data[week_txt]['values'])
-            self.weeks_data[week_txt]['points'] = sum(self.weeks_data[week_txt]['values'])
+            self.weeks_data[week_txt][self.config.get_config_value('stats_metric')] = sum(self.weeks_data[week_txt]['values'])
 
         # Second pass, get min and max since 'beginning of time'
         for week_txt in self.weeks_data:
@@ -52,7 +53,7 @@ class StatsWeek(object):
                         self.weeks_data[week_txt]['stats']['all'] = {
                             'values': []
                         }
-                    self.weeks_data[week_txt]['stats']['all']['values'].append(self.weeks_data[scan_week]['points'])
+                    self.weeks_data[week_txt]['stats']['all']['values'].append(self.weeks_data[scan_week][self.config.get_config_value('stats_metric')])
                     self.weeks_data[week_txt]['stats']['all']['avg'] = int(
                         numpy.mean(self.weeks_data[week_txt]['stats']['all']['values']))
                     self.weeks_data[week_txt]['stats']['all']['max'] = max(
@@ -66,7 +67,7 @@ class StatsWeek(object):
                                     'values': []
                                 }
                             self.weeks_data[week_txt]['stats'][week_idx]['values'].append(
-                                self.weeks_data[scan_week]['points'])
+                                self.weeks_data[scan_week][self.config.get_config_value('stats_metric')])
                             self.weeks_data[week_txt]['stats'][week_idx]['avg'] = int(
                                 numpy.mean(self.weeks_data[week_txt]['stats'][week_idx]['values']))
                             self.weeks_data[week_txt]['stats'][week_idx]['max'] = max(
