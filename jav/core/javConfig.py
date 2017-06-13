@@ -252,12 +252,20 @@ class Config(object):
             value_suggested = value_current
 
         # Note: https://stackoverflow.com/questions/10885537/raw-input-has-been-eliminated-from-python-3-2
+        # https://stackoverflow.com/questions/21731043/use-of-input-raw-input-in-python-2-and-3
+        try:
+            input = raw_input
+        except NameError:
+            pass
+        
         try:
             config_value = input('[' + str(value_suggested) + ']:')
         except Exception as ex:
             # If exception, we consider the value to be empty (fallback to default)
             self.log.debug(ex.message)
             config_value = ''
+
+        self.log.debug('Received value: ' + config_value)
 
         if config_value == '' and value_suggested is not None:
             config_value = value_suggested
