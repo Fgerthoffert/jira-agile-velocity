@@ -63,16 +63,6 @@ class ImportData(object):
         self.log.info('ImportData.load_data_completion(): Loading data from cache file: ' + self.config.filepath_data_completion)
         daily_data = Files(self.log).jsonl_load(self.config.filepath_data_completion)
 
-        # daily_data = collections.OrderedDict()
-        # if os.path.isfile(self.config.filepath_data_completion):
-        #     for line in open(self.config.filepath_data_completion).readlines():
-        #         current_stats_line = json.loads(line)
-        #         current_stats_line['datetime'] = dateutil.parser.parse(current_stats_line['datetime'])
-        #         dict_idx = current_stats_line['datetime'].strftime('%Y%m%d')
-        #         daily_data[dict_idx] = current_stats_line
-        # else:
-        #     self.log.info('ImportData.load_data_completion(): Nothing to load, cache file does not exist')
-
         self.log.debug(daily_data)
         return daily_data
 

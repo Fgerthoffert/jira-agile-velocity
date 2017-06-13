@@ -6,16 +6,16 @@ class Msg(object):
         Display messages to console or send to slack depending of the user selected mode
     """
 
-    def __init__(self, log, config, silent):
+    def __init__(self, log, config, send):
         self.log = log
         self.config = config
-        self.__silent = silent
-        if not self.silent:
+        self.__send = send
+        if self.send:
             self.__slack = slackweb.Slack(url=self.config.get_config_value('slack_webhook'))
 
     @property
-    def silent(self):
-        return self.__silent
+    def send(self):
+        return self.__send
 
     @property
     def slack(self):
@@ -92,5 +92,5 @@ class Msg(object):
 
     def slack_msg(self, msg):
         self.log.info(msg)
-        if not self.silent:
+        if self.send:
             self.slack.notify(text=msg, channel=self.config.get_config_value('slack_channel'))

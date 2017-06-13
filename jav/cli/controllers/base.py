@@ -20,8 +20,8 @@ class javBaseController(ArgparseController):
         description = 'Connect to Jira REST API to collect completed story points, calculate weekly velocity, and estimate completion date'
         arguments = [
             (
-                ['-s', '--silent'],
-                dict(help='Do not send message to slack', action='store_true')
+                ['-s', '--send'],
+                dict(help='Send message to slack, by default prints to console', action='store_true')
             ),
             (
                 ['-p', '--path'],
@@ -87,10 +87,10 @@ class javBaseController(ArgparseController):
         crunch = Crunch(self.app.log, config)
         stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
 
-        Msg(self.app.log, config, self.app.pargs.silent).publish(stats_days, stats_weeks, stats_remaining)
+        Msg(self.app.log, config, self.app.pargs.send).publish(stats_days, stats_weeks, stats_remaining)
 
-    @expose(help='Get data, crunch numbers, do stuff')
-    def run(self):
+    @expose(help='Get data, crunch numbers, do stuff', aliases=['run'])
+    def default(self):
         config = Config(self.app.log, self.app.pargs.path_config)
         LogConfig(self.app.log, self.app.config, config.config_path + 'run.log')
 
@@ -113,7 +113,7 @@ class javBaseController(ArgparseController):
         stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
 
         # Message Team
-        Msg(self.app.log, config, self.app.pargs.silent).publish(stats_days, stats_weeks, stats_remaining)
+        Msg(self.app.log, config, self.app.pargs.send).publish(stats_days, stats_weeks, stats_remaining)
 
 
 
