@@ -38,8 +38,19 @@ class Jira(object):
         headers = {
             "Content-Type": "application/json",
         }
+
+        fields = [
+            'assignee'
+            , 'issuetype'
+        ]
+        if self.config.get_config_value('jira_field_points') is not None:
+            fields.append(self.config.get_config_value('jira_field_points'))
+
         params = (
             ("jql", jql_query),
+            ("startAt", 0),
+            ("maxResults", 1500),
+            ("fields", fields),
         )
         try:
             tickets = requests.get(self.config.get_config_value('jira_host') + "/rest/api/2/search", headers=headers,
