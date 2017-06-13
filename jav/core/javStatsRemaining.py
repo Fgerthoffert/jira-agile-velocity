@@ -38,7 +38,7 @@ class StatsRemaining(object):
         }
         self.log.info('Remaining number of story ' + self.config.get_config_value('stats_metric') + ': ' + str(remaining[self.config.get_config_value('stats_metric')]))
         for week_stat in current_week['stats']:
-            avg_elements_per_day = current_week['stats'][week_stat]['avg'] / 5
+            avg_elements_per_day = float(current_week['stats'][week_stat]['avg']) / 5
             remaining_days = round(float(remaining[self.config.get_config_value('stats_metric')]) / float(avg_elements_per_day), 1)
             self.log.info('Over period: ' + str(week_stat) + ', average ' + self.config.get_config_value('stats_metric') + ' per day was: ' + str(
                 avg_elements_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
