@@ -116,9 +116,8 @@ class ImportData(object):
         story_points = None
         try:
             story_points = int(issue['fields'][jira_points_field])
-        except Exception as ex:
+        except Exception:
             self.log.debug('Ticket missing story points')
-            self.log.debug(ex.message)
             self.log.debug(issue)
 
         return story_points

@@ -7,8 +7,9 @@ from cement.core import foundation
 class TestImportData(TestCase):
 
     @mock.patch('jav.core.javConfig')
-    def test_get_story_point(self, mock_Config):
-        mock_Config.get_config_value.return_value = 'jira_points_field'
+    def test_get_story_point(self, mock_config):
+        #mock_config.get_config_value.return_value = 'jira_points_field'
+        mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
 
         # App init, necessary to get to the logging service
         app = foundation.CementApp('myapp')
@@ -16,7 +17,7 @@ class TestImportData(TestCase):
         app.run()
 
         # Init the Import Data Class
-        import_data = ImportData(app.log, mock_Config)
+        import_data = ImportData(app.log, mock_config)
 
         # If field exists and send 1, should return 1
         self.assertEqual(import_data.get_story_points({'fields':{'jira_points_field': 1}}), 1)
