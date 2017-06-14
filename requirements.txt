@@ -10,3 +10,6 @@ numpy
 jsonschema
 bokeh
 pandas
+mock
+coverage
+nose

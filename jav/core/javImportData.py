@@ -110,35 +110,28 @@ class ImportData(object):
 
         return daily_data
 
-    def get_story_point(self, issue):
+    def get_story_points(self, issue):
+        """Return the number of story points of a particular JIRA issue"""
         jira_points_field = self.config.get_config_value('jira_field_points')
-        if jira_points_field not in issue['fields'] or issue['fields'][jira_points_field] is None:
+        story_points = None
+        try:
+            story_points = int(issue['fields'][jira_points_field])
+        except Exception as ex:
             self.log.debug('Ticket missing story points')
+            self.log.debug(ex.message)
             self.log.debug(issue)
-            return None
-        else:
-            return int(issue['fields'][jira_points_field])
 
-        # points = 0
-        # try:
-        #     points = points + issue['fields'][jira_points_field]
-        # except Exception as ex:
-        #     # KeyError
-        #     template = 'An exception of type {0} occurred. Arguments:\n{1!r}'
-        #     message = template.format(type(ex).__name__, ex.args)
-        #     self.log.info('WARNING: Ticket missing story points')
-        #     self.log.info(message)
-        #     self.log.info(json.dumps(issue))
-        # return points
+        return story_points
 
     def story_types_count(self, issues_list):
+        """Return a break down of story points per ticket type"""
         self.log.info('ImportData.story_types_count(): Counting story points per ticket type')
         issues_types = {}
         for issue in issues_list:
             type_name = issue['fields']['issuetype']['name']
             if type_name not in issues_types:
                 issues_types[type_name] = {'type': type_name, 'points': 0, 'tickets': 0}
-            issue_points = self.get_story_point(issue)
+            issue_points = self.get_story_points(issue)
             if issue_points is not None:
                 issues_types[type_name]['points'] = int(issues_types[type_name]['points'] + issue_points)
             issues_types[type_name]['tickets'] = int(issues_types[type_name]['tickets'] + 1)
@@ -156,7 +149,7 @@ class ImportData(object):
                 name_display = issue['fields']['assignee']['displayName']
             if name not in assignees:
                 assignees[name] = {'displayName': name_display, 'points': 0, 'tickets': 0}
-            issue_points = self.get_story_point(issue)
+            issue_points = self.get_story_points(issue)
             if issue_points is not None:
                 assignees[name]['points'] = int(assignees[name]['points'] + issue_points)
             assignees[name]['tickets'] = int(assignees[name]['tickets'] + 1)
@@ -166,7 +159,7 @@ class ImportData(object):
         self.log.info('ImportData.count_story_points(): Counting total story points in a list of tickets')
         points = 0
         for issue in issues_list:
-            issue_points = self.get_story_point(issue)
+            issue_points = self.get_story_points(issue)
             if issue_points is not None:
                 points = points + issue_points
         return int(points)
