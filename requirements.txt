@@ -1,7 +1,7 @@
 cement>=2.10.0
 pyyaml
 requests
-spicy
+#spicy
 slackweb
 tabulate
 python-dateutil
