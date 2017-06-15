@@ -6,15 +6,31 @@ from cement.core import foundation
 
 class TestImportData(TestCase):
 
+    def get_app(self):
+        """App init, necessary to get to the logging service"""
+        app = foundation.CementApp('myapp')
+        app.setup()
+        app.run()
+        return app
+
+    def get_jira_issues(self):
+        """Return a simplify list simulating a JIRA response"""
+        jira_issues = [
+            {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 10}}
+            , {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 20}}
+            , {'fields': {'issuetype': {'name': 'defect'}}}
+            , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 2}}
+            , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 5}}
+        ]
+        return jira_issues
+
     @mock.patch('jav.core.javConfig')
     def test_get_story_point(self, mock_config):
         #mock_config.get_config_value.return_value = 'jira_points_field'
         mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
 
         # App init, necessary to get to the logging service
-        app = foundation.CementApp('myapp')
-        app.setup()
-        app.run()
+        app = self.get_app()
 
         # Init the Import Data Class
         import_data = ImportData(app.log, mock_config)
@@ -30,19 +46,11 @@ class TestImportData(TestCase):
         mock_Config.get_config_value.return_value = 'jira_points_field'
 
         # App init, necessary to get to the logging service
-        app = foundation.CementApp('myapp')
-        app.setup()
-        app.run()
+        app = self.get_app()
 
         # Init the Import Data Class
         import_data = ImportData(app.log, mock_Config)
-        jira_issues = [
-            {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 10}}
-            , {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 20}}
-            , {'fields': {'issuetype': {'name': 'defect'}}}
-            , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 2}}
-            , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 5}}
-        ]
+        jira_issues = self.get_jira_issues()
 
         # Send a couple of issues and ensure returned value are correct
         self.assertEqual(import_data.story_types_count(jira_issues), {'story': {'tickets': 2, 'points': 7, 'type': 'story'}, 'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}})
