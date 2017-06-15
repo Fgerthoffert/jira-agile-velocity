@@ -50,7 +50,10 @@ class TestImportData(TestCase):
 
         # Init the Import Data Class
         import_data = ImportData(app.log, mock_Config)
-        jira_issues = self.get_jira_issues()
 
         # Send a couple of issues and ensure returned value are correct
-        self.assertEqual(import_data.story_types_count(jira_issues), {'story': {'tickets': 2, 'points': 7, 'type': 'story'}, 'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}})
+        self.assertEqual(import_data.story_types_count(self.get_jira_issues()), {'story': {'tickets': 2, 'points': 7, 'type': 'story'}, 'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}})
+
+
+
+

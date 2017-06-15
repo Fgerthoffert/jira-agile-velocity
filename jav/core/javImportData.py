@@ -23,14 +23,8 @@ class ImportData(object):
         self.config = config
         self.jira = Jira(self.log, self.config)
 
-    def calculate_velocity(self, issues_list):
-        velocity = collections.OrderedDict()
-        velocity['points'] = self.count_story_points(issues_list['issues'])
-        velocity['tickets'] = len(issues_list['issues'])
-        return velocity
-
     def write_dailydata_cache(self, daily_data):
-        """Write an ordered dict into a JSONL file"""
+        """Write an ordered dict into a JSONL file, converting datetime to isoformat"""
         self.log.info('ImportData.write_dailydata_cache(): Write back daily data cache to file: ' + self.config.filepath_data_completion)
 
         if os.path.isfile(self.config.filepath_data_completion):
@@ -40,19 +34,6 @@ class ImportData(object):
             daily_obj = copy.deepcopy(daily_data[currentdata])
             daily_obj['datetime'] = daily_data[currentdata]['datetime'].isoformat()
             Files(self.log).jsonl_append(self.config.filepath_data_completion, daily_obj)
-
-    def load_data_remaining(self):
-        """
-        Load data from the cache into an object.
-
-        :return: An Object containing daily results
-        """
-        self.log.info('ImportData.load_data_remaining(): Loading data from cache file: ' + self.config.filepath_data_remaining)
-        data_remaining = Files(self.log).json_load(self.config.filepath_data_remaining)
-        if data_remaining is None:
-            self.log.info('ImportData.load_data_remaining(): Nothing to load, cache file does not exist')
-        self.log.debug(data_remaining)
-        return data_remaining
 
     def load_data_completion(self):
         """

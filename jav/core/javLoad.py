@@ -2,6 +2,8 @@ from jav.core.javConfig import Config
 from jav.core.javLogConfig import LogConfig
 from jav.core.javImportData import ImportData
 from jav.core.javTime import Time
+from jav.core.javFiles import Files
+
 
 
 class Load(object):
@@ -40,7 +42,10 @@ class Load(object):
         loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
         daily_data = loader.load_data_completion()
-        remaining_work = loader.load_data_remaining()
+        remaining_work = Files(self.log).json_load(self.config.filepath_data_remaining)
+        if remaining_work is None:
+            self.log.error('Unable to load remaining work, please run \'jav load\' first')
+            exit()
 
         return daily_data, remaining_work
 
