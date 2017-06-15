@@ -1,6 +1,6 @@
 import numpy as np
 
-from bokeh.charts import Bar, output_file, save
+from bokeh.charts import Bar, output_file, save, show
 from bokeh.layouts import layout
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.models import HoverTool
@@ -244,3 +244,4 @@ class BuildChart(object):
         output_file(self.config.filepath_charts + 'index.html',
                     title='Jira Metrics, built on: ' + self.time.get_current_date().isoformat())
         save(bokeh_layout)
+        show(bokeh_layout)
