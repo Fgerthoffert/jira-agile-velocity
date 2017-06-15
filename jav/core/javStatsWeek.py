@@ -4,6 +4,7 @@ import os
 import copy
 from jav.core.javFiles import Files
 
+
 class StatsWeek(object):
     """
         The main function of this class goes through all the data points and break it down by week
@@ -39,9 +40,11 @@ class StatsWeek(object):
                     , 'weektxt': week_txt
                     , 'stats': {}
                 }
-            self.weeks_data[week_txt]['values'].append(self.daily_data[current_day][self.config.get_config_value('stats_metric')])
+            self.weeks_data[week_txt]['values'].append(
+                self.daily_data[current_day][self.config.get_config_value('stats_metric')])
             self.weeks_data[week_txt]['days'] = len(self.weeks_data[week_txt]['values'])
-            self.weeks_data[week_txt][self.config.get_config_value('stats_metric')] = sum(self.weeks_data[week_txt]['values'])
+            self.weeks_data[week_txt][self.config.get_config_value('stats_metric')] = sum(
+                self.weeks_data[week_txt]['values'])
 
         # Second pass, get min and max since 'beginning of time'
         for week_txt in self.weeks_data:
@@ -53,7 +56,8 @@ class StatsWeek(object):
                         self.weeks_data[week_txt]['stats']['all'] = {
                             'values': []
                         }
-                    self.weeks_data[week_txt]['stats']['all']['values'].append(self.weeks_data[scan_week][self.config.get_config_value('stats_metric')])
+                    self.weeks_data[week_txt]['stats']['all']['values'].append(
+                        self.weeks_data[scan_week][self.config.get_config_value('stats_metric')])
                     self.weeks_data[week_txt]['stats']['all']['avg'] = int(
                         numpy.mean(self.weeks_data[week_txt]['stats']['all']['values']))
                     self.weeks_data[week_txt]['stats']['all']['max'] = max(
@@ -92,6 +96,5 @@ class StatsWeek(object):
             week_obj['datetime'] = self.weeks_data[week_txt]['datetime'].isoformat()
 
             Files(self.log).jsonl_append(self.config.filepath_stats_weeks, week_obj)
-
 
         return self.weeks_data

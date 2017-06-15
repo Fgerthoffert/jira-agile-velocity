@@ -51,11 +51,13 @@ class StatsDay(object):
                     for stats_type in ['anyday', 'sameday']:
                         same_weekday = False
                         if stats_type == 'anyday':
-                            self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
+                            self.days[day_txt][stats_type]['all']['values'].append(
+                                self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
                         elif self.daily_data[current_day]['datetime'].strftime('%A') == self.daily_data[scan_day][
                             'datetime'].strftime('%A') and stats_type == 'sameday':
                             same_weekday = True
-                            self.days[day_txt][stats_type]['all']['values'].append(self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
+                            self.days[day_txt][stats_type]['all']['values'].append(
+                                self.daily_data[scan_day][self.config.get_config_value('stats_metric')])
 
                         if self.days[day_txt][stats_type]['all']['values']:
                             self.days[day_txt][stats_type]['all']['avg'] = int(
