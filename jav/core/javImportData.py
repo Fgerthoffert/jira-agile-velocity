@@ -35,18 +35,6 @@ class ImportData(object):
             daily_obj['datetime'] = daily_data[currentdata]['datetime'].isoformat()
             Files(self.log).jsonl_append(self.config.filepath_data_completion, daily_obj)
 
-    def load_data_completion(self):
-        """
-        Load data from the cache into an ordered dict.
-
-        :return: An OrderedDict containing daily results
-        """
-        self.log.info('ImportData.load_data_completion(): Loading data from cache file: ' + self.config.filepath_data_completion)
-        daily_data = Files(self.log).jsonl_load(self.config.filepath_data_completion)
-
-        self.log.debug(daily_data)
-        return daily_data
-
     def refresh_dailydata_cache(self, previous_data_cache, date_start, date_end):
         self.log.info('ImportData.refresh_dailydata_cache(): start')
         daily_data = collections.OrderedDict()

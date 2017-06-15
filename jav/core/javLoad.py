@@ -26,7 +26,7 @@ class Load(object):
 
         loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
-        previous_data = loader.load_data_completion()
+        previous_data = Files(self.log).jsonl_load(self.config.filepath_data_completion)
         # Refresh the cache by checking if additional days can be added
         daily_data = loader.refresh_dailydata_cache(previous_data, date_start, date_end)
         # Write back the data cache to file after clearing any existing one
@@ -41,10 +41,10 @@ class Load(object):
         self.log.info('Load daily data and remaining work from cache')
         loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
-        daily_data = loader.load_data_completion()
+        daily_data = Files(self.log).jsonl_load(self.config.filepath_data_completion)
         remaining_work = Files(self.log).json_load(self.config.filepath_data_remaining)
-        if remaining_work is None:
-            self.log.error('Unable to load remaining work, please run \'jav load\' first')
+        if remaining_work is None or daily_data is None:
+            self.log.error('Unable to load cached data, please run \'jav load\' first')
             exit()
 
         return daily_data, remaining_work
