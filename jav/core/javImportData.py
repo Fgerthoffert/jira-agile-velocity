@@ -21,7 +21,15 @@ class ImportData(object):
     def __init__(self, log, config):
         self.log = log
         self.config = config
-        self.jira = Jira(self.log, self.config)
+        self.__jira = Jira(self.log, self.config)
+
+    @property
+    def jira(self):
+        return self.__jira
+
+    @jira.setter
+    def jira(self, jiraClass):
+        self.__jira = jiraClass
 
     def write_dailydata_cache(self, daily_data):
         """Write an ordered dict into a JSONL file, converting datetime to isoformat"""
@@ -67,6 +75,7 @@ class ImportData(object):
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Obtaining daily data')
                     issues_list = self.jira.get_completed_tickets(date_current)
+                    self.log.info(issues_list)
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Calculating stats')
                     daily_obj = {
@@ -99,7 +108,7 @@ class ImportData(object):
 
     def story_types_count(self, issues_list):
         """Return a break down of story points per ticket type"""
-        self.log.info('ImportData.story_types_count(): Counting story points per ticket type')
+        self.log.debug('ImportData.story_types_count(): Counting story points per ticket type')
         issues_types = {}
         for issue in issues_list:
             type_name = issue['fields']['issuetype']['name']
@@ -112,7 +121,7 @@ class ImportData(object):
         return issues_types
 
     def assignee_count(self, issues_list):
-        self.log.info('ImportData.assignee_count(): Counting story points per assignees')
+        self.log.debug('ImportData.assignee_count(): Counting story points per assignees')
         assignees = {}
         for issue in issues_list:
             if issue['fields']['assignee'] is None:
@@ -130,7 +139,8 @@ class ImportData(object):
         return assignees
 
     def count_story_points(self, issues_list):
-        self.log.info('ImportData.count_story_points(): Counting total story points in a list of tickets')
+        """Count the total number of story points in a list of tickets"""
+        self.log.debug('ImportData.count_story_points(): Counting total story points in a list of tickets')
         points = 0
         for issue in issues_list:
             issue_points = self.get_story_points(issue)

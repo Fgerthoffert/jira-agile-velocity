@@ -18,13 +18,15 @@ class TestImportData(TestCase):
 
     def get_jira_issues(self):
         """Return a simplify list simulating a JIRA response"""
-        jira_issues = [
-            {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 10}}
-            , {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 20}}
-            , {'fields': {'issuetype': {'name': 'defect'}}}
-            , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 2}}
-            , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 5}}
-        ]
+        jira_issues = {
+            'issues': [
+                {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 10, 'assignee': {'name': 'johnd', 'displayName': 'John Doe'}}}
+                , {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 20, 'assignee': {'name': 'brucew', 'displayName': 'Bruce Wayne'}}}
+                , {'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'name': 'darthv', 'displayName': 'Darth Vader'}}}
+                , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 2, 'assignee': {'name': 'brucew', 'displayName': 'Bruce Wayne'}}}
+                , {'fields': {'issuetype': {'name': 'story'}, 'jira_points_field': 5, 'assignee': {'name': 'darthv', 'displayName': 'Darth Vader'}}}
+            ]
+        }
         return jira_issues
 
     def get_data_completion(self):
@@ -102,23 +104,46 @@ class TestImportData(TestCase):
         import_data = ImportData(app.log, mock_config)
 
         # Send a couple of issues and ensure returned value are correct
-        self.assertEqual(import_data.story_types_count(self.get_jira_issues()), {'story': {'tickets': 2, 'points': 7, 'type': 'story'}, 'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}})
+        self.assertEqual(import_data.story_types_count(self.get_jira_issues()['issues']), {'story': {'tickets': 2, 'points': 7, 'type': 'story'}, 'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}})
 
-    @mock.patch('jav.core.javJira.get_completed_tickets')
     @mock.patch('jav.core.javConfig')
-    def test_refresh_dailydata_cache(self, mock_config, mock_jira_call):
+    def test_count_story_points(self, mock_config):
         mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
-        mock_jira_call = mock.MagicMock(return_value=self.get_data_completion())
-
-        #self.jira.get_completed_tickets(date_current)
+        points_per_story = 3
+        expected_result = points_per_story*len(self.get_jira_issues()['issues'])
 
         # App init, necessary to get to the logging service
         app = self.get_app()
 
-        #app.log.info(self.get_data_completion())
-        app.log.info(mock_jira_call)
+        # Init the Import Data Class
+        import_data = ImportData(app.log, mock_config)
+        import_data.get_story_points = mock.MagicMock(return_value=points_per_story)
+        self.assertEqual(import_data.count_story_points(self.get_jira_issues()['issues']), expected_result)
+
+    @mock.patch('jav.core.javConfig')
+    def test_assignee_count(self, mock_config):
+        # App init, necessary to get to the logging service
+        app = self.get_app()
+
+        # Init the Import Data Class
+        import_data = ImportData(app.log, mock_config)
+
+        app.log.info(import_data.assignee_count(self.get_jira_issues()['issues']))
+        # Send a couple of issues and ensure returned value are correct
+        #self.assertEqual(import_data.assignee_count(self.get_jira_issues()['issues']), {'issues': [{'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'displayName': 'John Doe', 'name': 'johnd'}, 'jira_points_field': 10}}, {'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'displayName': 'Bruce Wayne', 'name': 'brucew'}, 'jira_points_field': 20}}, {'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'displayName': 'Darth Vader', 'name': 'darthv'}}}, {'fields': {'issuetype': {'name': 'story'}, 'assignee': {'displayName': 'Bruce Wayne', 'name': 'brucew'}, 'jira_points_field': 2}}, {'fields': {'issuetype': {'name': 'story'}, 'assignee': {'displayName': 'Darth Vader', 'name': 'darthv'}, 'jira_points_field': 5}}]})
+
+
+    @mock.patch('jav.core.javJira')
+    @mock.patch('jav.core.javConfig')
+    def test_refresh_dailydata_cache(self, mock_config, mock_jira):
+        mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
+        mock_jira.get_completed_tickets = mock.MagicMock(return_value=self.get_jira_issues())
+
+        # App init, necessary to get to the logging service
+        app = self.get_app()
 
         import_data = ImportData(app.log, mock_config)
-        import_data.refresh_dailydata_cache(self.get_data_completion(), datetime.strptime('2017-05-26', '%Y-%m-%d').date(), datetime.strptime('2017-05-21', '%Y-%m-%d').date())
+        import_data.jira = mock_jira
 
-    #def refresh_dailydata_cache(self, previous_data_cache, date_start, date_end):
+        response = import_data.refresh_dailydata_cache(self.get_data_completion(), datetime.strptime('2017-05-26', '%Y-%m-%d').date(), datetime.strptime('2017-05-21', '%Y-%m-%d').date())
+        app.log.info(response)
