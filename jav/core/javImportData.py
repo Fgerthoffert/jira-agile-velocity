@@ -36,6 +36,12 @@ class ImportData(object):
             Files(self.log).jsonl_append(self.config.filepath_data_completion, daily_obj)
 
     def refresh_dailydata_cache(self, previous_data_cache, date_start, date_end):
+        """
+        Starting from date_start, loop through each day until date_end
+        For each day, check if the day is already in previous_data cache:
+         - If yes, skip the day
+         - If not, get from Jira, completed tickets for that day
+        """
         self.log.info('ImportData.refresh_dailydata_cache(): start')
         daily_data = collections.OrderedDict()
 

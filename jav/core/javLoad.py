@@ -5,7 +5,6 @@ from jav.core.javTime import Time
 from jav.core.javFiles import Files
 
 
-
 class Load(object):
     """
         Load updated Jira data into cache
