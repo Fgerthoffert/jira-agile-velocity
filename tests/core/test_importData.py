@@ -84,16 +84,16 @@ class TestImportData(TestCase):
         data = collections.OrderedDict()
         data['20170526'] = {
             'datetime': datetime.strptime('2017-05-26', '%Y-%m-%d').date()
-            , 'tickets': 37
-            , 'points': 5
+            , 'tickets': 5
+            , 'points': 37
             , 'assignees': {
                 'johnd': {'tickets': 1, 'points': 10, 'displayName': 'John Doe'}
                 , 'brucew': {'tickets': 2, 'points': 22, 'displayName': 'Bruce Wayne'}
                 , 'darthv': {'tickets': 2, 'points': 5, 'displayName': 'Darth Vader'}
             }
             , 'types': {
-                'Defect': {'tickets': 3, 'points': 30, 'type': 'Defect'}
-                , 'Story': {'tickets': 2, 'points': 7, 'type': 'Story'}
+                'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}
+                , 'story': {'tickets': 2, 'points': 7, 'type': 'story'}
             }
         }
         data['20170525'] = self.get_data_completion()['20170525']
@@ -101,20 +101,19 @@ class TestImportData(TestCase):
         data['20170523'] = self.get_data_completion()['20170523']
         data['20170522'] = {
             'datetime': datetime.strptime('2017-05-22', '%Y-%m-%d').date()
-            , 'tickets': 37
-            , 'points': 5
+            , 'tickets': 5
+            , 'points': 37
             , 'assignees': {
                 'johnd': {'tickets': 1, 'points': 10, 'displayName': 'John Doe'}
                 , 'brucew': {'tickets': 2, 'points': 22, 'displayName': 'Bruce Wayne'}
                 , 'darthv': {'tickets': 2, 'points': 5, 'displayName': 'Darth Vader'}
             }
             , 'types': {
-                'Defect': {'tickets': 3, 'points': 30, 'type': 'Defect'}
-                , 'Story': {'tickets': 2, 'points': 7, 'type': 'Story'}
+                'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}
+                , 'story': {'tickets': 2, 'points': 7, 'type': 'story'}
             }
         }
         return data
-
 
     @mock.patch('jav.core.javConfig')
     def test_get_story_point(self, mock_config):
@@ -195,12 +194,11 @@ class TestImportData(TestCase):
         import_data = ImportData(app.log, mock_config)
         import_data.jira = mock_jira
 
-        refresh_daily_data_cache_answer = import_data.refresh_dailydata_cache(self.get_data_completion_answer(), start_date, end_date)
+        # To simplify formatting, re-run the full expected answer through the function
         refresh_daily_data_cache_response = import_data.refresh_dailydata_cache(self.get_data_completion(), start_date, end_date)
-        #self.assertEqual(refresh_daily_data_cache_response, refresh_daily_data_cache_answer)
-        app.log.info(refresh_daily_data_cache_answer)
-        app.log.info('Function response: ')
-        app.log.info(refresh_daily_data_cache_response)
+
+        self.assertDictEqual(refresh_daily_data_cache_response, self.get_data_completion_answer())
+
 
 
 

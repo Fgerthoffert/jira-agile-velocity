@@ -87,7 +87,7 @@ class ImportData(object):
                         , 'assignees': self.assignee_count(issues_list['issues'])
                     }
                     daily_data[dict_idx] = daily_obj
-                    daily_data[dict_idx]['datetime'] = dateutil.parser.parse(daily_data[dict_idx]['datetime'])
+                    daily_data[dict_idx]['datetime'] = dateutil.parser.parse(daily_data[dict_idx]['datetime']).date()
 
             if date_current.strftime('%Y-%m-%d') < date_end.strftime('%Y-%m-%d'):
                 self.log.info('ImportData.refresh_dailydata_cache(): All data collected')
