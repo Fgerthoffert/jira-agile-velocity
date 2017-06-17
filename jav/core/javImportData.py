@@ -76,7 +76,6 @@ class ImportData(object):
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Obtaining daily data')
                     issues_list = self.jira.get_completed_tickets(date_current)
-                    self.log.info(issues_list)
                     self.log.info('ImportData.refresh_dailydata_cache(): ' + date_current.strftime(
                         '%Y.W%W-%A') + ': ' + date_current.strftime('%Y-%m-%d') + ' Calculating stats')
                     daily_obj = {
@@ -151,6 +150,7 @@ class ImportData(object):
         return int(points)
 
     def get_remaining_work(self):
+        """Get remaining work from Jira and write the result to file"""
         self.log.info('ImportData.get_remaining_work(): Obtaining remaining work')
         issues_list = self.jira.get_remaining_tickets()
 

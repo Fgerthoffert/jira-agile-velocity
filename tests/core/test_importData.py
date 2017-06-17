@@ -3,6 +3,7 @@ import mock
 from jav.core.javImportData import ImportData
 from jav.core.javConfig import Config
 from jav.core.javJira import Jira
+from jav.core.javFiles import Files
 from datetime import timedelta, datetime
 import collections
 from cement.core import foundation
@@ -19,7 +20,7 @@ class TestImportData(TestCase):
 
     @classmethod
     def get_jira_issues(self):
-        """Return a simplify list simulating a JIRA response"""
+        """Return a simple list of issues simulating a JIRA response"""
         jira_issues = {
             'issues': [
                 {'fields': {'issuetype': {'name': 'defect'}, 'jira_points_field': 10, 'assignee': {'name': 'johnd', 'displayName': 'John Doe'}}}
@@ -115,6 +116,23 @@ class TestImportData(TestCase):
         }
         return data
 
+    @classmethod
+    def get_remaining_work_answer(self):
+        response = {
+            'tickets': 5
+            , 'points': 37
+            , 'assignees': {
+               'johnd': {'tickets': 1, 'points': 10, 'displayName': 'John Doe'}
+               , 'brucew': {'tickets': 2, 'points': 22, 'displayName': 'Bruce Wayne'}
+               , 'darthv': {'tickets': 2, 'points': 5, 'displayName': 'Darth Vader'}
+            }
+            , 'types': {
+                'defect': {'tickets': 3, 'points': 30, 'type': 'defect'}
+                , 'story': {'tickets': 2, 'points': 7, 'type': 'story'}
+            }
+        }
+        return response
+
     @mock.patch('jav.core.javConfig')
     def test_get_story_point(self, mock_config):
         #mock_config.get_config_value.return_value = 'jira_points_field'
@@ -178,7 +196,6 @@ class TestImportData(TestCase):
         # Send a couple of issues and ensure returned value are correct
         self.assertEqual(assignee_count_response, assignee_count_answer)
 
-
     @mock.patch('jav.core.javJira')
     @mock.patch('jav.core.javConfig')
     def test_refresh_dailydata_cache(self, mock_config, mock_jira):
@@ -199,6 +216,25 @@ class TestImportData(TestCase):
 
         self.assertDictEqual(refresh_daily_data_cache_response, self.get_data_completion_answer())
 
+    @mock.patch('jav.core.javFiles.Files')
+    @mock.patch('jav.core.javJira')
+    @mock.patch('jav.core.javConfig')
+    def test_get_remaining_work(self, mock_config, mock_jira, mock_files):
+        mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
+        mock_jira.get_remaining_tickets = mock.MagicMock(return_value=self.get_jira_issues())
+        mock_files.json_write = mock.MagicMock(return_value=True)
+        #Files(self.log).json_write(self.config.filepath_data_remaining, remaining)
 
+        # App init, necessary to get to the logging service
+        app = self.get_app()
+
+        import_data = ImportData(app.log, mock_config)
+        import_data.jira = mock_jira
+
+
+        app.log.info(import_data.get_remaining_work())
+
+        # To simplify formatting, re-run the full expected answer through the function
+        #self.assertDictEqual(import_data.get_remaining_work(), self.get_remaining_work_answer())
 
 
