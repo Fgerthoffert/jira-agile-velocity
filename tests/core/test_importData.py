@@ -122,15 +122,22 @@ class TestImportData(TestCase):
 
     @mock.patch('jav.core.javConfig')
     def test_assignee_count(self, mock_config):
+        mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
         # App init, necessary to get to the logging service
         app = self.get_app()
 
         # Init the Import Data Class
         import_data = ImportData(app.log, mock_config)
 
-        app.log.info(import_data.assignee_count(self.get_jira_issues()['issues']))
+        assignee_count_answer = {
+            'johnd': {'displayName': 'John Doe', 'points': 10, 'tickets': 1}
+            , 'brucew': {'displayName': 'Bruce Wayne', 'points': 22, 'tickets': 2}
+            , 'darthv': {'displayName': 'Darth Vader', 'points': 5, 'tickets': 2}
+        }
+        assignee_count_response = import_data.assignee_count(self.get_jira_issues()['issues'])
+
         # Send a couple of issues and ensure returned value are correct
-        #self.assertEqual(import_data.assignee_count(self.get_jira_issues()['issues']), {'issues': [{'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'displayName': 'John Doe', 'name': 'johnd'}, 'jira_points_field': 10}}, {'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'displayName': 'Bruce Wayne', 'name': 'brucew'}, 'jira_points_field': 20}}, {'fields': {'issuetype': {'name': 'defect'}, 'assignee': {'displayName': 'Darth Vader', 'name': 'darthv'}}}, {'fields': {'issuetype': {'name': 'story'}, 'assignee': {'displayName': 'Bruce Wayne', 'name': 'brucew'}, 'jira_points_field': 2}}, {'fields': {'issuetype': {'name': 'story'}, 'assignee': {'displayName': 'Darth Vader', 'name': 'darthv'}, 'jira_points_field': 5}}]})
+        self.assertEqual(assignee_count_response, assignee_count_response)
 
 
     @mock.patch('jav.core.javJira')
@@ -145,5 +152,5 @@ class TestImportData(TestCase):
         import_data = ImportData(app.log, mock_config)
         import_data.jira = mock_jira
 
-        response = import_data.refresh_dailydata_cache(self.get_data_completion(), datetime.strptime('2017-05-26', '%Y-%m-%d').date(), datetime.strptime('2017-05-21', '%Y-%m-%d').date())
+        response = import_data.refresh_dailydata_cache(self.get_data_completion(), datetime.strptime('2017-05-28', '%Y-%m-%d').date(), datetime.strptime('2017-05-21', '%Y-%m-%d').date())
         app.log.info(response)
