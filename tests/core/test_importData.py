@@ -9,6 +9,7 @@ from cement.core import foundation
 
 class TestImportData(TestCase):
 
+    @classmethod
     def get_app(self):
         """App init, necessary to get to the logging service"""
         app = foundation.CementApp('myapp')
@@ -16,6 +17,7 @@ class TestImportData(TestCase):
         app.run()
         return app
 
+    @classmethod
     def get_jira_issues(self):
         """Return a simplify list simulating a JIRA response"""
         jira_issues = {
@@ -29,9 +31,10 @@ class TestImportData(TestCase):
         }
         return jira_issues
 
+    @classmethod
     def get_data_completion(self):
         data = collections.OrderedDict()
-        data['2017-05-25'] = {
+        data['20170525'] = {
             'datetime': datetime.strptime('2017-05-25', '%Y-%m-%d').date()
             , 'tickets': 10
             , 'points': 15
@@ -46,7 +49,7 @@ class TestImportData(TestCase):
                 , 'Task': {'tickets': 2, 'points': 4, 'type': 'Task'}
             }
         }
-        data['2017-05-24'] = {
+        data['20170524'] = {
             'datetime': datetime.strptime('2017-05-24', '%Y-%m-%d').date()
             , 'tickets': 4
             , 'points': 30
@@ -59,7 +62,7 @@ class TestImportData(TestCase):
                 , 'Story': {'tickets': 2, 'points': 16, 'type': 'Story'}
             }
         }
-        data['2017-05-23'] = {
+        data['20170523'] = {
             'datetime': datetime.strptime('2017-05-23', '%Y-%m-%d').date()
             , 'tickets': 8
             , 'points': 20
@@ -75,6 +78,43 @@ class TestImportData(TestCase):
             }
         }
         return data
+
+    @classmethod
+    def get_data_completion_answer(self):
+        data = collections.OrderedDict()
+        data['20170526'] = {
+            'datetime': datetime.strptime('2017-05-26', '%Y-%m-%d').date()
+            , 'tickets': 37
+            , 'points': 5
+            , 'assignees': {
+                'johnd': {'tickets': 1, 'points': 10, 'displayName': 'John Doe'}
+                , 'brucew': {'tickets': 2, 'points': 22, 'displayName': 'Bruce Wayne'}
+                , 'darthv': {'tickets': 2, 'points': 5, 'displayName': 'Darth Vader'}
+            }
+            , 'types': {
+                'Defect': {'tickets': 3, 'points': 30, 'type': 'Defect'}
+                , 'Story': {'tickets': 2, 'points': 7, 'type': 'Story'}
+            }
+        }
+        data['20170525'] = self.get_data_completion()['20170525']
+        data['20170524'] = self.get_data_completion()['20170524']
+        data['20170523'] = self.get_data_completion()['20170523']
+        data['20170522'] = {
+            'datetime': datetime.strptime('2017-05-22', '%Y-%m-%d').date()
+            , 'tickets': 37
+            , 'points': 5
+            , 'assignees': {
+                'johnd': {'tickets': 1, 'points': 10, 'displayName': 'John Doe'}
+                , 'brucew': {'tickets': 2, 'points': 22, 'displayName': 'Bruce Wayne'}
+                , 'darthv': {'tickets': 2, 'points': 5, 'displayName': 'Darth Vader'}
+            }
+            , 'types': {
+                'Defect': {'tickets': 3, 'points': 30, 'type': 'Defect'}
+                , 'Story': {'tickets': 2, 'points': 7, 'type': 'Story'}
+            }
+        }
+        return data
+
 
     @mock.patch('jav.core.javConfig')
     def test_get_story_point(self, mock_config):
@@ -137,7 +177,7 @@ class TestImportData(TestCase):
         assignee_count_response = import_data.assignee_count(self.get_jira_issues()['issues'])
 
         # Send a couple of issues and ensure returned value are correct
-        self.assertEqual(assignee_count_response, assignee_count_response)
+        self.assertEqual(assignee_count_response, assignee_count_answer)
 
 
     @mock.patch('jav.core.javJira')
@@ -146,11 +186,21 @@ class TestImportData(TestCase):
         mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
         mock_jira.get_completed_tickets = mock.MagicMock(return_value=self.get_jira_issues())
 
+        start_date = datetime.strptime('2017-05-28', '%Y-%m-%d').date()
+        end_date = datetime.strptime('2017-05-21', '%Y-%m-%d').date()
+
         # App init, necessary to get to the logging service
         app = self.get_app()
 
         import_data = ImportData(app.log, mock_config)
         import_data.jira = mock_jira
 
-        response = import_data.refresh_dailydata_cache(self.get_data_completion(), datetime.strptime('2017-05-28', '%Y-%m-%d').date(), datetime.strptime('2017-05-21', '%Y-%m-%d').date())
-        app.log.info(response)
+        refresh_daily_data_cache_answer = import_data.refresh_dailydata_cache(self.get_data_completion_answer(), start_date, end_date)
+        refresh_daily_data_cache_response = import_data.refresh_dailydata_cache(self.get_data_completion(), start_date, end_date)
+        #self.assertEqual(refresh_daily_data_cache_response, refresh_daily_data_cache_answer)
+        app.log.info(refresh_daily_data_cache_answer)
+        app.log.info('Function response: ')
+        app.log.info(refresh_daily_data_cache_response)
+
+
+

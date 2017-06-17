@@ -9,7 +9,7 @@ class StatsWeek(object):
     """
         The main function of this class goes through all the data points and break it down by week
         It then calculate various metrics for this particular week
-        It also look in history to extract trend and evolution over time (such as evolution of the weekly story points 
+        It also look in history to extract trend and evolution over time (such as evolution of the weekly story points
         or tickets average over time)
     """
 

@@ -28,8 +28,9 @@ class ImportData(object):
         return self.__jira
 
     @jira.setter
-    def jira(self, jiraClass):
-        self.__jira = jiraClass
+    def jira(self, jira_class):
+        """This is mostly used for unittest to inject a mock Jira Class"""
+        self.__jira = jira_class
 
     def write_dailydata_cache(self, daily_data):
         """Write an ordered dict into a JSONL file, converting datetime to isoformat"""
@@ -107,7 +108,7 @@ class ImportData(object):
         return story_points
 
     def story_types_count(self, issues_list):
-        """Return a break down of story points per ticket type"""
+        """Return a break down of story points and count per ticket type"""
         self.log.debug('ImportData.story_types_count(): Counting story points per ticket type')
         issues_types = {}
         for issue in issues_list:
@@ -121,6 +122,7 @@ class ImportData(object):
         return issues_types
 
     def assignee_count(self, issues_list):
+        """Return a breakdown of story points and count per assignee """
         self.log.debug('ImportData.assignee_count(): Counting story points per assignees')
         assignees = {}
         for issue in issues_list:
