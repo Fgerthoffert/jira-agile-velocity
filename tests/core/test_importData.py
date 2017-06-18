@@ -4,7 +4,7 @@ from jav.core.javImportData import ImportData
 from jav.core.javConfig import Config
 from jav.core.javJira import Jira
 from jav.core.javFiles import Files
-from datetime import timedelta, datetime
+from datetime import datetime
 import collections
 from cement.core import foundation
 
@@ -223,18 +223,27 @@ class TestImportData(TestCase):
         mock_config.get_config_value = mock.MagicMock(return_value='jira_points_field')
         mock_jira.get_remaining_tickets = mock.MagicMock(return_value=self.get_jira_issues())
         mock_files.json_write = mock.MagicMock(return_value=True)
-        #Files(self.log).json_write(self.config.filepath_data_remaining, remaining)
 
         # App init, necessary to get to the logging service
         app = self.get_app()
 
         import_data = ImportData(app.log, mock_config)
         import_data.jira = mock_jira
+        import_data.files = mock_files
 
-
-        app.log.info(import_data.get_remaining_work())
-
-        # To simplify formatting, re-run the full expected answer through the function
-        #self.assertDictEqual(import_data.get_remaining_work(), self.get_remaining_work_answer())
+        get_remaining_work_answer = {
+            'points': 37
+            , 'tickets': 5
+            , 'types': {
+                'defect': {'type': 'defect', 'points': 30, 'tickets': 3}
+                , 'story': {'type': 'story', 'points': 7, 'tickets': 2}
+            }
+            , 'assignees': {
+                'johnd': {'displayName': 'John Doe', 'points': 10, 'tickets': 1}
+                , 'brucew': {'displayName': 'Bruce Wayne', 'points': 22, 'tickets': 2}
+                , 'darthv': {'displayName': 'Darth Vader', 'points': 5, 'tickets': 2}
+            }
+        }
+        self.assertDictEqual(import_data.get_remaining_work(), get_remaining_work_answer)
 
 

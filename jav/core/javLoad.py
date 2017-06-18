@@ -38,7 +38,6 @@ class Load(object):
 
     def load_jira_cache(self):
         self.log.info('Load daily data and remaining work from cache')
-        loader = ImportData(self.log, self.config)
         # Import existing data (if any) into a Python object
         daily_data = Files(self.log).jsonl_load(self.config.filepath_data_completion)
         remaining_work = Files(self.log).json_load(self.config.filepath_data_remaining)

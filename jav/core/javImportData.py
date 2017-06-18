@@ -1,5 +1,4 @@
 import collections
-import json
 import os
 from datetime import timedelta
 from jav.core.javJira import Jira
@@ -22,6 +21,7 @@ class ImportData(object):
         self.log = log
         self.config = config
         self.__jira = Jira(self.log, self.config)
+        self.__files = Files(self.log)
 
     @property
     def jira(self):
@@ -31,6 +31,15 @@ class ImportData(object):
     def jira(self, jira_class):
         """This is mostly used for unittest to inject a mock Jira Class"""
         self.__jira = jira_class
+
+    @property
+    def files(self):
+        return self.__files
+
+    @files.setter
+    def files(self, files_class):
+        """This is mostly used for unittest to inject a mock Jira Class"""
+        self.__files = files_class
 
     def write_dailydata_cache(self, daily_data):
         """Write an ordered dict into a JSONL file, converting datetime to isoformat"""
@@ -91,7 +100,6 @@ class ImportData(object):
             if date_current.strftime('%Y-%m-%d') < date_end.strftime('%Y-%m-%d'):
                 self.log.info('ImportData.refresh_dailydata_cache(): All data collected')
                 break
-
         return daily_data
 
     def get_story_points(self, issue):
@@ -103,7 +111,6 @@ class ImportData(object):
         except Exception:
             self.log.debug('Ticket missing story points')
             self.log.debug(issue)
-
         return story_points
 
     def story_types_count(self, issues_list):
@@ -160,7 +167,5 @@ class ImportData(object):
             , 'types': self.story_types_count(issues_list['issues'])
             , 'assignees': self.assignee_count(issues_list['issues'])
         }
-
-        Files(self.log).json_write(self.config.filepath_data_remaining, remaining)
-
+        self.files.json_write(self.config.filepath_data_remaining, remaining)
         return remaining

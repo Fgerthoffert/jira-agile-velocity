@@ -1,5 +1,4 @@
 import slackweb
-import json
 
 class Msg(object):
     """
