@@ -36,20 +36,28 @@ class TestConfig(TestCase):
         }
         return config
 
-    def test_get_config_value(self):
+    @mock.patch('os.path.isdir')
+    @mock.patch('os.path.isfile')
+    def test_get_config_value(self, mock_isfile, mock_isdir):
         # App init, necessary to get to the logging service
         app = self.get_app()
-        os.path.isdir = mock.MagicMock(return_value=True)
-        os.path.isfile = mock.MagicMock(return_value=True)
+        mock_isfile.return_value = True
+        mock_isdir.return_value = True
+#        os.path.isdir = mock.MagicMock(return_value=True)
+#        os.path.isfile = mock.MagicMock(return_value=True)
 
         config = Config(app.log)
         config.config = self.get_config()
 
         self.assertEqual(config.get_config_value('jira_jql_remaining'), 'JQL QUERY')
 
-    def test_set_config_value(self):
+    @mock.patch('os.path.isdir')
+    @mock.patch('os.path.isfile')
+    def test_set_config_value(self, mock_isfile, mock_isdir):
         # App init, necessary to get to the logging service
         app = self.get_app()
+        mock_isfile.return_value = True
+        mock_isfile.return_value = True
 
         config = Config(app.log)
         config.config = self.get_config()
