@@ -2,7 +2,6 @@ from unittest import TestCase
 import mock
 from jav.core.javTime import Time
 from datetime import datetime
-import collections
 import pytz
 from cement.core import foundation
 
