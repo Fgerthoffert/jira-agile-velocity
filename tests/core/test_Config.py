@@ -1,5 +1,6 @@
 from unittest import TestCase
 import mock
+import os
 from jav.core.javConfig import Config
 from cement.core import foundation
 
@@ -38,6 +39,8 @@ class TestConfig(TestCase):
     def test_get_config_value(self):
         # App init, necessary to get to the logging service
         app = self.get_app()
+        os.path.isdir = mock.MagicMock(return_value=True)
+        os.path.isfile = mock.MagicMock(return_value=True)
 
         config = Config(app.log)
         config.config = self.get_config()
