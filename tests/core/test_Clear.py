@@ -1,8 +1,5 @@
 from unittest import TestCase
-import mock
 from jav.core.javClear import Clear
-from datetime import datetime
-import pytz
 from cement.core import foundation
 
 class TestClear(TestCase):
