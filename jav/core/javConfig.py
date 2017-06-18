@@ -190,6 +190,7 @@ class Config(object):
         return self.__config_path
 
     def get_config_value(self, key):
+        """Get a single value of the dictionary"""
         return self.config[key]
 
     def set_config_value(self, key, value):

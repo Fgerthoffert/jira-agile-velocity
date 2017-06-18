@@ -44,5 +44,15 @@ class TestConfig(TestCase):
 
         self.assertEqual(config.get_config_value('jira_jql_remaining'), 'JQL QUERY')
 
+    def test_set_config_value(self):
+        # App init, necessary to get to the logging service
+        app = self.get_app()
+
+        config = Config(app.log)
+        config.config = self.get_config()
+
+        self.assertEqual(config.get_config_value('jira_jql_remaining'), 'JQL QUERY')
+        self.assertEqual(config.set_config_value('jira_jql_remaining', 'NEW JQL QUERY'), 'NEW JQL QUERY')
+        self.assertEqual(config.get_config_value('jira_jql_remaining'), 'NEW JQL QUERY')
 
 
