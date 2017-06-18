@@ -51,7 +51,7 @@ class ImportData(object):
         for currentdata in daily_data:
             daily_obj = copy.deepcopy(daily_data[currentdata])
             daily_obj['datetime'] = daily_data[currentdata]['datetime'].isoformat()
-            Files(self.log).jsonl_append(self.config.filepath_data_completion, daily_obj)
+            self.files.jsonl_append(self.config.filepath_data_completion, daily_obj)
 
     def refresh_dailydata_cache(self, previous_data_cache, date_start, date_end):
         """
