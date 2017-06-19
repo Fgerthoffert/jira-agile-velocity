@@ -45,24 +45,29 @@ class Config(object):
                 , 'jira_username': {
                     'type': ['string']
                     , 'description': 'JIRA Username used for the API call'
+                    , 'default': 'USERNAME'
                 }
                 , 'jira_password': {
                     'type': ['string']
                     , 'description': 'JIRA Password used for the API call'
+                    , 'default': 'PASSWORD'
                 }
                 , 'jira_host': {
                     'type': ['string']
                     , 'description': 'Remote JIRA Hostname (https://jira.yourdomain.tld)'
+                    , 'default': 'HOST'
                 }
                 , 'jira_jql_velocity': {
                     'type': ['string']
                     , 'description': 'JIRA JQL Query used to track story points completion '
                                      '(for example: project = WORK and status changed to Done)'
+                    , 'default': 'JQL QUERY VELOCITY'
                 }
                 , 'jira_jql_remaining': {
                     'type': ['string']
                     , 'description': 'JIRA JQL Query used to determine remaining work '
                                      '(for example: sprint in openSprints() and type in (Story, Task, Defect))'
+                    , 'default': 'JQL QUERY REMAINING'
                 }
                 , 'jira_field_points': {
                     'type': ['string']
@@ -77,6 +82,7 @@ class Config(object):
                 , 'slack_webhook': {
                     'type': ['string', 'null']
                     , 'description': 'Slack webhook (https://api.slack.com/incoming-webhooks)'
+                    , 'default': 'SLACK WEBHOOK'
                 }
                 , 'rolling_stats': {
                     'type': 'array'
