@@ -20,7 +20,7 @@ class TestClear(TestCase):
         app = self.get_app()
 
         clear = Clear(app.log, mock_config)
-        mock_config.filepath_data_completion = mock.MagicMock(return_value='/tmp/')
+        mock_config.filepath_data_completion = '/thispathdoesnotexist/'
 
         self.assertEqual(clear.main(), True)
 
