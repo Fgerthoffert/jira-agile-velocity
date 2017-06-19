@@ -63,17 +63,3 @@ class TestConfig(TestCase):
         config.init_config_auto()
         self.assertEqual(config.get_config_value('jira_jql_remaining'), 'JQL QUERY REMAINING')
 
-    # @mock.patch('os.path.isdir')
-    # @mock.patch('os.path.isfile')
-    # @mock.patch('jav.core.javConfig.Config.load_config')
-    # def test_get_config_value(self, mock_conf_load, mock_isfile, mock_isdir):
-    #     """Receives a parameter and test if a value can be returned"""
-    #     # App init, necessary to get to the logging service
-    #     app = self.get_app()
-    #     #mock_isfile.return_value = True
-    #     #mock_isdir.return_value = True
-    #     mock_conf_load.return_value = self.get_config()
-    #
-    #     config = Config(app.log, config_values = self.get_config())
-    #
-    #     self.assertEqual(config.get_config_value('jira_jql_remaining'), 'JQL QUERY')
