@@ -1,5 +1,9 @@
 import numpy as np
-import urllib
+#import urllib
+try:
+    from urllib import quote
+except ImportError:
+    from urllib.parse import quote
 
 from bokeh.charts import Bar, output_file, save, show
 from bokeh.layouts import layout
@@ -17,7 +21,7 @@ class BuildChart(object):
     def build_url_completed(self, current_date):
         return \
             self.config.get_config_value('jira_host') + '/issues/?jql=' \
-            + urllib.parse.quote(
+            + quote(
                 self.config.get_config_value('jira_jql_velocity')
                 + ' ON(\"'
                 + current_date.strftime("%Y-%m-%d")

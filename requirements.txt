@@ -13,3 +13,4 @@ pandas
 mock
 coverage
 nose
+urllib
