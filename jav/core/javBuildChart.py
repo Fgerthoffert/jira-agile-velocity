@@ -1,9 +1,10 @@
 import numpy as np
+import urllib
 
 from bokeh.charts import Bar, output_file, save, show
 from bokeh.layouts import layout
 from bokeh.plotting import figure, ColumnDataSource
-from bokeh.models import HoverTool
+from bokeh.models import HoverTool, OpenURL, TapTool, CustomJS
 from jav.core.javTime import Time
 
 
@@ -13,6 +14,16 @@ class BuildChart(object):
         self.config = config
         self.time = Time(self.log, self.config)
 
+    def build_url_completed(self, current_date):
+        return \
+            self.config.get_config_value('jira_host') + '/issues/?jql=' \
+            + urllib.parse.quote(
+                self.config.get_config_value('jira_jql_velocity')
+                + ' ON(\"'
+                + current_date.strftime("%Y-%m-%d")
+                + '\")'
+            )
+
     def build_velocity_days(self, stats_data):
         self.log.info('Generating graph about daily effort')
 
@@ -21,10 +32,12 @@ class BuildChart(object):
         y_values = []
         y_avg = []
         x_dates_display = []
+        jira_url = []
         for scan_day in stats_data:
             x_dates.append(stats_data[scan_day]['datetime'])
             x_dates_display.append(stats_data[scan_day]['datetime'].strftime('%a %b %d, %Y'))
             y_values.append(stats_data[scan_day][self.config.get_config_value('stats_metric')])
+            jira_url.append(self.build_url_completed(stats_data[scan_day]['datetime']))
             week_idx = '4'
             if week_idx not in stats_data[scan_day]['anyday']:
                 week_idx = 4
@@ -41,7 +54,8 @@ class BuildChart(object):
                 x_data_dates=data_dates,
                 y_values=y_values,
                 y_avg_values=y_avg,
-                x_dates_display=x_dates_display
+                x_dates_display=x_dates_display,
+                jira_url=jira_url
             )
         )
 
@@ -55,7 +69,7 @@ class BuildChart(object):
         )
 
         # create a new plot with a a datetime axis type
-        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover])
+        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover, 'tap'])
 
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
@@ -65,6 +79,9 @@ class BuildChart(object):
         # add renderers
         p.circle('x_data_dates', 'y_values', size=4, color='red', alpha=0.4, legend=metric_legend, source=source)
         p.line('x_data_dates', 'y_avg_values', color='blue', legend='4 Weeks Average', source=source)
+
+        taptool = p.select(type=TapTool)
+        taptool.callback = OpenURL(url='@jira_url')
 
         # NEW: customize by setting attributes
         p.title.text = 'Daily Velocity'
@@ -153,11 +170,13 @@ class BuildChart(object):
         plot_data = {}
         for scan_day in stats_data:
             plot_data['type'] = []
+            plot_data['jira_url'] = []
             plot_data[self.config.get_config_value('stats_metric')] = []
             total_metric = stats_data[scan_day][self.config.get_config_value('stats_metric')]
             for assignee in stats_data[scan_day]['types']:
                 plot_data['type'].append(stats_data[scan_day]['types'][assignee]['type'])
                 plot_data[self.config.get_config_value('stats_metric')].append(stats_data[scan_day]['types'][assignee][self.config.get_config_value('stats_metric')])
+                plot_data['jira_url'].append('https://www.google.com')
             break
 
         bar = Bar(
@@ -165,11 +184,11 @@ class BuildChart(object):
             , values=self.config.get_config_value('stats_metric')
             , label='type'
             , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Ticket Type (Total: ' + str(total_metric) + ')'
-            , tools='save,pan,box_zoom,reset'
+            , tools='save,pan,box_zoom,reset,tap'
             , legend=None
             , color='green'
-
         )
+
         return bar
 
     def build_remaining_assignees(self, stats_data):
@@ -213,6 +232,7 @@ class BuildChart(object):
                 plot_data['rolling_avg'].append(col_txt)
                 plot_data['days'].append(stats_data[scan_day]['days_to_completion'][rol_avg])
             break
+
 
         bar = Bar(
             plot_data

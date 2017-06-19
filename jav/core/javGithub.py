@@ -220,7 +220,6 @@ class Github(object):
         output = self.sys_call(git_command)
         if output is False:
             exit()
-        print (output)
 
         branches = []
         for line in output.decode('utf-8').split('\n'):
