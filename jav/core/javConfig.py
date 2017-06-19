@@ -11,7 +11,7 @@ class Config(object):
         Class in charge to configuration management
     """
 
-    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = {}):
+    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = None):
         self.log = log
         self.__config_path = self.prep_config_path(config_path)
         self.__config_filename = 'config.yml'
@@ -122,7 +122,7 @@ class Config(object):
             }
         }
 
-        if self.config is not {}:
+        if self.config is not None:
             self.log.info('Default configuration provided as part of class initialization')
         elif os.path.isdir(self.__config_path) is False or os.path.isfile(self.__config_filepath) is False:
             self.__config_init = self.init_config()
