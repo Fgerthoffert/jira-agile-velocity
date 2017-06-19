@@ -86,7 +86,7 @@ class StatsDay(object):
                                 self.days[day_txt][stats_type][week_idx]['max'] = max(
                                     self.days[day_txt][stats_type]['all']['values'])
 
-                if self.daily_data[current_day]['datetime'] == self.daily_data[scan_day]['datetime']:
+                if self.daily_data[current_day]['datetime'].date() == self.daily_data[scan_day]['datetime'].date():
                     day_found = True
 
         # Then write content to a JSONL file
