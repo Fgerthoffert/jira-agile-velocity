@@ -31,7 +31,10 @@ class javBaseController(ArgparseController):
 
     @expose(help='Clear previous data (USE WITH CAUTION)')
     def clear(self):
-        clear = Clear(self.app.log, self.app.config)
+        config = Config(self.app.log, self.app.pargs.path_config)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'clear.log')
+
+        clear = Clear(self.app.log, config)
         clear.main()
 
     @expose(help='Enter setup mode and provide configuration parameters (jira creds, slack details)')

@@ -11,7 +11,7 @@ class Config(object):
         Class in charge to configuration management
     """
 
-    def __init__(self, log, config_path = expanduser('~') + '/.jav/'):
+    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = {}):
         self.log = log
         self.__config_path = self.prep_config_path(config_path)
         self.__config_filename = 'config.yml'
@@ -29,7 +29,7 @@ class Config(object):
         # config_init is used to record if the init method was once called
         self.__config_init = False
 
-        self.__config = {}
+        self.__config = config_values
         self.__schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#'
             , 'title': 'configObj'
@@ -116,7 +116,9 @@ class Config(object):
             }
         }
 
-        if os.path.isdir(self.__config_path) is False or os.path.isfile(self.__config_filepath) is False:
+        if self.config is not {}:
+            self.log.info('Default configuration provided as part of class initialization')
+        elif os.path.isdir(self.__config_path) is False or os.path.isfile(self.__config_filepath) is False:
             self.__config_init = self.init_config()
         elif os.path.isfile(self.__config_filepath):
             self.load_config()
@@ -226,6 +228,7 @@ class Config(object):
         return self.config
 
     def init_config(self):
+        """Manually initialize configuration"""
         self.log.info('Unable to find config file, initializing')
         self.log.info('Press Enter for [default], CTRL+C to exit')
         config_schema = self.schema['properties']
@@ -233,6 +236,13 @@ class Config(object):
             config_value = self.init_config_value(config_key)
             self.set_config_value(config_key, config_value)
         self.write_config()
+        return True
+
+    def init_config_auto(self):
+        """Automatically initializing configuration, setting all values to default"""
+        config_schema = self.schema['properties']
+        for config_key in sorted(config_schema):
+            self.set_config_value(config_key, config_schema[config_key]['default'])
         return True
 
     def init_config_value(self, config_key):

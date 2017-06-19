@@ -1,5 +1,3 @@
-from jav.core.javConfig import Config
-from jav.core.javLogConfig import LogConfig
 import os
 
 
@@ -8,10 +6,17 @@ class Clear(object):
         Classe used to clear previously processed data
     """
 
-    def __init__(self, log, app_config):
+    def __init__(self, log, config):
         self.log = log
-        self.config = Config(self.log)
-        self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'clear.log')
+        self.__config = config
+
+    @property
+    def config(self):
+        return self.__config
+
+    @config.setter
+    def config(self, config_class):
+        self.__config = config_class
 
     def main(self):
         self.log.info('Clearing previously downloaded/processed data')
