@@ -18,9 +18,10 @@ class TestClear(TestCase):
         """This is a dummy test, only verifies that the function exists and return True"""
         # App init, necessary to get to the logging service
         app = self.get_app()
-        mock_config.filepath_data_completion = mock.MagicMock(return_value='/tmp/')
 
         clear = Clear(app.log, mock_config)
+        mock_config.filepath_data_completion = mock.MagicMock(return_value='/tmp/')
+
         self.assertEqual(clear.main(), True)
 
     # @mock.patch('os.path.isdir')
