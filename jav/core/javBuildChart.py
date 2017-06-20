@@ -6,10 +6,10 @@ try:
 except ImportError:
     from urllib.parse import quote
 
-from bokeh.charts import Bar, output_file, save, show
+from bokeh.charts import output_file, save, show
 from bokeh.layouts import layout
 from bokeh.plotting import figure, ColumnDataSource
-from bokeh.models import HoverTool, OpenURL, TapTool, CustomJS, FactorRange
+from bokeh.models import HoverTool, OpenURL, TapTool, FactorRange
 from jav.core.javTime import Time
 
 
@@ -177,7 +177,8 @@ class BuildChart(object):
             break
         return plot_values, total_metric
 
-    def get_remaining_source(self, dat):
+    @staticmethod
+    def get_remaining_source(dat):
         source = ColumnDataSource(dict(
             x_values=dat.entity
             , y_values=dat.value
@@ -310,6 +311,8 @@ class BuildChart(object):
 
         # output to static HTML file
         output_file(self.config.filepath_charts + 'index.html',
-                    title='[' + self.time.get_current_date().strftime("%Y-%m-%d") + '] - Jira Metrics, built on: ' + self.time.get_current_date().strftime("%Y-%m-%d"))
+                    title='[' + self.time.get_current_date().strftime(
+                        "%Y-%m-%d") + '] - Jira Metrics, built on: ' + self.time.get_current_date().strftime(
+                        "%Y-%m-%d"))
         save(bokeh_layout)
         show(bokeh_layout)

@@ -1,6 +1,4 @@
 from unittest import TestCase
-import mock
-import os
 from jav.core.javConfig import Config
 from cement.core import foundation
 
