@@ -35,20 +35,34 @@ class Msg(object):
             week_txt = stats_weeks[scan_week]['weektxt']
             weekly_velocity = stats_weeks[scan_week]['stats']
             weekly_metric = stats_weeks[scan_week][self.config.get_config_value('stats_metric')]
+            week_estimate = None
+            if stats_weeks[scan_week]['days'] < 5:
+                days_remaining = 5 - stats_weeks[scan_week]['days']
+                points_remaining = days_remaining * stats_weeks[scan_week]['stats']['4']['avg']
+                week_estimate = points_remaining + stats_weeks[scan_week]['points']
             break
 
         if daily_metric > daily_velocity['sameday']['4']['avg']:
-            trend_day = ':arrow_upper_right: '
+            trend_day = ':arrow_upper_right:'
         elif daily_metric < daily_velocity['sameday']['4']['avg']:
             trend_day = ':arrow_lower_right:'
         else:
             trend_day = ':arrow_right:'
-        if weekly_metric > weekly_velocity['4']['avg']:
-            trend_week = ':arrow_upper_right: '
-        elif weekly_metric < weekly_velocity['4']['avg']:
-            trend_week = ':arrow_lower_right:'
+
+        if week_estimate is None:
+            if weekly_metric > weekly_velocity['4']['avg']:
+                trend_week = ':arrow_upper_right:'
+            elif weekly_metric < weekly_velocity['4']['avg']:
+                trend_week = ':arrow_lower_right:'
+            else:
+                trend_week = ':arrow_right:'
         else:
-            trend_week = ':arrow_right:'
+            if week_estimate > weekly_velocity['4']['avg']:
+                trend_week = ':arrow_upper_right: (Est: ' + week_estimate + ')'
+            elif week_estimate < weekly_velocity['4']['avg']:
+                trend_week = ':arrow_lower_right: (Est: ' + week_estimate + ')'
+            else:
+                trend_week = ':arrow_right: (Est: ' + week_estimate + ')'
 
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
