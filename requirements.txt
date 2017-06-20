@@ -1,0 +1,16 @@
+cement>=2.10.0
+pyyaml
+requests
+#spicy
+slackweb
+tabulate
+python-dateutil
+pytz
+numpy
+jsonschema
+bokeh
+pandas
+mock
+coverage
+nose
+urllib; python_version < '3.0'

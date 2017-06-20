@@ -1,0 +1,20 @@
+before_install:
+  - sudo apt-get -qq update
+language: python
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.6"
+  # does not have headers provided, please ask https://launchpad.net/~pypy/+archive/ppa
+  # maintainers to fix their pypy-dev package.
+#  - "pypy"
+# command to install dependencies
+os:
+  - linux
+  - macos
+install:
+  - pip install .
+  - pip install -r requirements.txt
+# command to run tests
+script: nosetests
