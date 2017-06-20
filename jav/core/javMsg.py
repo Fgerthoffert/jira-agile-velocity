@@ -38,8 +38,8 @@ class Msg(object):
             week_estimate = None
             if stats_weeks[scan_week]['days'] < 5:
                 days_remaining = 5 - stats_weeks[scan_week]['days']
-                points_remaining = days_remaining * stats_weeks[scan_week]['stats']['4']['avg']
-                week_estimate = points_remaining + stats_weeks[scan_week]['points']
+                points_remaining = days_remaining * (float(stats_weeks[scan_week]['stats']['4']['avg'])/5)
+                week_estimate = int(points_remaining + stats_weeks[scan_week]['points'])
             break
 
         if daily_metric > daily_velocity['sameday']['4']['avg']:
