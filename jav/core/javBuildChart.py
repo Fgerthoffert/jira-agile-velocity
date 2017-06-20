@@ -1,5 +1,7 @@
 import numpy as np
-#import urllib
+import pandas as pd
+
+# import urllib
 try:
     from urllib import quote
 except ImportError:
@@ -8,7 +10,7 @@ except ImportError:
 from bokeh.charts import Bar, output_file, save, show
 from bokeh.layouts import layout
 from bokeh.plotting import figure, ColumnDataSource
-from bokeh.models import HoverTool, OpenURL, TapTool, CustomJS
+from bokeh.models import HoverTool, OpenURL, TapTool, CustomJS, FactorRange
 from jav.core.javTime import Time
 
 
@@ -26,6 +28,18 @@ class BuildChart(object):
                 + ' ON(\"'
                 + current_date.strftime("%Y-%m-%d")
                 + '\")'
+            )
+
+    def build_url_remaining(self, jira_field, current_type):
+        return \
+            self.config.get_config_value('jira_host') + '/issues/?jql=' \
+            + quote(
+                self.config.get_config_value('jira_jql_remaining')
+                + ' AND '
+                + jira_field
+                + ' = \"'
+                + current_type
+                + '\"'
             )
 
     def build_velocity_days(self, stats_data):
@@ -73,7 +87,8 @@ class BuildChart(object):
         )
 
         # create a new plot with a a datetime axis type
-        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover, 'tap'])
+        p = figure(width=1000, height=350, x_axis_type='datetime',
+                   tools=['save', 'pan', 'box_zoom', 'reset', hover, 'tap'])
 
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
@@ -146,7 +161,7 @@ class BuildChart(object):
         )
 
         # create a new plot with a a datetime axis type
-        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save','pan','box_zoom','reset', hover])
+        p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save', 'pan', 'box_zoom', 'reset', hover])
 
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
@@ -168,64 +183,106 @@ class BuildChart(object):
 
         return p
 
-    def build_remaining_types(self, stats_data):
-        self.log.info('Generating graph about remaining effort per ticket type')
-
-        plot_data = {}
+    def get_points_per_type(self, stats_data):
+        plot_values = []
         for scan_day in stats_data:
-            plot_data['type'] = []
-            plot_data['jira_url'] = []
-            plot_data[self.config.get_config_value('stats_metric')] = []
             total_metric = stats_data[scan_day][self.config.get_config_value('stats_metric')]
             for assignee in stats_data[scan_day]['types']:
-                plot_data['type'].append(stats_data[scan_day]['types'][assignee]['type'])
-                plot_data[self.config.get_config_value('stats_metric')].append(stats_data[scan_day]['types'][assignee][self.config.get_config_value('stats_metric')])
-                plot_data['jira_url'].append('https://www.google.com')
+                plot_values.append([
+                    stats_data[scan_day]['types'][assignee]['type']
+                    , stats_data[scan_day]['types'][assignee][self.config.get_config_value('stats_metric')]
+                    , self.build_url_remaining('type', stats_data[scan_day]['types'][assignee]['type'])
+                ])
             break
+        return plot_values, total_metric
 
-        bar = Bar(
-            plot_data
-            , values=self.config.get_config_value('stats_metric')
-            , label='type'
-            , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Ticket Type (Total: ' + str(total_metric) + ')'
-            , tools='save,pan,box_zoom,reset,tap'
-            , legend=None
-            , color='green'
+    def get_remaining_source(self, dat):
+        source = ColumnDataSource(dict(
+            x_values=dat.entity
+            , y_values=dat.value
+            , jira_url=dat.jira_url
+        ))
+        return source
+
+    def chart_remaining_types(self, stats_data):
+        self.log.info('Generating graph about remaining effort per ticket type')
+        plot_values, total_metric = self.get_points_per_type(stats_data)
+
+        dat = pd.DataFrame(plot_values, columns=['entity', 'value', 'jira_url'])
+        source = self.get_remaining_source(dat)
+
+        # Declare tools
+        hover = HoverTool(
+            tooltips=[
+                ('Type:', '@x_values'),
+                ('Points:', '@y_values')
+            ]
         )
 
-        return bar
+        plot = figure(
+            plot_width=600
+            , plot_height=300
+            , x_axis_label='Ticket Type'
+            , y_axis_label=self.config.get_config_value('stats_metric')
+            , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Ticket Type (Total: ' + str(
+                total_metric) + ')'
+            , x_range=FactorRange(factors=list(dat.entity))
+            , tools=['save', 'pan', 'box_zoom', 'reset', hover, 'tap']
+        )
 
-    def build_remaining_assignees(self, stats_data):
-        self.log.info('Generating graph about remaining effort per assignee')
+        taptool = plot.select(type=TapTool)
+        taptool.callback = OpenURL(url='@jira_url')
 
-        plot_data = {}
+        plot.vbar(source=source, x='x_values', top='y_values', bottom=0, width=0.3, color='green')
+        return plot
+
+    def get_points_per_assignee(self, stats_data):
+        plot_values = []
         for scan_day in stats_data:
             total_metric = stats_data[scan_day][self.config.get_config_value('stats_metric')]
-            plot_data['assignee'] = []
-            plot_data[self.config.get_config_value('stats_metric')] = []
             for assignee in stats_data[scan_day]['assignees']:
-                plot_data['assignee'].append(stats_data[scan_day]['assignees'][assignee]['displayName'])
-                plot_data[self.config.get_config_value('stats_metric')].append(stats_data[scan_day]['assignees'][assignee][self.config.get_config_value('stats_metric')])
+                plot_values.append([
+                    stats_data[scan_day]['assignees'][assignee]['displayName']
+                    , stats_data[scan_day]['assignees'][assignee][self.config.get_config_value('stats_metric')]
+                    , self.build_url_remaining('assignee', stats_data[scan_day]['assignees'][assignee]['displayName'])
+                ])
             break
+        return plot_values, total_metric
 
-        bar = Bar(
-            plot_data
-            , values=self.config.get_config_value('stats_metric')
-            , label='assignee'
-            , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Jira Assignee (Total: ' + str(total_metric) + ')'
-            , tools='save,pan,box_zoom,reset'
-            , legend=None
-            , color='blue'
+    def chart_remaining_assignees(self, stats_data):
+        self.log.info('Generating graph about remaining effort per assignee')
+        plot_values, total_metric = self.get_points_per_assignee(stats_data)
 
+        dat = pd.DataFrame(plot_values, columns=['entity', 'value', 'jira_url'])
+        source = self.get_remaining_source(dat)
+        # Declare tools
+        hover = HoverTool(
+            tooltips=[
+                ('Assignee:', '@x_values'),
+                ('Points:', '@y_values')
+            ]
         )
-        return bar
+        plot = figure(
+            plot_width=600
+            , plot_height=300
+            , x_axis_label='Assignee'
+            , y_axis_label=self.config.get_config_value('stats_metric')
+            , title='Remaining ' + self.config.get_config_value('stats_metric') + ' per Jira Assignee (Total: ' + str(
+                total_metric) + ')'
+            , x_range=FactorRange(factors=list(dat.entity))
+            , tools=['save', 'pan', 'box_zoom', 'reset', hover, 'tap']
+        )
+        taptool = plot.select(type=TapTool)
+        taptool.callback = OpenURL(url='@jira_url')
 
-    def build_remaining_days(self, stats_data):
+        plot.vbar(source=source, x='x_values', top='y_values', bottom=0, width=0.3, color='blue')
+        return plot
+
+    def chart_remaining_days(self, stats_data):
         self.log.info('Generating graph about estimated remaining days')
-        plot_data = {}
+
+        plot_values = []
         for scan_day in stats_data:
-            plot_data['rolling_avg'] = []
-            plot_data['days'] = []
             for rol_avg in stats_data[scan_day]['days_to_completion']:
                 if rol_avg == 'current':
                     col_txt = 'This Week'
@@ -233,30 +290,48 @@ class BuildChart(object):
                     col_txt = 'All Time'
                 else:
                     col_txt = str(rol_avg) + ' Weeks'
-                plot_data['rolling_avg'].append(col_txt)
-                plot_data['days'].append(stats_data[scan_day]['days_to_completion'][rol_avg])
+                plot_values.append([
+                    col_txt
+                    , stats_data[scan_day]['days_to_completion'][rol_avg]
+                ])
             break
 
+        print(plot_values)
 
-        bar = Bar(
-            plot_data
-            , values='days'
-            , label='rolling_avg'
-            , title='Estimated days to completion'
-            , tools='save,pan,box_zoom,reset'
-            , legend=None
-            , color='red'
+        dat = pd.DataFrame(plot_values, columns=['entity', 'value'])
+
+        source = ColumnDataSource(dict(
+            x_values=dat.entity
+            , y_values=dat.value
+        ))
+
+        # Declare tools
+        hover = HoverTool(
+            tooltips=[
+                ('Estimated based on:', '@x_values'),
+                ('Days to completion:', '@y_values')
+            ]
         )
 
-        return bar
+        plot = figure(
+            plot_width=600
+            , plot_height=300
+            , x_axis_label='Estimations calculated based on'
+            , y_axis_label='Remaining days'
+            , title='Estimated days to completion'
+            , x_range=FactorRange(factors=list(dat.entity))
+            , tools=['save', 'pan', 'box_zoom', 'reset', hover]
+        )
+        plot.vbar(source=source, x='x_values', top='y_values', bottom=0, width=0.3, color='red')
+        return plot
 
     def main(self, stats_days, stats_weeks, stats_remaining):
         days_chart = self.build_velocity_days(stats_days)
         weeks_chart = self.build_velocity_weeks(stats_weeks)
 
-        remaining_types = self.build_remaining_types(stats_remaining)
-        remaining_assignees = self.build_remaining_assignees(stats_remaining)
-        remaining_days = self.build_remaining_days(stats_remaining)
+        remaining_types = self.chart_remaining_types(stats_remaining)
+        remaining_assignees = self.chart_remaining_assignees(stats_remaining)
+        remaining_days = self.chart_remaining_days(stats_remaining)
 
         bokeh_layout = layout([
             [days_chart]
@@ -268,4 +343,4 @@ class BuildChart(object):
         output_file(self.config.filepath_charts + 'index.html',
                     title='Jira Metrics, built on: ' + self.time.get_current_date().isoformat())
         save(bokeh_layout)
-        show(bokeh_layout)
+        #show(bokeh_layout)
