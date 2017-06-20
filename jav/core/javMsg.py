@@ -58,11 +58,11 @@ class Msg(object):
                 trend_week = ':arrow_right:'
         else:
             if week_estimate > weekly_velocity['4']['avg']:
-                trend_week = ':arrow_upper_right: (Est: ' + week_estimate + ')'
+                trend_week = ':arrow_upper_right: (Week Estim.: ' + str(week_estimate) + ')'
             elif week_estimate < weekly_velocity['4']['avg']:
-                trend_week = ':arrow_lower_right: (Est: ' + week_estimate + ')'
+                trend_week = ':arrow_lower_right: (Week Estim.: ' + str(week_estimate) + ')'
             else:
-                trend_week = ':arrow_right: (Est: ' + week_estimate + ')'
+                trend_week = ':arrow_right: (Week Estim.: ' + str(week_estimate) + ')'
 
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
