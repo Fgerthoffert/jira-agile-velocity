@@ -97,7 +97,7 @@ class Config(object):
                 , 'git_repo': {
                     'type': ['string', 'null']
                     , 'description': 'Git repository to be used to publish charts'
-                    , 'default': 'https://github.com/Fgerthoffert/test-agile-page.git'
+                    , 'default': 'GITHUB REPO'
                 }
                 , 'git_branch': {
                     'type': ['string', 'null']
@@ -107,7 +107,7 @@ class Config(object):
                 , 'git_localpath': {
                     'type': ['string', 'null']
                     , 'description': 'Path of the git directory on the local filesystem'
-                    , 'default': '/Users/francois/Desktop/test-agile-page/'
+                    , 'default': '/local/path/'
                 }
                 , 'git_pathdirectory': {
                     'type': ['string', 'null']
@@ -117,7 +117,7 @@ class Config(object):
                 , 'git_pageurl': {
                     'type': ['string', 'null']
                     , 'description': 'URL of the page to be sent via slack'
-                    , 'default': 'https://fgerthoffert.github.io/test-agile-page/charts/'
+                    , 'default': 'github.io page'
                 }
             }
         }
