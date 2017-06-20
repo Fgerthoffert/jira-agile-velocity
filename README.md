@@ -10,9 +10,9 @@ Velocity can be calculated using either story points (best) or ticket count (far
 
 Charts, generated with [Bokeh](http://bokeh.pydata.org/en/latest/), can assist teams in identifying possible challenges, difficulties and the impact of various events. The resulting HTML page can then be automatically published to [github pages](https://pages.github.com/)
 
-Daily statistics can be posted to slack to inform the team about progress.
-
 ![Bokeh Report](docs/jav-stats.png "Bokeh Report")
+
+Daily statistics can be posted to slack to inform the team about progress.
 
 ![Slack Message](docs/jav-slack.png "Slack Message")
 
