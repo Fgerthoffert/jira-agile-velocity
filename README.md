@@ -18,20 +18,30 @@ __Note__: This script is useful at identifying trends, how realistic a timeline 
 
 ![Slack Message](docs/jav-stats.png "Slack Message")
 
+Jav tries to be as friendly as possible with your Jira instance, it will progressively build a cache and only loads new or modified content from the REST API.
+
 # Installation
 
-```
+```bash
 $ git clone git@github.com:Fgerthoffert/jira-agile-velocity.git
 $ pip install -r requirements.txt
 $ python setup.py install
 ```
 
 # Contribute (dev)
-```
+```bash
 $ virtualenv /path/to/myapp/env
 $ source /path/to/myapp/env/bin/activate
 $ pip install -r requirements.txt
 $ python setup.py develop
+```
+
+# Usage
+
+To help in getting the system running, jav has been broken down in multiple independant sections
+
+```bash
+jav --help
 ```
 
 # License
