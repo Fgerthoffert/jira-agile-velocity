@@ -8,17 +8,18 @@ Built around [Cement](http://builtoncement.com/) This script has been created to
 
 Velocity can be calculated using either story points (best) or ticket count (far from ideal). 
 
-Charts, generated with [Bokeh](http://bokeh.pydata.org/en/latest/), can assist teams in identifying possible challenges, difficulties and the impact of various events.
+Charts, generated with [Bokeh](http://bokeh.pydata.org/en/latest/), can assist teams in identifying possible challenges, difficulties and the impact of various events. The resulting HTML page can then be automatically published to [github pages](https://pages.github.com/)
 
 Daily statistics can be posted to slack to inform the team about progress.
 
-__Note__: This script is useful at identifying trends, how realistic a timeline is, but is by no means an accurate nor perfect way of planning.
-
 ![Bokeh Report](docs/jav-stats.png "Bokeh Report")
 
-![Slack Message](docs/jav-stats.png "Slack Message")
+![Slack Message](docs/jav-slack.png "Slack Message")
 
 Jav tries to be as friendly as possible with your Jira instance, it will progressively build a cache and only loads new or modified content from the REST API.
+
+__Note__: This script is useful at identifying trends, how realistic a timeline is, but is by no means an accurate nor perfect way of planning.
+
 
 # Installation
 
