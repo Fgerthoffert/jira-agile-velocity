@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-# import urllib
 try:
     from urllib import quote
 except ImportError:
@@ -44,7 +43,6 @@ class BuildChart(object):
 
     def build_velocity_days(self, stats_data):
         self.log.info('Generating graph about daily effort')
-
         # Velocity Days
         x_dates = []
         y_values = []
@@ -63,10 +61,8 @@ class BuildChart(object):
                 y_avg.append(stats_data[scan_day]['anyday'][week_idx]['avg'])
             else:
                 y_avg.append(0)
-
         # prepare some data
         data_dates = np.array(x_dates, dtype=np.datetime64)
-
         source = ColumnDataSource(
             data=dict(
                 x_data_dates=data_dates,
@@ -76,7 +72,6 @@ class BuildChart(object):
                 jira_url=jira_url
             )
         )
-
         # Declare tools
         hover = HoverTool(
             tooltips=[
@@ -85,23 +80,18 @@ class BuildChart(object):
                 ('Average', '@y_avg_values'),
             ]
         )
-
         # create a new plot with a a datetime axis type
         p = figure(width=1000, height=350, x_axis_type='datetime',
                    tools=['save', 'pan', 'box_zoom', 'reset', hover, 'tap'])
-
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
         else:
             metric_legend = 'Story Points'
-
         # add renderers
         p.circle('x_data_dates', 'y_values', size=4, color='red', alpha=0.4, legend=metric_legend, source=source)
         p.line('x_data_dates', 'y_avg_values', color='blue', legend='4 Weeks Average', source=source)
-
         taptool = p.select(type=TapTool)
         taptool.callback = OpenURL(url='@jira_url')
-
         # NEW: customize by setting attributes
         p.title.text = 'Daily Velocity'
         p.legend.location = 'top_left'
@@ -115,7 +105,6 @@ class BuildChart(object):
 
     def build_velocity_weeks(self, stats_data):
         self.log.info('Generating graph about weekly effort')
-
         # Velocity Days
         x_dates = []
         y_values = []
@@ -127,7 +116,6 @@ class BuildChart(object):
             y_values.append(stats_data[scan_day][self.config.get_config_value('stats_metric')])
             y_weeks.append(stats_data[scan_day]['weektxt'])
             daily_avg.append(round(float(stats_data[scan_day][self.config.get_config_value('stats_metric')]) / 5, 1))
-
             if len(stats_data[scan_day]['stats']) > 0:
                 week_idx = '4'
                 if week_idx not in stats_data[scan_day]['stats']:
@@ -136,10 +124,8 @@ class BuildChart(object):
                     y_avg.append(stats_data[scan_day]['stats'][week_idx]['avg'])
                 else:
                     y_avg.append(0)
-
         # prepare some data
         data_dates = np.array(x_dates, dtype=np.datetime64)
-
         source = ColumnDataSource(
             data=dict(
                 x_data_dates=data_dates,
@@ -149,7 +135,6 @@ class BuildChart(object):
                 daily_avg=daily_avg,
             )
         )
-
         # Declare tools
         hover = HoverTool(
             tooltips=[
@@ -159,19 +144,15 @@ class BuildChart(object):
                 ('Avg ' + self.config.get_config_value('stats_metric') + ' per day', '@daily_avg'),
             ]
         )
-
         # create a new plot with a a datetime axis type
         p = figure(width=1000, height=350, x_axis_type='datetime', tools=['save', 'pan', 'box_zoom', 'reset', hover])
-
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
         else:
             metric_legend = 'Story Points'
-
         # add renderers
         p.circle('x_data_dates', 'y_values', size=4, color='red', alpha=0.4, legend=metric_legend, source=source)
         p.line('x_data_dates', 'y_avg_values', color='blue', legend='4 Weeks Average', source=source)
-
         # NEW: customize by setting attributes
         p.title.text = 'Weekly Velocity'
         p.legend.location = 'top_left'
@@ -207,10 +188,8 @@ class BuildChart(object):
     def chart_remaining_types(self, stats_data):
         self.log.info('Generating graph about remaining effort per ticket type')
         plot_values, total_metric = self.get_points_per_type(stats_data)
-
         dat = pd.DataFrame(plot_values, columns=['entity', 'value', 'jira_url'])
         source = self.get_remaining_source(dat)
-
         # Declare tools
         hover = HoverTool(
             tooltips=[
@@ -218,7 +197,6 @@ class BuildChart(object):
                 ('Points:', '@y_values')
             ]
         )
-
         plot = figure(
             plot_width=600
             , plot_height=300
@@ -229,10 +207,8 @@ class BuildChart(object):
             , x_range=FactorRange(factors=list(dat.entity))
             , tools=['save', 'pan', 'box_zoom', 'reset', hover, 'tap']
         )
-
         taptool = plot.select(type=TapTool)
         taptool.callback = OpenURL(url='@jira_url')
-
         plot.vbar(source=source, x='x_values', top='y_values', bottom=0, width=0.3, color='green')
         return plot
 
@@ -280,7 +256,6 @@ class BuildChart(object):
 
     def chart_remaining_days(self, stats_data):
         self.log.info('Generating graph about estimated remaining days')
-
         plot_values = []
         for scan_day in stats_data:
             for rol_avg in stats_data[scan_day]['days_to_completion']:
@@ -295,16 +270,11 @@ class BuildChart(object):
                     , stats_data[scan_day]['days_to_completion'][rol_avg]
                 ])
             break
-
-        print(plot_values)
-
         dat = pd.DataFrame(plot_values, columns=['entity', 'value'])
-
         source = ColumnDataSource(dict(
             x_values=dat.entity
             , y_values=dat.value
         ))
-
         # Declare tools
         hover = HoverTool(
             tooltips=[
@@ -312,7 +282,6 @@ class BuildChart(object):
                 ('Days to completion:', '@y_values')
             ]
         )
-
         plot = figure(
             plot_width=600
             , plot_height=300
@@ -343,4 +312,4 @@ class BuildChart(object):
         output_file(self.config.filepath_charts + 'index.html',
                     title='Jira Metrics, built on: ' + self.time.get_current_date().isoformat())
         save(bokeh_layout)
-        #show(bokeh_layout)
+        show(bokeh_layout)
