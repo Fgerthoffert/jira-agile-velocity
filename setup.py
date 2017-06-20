@@ -18,7 +18,7 @@ setup(name='jav',
         ### Required to build documentation
         # "Sphinx >= 1.0",
         ### Required for testing
-        # "nose",
+        "nose",
         # "coverage",
         ### Required to function
         'cement',
