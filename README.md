@@ -118,6 +118,16 @@ $ pip install -r requirements.txt
 $ python setup.py develop
 ```
 
+Create/Update pip version
+```bash
+#1- update setup.py with new version number
+# Remove previous builds
+rm dist/*
+python setup.py sdist
+python setup.py bdist_wheel --universal
+twine upload dist/*
+```
+
 # License
 
 You can check out the full license [here](https://github.com/Fgerthoffert/jira-agile-velocity/blob/master/LICENSE).
