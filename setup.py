@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='jav',
-    version='0.1',
+    version='0.1.2',
     description="Connect to Jira REST API to collect completed story points, calculate weekly velocity, and estimate completion date",
     long_description="Connect to Jira REST API to collect completed story points, calculate weekly velocity, and estimate completion date",
     classifiers=[],
