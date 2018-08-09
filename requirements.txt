@@ -8,9 +8,8 @@ python-dateutil
 pytz
 numpy
 jsonschema
-bokeh
+bokeh==0.12.7
 pandas
 mock
 coverage
-nose
-urllib; python_version < '3.0'
+nose; python_version < '3.0'
