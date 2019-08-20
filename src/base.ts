@@ -63,7 +63,7 @@ export default abstract class extends Command {
           username: "username",
           password: "password",
           host: "https://jira.myhost.org",
-          pointsField: "customfield_10002",
+          pointsField: "customfield_10114",
           jqlCompletion: "",
           jqlRemaining: "",
           jqlHistory: "2019-08-01"
