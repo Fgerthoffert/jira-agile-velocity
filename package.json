@@ -13,6 +13,7 @@
     "@oclif/plugin-help": "^2.2.1",
     "axios": "^0.19.0",
     "cli-ux": "^5.3.1",
+    "date-fns": "^2.0.0",
     "fs-extra": "^8.1.0",
     "js-yaml": "^3.13.1",
     "load-yaml-file": "^0.2.0",
