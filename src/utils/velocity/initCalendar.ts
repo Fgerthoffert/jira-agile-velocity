@@ -1,24 +1,28 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
+import { getWeek, getYear } from "date-fns";
 
 interface InitObject {
   days: any;
   weeks: any;
-  open: any;
-  velocity: any;
-  slack: any;
 }
 
 const initCalendar = (fromDate: Date, toDate: Date) => {
   let initObject: InitObject = {
     days: {},
     weeks: {},
-    open: {},
-    velocity: {},
-    slack: {}
   };
-  let emptyValues = {
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ];  
+  const emptyCompletion = {
     issues: { count: 0, velocity: 0 },
     points: { count: 0, velocity: 0 },
     list: []
@@ -28,8 +32,10 @@ const initCalendar = (fromDate: Date, toDate: Date) => {
     currentDate.setDate(currentDate.getDate() + 1);
     initObject.days[currentDate.toJSON().slice(0, 10)] = {
       date: currentDate.toJSON(),
-      completion: emptyValues,
-      scopeChangeCompletion: emptyValues
+      weekDay: currentDate.getDay(),
+      weekDayTxt: days[currentDate.getDay()],
+      completion: {...emptyCompletion},
+      scopeChangeCompletion: {...emptyCompletion}
     };
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
@@ -45,8 +51,10 @@ const initCalendar = (fromDate: Date, toDate: Date) => {
       initObject.weeks[currentWeekYear.toJSON().slice(0, 10)] = {
         weekStart: currentWeekYear.toJSON(),
         date: currentWeekYear.toJSON(),
-        completion: emptyValues,
-        scopeChangeCompletion: emptyValues
+        weekNb: getWeek(currentWeekYear),
+        weekTxt: getYear(currentWeekYear) + "." + getWeek(currentWeekYear),
+        completion: {...emptyCompletion},
+        scopeChangeCompletion: {...emptyCompletion}
       };
     }
   }

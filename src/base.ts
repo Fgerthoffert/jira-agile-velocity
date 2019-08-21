@@ -6,47 +6,47 @@ import * as path from "path";
 
 export default abstract class extends Command {
   static flags = {
-    jirausername: flags.string({
+    env_jira_username: flags.string({
       required: false,
       env: "JIRA_USERNAME",
       description: "Jira Username used to connect to the REST API"
     }),
-    jirapassword: flags.string({
+    env_jira_password: flags.string({
       required: false,
       env: "JIRA_PASSWORD",
       description: "Jira Password used to connect to the REST API"
     }),
-    jirahost: flags.string({
+    env_jira_host: flags.string({
       required: false,
       env: "JIRA_HOST",
       description: "Jira Server Host (https://jira.myhost.com)"
     }),
-    jirapoints: flags.string({
+    env_jira_points: flags.string({
       required: false,
       env: "JIRA_POINTS",
       description: "Jira Points field"
     }),
-    jirajqlcompletion: flags.string({
+    env_jira_jqlcompletion: flags.string({
       required: false,
       env: "JIRA_JQL_COMPLETION",
       description: "JQL Query used to measure completion"
     }),
-    jirajqlremaining: flags.string({
+    env_jira_jqlremaining: flags.string({
       required: false,
       env: "JIRA_JQL_REMAINING",
       description: "JQL Query used to fetch remaining issues"
     }),
-    jirajqlhistory: flags.string({
+    env_jira_jqlhistory: flags.string({
       required: false,
       env: "JIRA_JQL_HISTORY",
       description: "Date to start fetching data from (format: 2019-01-01)"
     }),
-    slackwebhook: flags.string({
+    env_slack_webhook: flags.string({
       required: false,
       env: "SLACK_WEBHOOK",
       description: "Slack Webhook URL"
     }),
-    slackchannel: flags.string({
+    env_slack_channel: flags.string({
       required: false,
       env: "SLACK_CHANNEL",
       description: "Slack channel to post content to"
