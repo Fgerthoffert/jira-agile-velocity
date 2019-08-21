@@ -3,15 +3,132 @@ import * as path from "path";
 import * as readline from "readline";
 import * as stream from "stream";
 
+interface ICompletion {
+  issues: {
+    count: number;
+    velocity: number;
+  };
+  points: {
+    count: number;
+    velocity: number;
+  };
+  list: Array<IJiraIssue>;
+}
+
+interface IJiraIssue {
+  expand: string;
+  id: string;
+  self: string;
+  key: string;
+  fields: any;
+}
+
+interface IDays {
+  date: string;
+  weekDay: number;
+  weekDayTxt: string;
+  completion: ICompletion;
+  scopeChangeCompletion: ICompletion;
+}
+
+interface IDaysObj {
+  [key: string]: IDays;
+}
+
+interface IWeeks {
+  date: string;
+  weekStart: string;
+  weekNb: number;
+  weekTxt: string;
+  completion: ICompletion;
+  scopeChangeCompletion: ICompletion;
+}
+
+interface IWeeksObj {
+  [key: string]: IWeeks;
+}
+
+interface IOpen {
+  issues: { count: number };
+  points: { count: number };
+  list: Array<IJiraIssue>;
+}
+
+interface IForecastCompletion {
+  issues: {
+    openCount: number;
+    velocity: number;
+    effortDays: number;
+  };
+  points: {
+    openCount: number;
+    velocity: number;
+    effortDays: number;
+  };
+}
+
+interface IForecast {
+  range: string;
+  completion: IForecastCompletion;
+}
+
+interface IHealthVelocityTrend {
+  trend: string;
+  previous: number;
+  current: number;
+}
+interface IHealthCompletion {
+  txt: string;
+  issues: {
+    list: Array<number>;
+    count: number;
+    min: number;
+    max: number;
+    avg: number;
+  };
+  points: {
+    list: Array<number>;
+    count: number;
+    min: number;
+    max: number;
+    avg: number;
+  };
+}
+
+interface IHealth {
+  days: {
+    velocity: {
+      issues: IHealthVelocityTrend;
+      points: IHealthVelocityTrend;
+    };
+    completion: IHealthCompletion;
+  };
+  weeks: {
+    velocity: {
+      issues: IHealthVelocityTrend;
+      points: IHealthVelocityTrend;
+    };
+    completion: IHealthCompletion;
+  };
+}
+
+interface ICalendar {
+  days: IDaysObj;
+  weeks: IWeeksObj;
+  open: IOpen;
+  forecast: IForecast;
+  health: IHealth;
+}
+
 /*
     This function receives an empty calendar and populates it with issues by reading files from cache
 */
 const insertClosed = async (
-  calendar: any,
+  calendar: ICalendar,
   cacheDir: string,
   jiraPoints: string
 ) => {
-  const updatedCalendar = JSON.parse(JSON.stringify(calendar));
+  const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
   for (let [dateKey, dateData] of Object.entries(updatedCalendar.days)) {
     const issuesFile = path.join(cacheDir, "completed-" + dateKey + ".ndjson");
     const issues = await readIssues(issuesFile);
