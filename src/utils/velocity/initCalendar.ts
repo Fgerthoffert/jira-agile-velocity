@@ -34,6 +34,7 @@ const initCalendar = (fromDate: Date, toDate: Date) => {
     initObject.days[currentDate.toJSON().slice(0, 10)] = {
       date: currentDate.toJSON(),
       weekDay: currentDate.getDay(),
+      weekDayJira: currentDate.toJSON().slice(0, 10),
       weekDayTxt: days[currentDate.getDay()],
       completion: { ...emptyCompletion },
       scopeChangeCompletion: { ...emptyCompletion }
@@ -55,6 +56,7 @@ const initCalendar = (fromDate: Date, toDate: Date) => {
         date: currentWeekYear.toJSON(),
         weekNb: getWeek(currentWeekYear),
         weekTxt: getYear(currentWeekYear) + "." + getWeek(currentWeekYear),
+        weekJira: currentWeekYear.toJSON().slice(0, 10),
         completion: { ...emptyCompletion },
         scopeChangeCompletion: { ...emptyCompletion }
       };

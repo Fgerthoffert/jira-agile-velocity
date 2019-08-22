@@ -34,17 +34,17 @@ export default abstract class extends Command {
     env_jira_jqlremaining: flags.string({
       required: false,
       env: "JIRA_JQL_REMAINING",
-      description: "JQL Query used to fetch remaining issues"
+      description: "JQL Query used to fetch remaining tickets"
     }),
     env_jira_jqlhistory: flags.string({
       required: false,
       env: "JIRA_JQL_HISTORY",
       description: "Date to start fetching data from (format: 2019-01-01)"
     }),
-    env_slack_webhook: flags.string({
+    env_slack_token: flags.string({
       required: false,
-      env: "SLACK_WEBHOOK",
-      description: "Slack Webhook URL"
+      env: "SLACK_TOKEN",
+      description: "Slack Token"
     }),
     env_slack_channel: flags.string({
       required: false,
@@ -69,7 +69,7 @@ export default abstract class extends Command {
           jqlHistory: "2019-08-01"
         },
         slack: {
-          webhook: "",
+          token: "",
           channel: ""
         }
       };

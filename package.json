@@ -20,6 +20,7 @@
     "js-yaml": "^3.13.1",
     "load-yaml-file": "^0.2.0",
     "lodash": "^4.17.15",
+    "slack": "^11.0.2",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
