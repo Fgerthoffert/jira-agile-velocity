@@ -19,7 +19,7 @@ $ npm install -g jira-agile-velocity
 $ jav COMMAND
 running command...
 $ jav (-v|--version|version)
-jira-agile-velocity/0.2.0 darwin-x64 node-v12.7.0
+jira-agile-velocity/0.2.1 darwin-x64 node-v12.7.0
 $ jav --help [COMMAND]
 USAGE
   $ jav COMMAND
@@ -55,7 +55,7 @@ OPTIONS
   --env_slack_webhook=env_slack_webhook            Slack Webhook URL
 ```
 
-_See code: [src/commands/fetch.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.0/src/commands/fetch.ts)_
+_See code: [src/commands/fetch.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.1/src/commands/fetch.ts)_
 
 ## `jav help [COMMAND]`
 
@@ -97,5 +97,5 @@ EXAMPLE
   $ jav init
 ```
 
-_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.1/src/commands/init.ts)_
 <!-- commandsstop -->
