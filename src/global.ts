@@ -75,7 +75,8 @@ interface IHealthVelocityTrend {
   current: number;
 }
 interface IHealthCompletion {
-  txt: string;
+  msgTxt: string;
+  msgJira: string;
   issues: {
     list: Array<number>;
     count: number;

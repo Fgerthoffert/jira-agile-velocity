@@ -50,6 +50,12 @@ export default abstract class extends Command {
       required: false,
       env: "SLACK_CHANNEL",
       description: "Slack channel to post content to"
+    }),
+    env_slack_explanation: flags.string({
+      required: false,
+      env: "SLACK_EXPLANATION",
+      description:
+        "Explanation about the metrics to append to the slack message"
     })
   };
 
@@ -70,7 +76,8 @@ export default abstract class extends Command {
         },
         slack: {
           token: "",
-          channel: ""
+          channel: "",
+          explanation: ""
         }
       };
       fs.writeFileSync(

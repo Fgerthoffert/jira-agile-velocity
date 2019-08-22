@@ -22,8 +22,8 @@ const insertHealth = (calendar: any) => {
         }
       },
       completion: {
-        dayTxt: null,
-        dayJira: null,
+        msgTxt: null,
+        msgJira: null,
         issues: {
           list: [],
           count: 0,
@@ -54,7 +54,8 @@ const insertHealth = (calendar: any) => {
         }
       },
       completion: {
-        weekTxt: null,
+        msgTxt: null,
+        msgJira: null,
         issues: {
           list: [],
           count: 0,
@@ -80,8 +81,8 @@ const insertHealth = (calendar: any) => {
       lastDay === false
     ) {
       referenceDay = updatedCalendar.days[i].weekDay;
-      health.days.completion.dayTxt = updatedCalendar.days[i].weekDayTxt;
-      health.days.completion.dayJira = updatedCalendar.days[i].weekDayJira;
+      health.days.completion.msgTxt = updatedCalendar.days[i].weekDayTxt;
+      health.days.completion.msgJira = updatedCalendar.days[i].weekDayJira;
 
       for (let type of ["issues", "points"]) {
         health.days.velocity[type].current =
@@ -135,8 +136,8 @@ const insertHealth = (calendar: any) => {
 
   for (let i = updatedCalendar.weeks.length - 1; i >= 0; i--) {
     if (lastWeek === false) {
-      health.weeks.completion.weekTxt = updatedCalendar.weeks[i].weekTxt;
-      health.weeks.completion.weekJira = updatedCalendar.weeks[i].weekJira;
+      health.weeks.completion.msgTxt = updatedCalendar.weeks[i].weekTxt;
+      health.weeks.completion.msgJira = updatedCalendar.weeks[i].weekJira;
 
       for (let type of ["issues", "points"]) {
         health.weeks.velocity[type].current =

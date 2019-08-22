@@ -78,6 +78,7 @@ export default class Fetch extends Command {
       type,
       env_slack_token,
       env_slack_channel,
+      env_slack_explanation,
       dryrun
     } = flags;
     const jira_host: string =
@@ -104,6 +105,10 @@ export default class Fetch extends Command {
       env_slack_channel !== undefined
         ? env_slack_channel
         : userConfig.slack.channel;
+    const slack_explanation: string =
+      env_slack_explanation !== undefined
+        ? env_slack_explanation
+        : userConfig.slack.explanation;
 
     // Initialize days to fetch
     let fromDay = formatDate(jira_jqlhistory);
@@ -146,7 +151,8 @@ export default class Fetch extends Command {
       type,
       jira_jqlremaining,
       jira_jqlcompletion,
-      jira_host
+      jira_host,
+      slack_explanation
     );
     this.log(slackMsg);
 

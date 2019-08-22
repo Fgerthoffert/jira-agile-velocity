@@ -1,11 +1,12 @@
-import { ICalendar } from "../../global";
+import { ICalendarFinal } from "../../global";
 
 const getDailyHealthMsg = (
-  calendar: ICalendarFinal,
+  calendar: any,
   type: string,
   jira_jqlremaining: string,
   jira_jqlcompletion: string,
-  jira_host: string
+  jira_host: string,
+  slack_explanation: string
 ) => {
   const jiraLinkRemaining = jira_host + "/issues/?jql=" + jira_jqlremaining;
   const jiraLinkClosedDay =
@@ -13,18 +14,17 @@ const getDailyHealthMsg = (
     "/issues/?jql=" +
     jira_jqlcompletion +
     " ON(" +
-    calendar.health.days.completion.dayJira +
+    calendar.health.days.completion.msgJira +
     ")";
   const jiraLinkClosedWeek =
     jira_host +
     "/issues/?jql=" +
     jira_jqlcompletion +
     " AFTER(" +
-    calendar.health.weeks.completion.weekJira +
+    calendar.health.weeks.completion.msgJira +
     ")";
   let messageString =
-    "Howdy everyone, here are our velocity stats, live from Jira\n" +
-    "-----------------------------------------------------------\n" +
+    "Howdy everyone, here are our velocity stats, live from Jira.\n" +
     "Remaining: " +
     "*<" +
     jiraLinkRemaining +
@@ -34,7 +34,7 @@ const getDailyHealthMsg = (
     type +
     ">*\n" +
     "On " +
-    calendar.health.days.completion.dayTxt +
+    calendar.health.days.completion.msgTxt +
     ", we completed: " +
     "*<" +
     jiraLinkClosedDay +
@@ -50,10 +50,10 @@ const getDailyHealthMsg = (
     " / Avg: " +
     calendar.health.days.completion[type].avg +
     " for " +
-    calendar.health.days.completion.dayTxt +
+    calendar.health.days.completion.msgTxt +
     "s]\n" +
     "This week (" +
-    calendar.health.weeks.completion.weekTxt +
+    calendar.health.weeks.completion.msgTxt +
     ") we completed: " +
     "*<" +
     jiraLinkClosedWeek +
@@ -81,7 +81,10 @@ const getDailyHealthMsg = (
     "Estimated sprint completion in: *" +
     calendar.forecast.completion[type].effortDays +
     "* days\n" +
-    "_Velocity calculated using a 4 weeks rolling window, current day & week are excluded from calculations_";
+    "_Velocity calculated using a 4 weeks rolling window, current day & week are excluded from calculations._\n" +
+    "_" +
+    slack_explanation +
+    "_";
   return messageString;
 };
 
