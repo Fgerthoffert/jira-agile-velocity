@@ -39,8 +39,6 @@ export default class Fetch extends Command {
     })
   };
 
-  static args = [{ name: "file" }];
-
   /*
     Returns a configuration object to be used when connecting to Jira
   */
@@ -165,7 +163,7 @@ export default class Fetch extends Command {
 
     const cacheDir = this.config.configDir + "/cache/";
     const issueFileStream = fs.createWriteStream(
-      path.join(cacheDir, "artifact.json"),
+      path.join(cacheDir, "fetch-artifact.json"),
       { flags: "w" }
     );
     issueFileStream.write(JSON.stringify(calendarWithHealth));
