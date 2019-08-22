@@ -114,3 +114,11 @@ export interface ICalendar {
   forecast: IForecast | object;
   health: IHealth | object;
 }
+
+export interface ICalendarFinal {
+  days: Array<IDays>;
+  weeks: Array<IWeeks>;
+  open: IOpen | object;
+  forecast: IForecast | object;
+  health: IHealth | object;
+}

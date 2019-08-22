@@ -4,7 +4,7 @@ import * as path from "path";
 import * as readline from "readline";
 import * as stream from "stream";
 
-import { ICalendar } from "../../../types/global";
+import { ICalendar } from "../../global";
 
 /*
     This function receives an empty calendar and populates it with issues by reading files from cache

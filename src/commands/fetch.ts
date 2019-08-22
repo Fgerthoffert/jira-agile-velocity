@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as loadYamlFile from "load-yaml-file";
 import * as path from "path";
 
-import { ICalendar } from "../../types/global";
+import { ICalendar, ICalendarFinal } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
 import sendSlackDailyHealth from "../utils/slack/sendDailyHealth";
@@ -110,12 +110,17 @@ export default class Fetch extends Command {
       jira_points
     );
 
-    const calendarWithDailyVelocity = insertDailyVelocity(calendarWithOpen);
-    const calendarWithWeeklyVelocity = insertWeeklyVelocity(
-      calendarWithDailyVelocity
-    );
+    const calendarVelocity: ICalendarFinal = {
+      ...calendarWithOpen,
+      days: insertDailyVelocity(calendarWithOpen),
+      weeks: insertWeeklyVelocity(calendarWithOpen)
+    };
+    //    const calendarWithDailyVelocity = insertDailyVelocity(calendarWithOpen);
+    //    const calendarWithWeeklyVelocity = insertWeeklyVelocity(
+    //      calendarWithDailyVelocity
+    //    );
 
-    const calendarWithForecast = insertForecast(calendarWithWeeklyVelocity);
+    const calendarWithForecast = insertForecast(calendarVelocity);
     const calendarWithHealth = insertHealth(calendarWithForecast);
 
     sendSlackDailyHealth(calendarWithHealth, this.log, type);

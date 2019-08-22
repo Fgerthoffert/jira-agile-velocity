@@ -4,7 +4,7 @@
 */
 import { getWeek, getYear } from "date-fns";
 
-import { ICalendar } from "../../../types/global";
+import { ICalendar } from "../../global";
 
 const initCalendar = (fromDate: Date, toDate: Date) => {
   let initObject: ICalendar = {

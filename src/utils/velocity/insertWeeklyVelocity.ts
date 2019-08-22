@@ -1,5 +1,5 @@
 // tslint:disable-next-line: file-name-casing
-import { ICalendar, IWeeks } from "../../../types/global";
+import { ICalendar, IWeeks } from "../../global";
 
 import calculateAverageVelocity from "./calculateAverageVelocity";
 
@@ -58,8 +58,7 @@ const insertWeeklyVelocity = (calendar: ICalendar) => {
       );
     }
   }
-  updatedCalendar.weeks = ticketsPerWeek;
-  return updatedCalendar;
+  return ticketsPerWeek;
 };
 
 export default insertWeeklyVelocity;

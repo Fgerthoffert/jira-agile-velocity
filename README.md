@@ -29,13 +29,12 @@ USAGE
 # Commands
 <!-- commands -->
 * [`jav fetch [FILE]`](#jav-fetch-file)
-* [`jav hello [FILE]`](#jav-hello-file)
 * [`jav help [COMMAND]`](#jav-help-command)
-* [`jav setup [FILE]`](#jav-setup-file)
+* [`jav init`](#jav-init)
 
 ## `jav fetch [FILE]`
 
-describe the command here
+Build velocity stats by day and week
 
 ```
 USAGE
@@ -43,31 +42,20 @@ USAGE
 
 OPTIONS
   -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help                                       show CLI help
+  -t, --type=issues|points                         [default: points] Send slack update using issues or points
+  --env_jira_host=env_jira_host                    Jira Server Host (https://jira.myhost.com)
+  --env_jira_jqlcompletion=env_jira_jqlcompletion  JQL Query used to measure completion
+  --env_jira_jqlhistory=env_jira_jqlhistory        Date to start fetching data from (format: 2019-01-01)
+  --env_jira_jqlremaining=env_jira_jqlremaining    JQL Query used to fetch remaining issues
+  --env_jira_password=env_jira_password            Jira Password used to connect to the REST API
+  --env_jira_points=env_jira_points                Jira Points field
+  --env_jira_username=env_jira_username            Jira Username used to connect to the REST API
+  --env_slack_channel=env_slack_channel            Slack channel to post content to
+  --env_slack_webhook=env_slack_webhook            Slack Webhook URL
 ```
 
 _See code: [src/commands/fetch.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.0/src/commands/fetch.ts)_
-
-## `jav hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ jav hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ jav hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.0/src/commands/hello.ts)_
 
 ## `jav help [COMMAND]`
 
@@ -86,19 +74,28 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
 
-## `jav setup [FILE]`
+## `jav init`
 
-Setup
+Initialize the configuration file
 
 ```
 USAGE
-  $ jav setup [FILE]
+  $ jav init
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  --env_jira_host=env_jira_host                    Jira Server Host (https://jira.myhost.com)
+  --env_jira_jqlcompletion=env_jira_jqlcompletion  JQL Query used to measure completion
+  --env_jira_jqlhistory=env_jira_jqlhistory        Date to start fetching data from (format: 2019-01-01)
+  --env_jira_jqlremaining=env_jira_jqlremaining    JQL Query used to fetch remaining issues
+  --env_jira_password=env_jira_password            Jira Password used to connect to the REST API
+  --env_jira_points=env_jira_points                Jira Points field
+  --env_jira_username=env_jira_username            Jira Username used to connect to the REST API
+  --env_slack_channel=env_slack_channel            Slack channel to post content to
+  --env_slack_webhook=env_slack_webhook            Slack Webhook URL
+
+EXAMPLE
+  $ jav init
 ```
 
-_See code: [src/commands/setup.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.0/src/commands/setup.ts)_
+_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.0/src/commands/init.ts)_
 <!-- commandsstop -->

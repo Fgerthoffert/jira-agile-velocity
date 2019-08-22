@@ -1,5 +1,5 @@
 // tslint:disable-next-line: file-name-casing
-import { ICalendar, IJiraIssue } from "../../../types/global";
+import { ICalendar, IJiraIssue } from "../../global";
 
 /*
     This function add details about the open issues
