@@ -78,7 +78,7 @@ const getDailyHealthMsg = (
     "* (from " +
     calendar.health.weeks.velocity[type].previous +
     " /week)\n" +
-    "Estimated sprint completion in: *" +
+    "Estimated completion in: *" +
     calendar.forecast.completion[type].effortDays +
     "* days\n" +
     "_Velocity calculated using a 4 weeks rolling window, current day & week are excluded from calculations._\n" +
