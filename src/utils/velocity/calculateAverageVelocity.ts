@@ -1,3 +1,4 @@
+// tslint:disable-next-line: file-name-casing
 const calculateAverageVelocity = (
   array: any,
   category: any,

@@ -1,3 +1,4 @@
+// tslint:disable-next-line: file-name-casing
 import axios from "axios";
 
 interface JiraConnection {

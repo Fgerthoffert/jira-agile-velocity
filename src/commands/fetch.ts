@@ -4,17 +4,17 @@ import * as fs from "fs";
 import * as loadYamlFile from "load-yaml-file";
 import * as path from "path";
 
+import { ICalendar } from "../../types/global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
+import sendSlackDailyHealth from "../utils/slack/sendDailyHealth";
 import initCalendar from "../utils/velocity/initCalendar";
 import insertClosed from "../utils/velocity/insertClosed";
-import insertOpen from "../utils/velocity/insertOpen";
 import insertDailyVelocity from "../utils/velocity/insertDailyVelocity";
-import insertWeeklyVelocity from "../utils/velocity/insertWeeklyVelocity";
 import insertForecast from "../utils/velocity/insertForecast";
 import insertHealth from "../utils/velocity/insertHealth";
-
-import sendSlackDailyHealth from "../utils/slack/sendDailyHealth";
+import insertOpen from "../utils/velocity/insertOpen";
+import insertWeeklyVelocity from "../utils/velocity/insertWeeklyVelocity";
 
 export default class Fetch extends Command {
   static description = "Build velocity stats by day and week";
@@ -59,7 +59,7 @@ export default class Fetch extends Command {
   }
 
   async run() {
-    const { args, flags } = this.parse(Fetch);
+    const { flags } = this.parse(Fetch);
     const userConfig = await loadYamlFile(
       path.join(this.config.configDir, "config.yml")
     );
@@ -95,7 +95,7 @@ export default class Fetch extends Command {
     this.log("Generating stats from: " + fromDay + " to: " + toDay);
 
     //First - Initialize a calendar with all days and weeks between the two dates
-    let emptyCalendar = initCalendar(fromDay, toDay);
+    const emptyCalendar: ICalendar = initCalendar(fromDay, toDay);
     await this.fetchMissingDays(emptyCalendar, jira_jqlcompletion);
     const calendarWithClosed = await insertClosed(
       emptyCalendar,
@@ -133,9 +133,12 @@ export default class Fetch extends Command {
   /*
     Fetch days which are not yet in cache from Jira
   */
-  fetchMissingDays = async (dataObject: any, jira_jql_completion: string) => {
+  fetchMissingDays = async (
+    calendar: ICalendar,
+    jira_jql_completion: string
+  ) => {
     const cacheDir = this.config.configDir + "/cache/";
-    for (let [dateKey, dateData] of Object.entries(dataObject.days)) {
+    for (let [dateKey] of Object.entries(calendar.days)) {
       if (
         !fs.existsSync(path.join(cacheDir, "completed-" + dateKey + ".ndjson"))
       ) {

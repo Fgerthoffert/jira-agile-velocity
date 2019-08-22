@@ -1,14 +1,18 @@
+// tslint:disable-next-line: file-name-casing
+import { ICalendar, IDays } from "../../../types/global";
+
 import calculateAverageVelocity from "./calculateAverageVelocity";
 
 /*
     This function calculates and insert daily velocity metrics
 */
-const insertDailyVelocity = (calendar: any) => {
-  const updatedCalendar = JSON.parse(JSON.stringify(calendar));
-  let ticketsPerDay: any = Object.values(updatedCalendar.days);
+const insertDailyVelocity = (calendar: ICalendar) => {
+  const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
+  let ticketsPerDay: Array<IDays> = Object.values(updatedCalendar.days);
 
   let startIdx = 0;
-  ticketsPerDay.map(function(value: any, idx: number) {
+  for (let idx = 0; idx < ticketsPerDay.length; idx++) {
+    //ticketsPerDay.map((value: any, idx: number) => {
     // Rolling averages are calculates over a window of 20 days
     if (idx <= 20) {
       startIdx = 0;
@@ -54,8 +58,8 @@ const insertDailyVelocity = (calendar: any) => {
         "points"
       );
     }
-  });
-  updatedCalendar["days"] = ticketsPerDay;
+  }
+  updatedCalendar.days = ticketsPerDay;
   return updatedCalendar;
 };
 

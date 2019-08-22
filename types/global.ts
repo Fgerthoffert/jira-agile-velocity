@@ -10,7 +10,7 @@ interface ICompletion {
   list: Array<IJiraIssue>;
 }
 
-interface IJiraIssue {
+export interface IJiraIssue {
   expand: string;
   id: string;
   self: string;
@@ -18,7 +18,7 @@ interface IJiraIssue {
   fields: any;
 }
 
-interface IDays {
+export interface IDays {
   date: string;
   weekDay: number;
   weekDayTxt: string;
@@ -30,7 +30,7 @@ interface IDaysObj {
   [key: string]: IDays;
 }
 
-interface IWeeks {
+export interface IWeeks {
   date: string;
   weekStart: string;
   weekNb: number;
@@ -107,10 +107,10 @@ interface IHealth {
   };
 }
 
-interface ICalendar {
+export interface ICalendar {
   days: IDaysObj;
   weeks: IWeeksObj;
-  open: IOpen;
-  forecast: IForecast;
-  health: IHealth;
+  open: IOpen | object;
+  forecast: IForecast | object;
+  health: IHealth | object;
 }

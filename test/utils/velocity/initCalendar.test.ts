@@ -1,3 +1,4 @@
+// tslint:disable-next-line: file-name-casing
 import * as assert from "assert";
 
 import initCalendar from "../../../src/utils/velocity/initCalendar";

@@ -1,14 +1,17 @@
+// tslint:disable-next-line: file-name-casing
+import { ICalendar, IWeeks } from "../../../types/global";
+
 import calculateAverageVelocity from "./calculateAverageVelocity";
 
 /*
     This function calculates and insert daily velocity metrics
 */
-const insertWeeklyVelocity = (calendar: any) => {
-  const updatedCalendar = JSON.parse(JSON.stringify(calendar));
-  let ticketsPerWeek: any = Object.values(updatedCalendar.weeks);
+const insertWeeklyVelocity = (calendar: ICalendar) => {
+  const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
+  let ticketsPerWeek: Array<IWeeks> = Object.values(updatedCalendar.weeks);
 
   let startIdx = 0;
-  ticketsPerWeek.map((value: any, idx: number) => {
+  for (let idx = 0; idx < ticketsPerWeek.length; idx++) {
     // Rolling averages are calculates over a window of 4 weeks
     if (idx <= 4) {
       startIdx = 0;
@@ -54,8 +57,8 @@ const insertWeeklyVelocity = (calendar: any) => {
         "points"
       );
     }
-  });
-  updatedCalendar["weeks"] = ticketsPerWeek;
+  }
+  updatedCalendar.weeks = ticketsPerWeek;
   return updatedCalendar;
 };
 

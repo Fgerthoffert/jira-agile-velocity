@@ -1,3 +1,4 @@
+// tslint:disable-next-line: file-name-casing
 /*
     This function calculates and insert a forecast to completion
 */

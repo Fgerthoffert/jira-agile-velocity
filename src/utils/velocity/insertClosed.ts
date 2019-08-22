@@ -1,124 +1,10 @@
+// tslint:disable-next-line: file-name-casing
 import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
 import * as stream from "stream";
 
-interface ICompletion {
-  issues: {
-    count: number;
-    velocity: number;
-  };
-  points: {
-    count: number;
-    velocity: number;
-  };
-  list: Array<IJiraIssue>;
-}
-
-interface IJiraIssue {
-  expand: string;
-  id: string;
-  self: string;
-  key: string;
-  fields: any;
-}
-
-interface IDays {
-  date: string;
-  weekDay: number;
-  weekDayTxt: string;
-  completion: ICompletion;
-  scopeChangeCompletion: ICompletion;
-}
-
-interface IDaysObj {
-  [key: string]: IDays;
-}
-
-interface IWeeks {
-  date: string;
-  weekStart: string;
-  weekNb: number;
-  weekTxt: string;
-  completion: ICompletion;
-  scopeChangeCompletion: ICompletion;
-}
-
-interface IWeeksObj {
-  [key: string]: IWeeks;
-}
-
-interface IOpen {
-  issues: { count: number };
-  points: { count: number };
-  list: Array<IJiraIssue>;
-}
-
-interface IForecastCompletion {
-  issues: {
-    openCount: number;
-    velocity: number;
-    effortDays: number;
-  };
-  points: {
-    openCount: number;
-    velocity: number;
-    effortDays: number;
-  };
-}
-
-interface IForecast {
-  range: string;
-  completion: IForecastCompletion;
-}
-
-interface IHealthVelocityTrend {
-  trend: string;
-  previous: number;
-  current: number;
-}
-interface IHealthCompletion {
-  txt: string;
-  issues: {
-    list: Array<number>;
-    count: number;
-    min: number;
-    max: number;
-    avg: number;
-  };
-  points: {
-    list: Array<number>;
-    count: number;
-    min: number;
-    max: number;
-    avg: number;
-  };
-}
-
-interface IHealth {
-  days: {
-    velocity: {
-      issues: IHealthVelocityTrend;
-      points: IHealthVelocityTrend;
-    };
-    completion: IHealthCompletion;
-  };
-  weeks: {
-    velocity: {
-      issues: IHealthVelocityTrend;
-      points: IHealthVelocityTrend;
-    };
-    completion: IHealthCompletion;
-  };
-}
-
-interface ICalendar {
-  days: IDaysObj;
-  weeks: IWeeksObj;
-  open: IOpen;
-  forecast: IForecast;
-  health: IHealth;
-}
+import { ICalendar } from "../../../types/global";
 
 /*
     This function receives an empty calendar and populates it with issues by reading files from cache
@@ -134,6 +20,7 @@ const insertClosed = async (
     const issues = await readIssues(issuesFile);
     //console.log("Reading issues from file: " + issuesFile + ' - Issues found: ' + issues.length)
     for (let issue of issues) {
+      // tslint:disable-next-line: strict-type-predicates
       if (updatedCalendar.days[dateKey] !== undefined) {
         updatedCalendar.days[dateKey].completion.issues.count++;
         updatedCalendar.days[dateKey].completion.list.push(issue);
@@ -142,7 +29,8 @@ const insertClosed = async (
           issue.fields[jiraPoints] !== null
         ) {
           updatedCalendar.days[dateKey].completion.points.count += parseInt(
-            issue.fields[jiraPoints]
+            issue.fields[jiraPoints],
+            10
           );
         }
         if (
@@ -160,7 +48,8 @@ const insertClosed = async (
             updatedCalendar.days[
               dateKey
             ].scopeChangeCompletion.points.count += parseInt(
-              issue.fields[jiraPoints]
+              issue.fields[jiraPoints],
+              10
             );
           }
         }
@@ -177,6 +66,7 @@ const insertClosed = async (
         closedMonthDay
       );
       const closedWeekKey = closedWeek.toJSON().slice(0, 10);
+      // tslint:disable-next-line: strict-type-predicates
       if (updatedCalendar.weeks[closedWeekKey] !== undefined) {
         updatedCalendar.weeks[closedWeekKey].completion.issues.count++;
         updatedCalendar.weeks[closedWeekKey].completion.list.push(issue);
@@ -186,7 +76,7 @@ const insertClosed = async (
         ) {
           updatedCalendar.weeks[
             closedWeekKey
-          ].completion.points.count += parseInt(issue.fields[jiraPoints]);
+          ].completion.points.count += parseInt(issue.fields[jiraPoints], 10);
         }
         if (
           issue.fields.labels.filter(
@@ -206,7 +96,8 @@ const insertClosed = async (
             updatedCalendar.weeks[
               closedWeekKey
             ].scopeChangeCompletion.points.count += parseInt(
-              issue.fields[jiraPoints]
+              issue.fields[jiraPoints],
+              10
             );
           }
         }
