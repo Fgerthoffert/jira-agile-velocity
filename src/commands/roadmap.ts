@@ -9,6 +9,7 @@ import * as SymbolTree from "symbol-tree";
 import { ICalendar, ICalendarFinal } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
+import { NOTINITIALIZED } from "dns";
 
 export default class Roadmap extends Command {
   static description = "Build a roadmap from a set of issues";
@@ -79,62 +80,40 @@ export default class Roadmap extends Command {
 
     const initiativesIssues = await this.fetchInitiatives(jira_roadmap_jql);
 
-    const tree = new SymbolTree();
-    const root = {};
+    const issuesTree = new SymbolTree();
+    const treeRoot = {};
 
     // Feed the children into the initiative
-    const initiatives = [];
+
+    //const initiatives = [];
     for (let initiative of initiativesIssues) {
-      tree.appendChild(root, initiative);
+      issuesTree.appendChild(treeRoot, initiative);
       const children = await this.fetchChildIssues(initiative.key);
-      console.log(initiative.key + " - " + initiative.fields.summary);
-      for (let child of children.filter(
-        ic => ic.fields["customfield_11112"] === initiative.key
+      for (let l1child of children.filter(
+        (ic: any) => ic.fields["customfield_11112"] === initiative.key
       )) {
-        console.log(child.key + " - " + child.fields.summary);
-        tree.appendChild(initiative, child);
+        issuesTree.appendChild(initiative, l1child);
+        for (let l2child of children.filter(
+          (ic: any) => ic.fields["customfield_10314"] === l1child.key
+        )) {
+          issuesTree.appendChild(l1child, l2child);
+        }
       }
       /*
-      const pointChildren = children.filter(
-        (issue: any) => issue.fields.issuetype.name === "Story"
-      );
-      */
       initiatives.push({
         ...initiative,
         children
-        /*
-        progress: {
-          issues: { open: 0, closed: 0, total: 0 },
-          points: {
-            open: pointChildren
-              .filter(
-                (issue: any) =>
-                  issue.fields.status.statusCategory.key !== "done"
-              )
-              .map((issue: any) => issue.fields[jira_points])
-              .reduce((acc: number, points: number) => acc + points, 0),
-            closed: pointChildren
-              .filter(
-                (issue: any) =>
-                  issue.fields.status.statusCategory.key !== "done"
-              )
-              .map((issue: any) => issue.fields[jira_points])
-              .reduce((acc: number, points: number) => acc + points, 0),
-            total: 0
-          },
-          missingPoints: pointChildren.filter(
-            (issue: any) =>
-              issue.fields[jira_points] === undefined ||
-              issue.fields[jira_points] === null
-          ).length
-        }*/
       });
+      */
     }
-    console.log(initiatives);
-    console.log(JSON.stringify(tree.treeToArray(root)));
     //Note: Parent field (if parent is EPIC): customfield_10314
     //Note: Parent field (if parent is INITIATIVE): customfield_11112
 
+    const issuesData = this.prepareData(issuesTree, treeRoot, 0);
+    const issuesTable = this.prepareTable(issuesTree, treeRoot, []);
+    this.showConsoleTable(issuesTable);
+
+    /*
     const initiativesTable = [];
     for (let issue of initiatives) {
       initiativesTable.push({
@@ -143,12 +122,6 @@ export default class Roadmap extends Command {
         title: issue.fields.summary,
         state: issue.fields.status.name,
         type: issue.fields.issuetype.name,
-        /*
-        progress:
-          issue.progress.points.open +
-          " / " +
-          (issue.progress.points.open + issue.progress.points.closed),
-          */
         progress: "",
         start: "",
         endActual: "",
@@ -187,17 +160,88 @@ export default class Roadmap extends Command {
         }
       }
     }
-
-    this.showConsoleTable(initiativesTable);
+    */
 
     const cacheDir = this.config.configDir + "/cache/";
     const issueFileStream = fs.createWriteStream(
       path.join(cacheDir, "roadmap-artifact.json"),
       { flags: "w" }
     );
-    issueFileStream.write(JSON.stringify(initiatives));
+    issueFileStream.write(JSON.stringify(issuesTable));
     issueFileStream.end();
   }
+
+  prepareData = (issuesTree: any, node: any, level: number) => {
+    if (node.key !== undefined) {
+      node.level = level;
+      node.metrics = this.crunchMetrics(issuesTree, node);
+      node.isLeaf = issuesTree.hasChildren(node) ? false : true;
+    }
+    for (const children of issuesTree.childrenIterator(node)) {
+      this.prepareData(issuesTree, children, level + 1);
+    }
+    return [];
+  };
+
+  crunchMetrics = (issuesTree: any, node: any) => {
+    return issuesTree.treeToArray(node).reduce(
+      (acc: any, item: any) => {
+        if (parseInt(item.fields.customfield_10114, 10) > 0) {
+          acc.points.total =
+            acc.points.total + parseInt(item.fields.customfield_10114, 10);
+          if (item.fields.status.statusCategory.name === "Done") {
+            acc.points.completed =
+              acc.points.completed +
+              parseInt(item.fields.customfield_10114, 10);
+          } else {
+            acc.points.remaining =
+              acc.points.remaining +
+              parseInt(item.fields.customfield_10114, 10);
+          }
+        }
+        if (
+          (item.fields.customfield_10114 === undefined ||
+            item.fields.customfield_10114 === null) &&
+          issuesTree.hasChildren(node) === false
+        ) {
+          acc.missingPoints = true;
+        }
+        if (
+          (item.fields.customfield_10114 === undefined ||
+            item.fields.customfield_10114 === null) &&
+          issuesTree.hasChildren(item) === false &&
+          item.fields.status.statusCategory.name !== "Done"
+        ) {
+          acc.points.missing++;
+        }
+        acc.issues.total = acc.issues.total + 1;
+        if (item.fields.status.statusCategory.name === "Done") {
+          acc.issues.completed++;
+        } else {
+          acc.issues.remaining++;
+        }
+        return acc;
+      },
+      {
+        missingPoints: false,
+        points: { total: 0, completed: 0, remaining: 0, missing: 0 },
+        issues: { total: 0, completed: 0, remaining: 0 }
+      }
+    );
+  };
+
+  prepareTable = (issuesTree: any, node: any, issuesTable: Array<any>) => {
+    if (node.key !== undefined) {
+      issuesTable.push(node);
+    }
+    //    console.log(node);
+    //    console.log("----");
+
+    for (const children of issuesTree.childrenIterator(node)) {
+      this.prepareTable(issuesTree, children, issuesTable);
+    }
+    return issuesTable;
+  };
 
   /*
     Fetch initiatives from Jira
@@ -230,46 +274,90 @@ export default class Roadmap extends Command {
     return issuesJira;
   };
 
-  showConsoleTable = async (issues: any) => {
+  showConsoleTable = (issues: any) => {
     const columns: any = {
       prefix: {
-        header: "-"
-      },
-      key: {
-        header: "Key",
-        minWidth: "10"
-      },
-      title: {
-        header: "Title",
-        minWidth: "10"
-      },
-      state: {
-        header: "State",
-        minWidth: "10"
+        header: "-",
+        get: (row: any) => {
+          switch (row.level) {
+            case 1:
+              return "-----";
+            case 2:
+              return " |---";
+            case 3:
+              return " | |-";
+          }
+        }
       },
       type: {
         header: "Type",
-        minWidth: "10"
+        minWidth: "10",
+        get: (row: any) => {
+          return row.fields.issuetype.name;
+        }
+      },
+      key: {
+        header: "Key"
+      },
+      title: {
+        header: "Title",
+        get: (row: any) => {
+          return row.fields.summary;
+        }
+      },
+      state: {
+        header: "State",
+        minWidth: "10",
+        get: (row: any) => {
+          return row.fields.status.statusCategory.name;
+        }
+      },
+      pts: {
+        header: "Pts",
+        get: (row: any) => {
+          if (row.isLeaf) {
+            if (row.metrics.missingPoints) {
+              return "-";
+            }
+            return row.metrics.points.total;
+          }
+          return "";
+        }
       },
       progress: {
-        header: "Progress (Open / Total / %)",
-        minWidth: "5"
-      },
-      missing: {
-        header: "Missing Estimates",
-        minWidth: "5"
-      },
-      start: {
-        header: "Start",
-        minWidth: "10"
-      },
-      endActual: {
-        header: "End (Actual)",
-        minWidth: "10"
-      },
-      endForecast: {
-        header: "End (Forecast)",
-        minWidth: "10"
+        header: "Progress",
+        minWidth: "5",
+        get: (row: any) => {
+          if (!row.isLeaf) {
+            let progress = "0%";
+            let missing = "";
+            if (row.metrics.points.missing > 0) {
+              missing =
+                " (" +
+                row.metrics.points.missing +
+                " open issues missing estimate)";
+            }
+            if (row.metrics.points.total > 0) {
+              progress =
+                Math.round(
+                  ((row.metrics.points.completed * 100) /
+                    row.metrics.points.total) *
+                    100
+                ) /
+                  100 +
+                "%";
+            }
+            return (
+              row.metrics.points.completed +
+              "/" +
+              row.metrics.points.total +
+              " - " +
+              progress +
+              missing
+            );
+          }
+          return "";
+        }
       }
     };
     const options: any = {
