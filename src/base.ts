@@ -34,22 +34,38 @@ export default abstract class extends Command {
     env_jira_jqlremaining: flags.string({
       required: false,
       env: "JIRA_JQL_REMAINING",
-      description: "JQL Query used to fetch remaining issues"
+      description: "JQL Query used to fetch remaining tickets"
     }),
     env_jira_jqlhistory: flags.string({
       required: false,
       env: "JIRA_JQL_HISTORY",
       description: "Date to start fetching data from (format: 2019-01-01)"
     }),
-    env_slack_webhook: flags.string({
+    env_jira_roadmap_jql: flags.string({
       required: false,
-      env: "SLACK_WEBHOOK",
-      description: "Slack Webhook URL"
+      env: "JIRA_ROADMAP_JQL",
+      description: "JQL Query to start building the roadmap from"
+    }),
+    env_jira_roadmap_pointstype: flags.string({
+      required: false,
+      env: "JIRA_ROADMAP_POINTSTYPE",
+      description: "Issuetype to which points should be attached"
+    }),
+    env_slack_token: flags.string({
+      required: false,
+      env: "SLACK_TOKEN",
+      description: "Slack Token"
     }),
     env_slack_channel: flags.string({
       required: false,
       env: "SLACK_CHANNEL",
       description: "Slack channel to post content to"
+    }),
+    env_slack_explanation: flags.string({
+      required: false,
+      env: "SLACK_EXPLANATION",
+      description:
+        "Explanation about the metrics to append to the slack message"
     })
   };
 
@@ -66,11 +82,14 @@ export default abstract class extends Command {
           pointsField: "customfield_10114",
           jqlCompletion: "",
           jqlRemaining: "",
-          jqlHistory: "2019-08-01"
+          jqlHistory: "2019-08-01",
+          roadmapJql: "",
+          roadmapPointstype: "Story"
         },
         slack: {
-          webhook: "",
-          channel: ""
+          token: "",
+          channel: "",
+          explanation: ""
         }
       };
       fs.writeFileSync(

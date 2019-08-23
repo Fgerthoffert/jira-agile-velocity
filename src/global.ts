@@ -22,6 +22,7 @@ export interface IDays {
   date: string;
   weekDay: number;
   weekDayTxt: string;
+  weekDayJira: string;
   completion: ICompletion;
   scopeChangeCompletion: ICompletion;
 }
@@ -35,6 +36,7 @@ export interface IWeeks {
   weekStart: string;
   weekNb: number;
   weekTxt: string;
+  weekJira: string;
   completion: ICompletion;
   scopeChangeCompletion: ICompletion;
 }
@@ -73,7 +75,8 @@ interface IHealthVelocityTrend {
   current: number;
 }
 interface IHealthCompletion {
-  txt: string;
+  msgTxt: string;
+  msgJira: string;
   issues: {
     list: Array<number>;
     count: number;

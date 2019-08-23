@@ -9,7 +9,8 @@ interface JiraConnection {
 
 const jiraSearchIssues = async (
   jiraConnection: JiraConnection,
-  jqlQuery: string
+  jqlQuery: string,
+  field: string
 ) => {
   const { jira_username, jira_password, jira_host } = jiraConnection;
   const response = await axios({
@@ -23,7 +24,7 @@ const jiraSearchIssues = async (
       jql: jqlQuery,
       startAt: 0,
       maxResults: 1500,
-      fields: "labels,customfield_10114"
+      fields: field
     }
   });
   if (response.data.issues.length > 0) {

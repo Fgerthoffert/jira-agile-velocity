@@ -7,7 +7,8 @@ import * as path from "path";
 import { ICalendar, ICalendarFinal } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
-import sendSlackDailyHealth from "../utils/slack/sendDailyHealth";
+import sendSlackDailyHealth from "../utils/slack/sendSlackMsg";
+import getDailyHealthMsg from "../utils/slack/getDailyHealthMsg";
 import initCalendar from "../utils/velocity/initCalendar";
 import insertClosed from "../utils/velocity/insertClosed";
 import insertDailyVelocity from "../utils/velocity/insertDailyVelocity";
@@ -15,6 +16,7 @@ import insertForecast from "../utils/velocity/insertForecast";
 import insertHealth from "../utils/velocity/insertHealth";
 import insertOpen from "../utils/velocity/insertOpen";
 import insertWeeklyVelocity from "../utils/velocity/insertWeeklyVelocity";
+import sendSlackMsg from "../utils/slack/sendSlackMsg";
 
 export default class Fetch extends Command {
   static description = "Build velocity stats by day and week";
@@ -30,10 +32,12 @@ export default class Fetch extends Command {
       default: "points"
     }),
     // flag with no value (-f, --force)
-    force: flags.boolean({ char: "f" })
+    dryrun: flags.boolean({
+      char: "d",
+      default: false,
+      description: "Dry-Run, do not send slack message"
+    })
   };
-
-  static args = [{ name: "file" }];
 
   /*
     Returns a configuration object to be used when connecting to Jira
@@ -65,11 +69,18 @@ export default class Fetch extends Command {
     );
     let {
       env_jira_points,
+      env_jira_host,
       env_jira_jqlcompletion,
       env_jira_jqlremaining,
       env_jira_jqlhistory,
-      type
+      type,
+      env_slack_token,
+      env_slack_channel,
+      env_slack_explanation,
+      dryrun
     } = flags;
+    const jira_host: string =
+      env_jira_host !== undefined ? env_jira_host : userConfig.jira.host;
     const jira_points: string =
       env_jira_points !== undefined
         ? env_jira_points
@@ -86,6 +97,16 @@ export default class Fetch extends Command {
       env_jira_jqlhistory !== undefined
         ? env_jira_jqlhistory
         : userConfig.jira.jqlHistory;
+    const slack_token: string =
+      env_slack_token !== undefined ? env_slack_token : userConfig.slack.token;
+    const slack_channel: string =
+      env_slack_channel !== undefined
+        ? env_slack_channel
+        : userConfig.slack.channel;
+    const slack_explanation: string =
+      env_slack_explanation !== undefined
+        ? env_slack_explanation
+        : userConfig.slack.explanation;
 
     // Initialize days to fetch
     let fromDay = formatDate(jira_jqlhistory);
@@ -123,11 +144,26 @@ export default class Fetch extends Command {
     const calendarWithForecast = insertForecast(calendarVelocity);
     const calendarWithHealth = insertHealth(calendarWithForecast);
 
-    sendSlackDailyHealth(calendarWithHealth, this.log, type);
+    const slackMsg = getDailyHealthMsg(
+      calendarWithHealth,
+      type,
+      jira_jqlremaining,
+      jira_jqlcompletion,
+      jira_host,
+      slack_explanation
+    );
+    this.log(slackMsg);
+
+    if (!dryrun) {
+      cli.action.start("Sending message to Slack");
+      sendSlackMsg(slack_token, slack_channel, slackMsg);
+      cli.action.stop(" done");
+    }
+    //    sendSlackDailyHealth(calendarWithHealth, this.log, type);
 
     const cacheDir = this.config.configDir + "/cache/";
     const issueFileStream = fs.createWriteStream(
-      path.join(cacheDir, "artifact.json"),
+      path.join(cacheDir, "fetch-artifact.json"),
       { flags: "w" }
     );
     issueFileStream.write(JSON.stringify(calendarWithHealth));
@@ -156,7 +192,11 @@ export default class Fetch extends Command {
 
         const jqlQuery = jira_jql_completion + " ON(" + dateKey + ")";
         const jiraConnection = await this.getJiraConnection();
-        const issuesJira = await jiraSearchIssues(jiraConnection, jqlQuery);
+        const issuesJira = await jiraSearchIssues(
+          jiraConnection,
+          jqlQuery,
+          "labels,customfield_10114"
+        );
         //const issuesJira = await this.fetchDataFromJira(jqlQuery);
         //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(
@@ -182,7 +222,8 @@ export default class Fetch extends Command {
     const jiraConnection = await this.getJiraConnection();
     const issuesJira = await jiraSearchIssues(
       jiraConnection,
-      jira_jql_remaining
+      jira_jql_remaining,
+      "labels,customfield_10114"
     );
     cli.action.stop(" done");
     return issuesJira;
