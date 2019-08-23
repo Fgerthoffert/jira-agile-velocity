@@ -192,7 +192,11 @@ export default class Fetch extends Command {
 
         const jqlQuery = jira_jql_completion + " ON(" + dateKey + ")";
         const jiraConnection = await this.getJiraConnection();
-        const issuesJira = await jiraSearchIssues(jiraConnection, jqlQuery);
+        const issuesJira = await jiraSearchIssues(
+          jiraConnection,
+          jqlQuery,
+          "labels,customfield_10114"
+        );
         //const issuesJira = await this.fetchDataFromJira(jqlQuery);
         //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(
@@ -218,7 +222,8 @@ export default class Fetch extends Command {
     const jiraConnection = await this.getJiraConnection();
     const issuesJira = await jiraSearchIssues(
       jiraConnection,
-      jira_jql_remaining
+      jira_jql_remaining,
+      "labels,customfield_10114"
     );
     cli.action.stop(" done");
     return issuesJira;
