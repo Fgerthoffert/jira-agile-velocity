@@ -87,7 +87,8 @@ export default class Roadmap extends Command {
     const issuesWithWeeks = this.appendWeeks(
       issuesTree,
       treeRoot,
-      closedIssuesByWeek
+      closedIssuesByWeek,
+      userConfig
     );
 
     const exportData = this.exportData(issuesTree, treeRoot);
@@ -112,34 +113,45 @@ export default class Roadmap extends Command {
   appendWeeks = (
     issuesTree: any,
     node: any,
-    closedIssuesByWeek: Array<any>
+    closedIssuesByWeek: Array<any>,
+    userConfig: IConfig
   ) => {
     if (node.key !== undefined) {
       console.log(
         node.key + " children: " + issuesTree.treeToArray(node).length
       );
       node.completionWeeks = closedIssuesByWeek.map(week => {
+        const completedIssues = week.list.filter(i => {
+          // Search issue in this list: issuesTree.treeToArray(node).length
+          //            console.log(i);
+          if (
+            issuesTree.treeToArray(node).find(n => n.key === i.key) !==
+            undefined
+          ) {
+            console.log(
+              "Found: " + node.key + " completed in week: " + week.weekStart
+            );
+            return true;
+          }
+          return false;
+        });
+
         return {
           ...week,
-          list: week.list.filter(i => {
-            // Search issue in this list: issuesTree.treeToArray(node).length
-            //            console.log(i);
-            if (
-              issuesTree.treeToArray(node).find(n => n.key === i.key) !==
-              undefined
-            ) {
-              console.log(
-                "Found: " + node.key + " completed in week: " + week.weekStart
-              );
-              return true;
-            }
-            return false;
-          })
+          list: completedIssues,
+          issues: { count: completedIssues.length },
+          points: {
+            count: completedIssues
+              .map(
+                (issue: IJiraIssue) => issue.fields[userConfig.jira.pointsField]
+              )
+              .reduce((acc: number, points: number) => acc + points, 0)
+          }
         };
       });
     }
     for (const children of issuesTree.childrenIterator(node)) {
-      this.appendWeeks(issuesTree, children, closedIssuesByWeek);
+      this.appendWeeks(issuesTree, children, closedIssuesByWeek, userConfig);
     }
     return [];
   };
