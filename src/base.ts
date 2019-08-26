@@ -82,9 +82,41 @@ export default abstract class extends Command {
           pointsField: "customfield_10114",
           jqlCompletion: "",
           jqlRemaining: "",
-          jqlHistory: "2019-08-01",
+          jqlHistory: "2019-07-01",
           roadmapJql: "",
           roadmapPointstype: "Story"
+        },
+        teams: [
+          {
+            name: "Team 1",
+            jqlCompletion:
+              "Insert a JQL query to be used to record past completion",
+            jqlRemaining:
+              "Insert a JQL query to collect a list of tickets to be completed",
+            jqlHistory: "2019-07-01",
+            slack: {
+              token: "",
+              channel: "",
+              explanation: ""
+            }
+          },
+          {
+            name: "Team 2",
+            jqlCompletion:
+              "Insert a JQL query to be used to record past completion",
+            jqlRemaining:
+              "Insert a JQL query to collect a list of tickets to be completed",
+            jqlHistory: "2019-07-01",
+            slack: {
+              token: "",
+              channel: "",
+              explanation: ""
+            }
+          }
+        ],
+        roadmap: {
+          jqlInitiatives: "type = initiative",
+          teams: ["Team 1, Team 2"]
         },
         slack: {
           token: "",
@@ -100,6 +132,8 @@ export default abstract class extends Command {
         "Initialized configuration file with defaults in: " +
           path.join(this.config.configDir, "config.yml")
       );
+      this.log("Please EDIT the configuration file first");
+      this.exit();
     } else {
       this.log(
         "Configuration file exists: " +

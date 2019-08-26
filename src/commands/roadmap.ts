@@ -6,7 +6,7 @@ import * as path from "path";
 
 import * as SymbolTree from "symbol-tree";
 
-import { ICalendar, ICalendarFinal } from "../global";
+import { ICalendar, ICalendarFinal, IConfig } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
 import { NOTINITIALIZED } from "dns";
@@ -78,7 +78,7 @@ export default class Roadmap extends Command {
         ? env_jira_points
         : userConfig.jira.pointsField;
 
-    const initiativesIssues = await this.fetchInitiatives(jira_roadmap_jql);
+    const initiativesIssues = await this.fetchInitiatives(userConfig);
 
     const issuesTree = new SymbolTree();
     const treeRoot = {};
@@ -88,7 +88,7 @@ export default class Roadmap extends Command {
     //const initiatives = [];
     for (let initiative of initiativesIssues) {
       issuesTree.appendChild(treeRoot, initiative);
-      const children = await this.fetchChildIssues(initiative.key);
+      const children = await this.fetchChildIssues(userConfig, initiative.key);
       for (let l1child of children.filter(
         (ic: any) => ic.fields["customfield_11112"] === initiative.key
       )) {
@@ -246,15 +246,16 @@ export default class Roadmap extends Command {
   /*
     Fetch initiatives from Jira
   */
-  fetchInitiatives = async (jira_roadmap_jql: string) => {
+  fetchInitiatives = async (userConfig: IConfig) => {
     cli.action.start(
-      "Fetching roadmap initiatives using: " + jira_roadmap_jql + " "
+      "Fetching roadmap initiatives using: " +
+        userConfig.roadmap.jqlInitiatives +
+        " "
     );
-    const jiraConnection = await this.getJiraConnection();
     const issuesJira = await jiraSearchIssues(
-      jiraConnection,
-      jira_roadmap_jql,
-      "summary,status,labels,customfield_10114,issuetype"
+      userConfig.jira,
+      userConfig.roadmap.jqlInitiatives,
+      "summary,status,labels," + userConfig.jira.pointsField + ",issuetype"
     );
     cli.action.stop(" done");
     return issuesJira;
@@ -262,13 +263,14 @@ export default class Roadmap extends Command {
   /*
     Fetch initiatives from Jira
   */
-  fetchChildIssues = async (issuekey: string) => {
+  fetchChildIssues = async (userConfig: IConfig, issuekey: string) => {
     cli.action.start("Fetching children of: " + issuekey + " ");
-    const jiraConnection = await this.getJiraConnection();
     const issuesJira = await jiraSearchIssues(
-      jiraConnection,
+      userConfig.jira,
       "issuekey in childIssuesOf(" + issuekey + ")",
-      "summary,status,labels,customfield_10114,issuetype,customfield_10314,customfield_11112"
+      "summary,status,labels," +
+        userConfig.jira.pointsField +
+        ",issuetype,customfield_10314,customfield_11112"
     );
     cli.action.stop(" done");
     return issuesJira;
@@ -335,7 +337,7 @@ export default class Roadmap extends Command {
               missing =
                 " (" +
                 row.metrics.points.missing +
-                " open issues missing estimate)";
+                " open issues without estimate)";
             }
             if (row.metrics.points.total > 0) {
               progress =

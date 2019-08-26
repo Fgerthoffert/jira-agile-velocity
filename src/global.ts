@@ -11,6 +11,7 @@ interface ICompletion {
 }
 
 export interface IJiraIssue {
+  closedAt: string;
   expand: string;
   id: string;
   self: string;
@@ -124,4 +125,34 @@ export interface ICalendarFinal {
   open: IOpen | object;
   forecast: IForecast | object;
   health: IHealth | object;
+}
+
+export interface IConfig {
+  jira: IConfigJira;
+  teams: Array<IConfigTeam>;
+  roadmap: IConfigRoadmap;
+}
+
+export interface IConfigTeam {
+  name: string;
+  jqlCompletion: string;
+  jqlRemaining: string;
+  jqlHistory: string;
+  slack: {
+    token: string;
+    channel: string;
+    explanation: string;
+  };
+}
+
+export interface IConfigJira {
+  username: string;
+  password: string;
+  host: string;
+  pointsField: string;
+}
+
+export interface IConfigRoadmap {
+  jqlInitiatives: string;
+  teams: Array<string>;
 }

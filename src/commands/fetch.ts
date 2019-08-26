@@ -4,11 +4,13 @@ import * as fs from "fs";
 import * as loadYamlFile from "load-yaml-file";
 import * as path from "path";
 
-import { ICalendar, ICalendarFinal } from "../global";
 import Command from "../base";
+import { ICalendar, ICalendarFinal, IConfig } from "../global";
+import fetchCompleted from "../utils/data/fetchCompleted";
 import jiraSearchIssues from "../utils/jira/searchIssues";
-import sendSlackDailyHealth from "../utils/slack/sendSlackMsg";
+import { getTeamId } from "../utils/misc/teamUtils";
 import getDailyHealthMsg from "../utils/slack/getDailyHealthMsg";
+import sendSlackMsg from "../utils/slack/sendSlackMsg";
 import initCalendar from "../utils/velocity/initCalendar";
 import insertClosed from "../utils/velocity/insertClosed";
 import insertDailyVelocity from "../utils/velocity/insertDailyVelocity";
@@ -16,7 +18,6 @@ import insertForecast from "../utils/velocity/insertForecast";
 import insertHealth from "../utils/velocity/insertHealth";
 import insertOpen from "../utils/velocity/insertOpen";
 import insertWeeklyVelocity from "../utils/velocity/insertWeeklyVelocity";
-import sendSlackMsg from "../utils/slack/sendSlackMsg";
 
 export default class Fetch extends Command {
   static description = "Build velocity stats by day and week";
@@ -108,125 +109,87 @@ export default class Fetch extends Command {
         ? env_slack_explanation
         : userConfig.slack.explanation;
 
-    // Initialize days to fetch
-    let fromDay = formatDate(jira_jqlhistory);
-    let toDay = new Date();
-    toDay.setDate(toDay.getDate() - 2);
+    for (let team of userConfig.teams) {
+      const closedIssues = await fetchCompleted(
+        userConfig,
+        this.config.configDir + "/cache/",
+        team.name
+      );
+      console.log("Fetched " + closedIssues.length + " completed issues");
 
-    this.log("Generating stats from: " + fromDay + " to: " + toDay);
+      const emptyCalendar: ICalendar = initCalendar(team.jqlHistory);
+      const calendarWithClosed = await insertClosed(
+        emptyCalendar,
+        userConfig.jira.pointsField,
+        closedIssues
+      );
 
-    //First - Initialize a calendar with all days and weeks between the two dates
-    const emptyCalendar: ICalendar = initCalendar(fromDay, toDay);
-    await this.fetchMissingDays(emptyCalendar, jira_jqlcompletion);
-    const calendarWithClosed = await insertClosed(
-      emptyCalendar,
-      this.config.configDir + "/cache/",
-      jira_points
-    );
+      const openIssues = await this.fetchOpenIssues(userConfig, team.name);
+      const calendarWithOpen = insertOpen(
+        calendarWithClosed,
+        openIssues,
+        userConfig.jira.pointsField
+      );
 
-    const openIssues = await this.fetchOpenIssues(jira_jqlremaining);
-    const calendarWithOpen = insertOpen(
-      calendarWithClosed,
-      openIssues,
-      jira_points
-    );
+      const calendarVelocity: ICalendarFinal = {
+        ...calendarWithOpen,
+        days: insertDailyVelocity(calendarWithOpen),
+        weeks: insertWeeklyVelocity(calendarWithOpen)
+      };
 
-    const calendarVelocity: ICalendarFinal = {
-      ...calendarWithOpen,
-      days: insertDailyVelocity(calendarWithOpen),
-      weeks: insertWeeklyVelocity(calendarWithOpen)
-    };
-    //    const calendarWithDailyVelocity = insertDailyVelocity(calendarWithOpen);
-    //    const calendarWithWeeklyVelocity = insertWeeklyVelocity(
-    //      calendarWithDailyVelocity
-    //    );
+      const calendarWithForecast = insertForecast(calendarVelocity);
+      const calendarWithHealth = insertHealth(calendarWithForecast);
 
-    const calendarWithForecast = insertForecast(calendarVelocity);
-    const calendarWithHealth = insertHealth(calendarWithForecast);
+      const slackMsg = getDailyHealthMsg(
+        calendarWithHealth,
+        type,
+        userConfig,
+        team.name
+      );
+      this.log(slackMsg);
 
-    const slackMsg = getDailyHealthMsg(
-      calendarWithHealth,
-      type,
-      jira_jqlremaining,
-      jira_jqlcompletion,
-      jira_host,
-      slack_explanation
-    );
-    this.log(slackMsg);
-
-    if (!dryrun) {
-      cli.action.start("Sending message to Slack");
-      sendSlackMsg(slack_token, slack_channel, slackMsg);
-      cli.action.stop(" done");
-    }
-    //    sendSlackDailyHealth(calendarWithHealth, this.log, type);
-
-    const cacheDir = this.config.configDir + "/cache/";
-    const issueFileStream = fs.createWriteStream(
-      path.join(cacheDir, "fetch-artifact.json"),
-      { flags: "w" }
-    );
-    issueFileStream.write(JSON.stringify(calendarWithHealth));
-    issueFileStream.end();
-    cli.action.stop(" done");
-  }
-
-  /*
-    Fetch days which are not yet in cache from Jira
-  */
-  fetchMissingDays = async (
-    calendar: ICalendar,
-    jira_jql_completion: string
-  ) => {
-    const cacheDir = this.config.configDir + "/cache/";
-    for (let [dateKey] of Object.entries(calendar.days)) {
-      if (
-        !fs.existsSync(path.join(cacheDir, "completed-" + dateKey + ".ndjson"))
-      ) {
-        cli.action.start(
-          "Fetching data for day: " +
-            dateKey +
-            " to file: " +
-            path.join(cacheDir, "completed-" + dateKey + ".ndjson")
-        );
-
-        const jqlQuery = jira_jql_completion + " ON(" + dateKey + ")";
-        const jiraConnection = await this.getJiraConnection();
-        const issuesJira = await jiraSearchIssues(
-          jiraConnection,
-          jqlQuery,
-          "labels,customfield_10114"
-        );
-        //const issuesJira = await this.fetchDataFromJira(jqlQuery);
-        //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
-        const issueFileStream = fs.createWriteStream(
-          path.join(cacheDir, "completed-" + dateKey + ".ndjson"),
-          { flags: "a" }
-        );
-        if (issuesJira.length > 0) {
-          for (let issue of issuesJira) {
-            issueFileStream.write(JSON.stringify(issue) + "\n");
-          }
-        }
-        issueFileStream.end();
+      if (!dryrun) {
+        cli.action.start("Sending message to Slack");
+        sendSlackMsg(team.slack.token, team.slack.channel, slackMsg);
         cli.action.stop(" done");
       }
+
+      const cacheDir = this.config.configDir + "/cache/";
+      const issueFileStream = fs.createWriteStream(
+        path.join(
+          cacheDir,
+          "velocity-artifact-" + getTeamId(team.name) + ".json"
+        ),
+        { flags: "w" }
+      );
+      issueFileStream.write(JSON.stringify(calendarWithHealth));
+      issueFileStream.end();
+      cli.action.stop(" done");
     }
-  };
+  }
 
   /*
     Fetch open issues from Jira
   */
-  fetchOpenIssues = async (jira_jql_remaining: string) => {
-    cli.action.start("Fetching open issues using: " + jira_jql_remaining + " ");
-    const jiraConnection = await this.getJiraConnection();
-    const issuesJira = await jiraSearchIssues(
-      jiraConnection,
-      jira_jql_remaining,
-      "labels,customfield_10114"
-    );
-    cli.action.stop(" done");
-    return issuesJira;
+  fetchOpenIssues = async (userConfig: IConfig, teamName: string) => {
+    const teamConfig = userConfig.teams.find(t => t.name === teamName);
+    if (teamConfig !== undefined) {
+      cli.action.start(
+        "Fetching open issues for team: " +
+          teamName +
+          " using JQL: " +
+          teamConfig.jqlRemaining +
+          " "
+      );
+      const issuesJira = await jiraSearchIssues(
+        userConfig.jira,
+        teamConfig.jqlRemaining,
+        "labels," + userConfig.jira.pointsField
+      );
+      cli.action.stop(" done");
+      return issuesJira;
+    }
+    return [];
   };
 }
 
