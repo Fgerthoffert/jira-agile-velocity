@@ -25,14 +25,12 @@ export default class Fetch extends Command {
   static flags = {
     ...Command.flags,
     help: flags.help({ char: "h" }),
-    // flag with a value (-n, --name=VALUE)
     type: flags.string({
       char: "t",
       description: "Send slack update using issues or points",
       options: ["issues", "points"],
       default: "points"
     }),
-    // flag with no value (-f, --force)
     dryrun: flags.boolean({
       char: "d",
       default: false,
@@ -40,75 +38,11 @@ export default class Fetch extends Command {
     })
   };
 
-  /*
-    Returns a configuration object to be used when connecting to Jira
-  */
-  async getJiraConnection() {
-    const { flags } = this.parse(Fetch);
-    const userConfig = await loadYamlFile(
-      path.join(this.config.configDir, "config.yml")
-    );
-    const { env_jira_username, env_jira_password, env_jira_host } = flags;
-    const jira_username: string =
-      env_jira_username !== undefined
-        ? env_jira_username
-        : userConfig.jira.username;
-    const jira_password: string =
-      env_jira_password !== undefined
-        ? env_jira_password
-        : userConfig.jira.password;
-    const jira_host: string =
-      env_jira_host !== undefined ? env_jira_host : userConfig.jira.host;
-
-    return { jira_username, jira_password, jira_host };
-  }
-
   async run() {
     const { flags } = this.parse(Fetch);
-    const userConfig = await loadYamlFile(
-      path.join(this.config.configDir, "config.yml")
-    );
-    let {
-      env_jira_points,
-      env_jira_host,
-      env_jira_jqlcompletion,
-      env_jira_jqlremaining,
-      env_jira_jqlhistory,
-      type,
-      env_slack_token,
-      env_slack_channel,
-      env_slack_explanation,
-      dryrun
-    } = flags;
-    const jira_host: string =
-      env_jira_host !== undefined ? env_jira_host : userConfig.jira.host;
-    const jira_points: string =
-      env_jira_points !== undefined
-        ? env_jira_points
-        : userConfig.jira.pointsField;
-    const jira_jqlcompletion: string =
-      env_jira_jqlcompletion !== undefined
-        ? env_jira_jqlcompletion
-        : userConfig.jira.jqlCompletion;
-    const jira_jqlremaining: string =
-      env_jira_jqlremaining !== undefined
-        ? env_jira_jqlremaining
-        : userConfig.jira.jqlRemaining;
-    const jira_jqlhistory: string =
-      env_jira_jqlhistory !== undefined
-        ? env_jira_jqlhistory
-        : userConfig.jira.jqlHistory;
-    const slack_token: string =
-      env_slack_token !== undefined ? env_slack_token : userConfig.slack.token;
-    const slack_channel: string =
-      env_slack_channel !== undefined
-        ? env_slack_channel
-        : userConfig.slack.channel;
-    const slack_explanation: string =
-      env_slack_explanation !== undefined
-        ? env_slack_explanation
-        : userConfig.slack.explanation;
+    const userConfig = this.userConfig;
 
+    let { type, dryrun } = flags;
     for (let team of userConfig.teams) {
       const closedIssues = await fetchCompleted(
         userConfig,
