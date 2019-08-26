@@ -98,7 +98,6 @@ export default class Fetch extends Command {
       );
       issueFileStream.write(JSON.stringify(calendarWithHealth));
       issueFileStream.end();
-      cli.action.stop(" done");
     }
   }
 

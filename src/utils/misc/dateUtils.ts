@@ -14,6 +14,32 @@ export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
 };
 
 /*
+    Returns an array of all weeks between two dates
+*/
+export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
+  const weeks: Array<string> = [];
+  let currentDate = startDate;
+  while (currentDate < endDate) {
+    let currentMonthDay = currentDate.getDate();
+    if (currentDate.getDay() !== 0) {
+      currentMonthDay = currentMonthDay - currentDate.getDay();
+    }
+    let currentWeekYear = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentMonthDay
+    );
+    if (
+      weeks.find(w => w === currentWeekYear.toJSON().slice(0, 10)) === undefined
+    ) {
+      weeks.push(currentWeekYear.toJSON().slice(0, 10));
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return weeks;
+};
+
+/*
     Takes a date string and returns a date mid-day 
 */
 export const formatDate = (dateString: string) => {
@@ -22,4 +48,18 @@ export const formatDate = (dateString: string) => {
   day.setUTCMinutes(0);
   day.setUTCSeconds(0);
   return day;
+};
+
+/* Takes a date and returns the first day of the week */
+export const startOfWeek = (date: Date) => {
+  let currentMonthDay = date.getDate();
+  if (date.getDay() !== 0) {
+    currentMonthDay = currentMonthDay - date.getDay();
+  }
+  const currentWeekYear: any = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    currentMonthDay
+  );
+  return currentWeekYear;
 };

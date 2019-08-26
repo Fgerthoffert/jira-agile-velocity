@@ -3,12 +3,18 @@ import cli from "cli-ux";
 import * as fs from "fs";
 import * as loadYamlFile from "load-yaml-file";
 import * as path from "path";
+import * as readline from "readline";
+import * as stream from "stream";
 
 import * as SymbolTree from "symbol-tree";
 
-import { ICalendar, ICalendarFinal, IConfig } from "../global";
+import { ICalendar, ICalendarFinal, IConfig, IJiraIssue } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
+import fetchCompleted from "../utils/data/fetchCompleted";
+import { getWeeksBetweenDates, formatDate } from "../utils/misc/dateUtils";
+import closedByWeek from "../utils/roadmap/closedByWeek";
+
 import { NOTINITIALIZED } from "dns";
 
 export default class Roadmap extends Command {
@@ -22,25 +28,46 @@ export default class Roadmap extends Command {
       description: "Use issues of points for metrics",
       options: ["issues", "points"],
       default: "points"
+    }),
+    cache: flags.boolean({
+      char: "c",
+      description:
+        "Use cached version of the child issues (mostly useful for dev)",
+      default: false
     })
   };
 
   async run() {
     const { flags } = this.parse(Roadmap);
-    let { type } = flags;
+    let { type, cache } = flags;
     const userConfig = this.userConfig;
+    const cacheDir = this.config.configDir + "/cache/";
+
+    // Fetch all closed issues into an array
+    let closedIssues: Array<IJiraIssue> = [];
+    for (let team of userConfig.teams) {
+      const teamIssues = await fetchCompleted(
+        userConfig,
+        this.config.configDir + "/cache/",
+        team.name
+      );
+      closedIssues = [...closedIssues, ...teamIssues];
+    }
+
+    const closedIssuesByWeek = closedByWeek(closedIssues);
 
     const initiativesIssues = await this.fetchInitiatives(userConfig);
 
     const issuesTree = new SymbolTree();
     const treeRoot = {};
 
-    // Feed the children into the initiative
-
-    //const initiatives = [];
     for (let initiative of initiativesIssues) {
       issuesTree.appendChild(treeRoot, initiative);
-      const children = await this.fetchChildIssues(userConfig, initiative.key);
+      const children = await this.fetchChildIssues(
+        userConfig,
+        initiative.key,
+        cache
+      );
       for (let l1child of children.filter(
         (ic: any) => ic.fields["customfield_11112"] === initiative.key
       )) {
@@ -56,10 +83,24 @@ export default class Roadmap extends Command {
     //Note: Parent field (if parent is INITIATIVE): customfield_11112
 
     const issuesData = this.prepareData(issuesTree, treeRoot, 0);
+
+    const issuesWithWeeks = this.appendWeeks(
+      issuesTree,
+      treeRoot,
+      closedIssuesByWeek
+    );
+
+    const exportData = this.exportData(issuesTree, treeRoot);
+    const issueWeekFileStream = fs.createWriteStream(
+      path.join(cacheDir, "roadmap-weeks.json"),
+      { flags: "w" }
+    );
+    issueWeekFileStream.write(JSON.stringify(exportData));
+    issueWeekFileStream.end();
+
     const issuesTable = this.prepareTable(issuesTree, treeRoot, []);
     this.showConsoleTable(issuesTable);
 
-    const cacheDir = this.config.configDir + "/cache/";
     const issueFileStream = fs.createWriteStream(
       path.join(cacheDir, "roadmap-artifact.json"),
       { flags: "w" }
@@ -67,6 +108,41 @@ export default class Roadmap extends Command {
     issueFileStream.write(JSON.stringify(issuesTable));
     issueFileStream.end();
   }
+
+  appendWeeks = (
+    issuesTree: any,
+    node: any,
+    closedIssuesByWeek: Array<any>
+  ) => {
+    if (node.key !== undefined) {
+      console.log(
+        node.key + " children: " + issuesTree.treeToArray(node).length
+      );
+      node.completionWeeks = closedIssuesByWeek.map(week => {
+        return {
+          ...week,
+          list: week.list.filter(i => {
+            // Search issue in this list: issuesTree.treeToArray(node).length
+            //            console.log(i);
+            if (
+              issuesTree.treeToArray(node).find(n => n.key === i.key) !==
+              undefined
+            ) {
+              console.log(
+                "Found: " + node.key + " completed in week: " + week.weekStart
+              );
+              return true;
+            }
+            return false;
+          })
+        };
+      });
+    }
+    for (const children of issuesTree.childrenIterator(node)) {
+      this.appendWeeks(issuesTree, children, closedIssuesByWeek);
+    }
+    return [];
+  };
 
   prepareData = (issuesTree: any, node: any, level: number) => {
     if (node.key !== undefined) {
@@ -78,6 +154,24 @@ export default class Roadmap extends Command {
       this.prepareData(issuesTree, children, level + 1);
     }
     return [];
+  };
+
+  exportData = (issuesTree: any, node: any) => {
+    const jsonObject = [];
+    for (const initiative of issuesTree.childrenIterator(node)) {
+      const epics = [];
+      for (const epic of issuesTree.childrenIterator(initiative)) {
+        const stories = [];
+        for (const story of issuesTree.childrenIterator(epic)) {
+          stories.push(story);
+        }
+        epic.children = stories;
+        epics.push(epic);
+      }
+      initiative.children = epics;
+      jsonObject.push(initiative);
+    }
+    return jsonObject;
   };
 
   crunchMetrics = (issuesTree: any, node: any) => {
@@ -149,6 +243,7 @@ export default class Roadmap extends Command {
         userConfig.roadmap.jqlInitiatives +
         " "
     );
+
     const issuesJira = await jiraSearchIssues(
       userConfig.jira,
       userConfig.roadmap.jqlInitiatives,
@@ -160,15 +255,42 @@ export default class Roadmap extends Command {
   /*
     Fetch initiatives from Jira
   */
-  fetchChildIssues = async (userConfig: IConfig, issuekey: string) => {
+  fetchChildIssues = async (
+    userConfig: IConfig,
+    issuekey: string,
+    cache: boolean
+  ) => {
     cli.action.start("Fetching children of: " + issuekey + " ");
-    const issuesJira = await jiraSearchIssues(
-      userConfig.jira,
-      "issuekey in childIssuesOf(" + issuekey + ")",
-      "summary,status,labels," +
-        userConfig.jira.pointsField +
-        ",issuetype,customfield_10314,customfield_11112"
+    let issuesJira = [];
+    const childIssuesCache = path.join(
+      this.config.configDir + "/cache/",
+      "childissuescache-" + issuekey + ".ndjson"
     );
+    if (cache && fs.existsSync(childIssuesCache)) {
+      const input = fs.createReadStream(childIssuesCache);
+      for await (const line of readLines(input)) {
+        issuesJira.push(JSON.parse(line));
+      }
+    } else {
+      let issuesJira = await jiraSearchIssues(
+        userConfig.jira,
+        "issuekey in childIssuesOf(" + issuekey + ")",
+        "summary,status,labels," +
+          userConfig.jira.pointsField +
+          ",issuetype,customfield_10314,customfield_11112"
+      );
+      if (cache) {
+        const issueFileStream = fs.createWriteStream(childIssuesCache, {
+          flags: "a"
+        });
+        if (issuesJira.length > 0) {
+          for (let issue of issuesJira) {
+            issueFileStream.write(JSON.stringify(issue) + "\n");
+          }
+        }
+        issueFileStream.end();
+      }
+    }
     cli.action.stop(" done");
     return issuesJira;
   };
@@ -265,3 +387,16 @@ export default class Roadmap extends Command {
     cli.table(issues, columns);
   };
 }
+
+//https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
+const readLines = (input: any) => {
+  const output = new stream.PassThrough({ objectMode: true });
+  const rl = readline.createInterface({ input });
+  rl.on("line", line => {
+    output.write(line);
+  });
+  rl.on("close", () => {
+    output.push(null);
+  });
+  return output;
+};
