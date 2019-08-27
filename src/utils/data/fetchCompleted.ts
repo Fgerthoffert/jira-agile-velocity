@@ -39,7 +39,7 @@ const fetchCompleted = async (
         const issuesJira = await jiraSearchIssues(
           config.jira,
           jqlQuery,
-          "labels," + config.jira.fields.points
+          "labels,summary," + config.jira.fields.points
         );
         //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(issuesDayFilepath, {

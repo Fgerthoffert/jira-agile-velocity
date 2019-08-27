@@ -72,11 +72,6 @@ export default class Roadmap extends Command {
       userConfig,
       emptyCalendar
     );
-    const roadmapArtifact = {
-      byTeam: closedIssuesByWeekAndTeam
-    };
-
-    this.showArtifactsTable(roadmapArtifact);
 
     const initiativesIssues = await fetchInitiatives(
       userConfig,
@@ -111,7 +106,7 @@ export default class Roadmap extends Command {
       }
     }
 
-    // Update the tree nodes with actual metrics
+    // Update all of the tree nodes with actual metrics
     this.prepareData(
       issuesTree,
       treeRoot,
@@ -120,6 +115,18 @@ export default class Roadmap extends Command {
       emptyCalendar,
       userConfig
     );
+
+    const closedIssuesByWeekAndInitiative = this.exportData(
+      issuesTree,
+      treeRoot
+    );
+
+    const roadmapArtifact = {
+      byTeam: closedIssuesByWeekAndTeam,
+      byInitiative: closedIssuesByWeekAndInitiative
+    };
+
+    this.showArtifactsTable(roadmapArtifact);
 
     /*
     const issuesWithWeeks = this.appendWeeks(
@@ -154,7 +161,7 @@ export default class Roadmap extends Command {
     */
 
     const issueFileStream = fs.createWriteStream(
-      path.join(cacheDir, "roadmap-artifact.json"),
+      path.join(cacheDir, "roadmap-artifacts.json"),
       { flags: "w" }
     );
     issueFileStream.write(JSON.stringify(roadmapArtifact));
@@ -370,12 +377,14 @@ export default class Roadmap extends Command {
     userConfig: IConfig
   ) => {
     return issuesTree.treeToArray(node).reduce((acc: any, item: any) => {
-      const issueExist = closedIssues.find(i => i.key === node.key);
+      // BACKLOG-10949
+      // BACKLOG-10950
+      // BACKLOG-10951
+      const issueExist = closedIssues.find(i => i.key === item.key);
+
       if (issueExist !== undefined) {
         const firstDayWeekDate = startOfWeek(new Date(issueExist.closedAt));
         const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
-        acc[firstDayWeekKey].list.push(issueExist);
-        acc[firstDayWeekKey].issues.count = acc[firstDayWeekKey].list.length;
         acc[firstDayWeekKey].list.push(issueExist);
         acc[firstDayWeekKey].issues.count = acc[firstDayWeekKey].list.length;
         if (
@@ -608,6 +617,107 @@ export default class Roadmap extends Command {
         return teamData;
       }),
       columnsByTeam
+    );
+
+    const columnsByInitiative: any = {
+      prefix: {
+        header: "-",
+        get: (row: any) => {
+          switch (row.level) {
+            case 1:
+              return "-----";
+            case 2:
+              return " |---";
+            case 3:
+              return " | |-";
+          }
+        }
+      },
+      type: {
+        header: "Type",
+        minWidth: "10",
+        get: (row: any) => {
+          return row.fields.issuetype.name;
+        }
+      },
+      key: {
+        header: "Key"
+      },
+      title: {
+        header: "Title",
+        get: (row: any) => {
+          return row.fields.summary;
+        }
+      },
+      state: {
+        header: "State",
+        minWidth: "10",
+        get: (row: any) => {
+          return row.fields.status.statusCategory.name;
+        }
+      },
+      pts: {
+        header: "Pts",
+        get: (row: any) => {
+          if (row.isLeaf) {
+            if (row.metrics.missingPoints) {
+              return "-";
+            }
+            return row.metrics.points.total;
+          }
+          return "";
+        }
+      },
+      progress: {
+        header: "Progress",
+        minWidth: "5",
+        get: (row: any) => {
+          if (!row.isLeaf) {
+            let progress = "0%";
+            let missing = "";
+            if (row.metrics.points.missing > 0) {
+              missing =
+                " (" +
+                row.metrics.points.missing +
+                " open issues without estimate)";
+            }
+            if (row.metrics.points.total > 0) {
+              progress =
+                Math.round(
+                  ((row.metrics.points.completed * 100) /
+                    row.metrics.points.total) *
+                    100
+                ) /
+                  100 +
+                "%";
+            }
+            return (
+              row.metrics.points.completed +
+              "/" +
+              row.metrics.points.total +
+              " - " +
+              progress +
+              missing
+            );
+          }
+          return "";
+        }
+      }
+    };
+    for (let week of Object.values(roadmapArtifact.byInitiative[0].weeks)) {
+      const weekId = week.weekStart.slice(0, 10);
+      columnsByInitiative[weekId] = { header: weekId };
+    }
+    cli.table(
+      roadmapArtifact.byInitiative.map((initiative: any) => {
+        const initiativeData = { ...initiative };
+        for (let week of Object.values(initiative.weeks)) {
+          const weekId = week.weekStart.slice(0, 10);
+          initiativeData[weekId] = week.points.count;
+        }
+        return initiativeData;
+      }),
+      columnsByInitiative
     );
   };
 }
