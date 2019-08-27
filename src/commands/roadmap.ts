@@ -7,15 +7,13 @@ import * as readline from "readline";
 import * as stream from "stream";
 
 import * as SymbolTree from "symbol-tree";
-
+import { convertArrayToCSV } from "convert-array-to-csv";
 import { ICalendar, ICalendarFinal, IConfig, IJiraIssue } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
 import fetchCompleted from "../utils/data/fetchCompleted";
 import { getWeeksBetweenDates, formatDate } from "../utils/misc/dateUtils";
 import closedByWeek from "../utils/roadmap/closedByWeek";
-
-import { NOTINITIALIZED } from "dns";
 
 export default class Roadmap extends Command {
   static description = "Build a roadmap from a set of issues";
@@ -54,7 +52,7 @@ export default class Roadmap extends Command {
       closedIssues = [...closedIssues, ...teamIssues];
     }
 
-    const closedIssuesByWeek = closedByWeek(closedIssues);
+    const closedIssuesByWeek = closedByWeek(closedIssues, userConfig);
 
     const initiativesIssues = await this.fetchInitiatives(userConfig);
 
@@ -92,12 +90,24 @@ export default class Roadmap extends Command {
     );
 
     const exportData = this.exportData(issuesTree, treeRoot);
+
     const issueWeekFileStream = fs.createWriteStream(
       path.join(cacheDir, "roadmap-weeks.json"),
       { flags: "w" }
     );
     issueWeekFileStream.write(JSON.stringify(exportData));
     issueWeekFileStream.end();
+
+    const exportDataToCsv = this.exportToTsv(exportData, closedIssuesByWeek);
+    const csvFromArrayOfArrays = convertArrayToCSV(exportDataToCsv, {
+      separator: ","
+    });
+    const issueCsvFileStream = fs.createWriteStream(
+      path.join(cacheDir, "roadmap-artifact.csv"),
+      { flags: "w" }
+    );
+    issueCsvFileStream.write(csvFromArrayOfArrays);
+    issueCsvFileStream.end();
 
     const issuesTable = this.prepareTable(issuesTree, treeRoot, []);
     this.showConsoleTable(issuesTable);
@@ -117,15 +127,17 @@ export default class Roadmap extends Command {
     userConfig: IConfig
   ) => {
     if (node.key !== undefined) {
+      /*
       console.log(
         node.key + " children: " + issuesTree.treeToArray(node).length
       );
+      */
       node.completionWeeks = closedIssuesByWeek.map(week => {
         const completedIssues = week.list.filter(i => {
           // Search issue in this list: issuesTree.treeToArray(node).length
           //            console.log(i);
           if (
-            issuesTree.treeToArray(node).find(n => n.key === i.key) !==
+            issuesTree.treeToArray(node).find((n: any) => n.key === i.key) !==
             undefined
           ) {
             console.log(
@@ -184,6 +196,107 @@ export default class Roadmap extends Command {
       jsonObject.push(initiative);
     }
     return jsonObject;
+  };
+
+  exportToTsv = (data: any, closedIssuesByWeek: any) => {
+    let jsonObject: any = [];
+    const header = [
+      "Type",
+      "Key",
+      "Title",
+      "State",
+      "Children",
+      "Pts",
+      "Progress"
+    ];
+    for (let week of data[0].completionWeeks) {
+      header.push(week.weekStart.slice(0, 10));
+    }
+    console.log(header);
+    jsonObject.push(header);
+
+    const nonInitiatives = [
+      "N/A",
+      "N/A",
+      "Effort spent outside of initiatives",
+      "N/A",
+      "N/A",
+      "N/A",
+      "N/A"
+    ];
+    for (let week of closedIssuesByWeek) {
+      nonInitiatives.push(week.points.count);
+    }
+    jsonObject.push(nonInitiatives);
+
+    for (let issue of data) {
+      jsonObject = this.exportIssue(issue, jsonObject);
+    }
+    return jsonObject;
+  };
+
+  exportIssue = (issue: any, jsonObject: any) => {
+    const issueExp: any = [
+      issue.fields.issuetype.name,
+      issue.key,
+      issue.fields.summary,
+      issue.fields.status.statusCategory.name,
+      issue.children === undefined ? 0 : issue.children.length,
+      this.formatPoints(issue),
+      this.formatProgress(issue)
+    ];
+    for (let week of issue.completionWeeks) {
+      issueExp.push(week.points.count);
+    }
+    jsonObject.push(issueExp);
+    if (issue.children !== undefined && issue.children.length > 0) {
+      for (let child of issue.children) {
+        this.exportIssue(child, jsonObject);
+      }
+    }
+    return jsonObject;
+  };
+
+  formatPoints = (issue: any) => {
+    if (issue.isLeaf) {
+      if (issue.metrics.missingPoints) {
+        return "-";
+      }
+      return issue.metrics.points.total;
+    }
+    return "";
+  };
+
+  formatProgress = (issue: any) => {
+    if (!issue.isLeaf) {
+      let progress = "0%";
+      let missing = "";
+      if (issue.metrics.points.missing > 0) {
+        missing =
+          " (" +
+          issue.metrics.points.missing +
+          " open issues without estimate)";
+      }
+      if (issue.metrics.points.total > 0) {
+        progress =
+          Math.round(
+            ((issue.metrics.points.completed * 100) /
+              issue.metrics.points.total) *
+              100
+          ) /
+            100 +
+          "%";
+      }
+      return (
+        issue.metrics.points.completed +
+        "/" +
+        issue.metrics.points.total +
+        " - " +
+        progress +
+        missing
+      );
+    }
+    return "";
   };
 
   crunchMetrics = (issuesTree: any, node: any) => {
@@ -392,9 +505,6 @@ export default class Roadmap extends Command {
           return "";
         }
       }
-    };
-    const options: any = {
-      columns: true
     };
     cli.table(issues, columns);
   };
