@@ -12,8 +12,12 @@ import { ICalendar, ICalendarFinal, IConfig, IJiraIssue } from "../global";
 import Command from "../base";
 import jiraSearchIssues from "../utils/jira/searchIssues";
 import fetchCompleted from "../utils/data/fetchCompleted";
+import fetchInitiatives from "../utils/data/fetchInitiatives";
+import fetchChildren from "../utils/data/fetchChildren";
 import { getWeeksBetweenDates, formatDate } from "../utils/misc/dateUtils";
-import closedByWeek from "../utils/roadmap/closedByWeek";
+import teamClosedByWeek from "../utils/roadmap/teamClosedByWeek";
+import getEmptyCalendarObject from "../utils/roadmap/getEmptyCalendarObject";
+import { formatDate, startOfWeek } from "../utils/misc/dateUtils";
 
 export default class Roadmap extends Command {
   static description = "Build a roadmap from a set of issues";
@@ -40,8 +44,18 @@ export default class Roadmap extends Command {
     let { type, cache } = flags;
     const userConfig = this.userConfig;
     const cacheDir = this.config.configDir + "/cache/";
-
-    // Fetch all closed issues into an array
+    if (cache) {
+      this.log(
+        "=================================================================================="
+      );
+      this.log(
+        "Will be fetching data from cache. NO CALLS WILL BE MADE TO JIRA TO REFRESH DATA "
+      );
+      this.log(
+        "=================================================================================="
+      );
+    }
+    // Creates an array of all closed issues across all teams
     let closedIssues: Array<IJiraIssue> = [];
     for (let team of userConfig.teams) {
       const teamIssues = await fetchCompleted(
@@ -52,36 +66,62 @@ export default class Roadmap extends Command {
       closedIssues = [...closedIssues, ...teamIssues];
     }
 
-    const closedIssuesByWeek = closedByWeek(closedIssues, userConfig);
+    const emptyCalendar = getEmptyCalendarObject(closedIssues, userConfig);
+    const closedIssuesByWeekAndTeam = teamClosedByWeek(
+      closedIssues,
+      userConfig,
+      emptyCalendar
+    );
+    const roadmapArtifact = {
+      byTeam: closedIssuesByWeekAndTeam
+    };
 
-    const initiativesIssues = await this.fetchInitiatives(userConfig);
+    this.showArtifactsTable(roadmapArtifact);
 
+    const initiativesIssues = await fetchInitiatives(
+      userConfig,
+      cacheDir,
+      cache
+    );
+
+    // Structure the issues in an actual tree object for easier traversing
+    //Note: Parent field (if parent is EPIC): customfield_10314
+    //Note: Parent field (if parent is INITIATIVE): customfield_11112
     const issuesTree = new SymbolTree();
     const treeRoot = {};
-
     for (let initiative of initiativesIssues) {
       issuesTree.appendChild(treeRoot, initiative);
-      const children = await this.fetchChildIssues(
+      const children = await fetchChildren(
         userConfig,
         initiative.key,
+        cacheDir,
         cache
       );
       for (let l1child of children.filter(
-        (ic: any) => ic.fields["customfield_11112"] === initiative.key
+        (ic: any) =>
+          ic.fields[userConfig.jira.fields.parentInitiative] === initiative.key
       )) {
         issuesTree.appendChild(initiative, l1child);
         for (let l2child of children.filter(
-          (ic: any) => ic.fields["customfield_10314"] === l1child.key
+          (ic: any) =>
+            ic.fields[userConfig.jira.fields.parentEpic] === l1child.key
         )) {
           issuesTree.appendChild(l1child, l2child);
         }
       }
     }
-    //Note: Parent field (if parent is EPIC): customfield_10314
-    //Note: Parent field (if parent is INITIATIVE): customfield_11112
 
-    const issuesData = this.prepareData(issuesTree, treeRoot, 0);
+    // Update the tree nodes with actual metrics
+    this.prepareData(
+      issuesTree,
+      treeRoot,
+      0,
+      closedIssues,
+      emptyCalendar,
+      userConfig
+    );
 
+    /*
     const issuesWithWeeks = this.appendWeeks(
       issuesTree,
       treeRoot,
@@ -111,12 +151,13 @@ export default class Roadmap extends Command {
 
     const issuesTable = this.prepareTable(issuesTree, treeRoot, []);
     this.showConsoleTable(issuesTable);
+    */
 
     const issueFileStream = fs.createWriteStream(
       path.join(cacheDir, "roadmap-artifact.json"),
       { flags: "w" }
     );
-    issueFileStream.write(JSON.stringify(issuesTable));
+    issueFileStream.write(JSON.stringify(roadmapArtifact));
     issueFileStream.end();
   }
 
@@ -155,7 +196,8 @@ export default class Roadmap extends Command {
           points: {
             count: completedIssues
               .map(
-                (issue: IJiraIssue) => issue.fields[userConfig.jira.pointsField]
+                (issue: IJiraIssue) =>
+                  issue.fields[userConfig.jira.fields.points]
               )
               .reduce((acc: number, points: number) => acc + points, 0)
           }
@@ -168,14 +210,35 @@ export default class Roadmap extends Command {
     return [];
   };
 
-  prepareData = (issuesTree: any, node: any, level: number) => {
+  prepareData = (
+    issuesTree: any,
+    node: any,
+    level: number,
+    closedIssues: Array<any>,
+    emptyCalendar: any,
+    userConfig: IConfig
+  ) => {
     if (node.key !== undefined) {
       node.level = level;
       node.metrics = this.crunchMetrics(issuesTree, node);
       node.isLeaf = issuesTree.hasChildren(node) ? false : true;
+      node.weeks = this.crunchWeeks(
+        issuesTree,
+        node,
+        closedIssues,
+        emptyCalendar,
+        userConfig
+      );
     }
     for (const children of issuesTree.childrenIterator(node)) {
-      this.prepareData(issuesTree, children, level + 1);
+      this.prepareData(
+        issuesTree,
+        children,
+        level + 1,
+        closedIssues,
+        emptyCalendar,
+        userConfig
+      );
     }
     return [];
   };
@@ -299,6 +362,76 @@ export default class Roadmap extends Command {
     return "";
   };
 
+  crunchWeeks = (
+    issuesTree: any,
+    node: any,
+    closedIssues: Array<any>,
+    emptyCalendar: any,
+    userConfig: IConfig
+  ) => {
+    return issuesTree.treeToArray(node).reduce((acc: any, item: any) => {
+      const issueExist = closedIssues.find(i => i.key === node.key);
+      if (issueExist !== undefined) {
+        const firstDayWeekDate = startOfWeek(new Date(issueExist.closedAt));
+        const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
+        acc[firstDayWeekKey].list.push(issueExist);
+        acc[firstDayWeekKey].issues.count = acc[firstDayWeekKey].list.length;
+        acc[firstDayWeekKey].list.push(issueExist);
+        acc[firstDayWeekKey].issues.count = acc[firstDayWeekKey].list.length;
+        if (
+          issueExist.fields[userConfig.jira.fields.points] !== undefined &&
+          issueExist.fields[userConfig.jira.fields.points] !== null
+        ) {
+          acc[firstDayWeekKey].points.count = acc[firstDayWeekKey].list
+            .filter(
+              (issue: IJiraIssue) =>
+                issue.fields[userConfig.jira.fields.points] !== undefined &&
+                issue.fields[userConfig.jira.fields.points] !== null
+            )
+            .map(
+              (issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points]
+            )
+            .reduce((acc: number, points: number) => acc + points, 0);
+        }
+      }
+      return acc;
+    }, JSON.parse(JSON.stringify(emptyCalendar)));
+    /*
+      if (parseInt(item.fields.customfield_10114, 10) > 0) {
+        acc.points.total =
+          acc.points.total + parseInt(item.fields.customfield_10114, 10);
+        if (item.fields.status.statusCategory.name === "Done") {
+          acc.points.completed =
+            acc.points.completed + parseInt(item.fields.customfield_10114, 10);
+        } else {
+          acc.points.remaining =
+            acc.points.remaining + parseInt(item.fields.customfield_10114, 10);
+        }
+      }
+      if (
+        (item.fields.customfield_10114 === undefined ||
+          item.fields.customfield_10114 === null) &&
+        issuesTree.hasChildren(node) === false
+      ) {
+        acc.missingPoints = true;
+      }
+      if (
+        (item.fields.customfield_10114 === undefined ||
+          item.fields.customfield_10114 === null) &&
+        issuesTree.hasChildren(item) === false &&
+        item.fields.status.statusCategory.name !== "Done"
+      ) {
+        acc.points.missing++;
+      }
+      acc.issues.total = acc.issues.total + 1;
+      if (item.fields.status.statusCategory.name === "Done") {
+        acc.issues.completed++;
+      } else {
+        acc.issues.remaining++;
+      }
+      */
+  };
+
   crunchMetrics = (issuesTree: any, node: any) => {
     return issuesTree.treeToArray(node).reduce(
       (acc: any, item: any) => {
@@ -357,67 +490,6 @@ export default class Roadmap extends Command {
       this.prepareTable(issuesTree, children, issuesTable);
     }
     return issuesTable;
-  };
-
-  /*
-    Fetch initiatives from Jira
-  */
-  fetchInitiatives = async (userConfig: IConfig) => {
-    cli.action.start(
-      "Fetching roadmap initiatives using: " +
-        userConfig.roadmap.jqlInitiatives +
-        " "
-    );
-
-    const issuesJira = await jiraSearchIssues(
-      userConfig.jira,
-      userConfig.roadmap.jqlInitiatives,
-      "summary,status,labels," + userConfig.jira.pointsField + ",issuetype"
-    );
-    cli.action.stop(" done");
-    return issuesJira;
-  };
-  /*
-    Fetch initiatives from Jira
-  */
-  fetchChildIssues = async (
-    userConfig: IConfig,
-    issuekey: string,
-    cache: boolean
-  ) => {
-    cli.action.start("Fetching children of: " + issuekey + " ");
-    let issuesJira = [];
-    const childIssuesCache = path.join(
-      this.config.configDir + "/cache/",
-      "childissuescache-" + issuekey + ".ndjson"
-    );
-    if (cache && fs.existsSync(childIssuesCache)) {
-      const input = fs.createReadStream(childIssuesCache);
-      for await (const line of readLines(input)) {
-        issuesJira.push(JSON.parse(line));
-      }
-    } else {
-      let issuesJira = await jiraSearchIssues(
-        userConfig.jira,
-        "issuekey in childIssuesOf(" + issuekey + ")",
-        "summary,status,labels," +
-          userConfig.jira.pointsField +
-          ",issuetype,customfield_10314,customfield_11112"
-      );
-      if (cache) {
-        const issueFileStream = fs.createWriteStream(childIssuesCache, {
-          flags: "a"
-        });
-        if (issuesJira.length > 0) {
-          for (let issue of issuesJira) {
-            issueFileStream.write(JSON.stringify(issue) + "\n");
-          }
-        }
-        issueFileStream.end();
-      }
-    }
-    cli.action.stop(" done");
-    return issuesJira;
   };
 
   showConsoleTable = (issues: any) => {
@@ -507,6 +579,36 @@ export default class Roadmap extends Command {
       }
     };
     cli.table(issues, columns);
+  };
+
+  showArtifactsTable = (roadmapArtifact: any) => {
+    const columnsByTeam: any = {
+      name: {
+        header: "Team",
+        minWidth: "10",
+        get: (row: any) => {
+          if (row.name === null) {
+            return "TOTAL";
+          }
+          return row.name;
+        }
+      }
+    };
+    for (let week of roadmapArtifact.byTeam[0].weeks) {
+      const weekId = week.weekStart.slice(0, 10);
+      columnsByTeam[weekId] = { header: weekId };
+    }
+    cli.table(
+      roadmapArtifact.byTeam.map((team: any) => {
+        const teamData = { ...team };
+        for (let week of team.weeks) {
+          const weekId = week.weekStart.slice(0, 10);
+          teamData[weekId] = week.points.count;
+        }
+        return teamData;
+      }),
+      columnsByTeam
+    );
   };
 }
 

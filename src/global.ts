@@ -16,7 +16,9 @@ export interface IJiraIssue {
   id: string;
   self: string;
   key: string;
+  team: string;
   fields: any;
+  jql: string; // JQL Query used to fetch the issue
 }
 
 export interface IDays {
@@ -149,7 +151,11 @@ export interface IConfigJira {
   username: string;
   password: string;
   host: string;
-  pointsField: string;
+  fields: {
+    points: string;
+    parentInitiative: string;
+    parentEpic: string;
+  };
 }
 
 export interface IConfigRoadmap {

@@ -14,6 +14,11 @@ export default abstract class extends Command {
       username: "username",
       password: "password",
       host: "https://jira.myhost.org",
+      fields: {
+        points: "customfield_10114",
+        parentInitiative: "customfield_11112",
+        parentEpic: "customfield_10314"
+      },
       pointsField: "customfield_10114"
     },
     teams: [

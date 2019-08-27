@@ -54,7 +54,7 @@ export default class Fetch extends Command {
       const emptyCalendar: ICalendar = initCalendar(team.jqlHistory);
       const calendarWithClosed = await insertClosed(
         emptyCalendar,
-        userConfig.jira.pointsField,
+        userConfig.jira.fields.points,
         closedIssues
       );
 
@@ -62,7 +62,7 @@ export default class Fetch extends Command {
       const calendarWithOpen = insertOpen(
         calendarWithClosed,
         openIssues,
-        userConfig.jira.pointsField
+        userConfig.jira.fields.points
       );
 
       const calendarVelocity: ICalendarFinal = {
@@ -117,7 +117,7 @@ export default class Fetch extends Command {
       const issuesJira = await jiraSearchIssues(
         userConfig.jira,
         teamConfig.jqlRemaining,
-        "labels," + userConfig.jira.pointsField
+        "labels," + userConfig.jira.fields.points
       );
       cli.action.stop(" done");
       return issuesJira;

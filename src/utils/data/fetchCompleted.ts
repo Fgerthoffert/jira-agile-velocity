@@ -39,7 +39,7 @@ const fetchCompleted = async (
         const issuesJira = await jiraSearchIssues(
           config.jira,
           jqlQuery,
-          "labels," + config.jira.pointsField
+          "labels," + config.jira.fields.points
         );
         //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(issuesDayFilepath, {
@@ -48,7 +48,12 @@ const fetchCompleted = async (
         if (issuesJira.length > 0) {
           for (let issue of issuesJira) {
             // Adding a closedAt object to record the date at which the issue was actually closed
-            const updatedIssue = { ...issue, closedAt: scanDay };
+            const updatedIssue = {
+              ...issue,
+              closedAt: scanDay,
+              team: teamName,
+              jql: jqlQuery
+            };
             issues.push(updatedIssue);
             issueFileStream.write(JSON.stringify(updatedIssue) + "\n");
           }
@@ -58,7 +63,8 @@ const fetchCompleted = async (
       } else {
         const input = fs.createReadStream(issuesDayFilepath);
         for await (const line of readLines(input)) {
-          issues.push(JSON.parse(line));
+          const issue = JSON.parse(line);
+          issues.push({ ...issue });
         }
       }
     }
