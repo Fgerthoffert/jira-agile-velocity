@@ -19,8 +19,8 @@ import insertHealth from "../utils/velocity/insertHealth";
 import insertOpen from "../utils/velocity/insertOpen";
 import insertWeeklyVelocity from "../utils/velocity/insertWeeklyVelocity";
 
-export default class Fetch extends Command {
-  static description = "Build velocity stats by day and week";
+export default class Velocity extends Command {
+  static description = "Builds velocity stats by day and week";
 
   static flags = {
     ...Command.flags,
@@ -39,7 +39,7 @@ export default class Fetch extends Command {
   };
 
   async run() {
-    const { flags } = this.parse(Fetch);
+    const { flags } = this.parse(Velocity);
     const userConfig = this.userConfig;
 
     let { type, dryrun } = flags;

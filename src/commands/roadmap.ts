@@ -14,7 +14,7 @@ import prepareInitiativesData from "../utils/roadmap/prepareInitiativesData";
 import teamClosedByWeek from "../utils/roadmap/teamClosedByWeek";
 
 export default class Roadmap extends Command {
-  static description = "Build a roadmap from a set of issues";
+  static description = "Builds a roadmap from a set of issues";
 
   static flags = {
     ...Command.flags,

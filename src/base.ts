@@ -76,7 +76,7 @@ export default abstract class extends Command {
     fse.ensureDirSync(this.config.configDir + "/cache/");
 
     if (env_user_config !== undefined) {
-      this.setUserConfig(env_user_config);
+      this.setUserConfig(JSON.parse(env_user_config));
     } else {
       if (!fs.existsSync(path.join(this.config.configDir, "config.yml"))) {
         fs.writeFileSync(
