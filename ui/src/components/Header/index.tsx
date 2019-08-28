@@ -7,7 +7,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import Button from "@material-ui/core/Button";
 
+import SwitchPoints from "./switchPoints";
 import { iRootState } from "../../store";
 
 const drawerWidth = 240;
@@ -15,7 +17,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex"
+      flexGrow: 1
     },
     appBar: {
       transition: theme.transitions.create(["margin", "width"], {
@@ -36,6 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     hide: {
       display: "none"
+    },
+    title: {
+      flexGrow: 1
     }
   })
 );
@@ -76,9 +81,10 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" noWrap>
+        <Typography variant="h6" noWrap className={classes.title}>
           {pageTitle}
         </Typography>
+        <SwitchPoints />
       </Toolbar>
     </AppBar>
   );

@@ -6,7 +6,8 @@ export const global = createModel({
   state: {
     log: {},
     showMenu: false,
-    pageTitle: null
+    pageTitle: null,
+    defaultPoints: true
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -17,6 +18,9 @@ export const global = createModel({
     },
     setPageTitle(state: any, payload: any) {
       return { ...state, pageTitle: payload };
+    },
+    setDefaultPoints(state: any, payload: any) {
+      return { ...state, defaultPoints: payload };
     }
   },
   effects: {

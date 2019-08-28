@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
-import * as fse from 'fs-extra';
-import * as jsYaml from 'js-yaml';
 import * as path from 'path';
 import * as loadYamlFile from 'load-yaml-file';
 import * as readline from 'readline';
@@ -36,8 +34,6 @@ export class VelocityService {
         'Error, unable to find configuration file: ' + configFilePath,
       );
     }
-
-    ///Users/fgerthoffert/.config/jira-agile-velocity/config
     return teamsVelocity;
   }
 }

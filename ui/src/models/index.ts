@@ -1,2 +1,3 @@
 import { global } from "./global";
-export { global };
+import { velocity } from "./velocity";
+export { global, velocity };
