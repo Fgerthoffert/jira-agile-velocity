@@ -31,7 +31,10 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const Teams: FC<connectedProps> = ({ defaultPoints, teams }) => {
   const classes = useStyles();
-
+  let metric = "points";
+  if (!defaultPoints) {
+    metric = "issues count";
+  }
   console.log(teams);
   if (teams.length > 0) {
     return (
@@ -41,7 +44,10 @@ const Teams: FC<connectedProps> = ({ defaultPoints, teams }) => {
             <Grid item xs={12} key={team.team}>
               <Paper className={classes.root}>
                 <Typography variant="h5" component="h3">
-                  {team.team}
+                  Team: {team.team}
+                </Typography>
+                <Typography component="p">
+                  Calculated using weekly {metric}
                 </Typography>
                 <WeeklyChart
                   velocity={team.velocity}

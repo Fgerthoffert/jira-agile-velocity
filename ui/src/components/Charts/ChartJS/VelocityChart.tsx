@@ -29,7 +29,6 @@ class VelocityChart extends Component<any, any> {
   buildChart = () => {
     const { velocity, defaultPoints } = this.props;
     const myChartRef = this.chartRef.current.getContext("2d");
-
     let metric = "points";
     if (!defaultPoints) {
       metric = "issues";
@@ -42,13 +41,18 @@ class VelocityChart extends Component<any, any> {
       data: {
         datasets: [
           {
-            label: "Weekly Completion",
-            data: velocity.weeks.map((w: any) => w.completion[metric].count)
-          },
-          {
             label: "Weekly Velocity (4w. rolling average)",
             data: velocity.weeks.map((w: any) => w.completion[metric].velocity),
+            backgroundColor: "#ef5350",
+            fill: false,
             type: "line"
+          },
+          {
+            label: "Weekly Completion",
+            backgroundColor: "#64b5f6",
+            borderColor: "#64b5f6",
+            borderWidth: 2,
+            data: velocity.weeks.map((w: any) => w.completion[metric].count)
           }
         ],
         labels: velocity.weeks.map((w: any) => w.weekTxt)
