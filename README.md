@@ -8,15 +8,14 @@ Build various sets of Agile metrics and dashboards by fetching data from Jira RE
 [![License](https://img.shields.io/npm/l/jira-agile-velocity.svg)](https://github.com/fgerthoffert/jira-agile-velocity/blob/master/package.json)
 
 <!-- toc -->
-
-- [jira-agile-velocity](#jira-agile-velocity)
-- [Introduction](#introduction)
-- [Configuration](#configuration)
-- [Quick start with Docker](#quick-start-with-docker)
-- [Local installation](#local-installation)
-- [Usage](#usage)
-- [Commands](#commands)
-  <!-- tocstop -->
+* [jira-agile-velocity](#jira-agile-velocity)
+* [Introduction](#introduction)
+* [Configuration](#configuration)
+* [Quick start with Docker](#quick-start-with-docker)
+* [Local installation](#local-installation)
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 
 # Introduction
 
@@ -106,29 +105,26 @@ npm install -g jira-agile-velocity
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g jira-agile-velocity
 $ jav COMMAND
 running command...
 $ jav (-v|--version|version)
-jira-agile-velocity/0.2.1 darwin-x64 node-v12.7.0
+jira-agile-velocity/0.3.0 darwin-x64 node-v12.7.0
 $ jav --help [COMMAND]
 USAGE
   $ jav COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`jav help [COMMAND]`](#jav-help-command)
-- [`jav init`](#jav-init)
-- [`jav roadmap`](#jav-roadmap)
-- [`jav velocity`](#jav-velocity)
+* [`jav help [COMMAND]`](#jav-help-command)
+* [`jav init`](#jav-init)
+* [`jav roadmap`](#jav-roadmap)
+* [`jav velocity`](#jav-velocity)
 
 ## `jav help [COMMAND]`
 
@@ -163,11 +159,11 @@ EXAMPLE
   $ jav init
 ```
 
-_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.1/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.0/src/commands/init.ts)_
 
 ## `jav roadmap`
 
-Build a roadmap from a set of issues
+Builds a roadmap from a set of issues
 
 ```
 USAGE
@@ -182,11 +178,11 @@ OPTIONS
                                      file
 ```
 
-_See code: [src/commands/roadmap.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.1/src/commands/roadmap.ts)_
+_See code: [src/commands/roadmap.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.0/src/commands/roadmap.ts)_
 
 ## `jav velocity`
 
-Build velocity stats by day and week
+Builds velocity stats by day and week
 
 ```
 USAGE
@@ -201,6 +197,5 @@ OPTIONS
                                      file
 ```
 
-_See code: [src/commands/velocity.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.2.1/src/commands/velocity.ts)_
-
+_See code: [src/commands/velocity.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.0/src/commands/velocity.ts)_
 <!-- commandsstop -->
