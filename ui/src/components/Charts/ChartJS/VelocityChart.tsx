@@ -1,6 +1,18 @@
 import React, { Component } from "react"; // let's also import Component
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  withStyles
+} from "@material-ui/core/styles";
 import Chart from "chart.js";
+
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      //height: 400
+    }
+  });
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -93,17 +105,17 @@ class VelocityChart extends Component<any, any> {
     }
   };
 
-  // render will know everything!
   render() {
-    console.log(this.chartRef);
+    const { classes } = this.props;
 
+    console.log(this.chartRef);
     //    return <p>The current time is {this.state.time.toLocaleTimeString()}</p>;
     return (
-      <div>
+      <div className={classes.root}>
         <canvas id="myChart" ref={this.chartRef} />
       </div>
     );
   }
 }
 
-export default VelocityChart;
+export default withStyles(styles)(VelocityChart);
