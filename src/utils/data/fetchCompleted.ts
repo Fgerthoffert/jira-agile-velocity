@@ -52,6 +52,7 @@ const fetchCompleted = async (
               ...issue,
               closedAt: scanDay,
               team: teamName,
+              host: config.jira.host,
               jql: jqlQuery
             };
             issues.push(updatedIssue);

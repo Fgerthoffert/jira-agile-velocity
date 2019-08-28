@@ -58,6 +58,7 @@ class VelocityChart extends Component<any, any> {
         labels: velocity.weeks.map((w: any) => w.weekTxt)
       },
       options: {
+        onClick: this.clickChart,
         scales: {
           yAxes: [
             {
@@ -69,6 +70,27 @@ class VelocityChart extends Component<any, any> {
         }
       }
     });
+  };
+
+  //https://jsfiddle.net/u1szh96g/208/
+  clickChart = (event: any) => {
+    const { velocity } = this.props;
+    const activePoints = this.chart.getElementsAtEvent(event);
+    if (activePoints[0] !== undefined) {
+      const chartData = activePoints[0]["_chart"].config.data;
+      const idx = activePoints[0]["_index"];
+      const issues = velocity.weeks[idx].completion.list;
+      if (issues.length > 0) {
+        const keys = issues.map((i: any) => i.key);
+        console.log(keys);
+        console.log(keys.toString());
+        const url =
+          issues[0].host + "/issues/?jql=key in (" + keys.toString() + ")";
+        console.log(url);
+        window.open(url, "_blank");
+      }
+      //      console.log(issues);
+    }
   };
 
   // render will know everything!
