@@ -70,50 +70,6 @@ const teamClosedByWeek = (
   allTeams.weeks = Object.values(allTeams.weeks);
   teams.push(allTeams);
   return teams;
-
-  /*
-  for (let issue of issues) {
-    const firstDayWeekDate = startOfWeek(new Date(issue.closedAt));
-    const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
-    weeks[firstDayWeekKey].list.push(issue);
-    weeks[firstDayWeekKey].issues.count = weeks[firstDayWeekKey].list.length;
-    if (
-      issue.fields[userConfig.jira.fields.points] !== undefined &&
-      issue.fields[userConfig.jira.fields.points] !== null
-    ) {
-      weeks[firstDayWeekKey].points.count = weeks[firstDayWeekKey].list
-        .filter(
-          (issue: IJiraIssue) =>
-            issue.fields[userConfig.jira.fields.points] !== undefined &&
-            issue.fields[userConfig.jira.fields.points] !== null
-        )
-        .map((issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points])
-        .reduce((acc: number, points: number) => acc + points, 0);
-    }
-    // Add team to the object
-    if (weeks[firstDayWeekKey].teams[getTeamId(issue.team)] === undefined) {
-      weeks[firstDayWeekKey].teams[getTeamId(issue.team)] = {
-        list: [],
-        issues: { count: 0 },
-        points: { count: 0 }
-      };
-    }
-    weeks[firstDayWeekKey].teams[getTeamId(issue.team)].list.push(issue);
-    weeks[firstDayWeekKey].teams[getTeamId(issue.team)].issues.count =
-      weeks[firstDayWeekKey].teams[getTeamId(issue.team)].list.length;
-    weeks[firstDayWeekKey].teams[getTeamId(issue.team)].points.count = weeks[
-      firstDayWeekKey
-    ].teams[getTeamId(issue.team)].list
-      .filter(
-        (issue: IJiraIssue) =>
-          issue.fields[userConfig.jira.fields.points] !== undefined &&
-          issue.fields[userConfig.jira.fields.points] !== null
-      )
-      .map((issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points])
-      .reduce((acc: number, points: number) => acc + points, 0);
-  }
-  return Object.values(weeks);
-  */
 };
 
 export default teamClosedByWeek;

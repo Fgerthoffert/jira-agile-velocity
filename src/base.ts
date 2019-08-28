@@ -9,6 +9,15 @@ import * as loadYamlFile from "load-yaml-file";
 import { IConfig } from "./global";
 
 export default abstract class extends Command {
+  static flags = {
+    env_user_config: flags.string({
+      required: false,
+      env: "USER_CONFIG",
+      description:
+        "User Configuration passed as an environment variable, takes precedence over config file"
+    })
+  };
+
   userConfig = {
     jira: {
       username: "username",
@@ -18,8 +27,7 @@ export default abstract class extends Command {
         points: "customfield_10114",
         parentInitiative: "customfield_11112",
         parentEpic: "customfield_10314"
-      },
-      pointsField: "customfield_10114"
+      }
     },
     teams: [
       {
@@ -53,15 +61,6 @@ export default abstract class extends Command {
       jqlInitiatives: "type = initiative",
       teams: ["Team 1, Team 2"]
     }
-  };
-
-  static flags = {
-    env_user_config: flags.string({
-      required: false,
-      env: "USER_CONFIG",
-      description:
-        "User Configuration passed as an environment variable, takes precedence over config file"
-    })
   };
 
   setUserConfig(userConfig: IConfig) {
