@@ -11,17 +11,21 @@ interface ICompletion {
 }
 
 export interface IJiraIssue {
+  closedAt: string;
   expand: string;
   id: string;
   self: string;
   key: string;
+  team: string;
   fields: any;
+  jql: string; // JQL Query used to fetch the issue
 }
 
 export interface IDays {
   date: string;
   weekDay: number;
   weekDayTxt: string;
+  weekDayJira: string;
   completion: ICompletion;
   scopeChangeCompletion: ICompletion;
 }
@@ -35,6 +39,7 @@ export interface IWeeks {
   weekStart: string;
   weekNb: number;
   weekTxt: string;
+  weekJira: string;
   completion: ICompletion;
   scopeChangeCompletion: ICompletion;
 }
@@ -73,7 +78,8 @@ interface IHealthVelocityTrend {
   current: number;
 }
 interface IHealthCompletion {
-  txt: string;
+  msgTxt: string;
+  msgJira: string;
   issues: {
     list: Array<number>;
     count: number;
@@ -121,4 +127,38 @@ export interface ICalendarFinal {
   open: IOpen | object;
   forecast: IForecast | object;
   health: IHealth | object;
+}
+
+export interface IConfig {
+  jira: IConfigJira;
+  teams: Array<IConfigTeam>;
+  roadmap: IConfigRoadmap;
+}
+
+export interface IConfigTeam {
+  name: string;
+  jqlCompletion: string;
+  jqlRemaining: string;
+  jqlHistory: string;
+  slack: {
+    token: string;
+    channel: string;
+    explanation: string;
+  };
+}
+
+export interface IConfigJira {
+  username: string;
+  password: string;
+  host: string;
+  fields: {
+    points: string;
+    parentInitiative: string;
+    parentEpic: string;
+  };
+}
+
+export interface IConfigRoadmap {
+  jqlInitiatives: string;
+  teams: Array<string>;
 }

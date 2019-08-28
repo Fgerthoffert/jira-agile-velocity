@@ -4,9 +4,10 @@
 */
 import { getWeek, getYear } from "date-fns";
 
-import { ICalendar } from "../../global";
+import { ICalendar, IConfig } from "../../global";
+import { formatDate } from "../misc/dateUtils";
 
-const initCalendar = (fromDate: Date, toDate: Date) => {
+const initCalendar = (fromDate: string) => {
   let initObject: ICalendar = {
     days: {},
     weeks: {},
@@ -28,12 +29,15 @@ const initCalendar = (fromDate: Date, toDate: Date) => {
     points: { count: 0, velocity: 0 },
     list: []
   };
-  let currentDate = fromDate;
-  while (currentDate < toDate) {
+  let toDay = new Date();
+  toDay.setDate(toDay.getDate() - 2);
+  let currentDate = formatDate(fromDate);
+  while (currentDate < toDay) {
     currentDate.setDate(currentDate.getDate() + 1);
     initObject.days[currentDate.toJSON().slice(0, 10)] = {
       date: currentDate.toJSON(),
       weekDay: currentDate.getDay(),
+      weekDayJira: currentDate.toJSON().slice(0, 10),
       weekDayTxt: days[currentDate.getDay()],
       completion: { ...emptyCompletion },
       scopeChangeCompletion: { ...emptyCompletion }
@@ -55,6 +59,7 @@ const initCalendar = (fromDate: Date, toDate: Date) => {
         date: currentWeekYear.toJSON(),
         weekNb: getWeek(currentWeekYear),
         weekTxt: getYear(currentWeekYear) + "." + getWeek(currentWeekYear),
+        weekJira: currentWeekYear.toJSON().slice(0, 10),
         completion: { ...emptyCompletion },
         scopeChangeCompletion: { ...emptyCompletion }
       };

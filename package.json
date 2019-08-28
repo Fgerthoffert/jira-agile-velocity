@@ -1,7 +1,7 @@
 {
   "name": "jira-agile-velocity",
   "description": "Connect to Jira REST API to collect completed story points, calculate weekly velocity, and estimate completion date",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Fgerthoffert",
   "bin": {
     "jav": "./bin/run"
@@ -20,6 +20,8 @@
     "js-yaml": "^3.13.1",
     "load-yaml-file": "^0.2.0",
     "lodash": "^4.17.15",
+    "slack": "^11.0.2",
+    "symbol-tree": "^3.2.4",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
