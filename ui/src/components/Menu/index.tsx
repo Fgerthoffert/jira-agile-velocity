@@ -17,7 +17,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import { Link, LinkProps } from "react-router-dom";
-
+import BarChartIcon from "@material-ui/icons/BarChart";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 import { iRootState } from "../../store";
 
 const drawerWidth = 240;
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerPaper: {
       width: drawerWidth
     },
+    noLink: {},
     drawerHeader: {
       display: "flex",
       alignItems: "center",
@@ -68,12 +70,12 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
   const routes = [
     {
       path: "/velocity",
-      icon: <InboxIcon />,
+      icon: <BarChartIcon />,
       text: "Velocity"
     },
     {
       path: "/roadmap",
-      icon: <InboxIcon />,
+      icon: <FormatListNumberedIcon />,
       text: "Roadmap"
     }
   ];
