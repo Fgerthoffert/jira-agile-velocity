@@ -29,6 +29,7 @@ class VelocityChart extends Component<any, any> {
 
   chartRef: any = React.createRef();
   chart: any = {};
+  allowClick: boolean = true;
 
   componentDidMount() {
     this.buildChart();
@@ -37,6 +38,10 @@ class VelocityChart extends Component<any, any> {
   componentDidUpdate() {
     this.buildChart();
   }
+
+  resetAllowClick = () => {
+    this.allowClick = true;
+  };
 
   buildChart = () => {
     const { velocity, defaultPoints } = this.props;
@@ -89,19 +94,18 @@ class VelocityChart extends Component<any, any> {
     const { velocity } = this.props;
     const activePoints = this.chart.getElementsAtEvent(event);
     if (activePoints[0] !== undefined) {
-      const chartData = activePoints[0]["_chart"].config.data;
       const idx = activePoints[0]["_index"];
       const issues = velocity.weeks[idx].completion.list;
-      if (issues.length > 0) {
+      if (issues.length > 0 && this.allowClick === true) {
+        this.allowClick = false;
         const keys = issues.map((i: any) => i.key);
-        console.log(keys);
-        console.log(keys.toString());
         const url =
           issues[0].host + "/issues/?jql=key in (" + keys.toString() + ")";
-        console.log(url);
         window.open(url, "_blank");
+        setTimeout(() => {
+          this.resetAllowClick();
+        }, 1000);
       }
-      //      console.log(issues);
     }
   };
 
