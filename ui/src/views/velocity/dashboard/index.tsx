@@ -39,19 +39,50 @@ const Dashboard: FC<connectedProps> = ({
   const classes = useStyles();
   let metric = "points";
   if (!defaultPoints) {
-    metric = "issues count";
+    metric = "issues";
   }
   const useTeam: any = teams.find((t: any) => t.team === selectedTeam);
   if (useTeam !== undefined) {
+    console.log(useTeam);
     return (
       <Grid container spacing={1}>
+        <Grid item xs={4}>
+          <Paper>
+            <Typography variant="h5" component="h3">
+              Open Points
+            </Typography>
+            <Typography component="p">
+              {useTeam.velocity.forecast.completion[metric].openCount}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper>
+            <Typography variant="h5" component="h3">
+              Current Velocity
+            </Typography>
+            <Typography component="p">
+              {useTeam.velocity.forecast.completion[metric].velocity}/week
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper>
+            <Typography variant="h5" component="h3">
+              Days to Completion
+            </Typography>
+            <Typography component="p">
+              {useTeam.velocity.forecast.completion[metric].effortDays}
+            </Typography>
+          </Paper>
+        </Grid>
         <Grid item xs={6}>
           <Paper>
             <Typography variant="h5" component="h3">
               Daily
             </Typography>
             <Typography component="p">
-              Calculated using daily {metric}, and 20 days rolling average
+              Calculated using {metric}, and 20 days rolling average
             </Typography>
             <DailyChart
               velocity={useTeam.velocity}
@@ -65,28 +96,13 @@ const Dashboard: FC<connectedProps> = ({
               Weekly
             </Typography>
             <Typography component="p">
-              Calculated using weekly {metric}, and 4 weeks rolling average
+              Calculated using {metric}, and 4 weeks rolling average
             </Typography>
             <WeeklyChart
               velocity={useTeam.velocity}
               defaultPoints={defaultPoints}
             />
           </Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper>xs=6</Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>xs=3</Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>xs=3</Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>xs=3</Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>xs=3</Paper>
         </Grid>
       </Grid>
     );

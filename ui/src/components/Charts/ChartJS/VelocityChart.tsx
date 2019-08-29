@@ -86,6 +86,11 @@ class VelocityChart extends Component<any, any> {
               }
             }
           ]
+        },
+        tooltips: {
+          position: "nearest",
+          mode: "index",
+          intersect: false
         }
       }
     });
@@ -113,13 +118,9 @@ class VelocityChart extends Component<any, any> {
 
   render() {
     const { classes } = this.props;
-
-    console.log(this.chartRef);
-    //    return <p>The current time is {this.state.time.toLocaleTimeString()}</p>;
-    //  style={{ height: "100px" }}
     return (
       <div className={classes.root}>
-        <canvas id="myChart" ref={this.chartRef} style={{ height: "100px" }} />
+        <canvas id="myChart" ref={this.chartRef} />
       </div>
     );
   }
