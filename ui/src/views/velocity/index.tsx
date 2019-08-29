@@ -1,8 +1,6 @@
 import React, { FC } from "react";
 import { connect } from "react-redux";
 
-import Typography from "@material-ui/core/Typography";
-
 import Layout from "../../layout";
 import Teams from "./teams/";
 
