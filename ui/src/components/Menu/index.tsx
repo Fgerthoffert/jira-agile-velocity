@@ -59,6 +59,7 @@ const AdapterLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
 const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
   const handleDrawerClose = () => {
     setShowMenu(false);
+    return undefined;
   };
 
   const classes = useStyles();
@@ -80,14 +81,18 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
   return (
     <Drawer
       className={classes.drawer}
-      variant="persistent"
-      anchor="left"
       open={showMenu}
+      onClose={handleDrawerClose}
       classes={{
         paper: classes.drawerPaper
       }}
     >
-      <div className={classes.drawerHeader}>
+      <div
+        className={classes.drawerHeader}
+        role="presentation"
+        onClick={handleDrawerClose}
+        onKeyDown={handleDrawerClose}
+      >
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "ltr" ? (
             <ChevronLeftIcon />

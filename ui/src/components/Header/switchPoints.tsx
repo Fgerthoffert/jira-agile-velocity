@@ -25,12 +25,12 @@ const SwitchPoints: FC<connectedProps> = ({
   const handleChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setDefaultPoints(event.target.checked);
   };
-
   return (
-    <FormControlLabel
-      control={<Switch checked={defaultPoints} onChange={handleChange()} />}
-      label="Use Points"
-    />
+    <React.Fragment>
+      Issues Count
+      <Switch checked={defaultPoints} onChange={handleChange()} />
+      Points
+    </React.Fragment>
   );
 };
 

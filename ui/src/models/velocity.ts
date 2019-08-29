@@ -3,11 +3,15 @@ import axios from "axios";
 
 export const velocity = createModel({
   state: {
-    teams: []
+    teams: [],
+    selectedTeam: null
   },
   reducers: {
     setTeams(state: any, payload: any) {
       return { ...state, teams: payload };
+    },
+    setSelectedTeam(state: any, payload: any) {
+      return { ...state, selectedTeam: payload };
     }
   },
   effects: {
@@ -15,6 +19,7 @@ export const velocity = createModel({
       console.log("Init View");
       // Fetch data
       const setTeams = this.setTeams;
+      const setSelectedTeam = this.setSelectedTeam;
 
       if (rootState.velocity.teams.length === 0) {
         axios({
@@ -23,6 +28,7 @@ export const velocity = createModel({
         })
           .then(function(response) {
             setTeams(response.data);
+            setSelectedTeam(response.data[0].team);
           })
           .catch(function(error) {
             console.log("Error");

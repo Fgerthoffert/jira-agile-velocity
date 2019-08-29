@@ -2,7 +2,8 @@ import React, { FC } from "react";
 import { connect } from "react-redux";
 
 import Layout from "../../layout";
-import Teams from "./teams/";
+import Dashboard from "./dashboard";
+import TeamsTabs from "./teamtabs";
 
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
@@ -16,7 +17,9 @@ const Velocity: FC<connectedProps> = ({ setPageTitle, initView }) => {
   initView();
   return (
     <Layout>
-      <Teams />
+      <TeamsTabs />
+      <br />
+      <Dashboard />
     </Layout>
   );
 };

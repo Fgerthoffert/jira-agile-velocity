@@ -44,35 +44,37 @@ class VelocityChart extends Component<any, any> {
   };
 
   buildChart = () => {
-    const { velocity, defaultPoints } = this.props;
+    const { dataset, defaultPoints } = this.props;
     const myChartRef = this.chartRef.current.getContext("2d");
     let metric = "points";
     if (!defaultPoints) {
       metric = "issues";
     }
 
-    console.log(velocity);
+    if (this.chart.destroy !== undefined) {
+      this.chart.destroy();
+    }
 
     this.chart = new Chart(myChartRef, {
       type: "bar",
       data: {
         datasets: [
           {
-            label: "Weekly Velocity (4w. rolling average)",
-            data: velocity.weeks.map((w: any) => w.completion[metric].velocity),
+            label: "Velocity (rolling average)",
+            data: dataset.map((w: any) => w.completion[metric].velocity),
             backgroundColor: "#ef5350",
             fill: false,
             type: "line"
           },
           {
-            label: "Weekly Completion",
+            label: "Completed",
             backgroundColor: "#64b5f6",
             borderColor: "#64b5f6",
             borderWidth: 2,
-            data: velocity.weeks.map((w: any) => w.completion[metric].count)
+            data: dataset.map((w: any) => w.completion[metric].count)
           }
         ],
-        labels: velocity.weeks.map((w: any) => w.weekTxt)
+        labels: dataset.map((w: any) => w.legend)
       },
       options: {
         onClick: this.clickChart,
@@ -91,11 +93,11 @@ class VelocityChart extends Component<any, any> {
 
   //https://jsfiddle.net/u1szh96g/208/
   clickChart = (event: any) => {
-    const { velocity } = this.props;
+    const { dataset } = this.props;
     const activePoints = this.chart.getElementsAtEvent(event);
     if (activePoints[0] !== undefined) {
       const idx = activePoints[0]["_index"];
-      const issues = velocity.weeks[idx].completion.list;
+      const issues = dataset[idx].completion.list;
       if (issues.length > 0 && this.allowClick === true) {
         this.allowClick = false;
         const keys = issues.map((i: any) => i.key);
@@ -114,9 +116,10 @@ class VelocityChart extends Component<any, any> {
 
     console.log(this.chartRef);
     //    return <p>The current time is {this.state.time.toLocaleTimeString()}</p>;
+    //  style={{ height: "100px" }}
     return (
       <div className={classes.root}>
-        <canvas id="myChart" ref={this.chartRef} />
+        <canvas id="myChart" ref={this.chartRef} style={{ height: "100px" }} />
       </div>
     );
   }
