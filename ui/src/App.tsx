@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
-} from "react-router-dom";
+  Redirect,
+} from 'react-router-dom';
 
-import "./App.css";
+import './App.css';
 
-import Velocity from "./views/velocity";
-import Roadmap from "./views/roadmap";
+import Velocity from './views/velocity';
+import Roadmap from './views/roadmap';
 
 const App: React.FC = () => {
   return (

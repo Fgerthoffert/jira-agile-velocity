@@ -1,31 +1,34 @@
-import React, { FC } from "react";
-import { connect } from "react-redux";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Grid, { GridSpacing } from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
+import React, { FC } from 'react';
+import { connect } from 'react-redux';
+import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import Grid, { GridSpacing } from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
-import { iRootState } from "../../../store";
+import { iRootState } from '../../../store';
 
-import WeeklyChart from "./WeeklyChart";
-import DailyChart from "./DailyChart";
+import WeeklyChart from './WeeklyChart';
+import DailyChart from './DailyChart';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(3, 2)
-    }
+      padding: theme.spacing(3, 2),
+    },
+    smallText: {
+      fontSize: '0.8em',
+    },
   })
 );
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
   teams: state.velocity.teams,
-  selectedTeam: state.velocity.selectedTeam
+  selectedTeam: state.velocity.selectedTeam,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
+  setDefaultPoints: dispatch.global.setDefaultPoints,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -34,12 +37,12 @@ type connectedProps = ReturnType<typeof mapState> &
 const Dashboard: FC<connectedProps> = ({
   defaultPoints,
   teams,
-  selectedTeam
+  selectedTeam,
 }) => {
   const classes = useStyles();
-  let metric = "points";
+  let metric = 'points';
   if (!defaultPoints) {
-    metric = "issues";
+    metric = 'issues';
   }
   const useTeam: any = teams.find((t: any) => t.team === selectedTeam);
   if (useTeam !== undefined) {
@@ -51,8 +54,11 @@ const Dashboard: FC<connectedProps> = ({
             <Typography variant="h5" component="h3">
               Open Points
             </Typography>
-            <Typography component="p">
+            <Typography variant="h6" component="h3">
               {useTeam.velocity.forecast.completion[metric].openCount}
+            </Typography>
+            <Typography component="p" className={classes.smallText}>
+              <i>Sum of all {metric} across remaining issues</i>
             </Typography>
           </Paper>
         </Grid>
@@ -61,8 +67,11 @@ const Dashboard: FC<connectedProps> = ({
             <Typography variant="h5" component="h3">
               Current Velocity
             </Typography>
-            <Typography component="p">
+            <Typography variant="h6" component="h3">
               {useTeam.velocity.forecast.completion[metric].velocity}/week
+            </Typography>
+            <Typography component="p" className={classes.smallText}>
+              Using rolling average
             </Typography>
           </Paper>
         </Grid>
@@ -71,8 +80,11 @@ const Dashboard: FC<connectedProps> = ({
             <Typography variant="h5" component="h3">
               Days to Completion
             </Typography>
-            <Typography component="p">
+            <Typography variant="h6" component="h3">
               {useTeam.velocity.forecast.completion[metric].effortDays}
+            </Typography>
+            <Typography component="p" className={classes.smallText}>
+              Estimate = Open / Current weekly velocity * 5 business days
             </Typography>
           </Paper>
         </Grid>
