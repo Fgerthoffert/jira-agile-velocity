@@ -1,16 +1,16 @@
-import React, { FC } from "react";
-import { connect } from "react-redux";
-import clsx from "clsx";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Button from "@material-ui/core/Button";
+import React, { FC } from 'react';
+import { connect } from 'react-redux';
+import clsx from 'clsx';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Button from '@material-ui/core/Button';
 
-import SwitchPoints from "./switchPoints";
-import { iRootState } from "../../store";
+import SwitchPoints from './switchPoints';
+import { iRootState } from '../../store';
 
 const drawerWidth = 240;
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1
     },
     appBar: {
-      transition: theme.transitions.create(["margin", "width"], {
+      transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen
       })
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     appBarShift: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
-      transition: theme.transitions.create(["margin", "width"], {
+      transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen
       })
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(2)
     },
     hide: {
-      display: "none"
+      display: 'none'
     },
     title: {
       flexGrow: 1
@@ -66,22 +66,22 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
 
   return (
     <AppBar
-      position="fixed"
+      position='fixed'
       className={clsx(classes.appBar, {
         [classes.appBarShift]: showMenu
       })}
     >
       <Toolbar>
         <IconButton
-          color="inherit"
-          aria-label="open drawer"
+          color='inherit'
+          aria-label='open drawer'
           onClick={handleDrawerOpen}
-          edge="start"
+          edge='start'
           className={clsx(classes.menuButton, showMenu && classes.hide)}
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" noWrap className={classes.title}>
+        <Typography variant='h6' noWrap className={classes.title}>
           {pageTitle}
         </Typography>
         <SwitchPoints />

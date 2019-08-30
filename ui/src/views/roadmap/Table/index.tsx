@@ -1,15 +1,15 @@
-import Grid, { GridSpacing } from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import MaterialTable from "material-table";
-import ProgressBar from "react-bootstrap/ProgressBar";
-import React, { FC } from "react";
-import ReactDOM from "react-dom";
+import Grid, { GridSpacing } from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import MaterialTable from 'material-table';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import React, { FC } from 'react';
+import ReactDOM from 'react-dom';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import { iRootState } from "../../../store";
+import { iRootState } from '../../../store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,10 +30,10 @@ const mapDispatch = (dispatch: any) => ({
 
 const getProgress = (issue: any, metric: string) => {
   let progressPrct = 0;
-  let missing = "";
+  let missing = '';
   if (issue.metrics[metric].missing > 0) {
     missing =
-      " (" + issue.metrics[metric].missing + " open issues without estimate)";
+      ' (' + issue.metrics[metric].missing + ' open issues without estimate)';
   }
   if (issue.metrics[metric].total > 0) {
     progressPrct =
@@ -51,7 +51,7 @@ const getProgress = (issue: any, metric: string) => {
 };
 
 const getMissingEffort = (issue: any) => {
-  let missing = "";
+  let missing = '';
   if (issue.metrics.points.missing > 0) {
     missing = issue.metrics.points.missing;
   }
@@ -73,26 +73,26 @@ const getPayload = (issue: any, metric: string) => {
 
 const getBarVariant = (payload: any) => {
   if (payload.progress.progress === 100) {
-    return "success";
+    return 'success';
   } else if (payload.progress.progress === 100 && payload.missingEffort > 0) {
-    return "warning";
+    return 'warning';
   }
   return undefined;
 };
 
 const flattenData = (initiatives: any, metric: string) => {
   const issues = [];
-  for (let initiative of initiatives) {
+  for (const initiative of initiatives) {
     issues.push(getPayload(initiative, metric));
     if (initiative.children.length > 0) {
-      for (let childl1 of initiative.children) {
+      for (const childl1 of initiative.children) {
         issues.push({
           ...getPayload(childl1, metric),
           parentId: parseInt(initiative.id, 10)
         });
 
         if (childl1.children.length > 0) {
-          for (let childl2 of childl1.children) {
+          for (const childl2 of childl1.children) {
             issues.push({
               ...getPayload(childl2, metric),
               parentId: parseInt(childl1.id, 10)
@@ -110,33 +110,33 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const Table: FC<connectedProps> = ({ defaultPoints, roadmap }) => {
   const classes = useStyles();
-  let metric = "points";
+  let metric = 'points';
   if (!defaultPoints) {
-    metric = "issues";
+    metric = 'issues';
   }
   console.log(roadmap);
   if (Object.values(roadmap).length > 0) {
     const issues: any = flattenData(roadmap.byInitiative, metric);
     return (
       <Paper className={classes.root}>
-        <Typography variant="h5" component="h3">
+        <Typography variant='h5' component='h3'>
           Initiatives Completion
         </Typography>
-        <Typography component="p">Displaying values in {metric}</Typography>
+        <Typography component='p'>Displaying values in {metric}</Typography>
         <MaterialTable
           columns={[
-            { title: "Type", field: "type", cellStyle: { width: 80 } },
-            { title: "Key", field: "key", cellStyle: { width: 200 } },
-            { title: "Title", field: "title" },
-            { title: "State", field: "state", cellStyle: { width: 80 } },
+            { title: 'Type', field: 'type', cellStyle: { width: 80 } },
+            { title: 'Key', field: 'key', cellStyle: { width: 200 } },
+            { title: 'Title', field: 'title' },
+            { title: 'State', field: 'state', cellStyle: { width: 80 } },
             {
-              title: "Progress",
-              field: "progress",
-              type: "numeric",
+              title: 'Progress',
+              field: 'progress',
+              type: 'numeric',
               cellStyle: { width: 160 },
               render: rowData => {
                 if (
-                  rowData.state === "Done" &&
+                  rowData.state === 'Done' &&
                   rowData.missingPoints === true
                 ) {
                   return <span>n/a (missing but done)</span>;
@@ -146,7 +146,7 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap }) => {
                       variant={getBarVariant(rowData)}
                       now={rowData.progress.progress}
                       label={
-                        <span style={{ color: "#000" }}>
+                        <span style={{ color: '#000' }}>
                           {rowData.progress.progress}% (
                           {rowData.progress.completed}/{rowData.progress.total})
                         </span>
@@ -157,9 +157,9 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap }) => {
               }
             },
             {
-              title: "# Missing Estimates",
-              field: "missingEffort",
-              type: "numeric",
+              title: '# Missing Estimates',
+              field: 'missingEffort',
+              type: 'numeric',
               cellStyle: { width: 120 }
             }
           ]}
@@ -167,7 +167,7 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap }) => {
           parentChildData={(row: any, rows: any) =>
             rows.find((a: any) => a.id === row.parentId)
           }
-          title={""}
+          title={''}
         />
       </Paper>
     );

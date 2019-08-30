@@ -1,16 +1,16 @@
-import React from "react";
-import clsx from "clsx";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import React from 'react';
+import clsx from 'clsx';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-import VelocityChart from "../../../components/Charts/ChartJS/VelocityChart";
+import VelocityChart from '../../../components/Charts/ChartJS/VelocityChart';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex"
+      display: 'flex'
     }
   })
 );
@@ -39,7 +39,5 @@ export default function WeeklyChart(props: WeeklyChartsProps) {
         legend: week.weekTxt
       };
     });
-
-  console.log(velocity);
   return <VelocityChart dataset={dataset} defaultPoints={defaultPoints} />;
 }

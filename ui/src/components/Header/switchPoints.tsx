@@ -1,11 +1,11 @@
-import React, { FC } from "react";
-import { connect } from "react-redux";
-import clsx from "clsx";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import React, { FC } from 'react';
+import { connect } from 'react-redux';
+import clsx from 'clsx';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
-import { iRootState } from "../../store";
+import { iRootState } from '../../store';
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints

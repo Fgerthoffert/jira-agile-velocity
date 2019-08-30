@@ -1,6 +1,6 @@
-//https://github.com/pimterry/loglevel
-import * as log from "loglevel";
-import { createModel } from "@rematch/core";
+// https://github.com/pimterry/loglevel
+import * as log from 'loglevel';
+import { createModel } from '@rematch/core';
 
 export const global = createModel({
   state: {
@@ -26,12 +26,12 @@ export const global = createModel({
   effects: {
     async initApp() {
       const logger = log.noConflict();
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV !== 'production') {
         logger.enableAll();
       } else {
         logger.disableAll();
       }
-      logger.info("Logger initialized");
+      logger.info('Logger initialized');
       this.setLog(logger);
     }
   }

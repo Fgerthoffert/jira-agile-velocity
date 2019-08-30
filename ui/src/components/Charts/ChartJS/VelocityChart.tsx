@@ -1,16 +1,16 @@
-import React, { Component } from "react"; // let's also import Component
+import React, { Component } from 'react'; // let's also import Component
 import {
   makeStyles,
   Theme,
   createStyles,
   withStyles
-} from "@material-ui/core/styles";
-import Chart from "chart.js";
+} from '@material-ui/core/styles';
+import Chart from 'chart.js';
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      //height: 400
+      // height: 400
     }
   });
 
@@ -45,10 +45,10 @@ class VelocityChart extends Component<any, any> {
 
   buildChart = () => {
     const { dataset, defaultPoints } = this.props;
-    const myChartRef = this.chartRef.current.getContext("2d");
-    let metric = "points";
+    const myChartRef = this.chartRef.current.getContext('2d');
+    let metric = 'points';
     if (!defaultPoints) {
-      metric = "issues";
+      metric = 'issues';
     }
 
     if (this.chart.destroy !== undefined) {
@@ -56,20 +56,20 @@ class VelocityChart extends Component<any, any> {
     }
 
     this.chart = new Chart(myChartRef, {
-      type: "bar",
+      type: 'bar',
       data: {
         datasets: [
           {
-            label: "Velocity (rolling average)",
+            label: 'Velocity (rolling average)',
             data: dataset.map((w: any) => w.completion[metric].velocity),
-            backgroundColor: "#ef5350",
+            backgroundColor: '#ef5350',
             fill: false,
-            type: "line"
+            type: 'line'
           },
           {
-            label: "Completed",
-            backgroundColor: "#64b5f6",
-            borderColor: "#64b5f6",
+            label: 'Completed',
+            backgroundColor: '#64b5f6',
+            borderColor: '#64b5f6',
             borderWidth: 2,
             data: dataset.map((w: any) => w.completion[metric].count)
           }
@@ -88,27 +88,27 @@ class VelocityChart extends Component<any, any> {
           ]
         },
         tooltips: {
-          position: "nearest",
-          mode: "index",
+          position: 'nearest',
+          mode: 'index',
           intersect: false
         }
       }
     });
   };
 
-  //https://jsfiddle.net/u1szh96g/208/
+  // https://jsfiddle.net/u1szh96g/208/
   clickChart = (event: any) => {
     const { dataset } = this.props;
     const activePoints = this.chart.getElementsAtEvent(event);
     if (activePoints[0] !== undefined) {
-      const idx = activePoints[0]["_index"];
+      const idx = activePoints[0]._index;
       const issues = dataset[idx].completion.list;
       if (issues.length > 0 && this.allowClick === true) {
         this.allowClick = false;
         const keys = issues.map((i: any) => i.key);
         const url =
-          issues[0].host + "/issues/?jql=key in (" + keys.toString() + ")";
-        window.open(url, "_blank");
+          issues[0].host + '/issues/?jql=key in (' + keys.toString() + ')';
+        window.open(url, '_blank');
         setTimeout(() => {
           this.resetAllowClick();
         }, 1000);
@@ -120,7 +120,7 @@ class VelocityChart extends Component<any, any> {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <canvas id="myChart" ref={this.chartRef} />
+        <canvas id='myChart' ref={this.chartRef} />
       </div>
     );
   }

@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import { connect } from "react-redux";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import React, { FC } from 'react';
+import { connect } from 'react-redux';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
-import { iRootState } from "../../store";
+import { iRootState } from '../../store';
 
 const mapState = (state: iRootState) => ({
   teams: state.velocity.teams,
@@ -33,8 +33,8 @@ const TeamsTabs: FC<connectedProps> = ({
     <Tabs
       value={selectedTeamValue}
       onChange={handleChange}
-      indicatorColor="primary"
-      textColor="primary"
+      indicatorColor='primary'
+      textColor='primary'
       centered
     >
       {teams.map((team: any) => {

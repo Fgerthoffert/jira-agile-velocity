@@ -1,25 +1,25 @@
-import React, { FC } from "react";
-import { connect } from "react-redux";
+import React, { FC } from 'react';
+import { connect } from 'react-redux';
 import {
   makeStyles,
   useTheme,
   Theme,
   createStyles
-} from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import { Link, LinkProps } from "react-router-dom";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
-import { iRootState } from "../../store";
+} from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import { Link, LinkProps } from 'react-router-dom';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import { iRootState } from '../../store';
 
 const drawerWidth = 240;
 
@@ -34,11 +34,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     noLink: {},
     drawerHeader: {
-      display: "flex",
-      alignItems: "center",
+      display: 'flex',
+      alignItems: 'center',
       padding: theme.spacing(0, 1),
       ...theme.mixins.toolbar,
-      justifyContent: "flex-end"
+      justifyContent: 'flex-end'
     }
   })
 );
@@ -69,14 +69,14 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
 
   const routes = [
     {
-      path: "/velocity",
+      path: '/velocity',
       icon: <BarChartIcon />,
-      text: "Velocity"
+      text: 'Velocity'
     },
     {
-      path: "/roadmap",
+      path: '/roadmap',
       icon: <FormatListNumberedIcon />,
-      text: "Roadmap"
+      text: 'Roadmap'
     }
   ];
 
@@ -91,12 +91,12 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
     >
       <div
         className={classes.drawerHeader}
-        role="presentation"
+        role='presentation'
         onClick={handleDrawerClose}
         onKeyDown={handleDrawerClose}
       >
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === "ltr" ? (
+          {theme.direction === 'ltr' ? (
             <ChevronLeftIcon />
           ) : (
             <ChevronRightIcon />
