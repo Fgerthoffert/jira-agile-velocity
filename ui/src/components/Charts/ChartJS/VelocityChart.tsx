@@ -1,10 +1,5 @@
 import React, { Component } from 'react'; // let's also import Component
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  withStyles
-} from '@material-ui/core/styles';
+import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import Chart from 'chart.js';
 
 const styles = (theme: Theme) =>
@@ -14,19 +9,7 @@ const styles = (theme: Theme) =>
     }
   });
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      height: 300
-    }
-  })
-);
-
 class VelocityChart extends Component<any, any> {
-  constructor(props: any) {
-    super(props);
-  }
-
   chartRef: any = React.createRef();
   chart: any = {};
   allowClick: boolean = true;

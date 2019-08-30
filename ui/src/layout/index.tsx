@@ -6,8 +6,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -27,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen
       })
-      //      marginLeft: -drawerWidth
     },
     contentShift: {
       transition: theme.transitions.create('margin', {

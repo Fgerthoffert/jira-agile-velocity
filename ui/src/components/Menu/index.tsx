@@ -15,7 +15,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import { Link, LinkProps } from 'react-router-dom';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';

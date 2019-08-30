@@ -1,11 +1,9 @@
-import Grid, { GridSpacing } from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import React, { FC } from 'react';
-import ReactDOM from 'react-dom';
 
 import { connect } from 'react-redux';
 
@@ -30,11 +28,6 @@ const mapDispatch = (dispatch: any) => ({
 
 const getProgress = (issue: any, metric: string) => {
   let progressPrct = 0;
-  let missing = '';
-  if (issue.metrics[metric].missing > 0) {
-    missing =
-      ' (' + issue.metrics[metric].missing + ' open issues without estimate)';
-  }
   if (issue.metrics[metric].total > 0) {
     progressPrct =
       Math.round(
@@ -51,10 +44,8 @@ const getProgress = (issue: any, metric: string) => {
 };
 
 const getMissingEffort = (issue: any) => {
-  let missing = '';
-  if (issue.metrics.points.missing > 0) {
-    missing = issue.metrics.points.missing;
-  }
+  const missing =
+    issue.metrics.points.missing > 0 ? issue.metrics.points.missing : '';
   return missing;
 };
 
@@ -114,7 +105,6 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap }) => {
   if (!defaultPoints) {
     metric = 'issues';
   }
-  console.log(roadmap);
   if (Object.values(roadmap).length > 0) {
     const issues: any = flattenData(roadmap.byInitiative, metric);
     return (
