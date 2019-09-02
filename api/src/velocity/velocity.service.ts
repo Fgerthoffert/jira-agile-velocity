@@ -1,20 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as loadYamlFile from 'load-yaml-file';
 import * as readline from 'readline';
 import * as stream from 'stream';
 
+import { ConfigService } from '../config.service';
+
 @Injectable()
 export class VelocityService {
+  private readonly logger = new Logger(VelocityService.name);
+  private basePath: string;
+  constructor(config: ConfigService) {
+    this.configBasePath = config.basepath;
+  }
+
   async getVelocity(): Promise<any> {
     const teamsVelocity = [];
 
-    const basePath = '/Users/fgerthoffert/.config/jira-agile-velocity/';
+    const basePath = '/Users/francoisgerthoffert/.config/jira-agile-velocity/';
     const configFilePath = path.join(basePath, 'config.yml');
     if (fs.existsSync(configFilePath)) {
-      console.log('Opening configuration file: ' + configFilePath);
-
+      this.logger.log('Opening configuration file: ' + configFilePath);
       const userConfig = await loadYamlFile(configFilePath);
 
       for (let team of userConfig.teams) {
@@ -30,7 +37,7 @@ export class VelocityService {
         }
       }
     } else {
-      console.log(
+      this.logger.log(
         'Error, unable to find configuration file: ' + configFilePath,
       );
     }
