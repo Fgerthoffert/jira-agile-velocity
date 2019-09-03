@@ -71,6 +71,9 @@ export default abstract class extends Command {
     const { flags } = this.parse();
     const { env_user_config } = flags;
 
+    if (process.env.CONFIG_DIR !== undefined) {
+      this.config.configDir = process.env.CONFIG_DIR;
+    }
     // If config file does not exists, initialize it:
     fse.ensureDirSync(this.config.configDir);
     fse.ensureDirSync(this.config.configDir + "/cache/");
