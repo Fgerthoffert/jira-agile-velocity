@@ -10,23 +10,23 @@ import { ConfigService } from '../config.service';
 @Injectable()
 export class VelocityService {
   private readonly logger = new Logger(VelocityService.name);
-  private basePath: string;
+  configBasePath: string;
+
   constructor(config: ConfigService) {
-    this.configBasePath = config.basepath;
+    this.configBasePath = config.get('CONFIG_PATH');
   }
 
   async getVelocity(): Promise<any> {
     const teamsVelocity = [];
-
-    const basePath = '/Users/francoisgerthoffert/.config/jira-agile-velocity/';
-    const configFilePath = path.join(basePath, 'config.yml');
+    const configFilePath = path.join(this.configBasePath, 'config.yml');
+    console.log(configFilePath);
     if (fs.existsSync(configFilePath)) {
       this.logger.log('Opening configuration file: ' + configFilePath);
       const userConfig = await loadYamlFile(configFilePath);
 
-      for (let team of userConfig.teams) {
+      for (const team of userConfig.teams) {
         const teamCacheFile = path.join(
-          basePath + '/cache/',
+          this.configBasePath + '/cache/',
           'velocity-artifact-' + getTeamId(team.name) + '.json',
         );
         if (fs.existsSync(teamCacheFile)) {
@@ -51,7 +51,7 @@ export const getTeamId = (teamName: string) => {
     .toLowerCase();
 };
 
-//https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
+// https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
 const readLines = (input: any) => {
   const output = new stream.PassThrough({ objectMode: true });
   const rl = readline.createInterface({ input });

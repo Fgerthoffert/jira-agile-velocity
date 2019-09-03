@@ -1,39 +1,29 @@
-import * as dotenv from 'dotenv';
-import * as Joi from '@hapi/joi';
-import * as fs from 'fs';
-
 export interface EnvConfig {
   [key: string]: string;
 }
 
 export class ConfigService {
+  CONFIG_PATH: string;
   private readonly envConfig: EnvConfig;
 
-  constructor(filePath: string) {
-    const config = dotenv.parse(fs.readFileSync(filePath));
-    this.envConfig = this.validateInput(config);
-  }
+  constructor() {
+    const untildify = require('untildify');
+    const defaultEnv = {
+      CONFIG_PATH: '~/.config/jira-agile-velocity/',
+    };
 
-  /**
-   * Ensures all needed variables are set, and returns the validated JavaScript object
-   * including the applied default values.
-   */
-  private validateInput(envConfig: EnvConfig): EnvConfig {
-    const envVarsSchema: Joi.ObjectSchema = Joi.object({
-      BASEPATH: Joi.string().default('~/.config/jira-agile-velocity/'),
-    });
-
-    const { error, value: validatedEnvConfig } = Joi.validate(
-      envConfig,
-      envVarsSchema,
-    );
-    if (error) {
-      throw new Error(`Config validation error: ${error.message}`);
+    if (process.env.CONFIG_PATH === undefined) {
+      this.envConfig = {
+        CONFIG_PATH: untildify(defaultEnv.CONFIG_PATH),
+      };
+    } else {
+      this.envConfig = {
+        CONFIG_PATH: untildify(process.env.CONFIG_PATH),
+      };
     }
-    return validatedEnvConfig;
   }
 
-  get basepath(): boolean {
-    return Boolean(this.envConfig.API_AUTH_ENABLED);
+  get(key: string): string {
+    return this.envConfig[key];
   }
 }
