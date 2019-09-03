@@ -9,16 +9,16 @@ export class ConfigService {
   constructor() {
     const untildify = require('untildify');
     const defaultEnv = {
-      CONFIG_PATH: '~/.config/jira-agile-velocity/',
+      CONFIG_DIR: '~/.config/jira-agile-velocity/',
     };
 
     if (process.env.CONFIG_PATH === undefined) {
       this.envConfig = {
-        CONFIG_PATH: untildify(defaultEnv.CONFIG_PATH),
+        CONFIG_DIR: untildify(defaultEnv.CONFIG_DIR),
       };
     } else {
       this.envConfig = {
-        CONFIG_PATH: untildify(process.env.CONFIG_PATH),
+        CONFIG_DIR: untildify(process.env.CONFIG_DIR),
       };
     }
   }

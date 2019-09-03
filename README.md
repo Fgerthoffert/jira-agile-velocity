@@ -31,6 +31,8 @@ The tool focus on two main areas:
 
 Jira-agile-velocity aims at being simple and data centric, leaving complex interpretation to the user. The tool is, on purpose, simple in its core assumptions, an activity has only two steps, it needs to be done, or it has been done (Open or Closed), this is at the core of the tool's configuration detailed below.
 
+Jira-agile-velocity (or jav) is composed of three different tools, a UI, an API and a CLI. The CLI's role is to fecth and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner. All three components are configured to be used either via Docker (and docker-compose) or directly through node/npm. Environment variables are available to customize the apps behavior.
+
 # Configuration
 
 _Note_: When running the tool for the first time, a configuration file will automatically be created if you're not using the corresponding environment variable.

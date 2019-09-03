@@ -1,5 +1,11 @@
-import { createModel } from "@rematch/core";
-import axios from "axios";
+import { createModel } from '@rematch/core';
+import axios from 'axios';
+
+declare global {
+  interface Window {
+    _env_: any;
+  }
+}
 
 export const roadmap = createModel({
   state: {
@@ -19,10 +25,10 @@ export const roadmap = createModel({
         const host =
           window._env_.API_URL !== undefined
             ? window._env_.API_URL
-            : "http://127.0.0.1:3001";
+            : 'http://127.0.0.1:3001';
         axios({
-          method: "get",
-          url: host + "/roadmap"
+          method: 'get',
+          url: host + '/roadmap'
         })
           .then(response => {
             setRoadmap(response.data);

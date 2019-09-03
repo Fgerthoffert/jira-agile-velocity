@@ -12,7 +12,7 @@ export class RoadmapService {
   configBasePath: string;
 
   constructor(config: ConfigService) {
-    this.configBasePath = config.get('CONFIG_PATH');
+    this.configBasePath = config.get('CONFIG_DIR');
   }
 
   async getRoadmap(): Promise<any> {

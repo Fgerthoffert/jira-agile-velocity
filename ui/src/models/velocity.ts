@@ -1,5 +1,11 @@
-import { createModel } from "@rematch/core";
-import axios from "axios";
+import { createModel } from '@rematch/core';
+import axios from 'axios';
+
+declare global {
+  interface Window {
+    _env_: any;
+  }
+}
 
 export const velocity = createModel({
   state: {
@@ -24,10 +30,10 @@ export const velocity = createModel({
         const host =
           window._env_.API_URL !== undefined
             ? window._env_.API_URL
-            : "http://127.0.0.1:3001";
+            : 'http://127.0.0.1:3001';
         axios({
-          method: "get",
-          url: host + "/velocity"
+          method: 'get',
+          url: host + '/velocity'
         })
           .then(response => {
             setTeams(response.data);
