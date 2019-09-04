@@ -23,23 +23,20 @@ jobs:
             - v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "package-lock.json"}}
             - v1-npm-{{checksum ".circleci/config.yml"}}
       - run:
-          name: Move to CLI directory
-          command: cd cli
-      - run:
           name: Install dependencies
-          command: npm install
+          command: cd cli && npm install
       - run:
           name: Display version
-          command: ./bin/run --version
+          command: ./cli/bin/run --version
       - run:
           name: Display help
-          command: ./bin/run --help
+          command: ./cli/bin/run --help
       - run:
           name: Init app
-          command: ./bin/run init
+          command: ./cli/bin/run init
       - run:
           name: Linting
-          command: npm run posttest
+          command: cd cli && npm run posttest
   #      - run:
   #          name: Testing
   #          command: npm test
