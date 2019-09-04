@@ -60,7 +60,7 @@ jobs:
             - ~/.npm
             - /usr/local/lib/node_modules
   cli-cache:
-    <<: *api-test
+    <<: *cli-test
     steps:
       - checkout
       - run:
@@ -91,7 +91,7 @@ jobs:
           command: cd api && npm run lint
 
   api-cache:
-    <<: *test
+    <<: *api-test
     steps:
       - checkout
       - run:
