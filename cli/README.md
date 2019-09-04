@@ -110,7 +110,7 @@ $ npm install -g jira-agile-velocity
 $ jav COMMAND
 running command...
 $ jav (-v|--version|version)
-jira-agile-velocity/0.3.0 darwin-x64 node-v12.7.0
+jira-agile-velocity/0.3.3 darwin-x64 node-v12.8.1
 $ jav --help [COMMAND]
 USAGE
   $ jav COMMAND
@@ -159,7 +159,7 @@ EXAMPLE
   $ jav init
 ```
 
-_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.3/src/commands/init.ts)_
 
 ## `jav roadmap`
 
@@ -178,7 +178,7 @@ OPTIONS
                                      file
 ```
 
-_See code: [src/commands/roadmap.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.0/src/commands/roadmap.ts)_
+_See code: [src/commands/roadmap.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.3/src/commands/roadmap.ts)_
 
 ## `jav velocity`
 
@@ -197,5 +197,5 @@ OPTIONS
                                      file
 ```
 
-_See code: [src/commands/velocity.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.0/src/commands/velocity.ts)_
+_See code: [src/commands/velocity.ts](https://github.com/fgerthoffert/jira-agile-velocity/blob/v0.3.3/src/commands/velocity.ts)_
 <!-- commandsstop -->
