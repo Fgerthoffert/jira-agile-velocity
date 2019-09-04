@@ -132,8 +132,11 @@ jobs:
     working_directory: ~/cli-ci
     steps:
       - checkout
-      - attach_workspace:
-          at: /tmp/workspace
+      #      - attach_workspace:
+      #          at: /tmp/workspace
+      - run:
+          name: Install dependencies
+          command: cd cli && npm install
       - run:
           name: Authenticate with NPM registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > cli/.npmrc
