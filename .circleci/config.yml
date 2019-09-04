@@ -105,7 +105,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Authenticate with NPM registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/cli-workspace/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/cli-ci/.npmrc
       - run:
           name: Publish to NPM registry
           command: |
