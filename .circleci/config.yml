@@ -136,7 +136,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Authenticate with NPM registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/cli-ci/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > cli/.npmrc
       - run:
           name: Updating NPM version with GitHub tag
           command: |
@@ -146,6 +146,7 @@ jobs:
       - run:
           name: Publish to NPM registry
           command: cd cli && npm publish
+
   # Build all three docker images
   docker-build:
     executor: docker-publisher
