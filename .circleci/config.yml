@@ -138,6 +138,9 @@ jobs:
           name: Install dependencies
           command: cd cli && npm install
       - run:
+          name: Install Typescript
+          command: npm -g install typescript
+      - run:
           name: Authenticate with NPM registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > cli/.npmrc
       - run:
