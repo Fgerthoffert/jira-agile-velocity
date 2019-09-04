@@ -98,10 +98,10 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build API Docker Image
-          command: docker build -t $IMAGE_NAME_API:latest .
+          command: cd api && docker build -t $IMAGE_NAME_API:latest .
       - run:
           name: Archive Docker image
-          command: docker save -o image_api.tar $IMAGE_NAME_API
+          command: cd api && docker save -o image_api.tar $IMAGE_NAME_API
       - persist_to_workspace:
           root: .
           paths:
@@ -115,7 +115,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image_api.tar
+          command: cd api && docker load -i /tmp/workspace/image_api.tar
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
