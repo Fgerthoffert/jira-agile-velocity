@@ -38,7 +38,7 @@ jobs:
           name: Init app
           command: ./cli/bin/run init
       - persist_to_workspace:
-          root: ~/cli-workspace
+          root: .
           paths: .
 
   cli-node-8:
@@ -96,10 +96,13 @@ jobs:
 
   # Publish a new version of the cli to NPM
   npm-publish:
+    docker:
+      - image: node:latest
+    working_directory: ~/cli-ci
     steps:
       - checkout
       - attach_workspace:
-          at: ~/cli-workspace
+          at: /tmp/workspace
       - run:
           name: Authenticate with NPM registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/cli-workspace/.npmrc
