@@ -276,7 +276,7 @@ jobs:
 
 workflows:
   version: 2
-  build-npm:
+  build-npm-from-tags:
     jobs:
       - npm-publish:
           filters:
@@ -292,7 +292,7 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-  build-tags:
+  build-docker-from-tags:
     jobs:
       - docker-build:
           filters:
@@ -308,7 +308,7 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-  'github-indexer':
+  lint-and-test:
     jobs:
       - cli-node-latest
       - cli-node-10
