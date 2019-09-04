@@ -20,11 +20,14 @@ jobs:
       - checkout
       - restore_cache: &restore_cache
           keys:
-            - v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "package-lock.json"}}
-            - v1-npm-{{checksum ".circleci/config.yml"}}
+            - v1-npm-cli-{{checksum ".circleci/config.yml"}}-{{checksum "package-lock.json"}}
+            - v1-npm-cli-{{checksum ".circleci/config.yml"}}
       - run:
           name: Install dependencies
           command: cd cli && npm install
+      - run:
+          name: Linting
+          command: cd cli && npm run posttest
       - run:
           name: Display version
           command: ./cli/bin/run --version
@@ -34,12 +37,7 @@ jobs:
       - run:
           name: Init app
           command: ./cli/bin/run init
-      - run:
-          name: Linting
-          command: cd cli && npm run posttest
-  #      - run:
-  #          name: Testing
-  #          command: npm test
+
   node-8:
     <<: *test
     docker:
@@ -54,11 +52,11 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: yarn
+          command: cd cli && npm install
       - save_cache:
-          key: v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "package-lock.json"}}
+          key: v1-npm-cli-{{checksum ".circleci/config.yml"}}-{{checksum "package-lock.json"}}
           paths:
-            - ~/cli/node_modules
+            - ~/cli-ci/node_modules
             - ~/.npm
             - /usr/local/lib/node_modules
 
