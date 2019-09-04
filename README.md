@@ -20,25 +20,30 @@ Build various sets of Agile metrics and dashboards by fetching data from Jira RE
 
 # Introduction
 
-<!-- introduction -->
-
-Jira's many, many features is a strength, but can also sometime make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different, though simple, views into the data currently hosted within your Jira instance. It borrows concepts from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities and aims at being executed regularly (through cron).
+Jira's many, many features is a strength, but can also sometime make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different (though simple) views into the data currently hosted within your Jira instance. It borrows concepts and code from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities.
 
 The tool focuses on two main areas:
 
-- Provide Agile teams with short-term velocity metrics (what did we just did, when will we be done with our backlog)
-- Provide program management with a long-term vision over engineering activities (initiatives being worked on, the progress/state, forecasting completion)
+- Provide Agile teams with short-term velocity metrics (what did we just do, when will we be done with our backlog)
+- Provide program management with a long-term vision over engineering activities (initiatives being worked on, progress & state, forecasting completion)
 
-Jira-agile-velocity aims at being simple and data centric, leaving complex interpretation to the user. The tool is, on purpose, simple in its core assumptions, an activity has only two steps, it needs to be done, or it has been done (Open or Closed), this is at the core of the tool's configuration detailed below.
+Jira-agile-velocity aims at being simple and data-centric, leaving interpretation to the user. The core concept used to derive metrics is simple: An activity has only two states, it either has to be done, or is has been done. By specifing the appropriate JQL queries in the configuration, you can define what is considered done and what is considered pending.
 
-This repositories contains 3 codebases, a UI, and API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner. All three components are configured to be used either via Docker (and docker-compose in a production-like environment) or directly through node/npm. Environment variables are available to customize the apps behavior.
+The tool is broken down in 3 codebases, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
 
-In its current setup, the tool is storing its data in json or ndjson files directly on the filesystem. This configuration is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB), instead, future evolutions will likely move closer to ZenCrepes implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
+In its current state, the tool is storing its data in json or ndjson files directly on the filesystem. It is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB) on the short term. Instead, future evolutions will likely move closer to ZenCrepes' implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
 
-# Docker-compose
+# Install
 
-The docker-compose.yml file below can be used to spin up all three applications, the only thing to modify will be the directory, on the host' filesystem, that will contain the configuration file and cache data.
-When running docker-compose for the first time, if there is no configuration file, a default one will be created. It will need to be updated to match your current desired settings.
+# Docker and docker-compose
+
+All three components have been dockerized and can be easily spun-up using docker-compose. This is actually the recommended setup to get everything running quickly.
+
+During first startup, the system will initialize a configuration file (`config.yml`), this will will need to be updated with the desired settings before re-starting the container. Once updated, you can either re-start the environment `docker-compose downup; docker-compose up` or manually trigger a data refresh in the cli container.
+
+## docker-compose.yml
+
+You can use the docker-compose file below to spin-up the environment, the only required action is to create a directory on the docker host's filesystem to host the configuration file and the application cache.
 
 ```yaml
 version: '3.7'
@@ -76,11 +81,64 @@ services:
       - 'API_URL=http://127.0.0.1:5001'
 ```
 
-ADD INSTRUCTIONS
+Once the directory is created, you can start the environment:
+
+```bash
+> docker-compose up -d -f docker-compose.yml
+```
+
+Note: For now, the cli container is not configured with a cron to refresh data.
+
+## Configuration update
+
+From time-to-time you'll want to update the configuration and see the outcome of those updates within a short period of time. You can manually trigger a data refresh on the cli container using the following command:
+
+```bash
+> docker exce -it jira-agile-velocity_jav-cli_1 /usr/share/jav/startup.sh
+```
+
+Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
 
 # Development environment
 
-ADD INSTRUCTIONS
+If you are familiar with npm, running the application in development mode should be very straight forward.
+
+```bash
+> git clone https://github.com/Fgerthoffert/jira-agile-velocity.git
+> cd jira-agile-velocity
+> cd api
+> npm install
+> cd ..
+> cd ui
+> npm install
+> cd cli
+> npm install
+> cd ..
+```
+
+You can now run each application in their own terminal.
+
+## CLI
+
+```bash
+> cd cli
+> ./bin/run velocity # Update the velocity metrics
+> ./bin/run roadmap # Update the velocity roadmap
+```
+
+## API
+
+```bash
+> cd api
+> npm run start:dev
+```
+
+## UI
+
+```bash
+> cd api
+> npm run dev
+```
 
 # Configuration
 
@@ -115,29 +173,3 @@ The field **jqlHistory**, using the format YYYY-MM-DD defines how far back in hi
 ## Roadmap configuration
 
 The roadmap section aims at specifying which teams (from the teams section) should be taken in consideration while constructing the roadmap, as well as defining the JQL query used to fetch initiatives.
-
-# Quick start with Docker
-
-You can use jira-agile-velocity docker image to get started quickly.
-
-Fetch the latest image
-
-```sh-session
-docker pull fgerthoffert/jira-agile-velocity:latest
-```
-
-Run
-
-```sh-session
-docker run -it --rm \
--e USER_CONFIG='SERIALIZED-JSON' \
-fgerthoffert/jira-agile-velocity:latest jav velocity
-```
-
-Or in a shell (you can then configure and run it via the shell)
-
-```sh-session
-docker run -it --rm \
--e USER_CONFIG='SERIALIZED-JSON' \
-fgerthoffert/jira-agile-velocity:latest /bin/ash
-```
