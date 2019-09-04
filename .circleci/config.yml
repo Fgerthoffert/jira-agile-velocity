@@ -37,6 +37,9 @@ jobs:
       - run:
           name: Init app
           command: ./cli/bin/run init
+      - persist_to_workspace:
+          root: ~/cli-workspace
+          paths: .
 
   cli-node-8:
     <<: *cli-test
@@ -91,6 +94,24 @@ jobs:
             - ~/.npm
             - /usr/local/lib/node_modules
 
+  # Publish a new version of the cli to NPM
+  npm-publish:
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/cli-workspace
+      - run:
+          name: Authenticate with NPM registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/cli-workspace/.npmrc
+      - run:
+          name: Publish to NPM registry
+          command: |
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            echo "Image tag is: $IMAGE_TAG"
+            cd cli && npm version $IMAGE_TAG
+      - run:
+          name: Publish to NPM registry
+          command: cd cli && npm publish
   # Build all three docker images
   docker-build:
     executor: docker-publisher
@@ -182,6 +203,12 @@ workflows:
   version: 2
   build-tags:
     jobs:
+      - npm-publish:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - docker-build:
           filters:
             tags:
