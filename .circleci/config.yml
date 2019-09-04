@@ -91,7 +91,8 @@ jobs:
             - ~/.npm
             - /usr/local/lib/node_modules
 
-  api-build:
+  # Build all three docker images
+  docker-build:
     executor: docker-publisher
     steps:
       - checkout
@@ -100,24 +101,39 @@ jobs:
           name: Build API Docker Image
           command: cd api && docker build -t $IMAGE_NAME_API:latest .
       - run:
-          name: Archive Docker image
+          name: Archive API Docker image
           command: docker save -o image_api.tar $IMAGE_NAME_API
+      - run:
+          name: Build UI Docker Image
+          command: cd ui && docker build -t $IMAGE_NAME_UI:latest .
+      - run:
+          name: Archive UI Docker image
+          command: docker save -o image_ui.tar $IMAGE_NAME_UI
+      - run:
+          name: Build CLI Docker Image
+          command: cd cli && docker build -t $IMAGE_NAME_CLI:latest .
+      - run:
+          name: Archive CLI Docker image
+          command: docker save -o image_cli.tar $IMAGE_NAME_CLI
       - persist_to_workspace:
           root: .
           paths:
             - ./image_api.tar
+            - ./image_ui.tar
+            - ./image_cli.tar
 
-  api-publish-tag:
+  # Publish all three docker images
+  docker-publish:
     executor: docker-publisher
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker
       - run:
-          name: Load archived Docker image
+          name: Load archived API Docker image
           command: docker load -i /tmp/workspace/image_api.tar
       - run:
-          name: Publish Docker Image to Docker Hub
+          name: Publish API Docker Image to Docker Hub
           command: |
             echo "$DOCKERHUB_USERNAME"
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
@@ -129,20 +145,52 @@ jobs:
             echo "Pushed latest"
             docker push $IMAGE_NAME_API:$IMAGE_TAG
             echo "Pushed tag"
+      - run:
+          name: Load archived UI Docker image
+          command: docker load -i /tmp/workspace/image_ui.tar
+      - run:
+          name: Publish UI Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_USERNAME"
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            echo "Image tag is: $IMAGE_TAG"
+            docker tag $IMAGE_NAME_UI:latest $IMAGE_NAME_UI:$IMAGE_TAG
+            echo "Tagged the image"
+            docker push $IMAGE_NAME_UI:latest
+            echo "Pushed latest"
+            docker push $IMAGE_NAME_UI:$IMAGE_TAG
+            echo "Pushed tag"
+      - run:
+          name: Load archived CLI Docker image
+          command: docker load -i /tmp/workspace/image_cli.tar
+      - run:
+          name: Publish CLI Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_USERNAME"
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            echo "Image tag is: $IMAGE_TAG"
+            docker tag $IMAGE_NAME_CLI:latest $IMAGE_NAME_CLI:$IMAGE_TAG
+            echo "Tagged the image"
+            docker push $IMAGE_NAME_CLI:latest
+            echo "Pushed latest"
+            docker push $IMAGE_NAME_CLI:$IMAGE_TAG
+            echo "Pushed tag"                     
 
 workflows:
   version: 2
   build-tags:
     jobs:
-      - api-build:
+      - docker-build:
           filters:
             tags:
               only: /^v.*/
             branches:
               ignore: /.*/
-      - api-publish-tag:
+      - docker-publish:
           requires:
-            - api-build
+            - docker-build
           filters:
             tags:
               only: /^v.*/
