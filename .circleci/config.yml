@@ -147,6 +147,9 @@ jobs:
             echo "Image tag is: $IMAGE_TAG"
             cd cli && npm version $IMAGE_TAG
       - run:
+          name: Ls cli content
+          command: ls -lah cli/
+      - run:
           name: Publish to NPM registry
           command: cd cli && npm publish
 
