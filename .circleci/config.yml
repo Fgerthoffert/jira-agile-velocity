@@ -171,6 +171,22 @@ jobs:
           name: Publish to NPM registry
           command: cd cli && npm publish
 
+  # Test the package that was just published to npm
+  npm-test:
+    docker:
+      - image: node:latest
+    working_directory: ~/cli-npm
+    steps:
+      - run:
+          name: Install
+          command: npm install -g jira-agile-velocity
+      - run:
+          name: Display version
+          command: jav --version
+      - run:
+          name: Display help
+          command: jav --help
+
   # Build all three docker images
   docker-build:
     executor: docker-publisher
@@ -263,6 +279,14 @@ workflows:
   build-npm:
     jobs:
       - npm-publish:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - npm-test:
+          requires:
+            - npm-publish
           filters:
             tags:
               only: /^v.*/
