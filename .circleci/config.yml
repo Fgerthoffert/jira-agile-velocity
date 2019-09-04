@@ -122,13 +122,13 @@ jobs:
             echo "$DOCKERHUB_USERNAME"
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
-            echo "$IMAGE_TAG"
-            docker tag $IMAGE_NAME_API:latest $IMAGE_NAME:$IMAGE_TAG
-            echo "tag"
+            echo "Image tag is: $IMAGE_TAG"
+            docker tag $IMAGE_NAME_API:latest $IMAGE_NAME_API:$IMAGE_TAG
+            echo "Tagged the image"
             docker push $IMAGE_NAME_API:latest
-            echo "latest"
+            echo "Pushed latest"
             docker push $IMAGE_NAME_API:$IMAGE_TAG
-            echo "push"
+            echo "Pushed tag"
 
 workflows:
   version: 2
