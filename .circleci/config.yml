@@ -1,5 +1,15 @@
+# Instructions from: https://circleci.com/blog/automate-releases-from-pipelines-using-infrastructure-as-code/
 ---
-version: 2
+version: 2.1
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME_API: fgerthoffert/jav-api
+      IMAGE_NAME_CLI: fgerthoffert/jav-cli
+      IMAGE_NAME_UI: fgerthoffert/jav-ui
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
 jobs:
   node-latest: &test
     docker:
@@ -51,9 +61,59 @@ jobs:
             - ~/.npm
             - /usr/local/lib/node_modules
 
+  api-build:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build API Docker Image
+          command: docker build -t $IMAGE_NAME_API:latest .
+      - run:
+          name: Archive Docker image
+          command: docker save -o image_api.tar $IMAGE_NAME_API
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image_api.tar
+
+  api-publish-tag:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image_api.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker tag $IMAGE_NAME_API:latest $IMAGE_NAME:$IMAGE_TAG
+            docker push $IMAGE_NAME_API:latest
+            docker push $IMAGE_NAME_API:$IMAGE_TAG
+
 workflows:
   version: 2
-  "github-indexer":
+  build-tags:
+    jobs:
+      - api-build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - api-publish-tag:
+          requires:
+            - api-build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+  'github-indexer':
     jobs:
       - node-latest
       - node-10

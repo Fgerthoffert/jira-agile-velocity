@@ -1,0 +1,33 @@
+version: '3.7'
+
+volumes:
+  data-volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: /tmp/jav-data
+      o: bind
+
+services:
+  jav-cli:
+    image: fgerthoffert/jav-cli
+    environment:
+      - 'CONFIG_DIR=/root/jav-data'
+    volumes:
+      - data-volume:/root/jav-data
+
+  jav-api:
+    image: fgerthoffert/jav-api
+    ports:
+      - '5001:3001'
+    environment:
+      - 'CONFIG_DIR=/root/jav-data'
+    volumes:
+      - data-volume:/root/jav-data
+
+  jav-ui:
+    image: fgerthoffert/jav-ui
+    ports:
+      - '5000:80'
+    environment:
+      - 'API_URL=http://127.0.0.1:5001'
