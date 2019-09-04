@@ -19,7 +19,6 @@ export class VelocityService {
   async getVelocity(): Promise<any> {
     const teamsVelocity = [];
     const configFilePath = path.join(this.configBasePath, 'config.yml');
-    console.log(configFilePath);
     if (fs.existsSync(configFilePath)) {
       this.logger.log('Opening configuration file: ' + configFilePath);
       const userConfig = await loadYamlFile(configFilePath);
