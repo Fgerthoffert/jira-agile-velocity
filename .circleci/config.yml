@@ -138,7 +138,7 @@ jobs:
           name: Authenticate with NPM registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/cli-ci/.npmrc
       - run:
-          name: Publish to NPM registry
+          name: Updating NPM version with GitHub tag
           command: |
             IMAGE_TAG=${CIRCLE_TAG/v/''}
             echo "Image tag is: $IMAGE_TAG"
