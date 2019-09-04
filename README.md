@@ -24,14 +24,63 @@ Build various sets of Agile metrics and dashboards by fetching data from Jira RE
 
 Jira's many, many features is a strength, but can also sometime make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different, though simple, views into the data currently hosted within your Jira instance. It borrows concepts from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities and aims at being executed regularly (through cron).
 
-The tool focus on two main areas:
+The tool focuses on two main areas:
 
 - Provide Agile teams with short-term velocity metrics (what did we just did, when will we be done with our backlog)
 - Provide program management with a long-term vision over engineering activities (initiatives being worked on, the progress/state, forecasting completion)
 
 Jira-agile-velocity aims at being simple and data centric, leaving complex interpretation to the user. The tool is, on purpose, simple in its core assumptions, an activity has only two steps, it needs to be done, or it has been done (Open or Closed), this is at the core of the tool's configuration detailed below.
 
-Jira-agile-velocity (or jav) is composed of three different tools, a UI, an API and a CLI. The CLI's role is to fecth and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner. All three components are configured to be used either via Docker (and docker-compose) or directly through node/npm. Environment variables are available to customize the apps behavior.
+This repositories contains 3 codebases, a UI, and API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner. All three components are configured to be used either via Docker (and docker-compose in a production-like environment) or directly through node/npm. Environment variables are available to customize the apps behavior.
+
+In its current setup, the tool is storing its data in json or ndjson files directly on the filesystem. This configuration is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB), instead, future evolutions will likely move closer to ZenCrepes implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
+
+# Docker-compose
+
+The docker-compose.yml file below can be used to spin up all three applications, the only thing to modify will be the directory, on the host' filesystem, that will contain the configuration file and cache data.
+When running docker-compose for the first time, if there is no configuration file, a default one will be created. It will need to be updated to match your current desired settings.
+
+```yaml
+version: '3.7'
+
+volumes:
+  data-volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: /tmp/jav-data # PLEASE CUSTOMIZE
+      o: bind
+
+services:
+  jav-cli:
+    image: fgerthoffert/jav-cli
+    environment:
+      - 'CONFIG_DIR=/root/jav-data'
+    volumes:
+      - data-volume:/root/jav-data
+
+  jav-api:
+    image: fgerthoffert/jav-api
+    ports:
+      - '5001:3001'
+    environment:
+      - 'CONFIG_DIR=/root/jav-data'
+    volumes:
+      - data-volume:/root/jav-data
+
+  jav-ui:
+    image: fgerthoffert/jav-ui
+    ports:
+      - '5000:80'
+    environment:
+      - 'API_URL=http://127.0.0.1:5001'
+```
+
+ADD INSTRUCTIONS
+
+# Development environment
+
+ADD INSTRUCTIONS
 
 # Configuration
 
