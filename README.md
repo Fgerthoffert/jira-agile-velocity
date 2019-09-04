@@ -1,15 +1,23 @@
-# jira-agile-velocity
-
-Build various sets of Agile metrics and dashboards by fetching data from Jira REST API
-
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/jira-agile-velocity.svg)](https://npmjs.org/package/jira-agile-velocity)
-[![Downloads/week](https://img.shields.io/npm/dw/jira-agile-velocity.svg)](https://npmjs.org/package/jira-agile-velocity)
+[![CircleCI](https://circleci.com/gh/Fgerthoffert/jira-agile-velocity/tree/master.svg?style=svg)](https://circleci.com/gh/Fgerthoffert/jira-agile-velocity/tree/master)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/fgerthoffert/jira-agile-velocity)
 [![License](https://img.shields.io/npm/l/jira-agile-velocity.svg)](https://github.com/fgerthoffert/jira-agile-velocity/blob/master/package.json)
 
-<!-- toc -->
+| API                                                                           | UI                                                                          | CLI                                                                                                                                                                                                                                                                                              |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Docker Pulls API](https://img.shields.io/docker/pulls/fgerthoffert/jav-api) | ![Docker Pulls UI](https://img.shields.io/docker/pulls/fgerthoffert/jav-ui) | ![Docker Pulls CLI](https://img.shields.io/docker/pulls/fgerthoffert/jav-cli) [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![NPM Downloads/week](https://img.shields.io/npm/dw/jira-agile-velocity.svg)](https://npmjs.org/package/jira-agile-velocity) |
 
-- [jira-agile-velocity](#jira-agile-velocity)
+<h1 align="center"> Jira Agile Velocity </h1><br>
+
+<p align="center">
+Builds various sets of Agile metrics and dashboards by fetching data from Jira REST API
+</p>
+
+<p align="center">
+  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Issues View" title="Issues view" src="./docs/jav-ui-velocity.png" width="640" /></a>
+</p>
+
+## Table of Contents
+
 - [Introduction](#introduction)
 - [Configuration](#configuration)
 - [Quick start with Docker](#quick-start-with-docker)
@@ -53,19 +61,19 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /tmp/jav-data # PLEASE CUSTOMIZE
+      device: /tmp/jav-data # UPDATE TO DESIRED PATH ON HOST
       o: bind
 
 services:
   jav-cli:
-    image: fgerthoffert/jav-cli
+    image: fgerthoffert/jav-cli:latest
     environment:
       - 'CONFIG_DIR=/root/jav-data'
     volumes:
       - data-volume:/root/jav-data
 
   jav-api:
-    image: fgerthoffert/jav-api
+    image: fgerthoffert/jav-api:latest
     ports:
       - '5001:3001'
     environment:
@@ -74,7 +82,7 @@ services:
       - data-volume:/root/jav-data
 
   jav-ui:
-    image: fgerthoffert/jav-ui
+    image: fgerthoffert/jav-ui:latest
     ports:
       - '5000:80'
     environment:
@@ -84,14 +92,15 @@ services:
 Once the directory is created, you can start the environment:
 
 ```bash
-> docker-compose up -d -f docker-compose.yml
+> docker-compose pull -f docker-compose.yml # Fetches the latest version of the containers
+> docker-compose up -d -f docker-compose.yml # Run the containers
 ```
 
 Note: For now, the cli container is not configured with a cron to refresh data.
 
 ### Configuration update
 
-From time-to-time you'll want to update the configuration and see the outcome of those updates within a short period of time. You can manually trigger a data refresh on the cli container using the following command:
+From time-to-time you'll want to update the configuration and see the outcome of those updates within a short period of time (without having to wait for the next script execution). You can manually trigger a data refresh on the cli container using the following command:
 
 ```bash
 > docker exce -it jira-agile-velocity_jav-cli_1 /usr/share/jav/startup.sh
