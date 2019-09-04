@@ -147,6 +147,18 @@ jobs:
             echo "Image tag is: $IMAGE_TAG"
             cd cli && npm version $IMAGE_TAG
       - run:
+          name: Build the typescript app
+          command: cd cli && tsc -b
+      - run:
+          name: Generate the oclif manifest
+          command: cd cli && oclif-dev manifest
+      - run:
+          name: Update the oclif readme
+          command: cd cli && oclif-dev readme
+      - run:
+          name: Purge oclif.manifest.json
+          command: cd cli && rm -f oclif.manifest.json
+      - run:
           name: Ls cli content
           command: ls -lah cli/
       - run:
@@ -242,7 +254,7 @@ jobs:
 
 workflows:
   version: 2
-  build-tags:
+  build-npm:
     jobs:
       - npm-publish:
           filters:
@@ -250,6 +262,8 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
+  build-tags:
+    jobs:
       - docker-build:
           filters:
             tags:
