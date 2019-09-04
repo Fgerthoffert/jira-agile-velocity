@@ -3,6 +3,14 @@ FROM node:alpine
 
 MAINTAINER Francois Gerthoffert
 
+# Add bash
+RUN apk add --no-cache bash
+
+COPY ./startup.sh /usr/share/jav/
+
+WORKDIR /usr/share/jav/
+RUN chmod +x ./startup.sh
+
 RUN npm install -g jira-agile-velocity@latest
 
-CMD ["/bin/sh"]
+CMD ["/bin/bash", "-c", "/usr/share/jav/startup.sh"]
