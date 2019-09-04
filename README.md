@@ -29,19 +29,19 @@ The tool focuses on two main areas:
 
 Jira-agile-velocity aims at being simple and data-centric, leaving interpretation to the user. The core concept used to derive metrics is simple: An activity has only two states, it either has to be done, or is has been done. By specifing the appropriate JQL queries in the configuration, you can define what is considered done and what is considered pending.
 
-The tool is broken down in 3 codebases, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
+The tool is broken down in 3 codebases in a monorepo configuration, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
 
 In its current state, the tool is storing its data in json or ndjson files directly on the filesystem. It is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB) on the short term. Instead, future evolutions will likely move closer to ZenCrepes' implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
 
 # Install
 
-# Docker and docker-compose
+## Docker and docker-compose
 
 All three components have been dockerized and can be easily spun-up using docker-compose. This is actually the recommended setup to get everything running quickly.
 
 During first startup, the system will initialize a configuration file (`config.yml`), this will will need to be updated with the desired settings before re-starting the container. Once updated, you can either re-start the environment `docker-compose downup; docker-compose up` or manually trigger a data refresh in the cli container.
 
-## docker-compose.yml
+### docker-compose.yml
 
 You can use the docker-compose file below to spin-up the environment, the only required action is to create a directory on the docker host's filesystem to host the configuration file and the application cache.
 
@@ -89,7 +89,7 @@ Once the directory is created, you can start the environment:
 
 Note: For now, the cli container is not configured with a cron to refresh data.
 
-## Configuration update
+### Configuration update
 
 From time-to-time you'll want to update the configuration and see the outcome of those updates within a short period of time. You can manually trigger a data refresh on the cli container using the following command:
 
@@ -99,7 +99,7 @@ From time-to-time you'll want to update the configuration and see the outcome of
 
 Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
 
-# Development environment
+## Development environment
 
 If you are familiar with npm, running the application in development mode should be very straight forward.
 
@@ -118,7 +118,7 @@ If you are familiar with npm, running the application in development mode should
 
 You can now run each application in their own terminal.
 
-## CLI
+### CLI
 
 ```bash
 > cd cli
@@ -126,14 +126,14 @@ You can now run each application in their own terminal.
 > ./bin/run roadmap # Update the velocity roadmap
 ```
 
-## API
+### API
 
 ```bash
 > cd api
 > npm run start:dev
 ```
 
-## UI
+### UI
 
 ```bash
 > cd api
