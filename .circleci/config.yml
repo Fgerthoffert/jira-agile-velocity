@@ -59,19 +59,6 @@ jobs:
             - ~/cli-ci/node_modules
             - ~/.npm
             - /usr/local/lib/node_modules
-  cli-cache:
-    <<: *cli-test
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: cd cli && npm install
-      - save_cache:
-          key: v1-npm-cli-{{checksum ".circleci/config.yml"}}-{{checksum "cli/package-lock.json"}}
-          paths:
-            - ~/cli-ci/node_modules
-            - ~/.npm
-            - /usr/local/lib/node_modules            
 
   api-node-latest: &api-test
     docker:
@@ -102,7 +89,7 @@ jobs:
           paths:
             - ~/api-ci/node_modules
             - ~/.npm
-            - /usr/local/lib/node_modules  
+            - /usr/local/lib/node_modules
 
   api-build:
     executor: docker-publisher
@@ -173,4 +160,4 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: /.*/              
+              ignore: /.*/
