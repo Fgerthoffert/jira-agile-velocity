@@ -21,7 +21,7 @@ services:
     ports:
       - '5001:3001'
     environment:
-      - 'CONFIG_DIR=/root/jav-data'
+      - 'CONFIG_PATH=/root/jav-data'
     volumes:
       - data-volume:/root/jav-data
 
