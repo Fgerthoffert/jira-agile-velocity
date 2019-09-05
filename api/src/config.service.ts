@@ -18,7 +18,7 @@ export class ConfigService {
       };
     } else {
       this.envConfig = {
-        CONFIG_DIR: untildify(process.env.CONFIG_DIR),
+        CONFIG_DIR: untildify(process.env.CONFIG_PATH),
       };
     }
   }
