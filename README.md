@@ -28,16 +28,16 @@ Builds various sets of Agile metrics and dashboards by fetching data from Jira R
 
 # Introduction
 
-Jira's many, many features is a strength, but can also sometime make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different (though simple) views into the data currently hosted within your Jira instance. It borrows concepts and code from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities.
+Jira's many, many features is a strength, but can also sometimes make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different (though simple) views into the data currently hosted within your Jira instance. It borrows concepts and code from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities.
 
 The tool focuses on two main areas:
 
 - Provide Agile teams with short-term velocity metrics (what did we just do, when will we be done with our backlog)
 - Provide program management with a long-term vision over engineering activities (initiatives being worked on, progress & state, forecasting completion)
 
-Jira-agile-velocity aims at being simple and data-centric, leaving interpretation to the user. The core concept used to derive metrics is simple: An activity has only two states, it either has to be done, or is has been done. By specifing the appropriate JQL queries in the configuration, you can define what is considered done and what is considered pending.
+Jira-agile-velocity aims at being simple and data-centric, leaving interpretation to the user. The core concept used to derive metrics is simple: An activity has only two states, it either has to be done, or it has been done. By specifing the appropriate JQL queries in the configuration, you can define what is considered done and what is considered pending.
 
-The tool is broken down in 3 codebases in a monorepo configuration, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
+The tool is broken down in 3 codebases in a monorepo configuration, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role is to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
 
 In its current state, the tool is storing its data in json or ndjson files directly on the filesystem. It is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB) on the short term. Instead, future evolutions will likely move closer to ZenCrepes' implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
 
@@ -47,7 +47,7 @@ In its current state, the tool is storing its data in json or ndjson files direc
 
 All three components have been dockerized and can be easily spun-up using docker-compose. This is actually the recommended setup to get everything running quickly.
 
-During first startup, the system will initialize a configuration file (`config.yml`), this will will need to be updated with the desired settings before re-starting the container. Once updated, you can either re-start the environment `docker-compose downup; docker-compose up` or manually trigger a data refresh in the cli container.
+During first startup, the system will initialize a configuration file (`config.yml`), this will need to be updated with the desired settings before re-starting the container. Once updated, you can either re-start the environment `docker-compose down; docker-compose up` or manually trigger a data refresh in the cli container.
 
 ### docker-compose.yml
 
@@ -156,13 +156,13 @@ The project's repository is linked to circle-ci for ci/cd.
 
 ### On Commit
 
-A set of basic checks are executed on every commit, these include linting and, for the CLI app, running a set of minimal commants (used to verify that the app is actually executable). At a later stage, unit tests might be added (the frameworks are configured to support tests, it's just a matter of spending the time to write them).
+A set of basic checks are executed on every commit, these include linting and, for the CLI app, running a set of minimal commands (used to verify that the app is actually executable). At a later stage, unit tests might be added (the frameworks are configured to support tests, it's just a matter of spending the time to write them).
 
 ### On Tag creation
 
 A set of more interesting actions happen when a new tag is created:
 
-- A new version of the CLI component is pushed to the NPM registry (npmjs.org) using GitHub's release version. Once pushed, another job install that package in a containing and run a serie of simple checks (the same than for commits), to verify the app, once installed globally, is actually usable.
+- A new version of the CLI component is pushed to the NPM registry (npmjs.org) using GitHub's release version. Once pushed, another job install that package in a containing and run a series of simple checks (the same than for commits), to verify the app, once installed globally, is actually usable.
 - New docker containers, for all 3 components, are created and pushed to docker hub
 
 # Configuration
@@ -175,13 +175,13 @@ The configuration is broken down in 3 sections: Jira, Teams and Roadmap
 
 Most of the configuration settings should be fairly straight forward (username, host, ...), what might be slightly more challenging though is to identify the various ID for some of Jira fields, which will be different from one installation to the next.
 
-There are may resources online providing instructions to do so, and I'd recommend to [check some of them](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
+There are many resources online providing instructions to do so, and I'd recommend to [check some of them](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
 
 ## Teams configuration
 
 In the tool, a "team" is composed of a set of completed activities used to extract velocity metrics, and a set of activities to be completed used to forecast completion. Both are based on JQL queries (and you should try those out first in Jira before applying the configuration).
 
-**jqlCompletion** is the query used to fetch, day by day, a set of activities captured via a transition event. One note of caution here is that the tool with append a date to the query using _ON (YYYY-DD-MM)_, therefore your query must ends with a compatible statement. Example of queries:
+**jqlCompletion** is the query used to fetch, day by day, a set of activities captured via a transition event. One note of caution here is that the tool will append a date to the query using _ON (YYYY-DD-MM)_, therefore your query must end with a compatible statement. Example of queries:
 
 - assignee in membersOf("agile-team") AND status changed to Done
 - project = "My-tool" AND status changed to Closed
