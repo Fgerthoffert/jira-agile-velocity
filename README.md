@@ -92,6 +92,7 @@ services:
 Once the directory is created, you can start the environment:
 
 ```bash
+> mkdir /tmp/jav-data # Replace with the desired directory to store cache and config on host
 > docker-compose pull -f docker-compose.yml # Fetches the latest version of the containers
 > docker-compose up -d -f docker-compose.yml # Run the containers
 ```
@@ -103,7 +104,7 @@ Note: For now, the cli container is not configured with a cron to refresh data.
 From time-to-time you'll want to update the configuration and see the outcome of those updates within a short period of time (without having to wait for the next script execution). You can manually trigger a data refresh on the cli container using the following command:
 
 ```bash
-> docker exce -it jira-agile-velocity_jav-cli_1 /usr/share/jav/startup.sh
+> docker exec -it jira-agile-velocity_jav-cli_1 /usr/share/jav/startup.sh
 ```
 
 Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
