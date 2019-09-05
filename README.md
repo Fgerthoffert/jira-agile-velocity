@@ -37,7 +37,7 @@ The tool focuses on two main areas:
 
 Jira-agile-velocity aims at being simple and data-centric, leaving interpretation to the user. The core concept used to derive metrics is simple: An activity has only two states, it either has to be done, or it has been done. By specifing the appropriate JQL queries in the configuration, you can define what is considered done and what is considered pending.
 
-The tool is broken down in 3 codebases in a monorepo configuration, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role si to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
+The tool is broken down in 3 codebases in a monorepo configuration, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role is to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
 
 In its current state, the tool is storing its data in json or ndjson files directly on the filesystem. It is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB) on the short term. Instead, future evolutions will likely move closer to ZenCrepes' implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
 
