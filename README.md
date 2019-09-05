@@ -109,6 +109,10 @@ From time-to-time you'll want to update the configuration and see the outcome of
 
 Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
 
+### Access the UI
+
+In its current configuration, the UI is accessible through `http://127.0.0.1:5000` (or the port configured for jav-ui). It is strongly recommend to configure a reverse proxy (with nginx for example) serving those resources (UI and API) over HTTPS. But this is considered out of scope of this tool.
+
 ## Development environment setup
 
 If you are familiar with npm, running the application in development mode should be very straight forward.
