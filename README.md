@@ -109,7 +109,7 @@ From time-to-time you'll want to update the configuration and see the outcome of
 
 Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
 
-## Development environment
+## Development environment setup
 
 If you are familiar with npm, running the application in development mode should be very straight forward.
 
@@ -150,6 +150,21 @@ You can now run each application in their own terminal.
 > npm run dev
 ```
 
+## Build workflow
+
+The project's repository is linked to circle-ci for ci/cd.
+
+### On Commit
+
+A set of basic checks are executed on every commit, these include linting and, for the CLI app, running a set of minimal commants (used to verify that the app is actually executable). At a later stage, unit tests might be added (the frameworks are configured to support tests, it's just a matter of spending the time to write them).
+
+### On Tag creation
+
+A set of more interesting actions happen when a new tag is created:
+
+- A new version of the CLI component is pushed to the NPM registry (npmjs.org) using GitHub's release version. Once pushed, another job install that package in a containing and run a serie of simple checks (the same than for commits), to verify the app, once installed globally, is actually usable.
+- New docker containers, for all 3 components, are created and pushed to docker hub
+
 # Configuration
 
 _Note_: When running the tool for the first time, a configuration file will automatically be created if you're not using the corresponding environment variable.
@@ -182,4 +197,4 @@ The field **jqlHistory**, using the format YYYY-MM-DD defines how far back in hi
 
 ## Roadmap configuration
 
-The roadmap section aims at specifying which teams (from the teams section) should be taken in consideration while constructing the roadmap, as well as defining the JQL query used to fetch initiatives.
+The roadmap section aims at specifying which teams (from the teams section) should be taken in consideration while constructing the roadmap view, as well as defining the JQL query used to fetch initiatives.
