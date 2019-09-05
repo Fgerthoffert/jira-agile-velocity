@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.3.3",
     "@material-ui/icons": "^4.2.1",
+    "@nivo/heatmap": "^0.59.2",
     "@rematch/core": "^1.1.0",
     "@types/chart.js": "^2.8.4",
     "@types/jest": "24.0.18",

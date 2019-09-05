@@ -2,11 +2,11 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
-import { getWeek, getYear } from "date-fns";
+import { getWeek, getYear } from 'date-fns';
 
-import { ICalendar, IConfig, IJiraIssue } from "../../global";
-import { formatDate, startOfWeek } from "../misc/dateUtils";
-import { getTeamId } from "../misc/teamUtils";
+import { ICalendar, IConfig, IJiraIssue } from '../../global';
+import { formatDate, startOfWeek } from '../misc/dateUtils';
+import { getTeamId } from '../misc/teamUtils';
 
 const getEmptyCalendarObject = (
   issues: Array<IJiraIssue>,
@@ -33,7 +33,8 @@ const getEmptyCalendarObject = (
         list: [],
         issues: { count: 0 },
         points: { count: 0 },
-        weekStart: currentWeekYear.toJSON()
+        weekStart: currentWeekYear.toJSON(),
+        weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear)
       };
     }
     currentDate.setDate(currentDate.getDate() + 1);
