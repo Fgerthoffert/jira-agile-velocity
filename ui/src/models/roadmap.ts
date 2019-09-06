@@ -9,11 +9,15 @@ declare global {
 
 export const roadmap = createModel({
   state: {
-    roadmap: {}
+    roadmap: {},
+    selectedTab: 'chart'
   },
   reducers: {
     setRoadmap(state: any, payload: any) {
       return { ...state, roadmap: payload };
+    },
+    setSelectedTab(state: any, payload: any) {
+      return { ...state, selectedTab: payload };
     }
   },
   effects: {

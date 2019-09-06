@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Layout from '../../layout';
 import Table from './Table';
 import Chart from './Chart';
+import SectionTabs from './sectiontabs';
 
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
@@ -17,6 +18,8 @@ const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
   initView();
   return (
     <Layout>
+      <SectionTabs />
+      <br />
       <Chart />
       <Table />
     </Layout>

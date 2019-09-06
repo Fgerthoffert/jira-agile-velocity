@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
-  roadmap: state.roadmap.roadmap
+  roadmap: state.roadmap.roadmap,
+  selectedTab: state.roadmap.selectedTab
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -99,18 +100,18 @@ const flattenData = (initiatives: any, metric: string) => {
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const Table: FC<connectedProps> = ({ defaultPoints, roadmap }) => {
+const Table: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
   const classes = useStyles();
   let metric = 'points';
   if (!defaultPoints) {
     metric = 'issues';
   }
-  if (Object.values(roadmap).length > 0) {
+  if (Object.values(roadmap).length > 0 && selectedTab === 'table') {
     const issues: any = flattenData(roadmap.byInitiative, metric);
     return (
       <Paper className={classes.root}>
         <Typography variant='h5' component='h3'>
-          Initiatives Completion
+          Explore Initiatives
         </Typography>
         <Typography component='p'>Displaying values in {metric}</Typography>
         <MaterialTable

@@ -82,7 +82,7 @@ class RoadmapChart extends Component<any, any> {
       dataset.push(initiativeData);
     }
     let nonInitiatives: any = {
-      initiative: 'Work on non-initiatives'
+      initiative: 'Other activities (not related to initiatives)'
     };
     for (let week of Object.values(this.completionWeeks)) {
       // @ts-ignore
