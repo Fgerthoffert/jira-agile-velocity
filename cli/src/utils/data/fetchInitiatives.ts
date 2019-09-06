@@ -1,14 +1,14 @@
 // tslint:disable-next-line: file-name-casing
-import cli from "cli-ux";
-import * as fs from "fs";
-import * as path from "path";
-import * as readline from "readline";
-import * as stream from "stream";
+import cli from 'cli-ux';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as readline from 'readline';
+import * as stream from 'stream';
 
-import { IConfig, IJiraIssue } from "../../global";
-import jiraSearchIssues from "../jira/searchIssues";
-import { formatDate, getDaysBetweenDates } from "../misc/dateUtils";
-import { getTeamId } from "../misc/teamUtils";
+import { IConfig, IJiraIssue } from '../../global';
+import jiraSearchIssues from '../jira/searchIssues';
+import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
+import { getTeamId } from '../misc/teamUtils';
 
 /*
     Fetches all initiatives
@@ -19,16 +19,16 @@ const fetchInitiatives = async (
   useCache: boolean
 ) => {
   cli.action.start(
-    "Fetching roadmap initiatives using: " +
+    'Fetching roadmap initiatives using: ' +
       userConfig.roadmap.jqlInitiatives +
-      " "
+      ' '
   );
   let issuesJira = [];
   // If cache is enabled we don't fetch initiatives twice on the same day
   const today = new Date();
   const initiativesCache = path.join(
     cacheDir,
-    "roadmap-initiatives-" + today.toJSON().slice(0, 10) + ".ndjson"
+    'roadmap-initiatives-' + today.toJSON().slice(0, 10) + '.ndjson'
   );
 
   if (useCache && fs.existsSync(initiativesCache)) {
@@ -40,18 +40,20 @@ const fetchInitiatives = async (
     issuesJira = await jiraSearchIssues(
       userConfig.jira,
       userConfig.roadmap.jqlInitiatives,
-      "summary,status,labels," + userConfig.jira.fields.points + ",issuetype"
+      'summary,status,labels,' +
+        userConfig.jira.fields.points +
+        ',issuetype,assignee'
     );
     const issueFileStream = fs.createWriteStream(initiativesCache, {
-      flags: "a"
+      flags: 'w'
     });
     for (let issue of issuesJira) {
-      issueFileStream.write(JSON.stringify(issue) + "\n");
+      issueFileStream.write(JSON.stringify(issue) + '\n');
     }
     issueFileStream.end();
   }
 
-  cli.action.stop(" done");
+  cli.action.stop(' done');
   return issuesJira;
 };
 
@@ -61,10 +63,10 @@ export default fetchInitiatives;
 const readLines = (input: any) => {
   const output = new stream.PassThrough({ objectMode: true });
   const rl = readline.createInterface({ input });
-  rl.on("line", line => {
+  rl.on('line', line => {
     output.write(line);
   });
-  rl.on("close", () => {
+  rl.on('close', () => {
     output.push(null);
   });
   return output;

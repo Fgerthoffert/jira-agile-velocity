@@ -1,14 +1,14 @@
 // tslint:disable-next-line: file-name-casing
-import cli from "cli-ux";
-import * as fs from "fs";
-import * as path from "path";
-import * as readline from "readline";
-import * as stream from "stream";
+import cli from 'cli-ux';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as readline from 'readline';
+import * as stream from 'stream';
 
-import { IConfig, IJiraIssue } from "../../global";
-import jiraSearchIssues from "../jira/searchIssues";
-import { formatDate, getDaysBetweenDates } from "../misc/dateUtils";
-import { getTeamId } from "../misc/teamUtils";
+import { IConfig, IJiraIssue } from '../../global';
+import jiraSearchIssues from '../jira/searchIssues';
+import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
+import { getTeamId } from '../misc/teamUtils';
 
 /*
     Fetches all completed issues, per day from a team
@@ -19,7 +19,7 @@ const fetchCompleted = async (
   teamName: string
 ) => {
   const issues: Array<IJiraIssue> = [];
-  console.log("Fetching data for team: " + teamName);
+  console.log('Fetching data for team: ' + teamName);
   const teamConfig = config.teams.find(t => t.name === teamName);
   if (teamConfig !== undefined) {
     let toDay = new Date();
@@ -28,22 +28,22 @@ const fetchCompleted = async (
     for (let scanDay of dates) {
       const issuesDayFilepath = path.join(
         cacheDir,
-        "completed-" + getTeamId(teamName) + "-" + scanDay + ".ndjson"
+        'completed-' + getTeamId(teamName) + '-' + scanDay + '.ndjson'
       );
       if (!fs.existsSync(issuesDayFilepath)) {
         cli.action.start(
-          "Fetching data for day: " + scanDay + " to file: " + issuesDayFilepath
+          'Fetching data for day: ' + scanDay + ' to file: ' + issuesDayFilepath
         );
 
-        const jqlQuery = teamConfig.jqlCompletion + " ON(" + scanDay + ")";
+        const jqlQuery = teamConfig.jqlCompletion + ' ON(' + scanDay + ')';
         const issuesJira = await jiraSearchIssues(
           config.jira,
           jqlQuery,
-          "labels,summary," + config.jira.fields.points
+          'labels,summary,' + config.jira.fields.points
         );
         //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(issuesDayFilepath, {
-          flags: "a"
+          flags: 'a'
         });
         if (issuesJira.length > 0) {
           for (let issue of issuesJira) {
@@ -56,11 +56,11 @@ const fetchCompleted = async (
               jql: jqlQuery
             };
             issues.push(updatedIssue);
-            issueFileStream.write(JSON.stringify(updatedIssue) + "\n");
+            issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
           }
         }
         issueFileStream.end();
-        cli.action.stop(" done");
+        cli.action.stop(' done');
       } else {
         const input = fs.createReadStream(issuesDayFilepath);
         for await (const line of readLines(input)) {
@@ -77,10 +77,10 @@ const fetchCompleted = async (
 const readLines = (input: any) => {
   const output = new stream.PassThrough({ objectMode: true });
   const rl = readline.createInterface({ input });
-  rl.on("line", line => {
+  rl.on('line', line => {
     output.write(line);
   });
-  rl.on("close", () => {
+  rl.on('close', () => {
     output.push(null);
   });
   return output;

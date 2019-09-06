@@ -1,14 +1,14 @@
 // tslint:disable-next-line: file-name-casing
-import cli from "cli-ux";
-import * as fs from "fs";
-import * as path from "path";
-import * as readline from "readline";
-import * as stream from "stream";
+import cli from 'cli-ux';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as readline from 'readline';
+import * as stream from 'stream';
 
-import { IConfig, IJiraIssue } from "../../global";
-import jiraSearchIssues from "../jira/searchIssues";
-import { formatDate, getDaysBetweenDates } from "../misc/dateUtils";
-import { getTeamId } from "../misc/teamUtils";
+import { IConfig, IJiraIssue } from '../../global';
+import jiraSearchIssues from '../jira/searchIssues';
+import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
+import { getTeamId } from '../misc/teamUtils';
 
 /*
     Fetches all initiatives
@@ -19,17 +19,17 @@ const fetchChildren = async (
   cacheDir: string,
   useCache: boolean
 ) => {
-  cli.action.start("Fetching children of: " + issueKey);
+  cli.action.start('Fetching children of: ' + issueKey);
   let issuesJira = [];
   // If cache is enabled we don't fetch initiatives twice on the same day
   const today = new Date();
   const childrenCache = path.join(
     cacheDir,
-    "roadmap-childcache-" +
+    'roadmap-childcache-' +
       issueKey +
-      "-" +
+      '-' +
       today.toJSON().slice(0, 10) +
-      ".ndjson"
+      '.ndjson'
   );
 
   if (useCache && fs.existsSync(childrenCache)) {
@@ -40,24 +40,24 @@ const fetchChildren = async (
   } else {
     issuesJira = await jiraSearchIssues(
       userConfig.jira,
-      "issuekey in childIssuesOf(" + issueKey + ")",
-      "summary,status,labels," +
+      'issuekey in childIssuesOf(' + issueKey + ')',
+      'summary,status,labels,' +
         userConfig.jira.fields.points +
-        ",issuetype," +
+        ',issuetype,' +
         userConfig.jira.fields.parentInitiative +
-        "," +
+        ',' +
         userConfig.jira.fields.parentEpic
     );
     const issueFileStream = fs.createWriteStream(childrenCache, {
-      flags: "a"
+      flags: 'w'
     });
     for (let issue of issuesJira) {
-      issueFileStream.write(JSON.stringify(issue) + "\n");
+      issueFileStream.write(JSON.stringify(issue) + '\n');
     }
     issueFileStream.end();
   }
 
-  cli.action.stop(" done");
+  cli.action.stop(' done');
   return issuesJira;
 };
 
@@ -67,10 +67,10 @@ export default fetchChildren;
 const readLines = (input: any) => {
   const output = new stream.PassThrough({ objectMode: true });
   const rl = readline.createInterface({ input });
-  rl.on("line", line => {
+  rl.on('line', line => {
     output.write(line);
   });
-  rl.on("close", () => {
+  rl.on('close', () => {
     output.push(null);
   });
   return output;
