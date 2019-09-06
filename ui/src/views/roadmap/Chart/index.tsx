@@ -39,11 +39,6 @@ const Chart: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
   if (Object.values(roadmap).length > 0 && selectedTab === 'chart') {
     return (
       <Paper className={classes.root}>
-        <Typography variant='h5' component='h3'>
-          Completion and forecasting
-        </Typography>
-        <Typography component='p'>Displaying values in {metric}</Typography>
-
         <RoadmapChart roadmap={roadmap} defaultPoints={defaultPoints} />
       </Paper>
     );

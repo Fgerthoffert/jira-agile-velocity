@@ -14,7 +14,7 @@ const App: React.FC = () => {
         <Switch>
           <Route exact name='index' path='/' component={RedirectVelocity} />
           <Route exact path='/velocity' component={Velocity} />
-          <Route exact path='/roadmap' component={Roadmap} />
+          <Route exact path='/initiatives' component={Roadmap} />
         </Switch>
       </Router>
     </div>

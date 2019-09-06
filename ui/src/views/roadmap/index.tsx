@@ -14,7 +14,7 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapDispatch>;
 
 const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
-  setPageTitle('Roadmap');
+  setPageTitle('Initiatives');
   initView();
   return (
     <Layout>

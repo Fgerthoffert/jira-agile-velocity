@@ -109,58 +109,49 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
   if (Object.values(roadmap).length > 0 && selectedTab === 'table') {
     const issues: any = flattenData(roadmap.byInitiative, metric);
     return (
-      <Paper className={classes.root}>
-        <Typography variant='h5' component='h3'>
-          Explore Initiatives
-        </Typography>
-        <Typography component='p'>Displaying values in {metric}</Typography>
-        <MaterialTable
-          columns={[
-            { title: 'Type', field: 'type', cellStyle: { width: 80 } },
-            { title: 'Key', field: 'key', cellStyle: { width: 200 } },
-            { title: 'Title', field: 'title' },
-            { title: 'State', field: 'state', cellStyle: { width: 80 } },
-            {
-              title: 'Progress',
-              field: 'progress',
-              type: 'numeric',
-              cellStyle: { width: 160 },
-              render: rowData => {
-                if (
-                  rowData.state === 'Done' &&
-                  rowData.missingPoints === true
-                ) {
-                  return <span>n/a (missing but done)</span>;
-                } else {
-                  return (
-                    <ProgressBar
-                      variant={getBarVariant(rowData)}
-                      now={rowData.progress.progress}
-                      label={
-                        <span style={{ color: '#000' }}>
-                          {rowData.progress.progress}% (
-                          {rowData.progress.completed}/{rowData.progress.total})
-                        </span>
-                      }
-                    />
-                  );
-                }
+      <MaterialTable
+        columns={[
+          { title: 'Type', field: 'type', cellStyle: { width: 80 } },
+          { title: 'Key', field: 'key', cellStyle: { width: 200 } },
+          { title: 'Title', field: 'title' },
+          { title: 'State', field: 'state', cellStyle: { width: 80 } },
+          {
+            title: 'Progress',
+            field: 'progress',
+            type: 'numeric',
+            cellStyle: { width: 160 },
+            render: rowData => {
+              if (rowData.state === 'Done' && rowData.missingPoints === true) {
+                return <span>n/a (missing but done)</span>;
+              } else {
+                return (
+                  <ProgressBar
+                    variant={getBarVariant(rowData)}
+                    now={rowData.progress.progress}
+                    label={
+                      <span style={{ color: '#000' }}>
+                        {rowData.progress.progress}% (
+                        {rowData.progress.completed}/{rowData.progress.total})
+                      </span>
+                    }
+                  />
+                );
               }
-            },
-            {
-              title: '# Missing Estimates',
-              field: 'missingEffort',
-              type: 'numeric',
-              cellStyle: { width: 120 }
             }
-          ]}
-          data={issues}
-          parentChildData={(row: any, rows: any) =>
-            rows.find((a: any) => a.id === row.parentId)
+          },
+          {
+            title: '# Missing Estimates',
+            field: 'missingEffort',
+            type: 'numeric',
+            cellStyle: { width: 120 }
           }
-          title={''}
-        />
-      </Paper>
+        ]}
+        data={issues}
+        parentChildData={(row: any, rows: any) =>
+          rows.find((a: any) => a.id === row.parentId)
+        }
+        title={''}
+      />
     );
   } else {
     return null;
