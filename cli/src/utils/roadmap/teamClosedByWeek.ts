@@ -2,16 +2,17 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
-import { getWeek, getYear } from "date-fns";
+import { getWeek, getYear } from 'date-fns';
 
-import { ICalendar, IConfig, IJiraIssue } from "../../global";
-import { formatDate, startOfWeek } from "../misc/dateUtils";
-import { getTeamId } from "../misc/teamUtils";
+import { ICalendar, IConfig, IJiraIssue } from '../../global';
+import { formatDate, startOfWeek } from '../misc/dateUtils';
+import { getTeamId } from '../misc/teamUtils';
 
 const teamClosedByWeek = (
   issues: Array<IJiraIssue>,
   userConfig: IConfig,
-  emptyCalendar: any
+  emptyCalendar: any,
+  teamVelocity: Array<any>
 ) => {
   const teams = [];
   // allTeams record aggregated values for all teams
@@ -23,7 +24,8 @@ const teamClosedByWeek = (
     // WeeksTeam record aggregated values for one single team
     const weeksTeam = {
       name: team,
-      weeks: JSON.parse(JSON.stringify(emptyCalendar))
+      weeks: JSON.parse(JSON.stringify(emptyCalendar)),
+      velocity: teamVelocity.find(v => v.team === team).velocity
     };
     for (let issue of issues.filter(i => i.team === team)) {
       const firstDayWeekDate = startOfWeek(new Date(issue.closedAt));

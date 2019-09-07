@@ -27,7 +27,8 @@ const SectionTabs: FC<connectedProps> = ({ selectedTab, setSelectedTab }) => {
       textColor='primary'
       centered
     >
-      <Tab label='Roadmap' key='chart' value='chart' />
+      <Tab label='Completion' key='completionchart' value='completionchart' />
+      <Tab label='Roadmap' key='futurechart' value='futurechart' />
       <Tab label='Table' key='table' value='table' />
     </Tabs>
   );

@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import Layout from '../../layout';
 import Table from './Table';
-import Chart from './Chart';
+import CompletionChart from './CompletionChart';
+import FutureChart from './FutureChart';
 import SectionTabs from './sectiontabs';
 
 const mapDispatch = (dispatch: any) => ({
@@ -20,7 +21,8 @@ const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
     <Layout>
       <SectionTabs />
       <br />
-      <Chart />
+      <CompletionChart />
+      <FutureChart />
       <Table />
     </Layout>
   );

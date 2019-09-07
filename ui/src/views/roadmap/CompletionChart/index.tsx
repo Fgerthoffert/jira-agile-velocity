@@ -29,17 +29,25 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const Chart: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
+const CompletionChart: FC<connectedProps> = ({
+  defaultPoints,
+  roadmap,
+  selectedTab
+}) => {
   const classes = useStyles();
   let metric = 'points';
   if (!defaultPoints) {
     metric = 'issues';
   }
 
-  if (Object.values(roadmap).length > 0 && selectedTab === 'chart') {
+  if (Object.values(roadmap).length > 0 && selectedTab === 'completionchart') {
     return (
       <Paper className={classes.root}>
-        <RoadmapChart roadmap={roadmap} defaultPoints={defaultPoints} />
+        <RoadmapChart
+          roadmap={roadmap}
+          type={'byInitiative'}
+          defaultPoints={defaultPoints}
+        />
       </Paper>
     );
   } else {
@@ -50,4 +58,4 @@ const Chart: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
 export default connect(
   mapState,
   mapDispatch
-)(Chart);
+)(CompletionChart);

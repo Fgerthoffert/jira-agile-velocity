@@ -26,7 +26,7 @@ export class VelocityService {
       for (const team of userConfig.teams) {
         const teamCacheFile = path.join(
           this.configBasePath + '/cache/',
-          'velocity-artifact-' + getTeamId(team.name) + '.json',
+          'velocity-artifacts-' + getTeamId(team.name) + '.json',
         );
         if (fs.existsSync(teamCacheFile)) {
           const input = fs.createReadStream(teamCacheFile);
