@@ -1,8 +1,10 @@
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC } from 'react';
-import RoadmapChart from '../../../components/Charts/Nivo/RoadmapChart';
+import RoadmapFutureChart from '../../../components/Charts/Nivo/RoadmapFutureChart';
 import Typography from '@material-ui/core/Typography';
+import InitiativeTable from './InitiativeTable';
+import Grid from '@material-ui/core/Grid';
 
 import { connect } from 'react-redux';
 
@@ -12,6 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(3, 2)
+    },
+    smallText: {
+      fontSize: '0.8em'
     }
   })
 );
@@ -42,13 +47,39 @@ const CompletionChart: FC<connectedProps> = ({
 
   if (Object.values(roadmap).length > 0 && selectedTab === 'futurechart') {
     return (
-      <Paper className={classes.root}>
-        <RoadmapChart
-          roadmap={roadmap}
-          type={'byFutureInitiative'}
-          defaultPoints={defaultPoints}
-        />
-      </Paper>
+      <Grid
+        container
+        direction='column'
+        justify='flex-start'
+        alignItems='stretch'
+        spacing={3}
+      >
+        <Grid item xs={12}>
+          <Paper className={classes.root}>
+            <Typography variant='h5' component='h3'>
+              Completion forecast
+            </Typography>
+            <RoadmapFutureChart
+              roadmap={roadmap}
+              defaultPoints={defaultPoints}
+            />
+            <br />
+            <Typography component='p' className={classes.smallText}>
+              <i>
+                Displays initiatives assigned to a team, sorted as per the
+                source JQL query. Uses the team's current weekly velocity and
+                remaining effort in {metric} to build a timeline.
+              </i>
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <InitiativeTable
+            initiatives={roadmap.byFutureInitiative}
+            defaultPoints={defaultPoints}
+          />{' '}
+        </Grid>
+      </Grid>
     );
   } else {
     return null;

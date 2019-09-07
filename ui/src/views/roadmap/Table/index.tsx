@@ -1,6 +1,3 @@
-import Paper from '@material-ui/core/Paper';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import MaterialTable from 'material-table';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import React, { FC } from 'react';
@@ -8,14 +5,6 @@ import React, { FC } from 'react';
 import { connect } from 'react-redux';
 
 import { iRootState } from '../../../store';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3, 2)
-    }
-  })
-);
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
@@ -101,7 +90,6 @@ type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
 const Table: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
-  const classes = useStyles();
   let metric = 'points';
   if (!defaultPoints) {
     metric = 'issues';

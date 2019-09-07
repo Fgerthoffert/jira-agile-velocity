@@ -23,7 +23,7 @@ interface ICompletionObj {
   [key: string]: any;
 }
 
-class RoadmapChart extends Component<any, any> {
+class RoadmapCompletionChart extends Component<any, any> {
   completionWeeks: any = {};
 
   /* 
@@ -46,7 +46,7 @@ class RoadmapChart extends Component<any, any> {
   };
 
   buildDataset = () => {
-    const { roadmap, defaultPoints, type } = this.props;
+    const { roadmap, defaultPoints } = this.props;
     console.log(roadmap);
     let metric = 'points';
     if (!defaultPoints) {
@@ -54,7 +54,9 @@ class RoadmapChart extends Component<any, any> {
     }
 
     let dataset: Array<IDatasetObj> = [];
-    for (let initiative of roadmap[type]) {
+    for (let initiative of roadmap.byInitiative.filter(
+      (i: any) => i.metrics[metric].completed > 0
+    )) {
       const initiativeData: IDatasetObj = {
         initiative: initiative.fields.summary + ' (' + initiative.key + ')'
       };
@@ -63,7 +65,6 @@ class RoadmapChart extends Component<any, any> {
           const teamCompletionWeek = roadmap.byTeam
             .find((t: any) => t.name === null)
             .weeks.find((w: any) => w.weekStart === week.weekStart);
-          console.log(teamCompletionWeek);
           this.completionWeeks[week.weekTxt] = {
             weekStart: week.weekStart,
             weekTxt: week.weekTxt,
@@ -88,34 +89,39 @@ class RoadmapChart extends Component<any, any> {
       }
       dataset.push(initiativeData);
     }
-    if (type === 'byInitiative') {
-      let nonInitiatives: any = {
-        initiative: 'Other activities (not related to initiatives)'
-      };
-      for (let week of Object.values(this.completionWeeks)) {
-        // @ts-ignore
-        nonInitiatives[week.weekTxt] = week.nonInitiatives;
-      }
-      dataset.push(nonInitiatives);
+    let nonInitiatives: any = {
+      initiative: 'Other activities (not related to initiatives)'
+    };
+    for (let week of Object.values(this.completionWeeks)) {
+      // @ts-ignore
+      nonInitiatives[week.weekTxt] = week.nonInitiatives;
     }
-    console.log(dataset);
+    dataset.push(nonInitiatives);
     return dataset;
   };
 
   render() {
-    const { roadmap, type } = this.props;
+    const { roadmap, defaultPoints } = this.props;
     this.completionWeeks = {};
-    const chartHeight = roadmap[type].length * 20;
+    let metric = 'points';
+    if (!defaultPoints) {
+      metric = 'issues';
+    }
+    const chartHeight =
+      50 +
+      roadmap.byInitiative.filter((i: any) => i.metrics[metric].completed > 0)
+        .length *
+        20;
     return (
       <div style={{ height: chartHeight }}>
         // @ts-ignore
         <ResponsiveHeatMap
           data={this.buildDataset()}
-          keys={roadmap[type][0].weeks.map((w: any) => w.weekTxt)}
+          keys={roadmap.byInitiative[0].weeks.map((w: any) => w.weekTxt)}
           indexBy='initiative'
-          margin={{ top: 30, right: 30, bottom: 60, left: 300 }}
+          margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
           pixelRatio={2}
-          forceSquare={true}
+          forceSquare={false}
           axisTop={null}
           axisRight={null}
           cellBorderWidth={1}
@@ -238,7 +244,7 @@ class RoadmapChart extends Component<any, any> {
   }
 }
 
-export default withStyles(styles)(RoadmapChart);
+export default withStyles(styles)(RoadmapCompletionChart);
 
 /*
       <div style={{ height: chartHeight }}>
