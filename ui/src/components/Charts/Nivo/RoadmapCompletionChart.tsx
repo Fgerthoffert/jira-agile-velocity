@@ -2,11 +2,14 @@ import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import RoadmapTooltip from './RoadmapTooltip';
+
+import {
+  getInitiativeTitle,
+  getNonInitiativeTitle,
+  getCellDataInitiatives,
+  getCompletionColor
+} from './utils';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -33,82 +36,24 @@ class RoadmapCompletionChart extends Component<any, any> {
   completionWeeks: any = {};
   dataset: any = {};
 
-  /* 
-    Display different background colors based on the percentage of the effort spent on a particular activity for a week
-  */
-  getCompletionColor = (data: any, value: any) => {
-    const prct = Math.round(
-      (value * 100) / this.completionWeeks[data.xKey].totalCount
-    );
-    if (prct < 20) {
-      return 'rgb(247, 252, 185)';
-    } else if (prct >= 20 && prct < 40) {
-      return 'rgb(217, 240, 163)';
-    } else if (prct >= 40 && prct < 60) {
-      return 'rgb(173, 221, 142)';
-    } else if (prct >= 60 && prct < 80) {
-      return 'rgb(120, 198, 121)';
-    }
-    return 'rgb(65, 171, 93)';
-  };
-
-  getNonInitiativeTitle = () => {
-    return 'Other activities (not related to initiatives)';
-  };
-
-  getCellDataInitiatives = (initiative: string, weekTxt: string) => {
-    const { roadmap } = this.props;
-    if (initiative !== this.getNonInitiativeTitle()) {
-      return roadmap.byInitiative
-        .find((i: any) => this.getInitiativeTitle(i) === initiative)
-        .weeks.find((w: any) => w.weekTxt === weekTxt).list;
-    } else {
-      return this.completionWeeks[weekTxt].nonInitiativesList;
-    }
-  };
-
-  getInitiativeTitle = (initiative: any) => {
-    return initiative.fields.summary + ' (' + initiative.key + ')';
-  };
-
   getTooltip = (data: any) => {
-    const initiatives = this.getCellDataInitiatives(data.yKey, data.xKey);
+    const { roadmap } = this.props;
     return (
-      <React.Fragment>
-        <Table size='small'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Key</TableCell>
-              <TableCell align='right'>Summary</TableCell>
-              <TableCell align='right'>Points</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {initiatives.slice(0, 5).map((i: any) => (
-              <TableRow key={i.key}>
-                <TableCell component='th' scope='row'>
-                  {i.key}
-                </TableCell>
-                <TableCell align='right'>{i.fields.summary}</TableCell>
-                <TableCell align='right'>{i.points}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {initiatives.length > 10 && (
-          <span>
-            <b>Caution:</b> The tooltip only displays the first 5 results.
-          </span>
-        )}
-      </React.Fragment>
+      <RoadmapTooltip
+        data={data}
+        roadmap={roadmap}
+        completionWeeks={this.completionWeeks}
+      />
     );
   };
 
   cellClick = (initiative: string, weekTxt: string) => {
-    const { roadmap, defaultPoints } = this.props;
-    const cellDataInitiatives = this.getCellDataInitiatives(
+    const { roadmap } = this.props;
+    const cellDataInitiatives = getCellDataInitiatives(
       initiative,
-      weekTxt
+      weekTxt,
+      roadmap,
+      this.completionWeeks
     );
     const keys = cellDataInitiatives.map((i: any) => i.key);
     const url =
@@ -128,10 +73,14 @@ class RoadmapCompletionChart extends Component<any, any> {
 
     const dataset: IDatasetObj[] = [];
     for (const initiative of roadmap.byInitiative.filter(
-      (i: any) => i.metrics[metric].completed > 0
+      // Filter down to display only initiatives with issues completed over the displayed weeks
+      (i: any) =>
+        i.weeks
+          .map((w: any) => w[metric].count)
+          .reduce((acc: number, count: number) => acc + count, 0) > 0
     )) {
       const initiativeData: IDatasetObj = {
-        initiative: this.getInitiativeTitle(initiative)
+        initiative: getInitiativeTitle(initiative)
       };
       for (const week of initiative.weeks) {
         const teamCompletionWeek = roadmap.byTeam
@@ -200,7 +149,7 @@ class RoadmapCompletionChart extends Component<any, any> {
       dataset.push(initiativeData);
     }
     const nonInitiatives: any = {
-      initiative: this.getNonInitiativeTitle()
+      initiative: getNonInitiativeTitle()
     };
     for (const week of Object.values(this.completionWeeks)) {
       // @ts-ignore
@@ -212,6 +161,7 @@ class RoadmapCompletionChart extends Component<any, any> {
 
   render() {
     const { roadmap, defaultPoints } = this.props;
+    console.log(roadmap);
     this.completionWeeks = {};
     let metric = 'points';
     if (!defaultPoints) {
@@ -225,13 +175,11 @@ class RoadmapCompletionChart extends Component<any, any> {
     this.dataset = this.buildDataset();
     return (
       <div style={{ height: chartHeight }}>
-        // @ts-ignore
         <ResponsiveHeatMap
           data={this.dataset}
           keys={roadmap.byInitiative[0].weeks.map((w: any) => w.weekTxt)}
           indexBy='initiative'
           margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
-          pixelRatio={2}
           forceSquare={false}
           axisTop={null}
           axisRight={null}
@@ -255,19 +203,8 @@ class RoadmapCompletionChart extends Component<any, any> {
           }}
           cellOpacity={1}
           cellBorderColor={'#a4a3a5'}
-          tooltip={this.getTooltip}
           labelTextColor={{ from: 'color', modifiers: [['darker', 1.8]] }}
-          defs={[
-            {
-              id: 'lines',
-              type: 'patternLines',
-              background: 'inherit',
-              color: 'rgba(0, 0, 0, 0.1)',
-              rotation: -45,
-              lineWidth: 4,
-              spacing: 7
-            }
-          ]}
+          tooltip={this.getTooltip}
           cellShape={({
             data,
             value,
@@ -322,7 +259,7 @@ class RoadmapCompletionChart extends Component<any, any> {
                   y={height * -0.5}
                   width={width}
                   height={height}
-                  fill={this.getCompletionColor(data, value)}
+                  fill={getCompletionColor(data, value, this.completionWeeks)}
                   fillOpacity={opacity}
                   strokeWidth={borderWidth}
                   stroke={borderColor}
@@ -344,7 +281,6 @@ class RoadmapCompletionChart extends Component<any, any> {
               </g>
             );
           }}
-          fill={[{ id: 'lines' }]}
           animate={false}
           motionStiffness={80}
           motionDamping={9}

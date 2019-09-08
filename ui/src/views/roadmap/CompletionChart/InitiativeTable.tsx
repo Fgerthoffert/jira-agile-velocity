@@ -1,41 +1,37 @@
 import MaterialTable from 'material-table';
 import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import IconButton from '@material-ui/core/IconButton';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
-import { iRootState } from '../../../store';
-
-const mapState = (state: iRootState) => ({
-  defaultPoints: state.global.defaultPoints,
-  roadmap: state.roadmap.roadmap,
-  selectedTab: state.roadmap.selectedTab
-});
-
-const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
-});
+import { getProgress, getBarVariant } from '../utils';
 
 const InitiativeTable: FC<any> = ({ defaultPoints, initiatives }) => {
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
-  /*
-actions={[
-        {
-          icon: 'link',
-          tooltip: 'Open in Jira',
-          onClick: (event, rowData: any) => alert('You saved ' + rowData.title)
-        }
-      ]}
-  */
-  const dedaultStyle = { padding: '4px 40px 4px 16px' };
+  const dedaultStyle = { padding: '4px 10px 4px 16px' };
   return (
     <MaterialTable
       columns={[
         {
+          title: '',
+          field: 'url',
+          render: rowData => {
+            return (
+              <IconButton
+                aria-label='open-external'
+                size='small'
+                href={rowData.url}
+              >
+                <OpenInNewIcon fontSize='small' />
+              </IconButton>
+            );
+          },
+          headerStyle: { ...dedaultStyle, width: 20 },
+          cellStyle: { ...dedaultStyle, padding: '4px 5px 4px 5px', width: 20 }
+        },
+        {
           title: 'Key',
           field: 'key',
-          cellStyle: { ...dedaultStyle, width: 200 }
+          cellStyle: { ...dedaultStyle, width: 160 }
         },
         {
           title: 'Title',
@@ -48,19 +44,46 @@ actions={[
           cellStyle: { ...dedaultStyle, width: 200 }
         },
         {
-          title: 'Total',
-          field: 'total',
-          cellStyle: { ...dedaultStyle, width: 60 }
+          title: 'Points',
+          field: 'progressPoints',
+          headerStyle: { ...dedaultStyle, width: 160 },
+          cellStyle: { ...dedaultStyle, width: 160 },
+          render: rowData => {
+            return (
+              <ProgressBar
+                variant={getBarVariant(rowData.progressPoints.progress, 0)}
+                now={rowData.progressPoints.progress}
+                label={
+                  <span style={{ color: '#000' }}>
+                    {rowData.progressPoints.progress}% (
+                    {rowData.progressPoints.completed}/
+                    {rowData.progressPoints.total})
+                  </span>
+                }
+              />
+            );
+          }
         },
         {
-          title: 'Completed',
-          field: 'completed',
-          cellStyle: { ...dedaultStyle, width: 80 }
-        },
-        {
-          title: 'Remaining',
-          field: 'remaining',
-          cellStyle: { ...dedaultStyle, width: 80 }
+          title: 'Issues Count',
+          field: 'progressIssues',
+          headerStyle: { ...dedaultStyle, width: 160 },
+          cellStyle: { ...dedaultStyle, width: 160 },
+          render: rowData => {
+            return (
+              <ProgressBar
+                variant={getBarVariant(rowData.progressIssues.progress, 0)}
+                now={rowData.progressIssues.progress}
+                label={
+                  <span style={{ color: '#000' }}>
+                    {rowData.progressIssues.progress}% (
+                    {rowData.progressIssues.completed}/
+                    {rowData.progressIssues.total})
+                  </span>
+                }
+              />
+            );
+          }
         },
         {
           title: 'State',
@@ -68,31 +91,40 @@ actions={[
           cellStyle: { ...dedaultStyle, width: 80 }
         }
       ]}
-      data={initiatives.map((initiative: any) => {
-        return {
-          key: initiative.key,
-          title: initiative.fields.summary,
-          team:
-            initiative.fields.assignee === null
-              ? 'n/a'
-              : initiative.fields.assignee.name,
-          completed: initiative.metrics[metric].completed,
-          remaining: initiative.metrics[metric].remaining,
-          total: initiative.metrics[metric].total,
-          state: initiative.fields.status.name
-        };
-      })}
+      data={initiatives
+        .filter(
+          // Filter down to display only initiatives with issues completed over the displayed weeks
+          (i: any) =>
+            i.weeks
+              .map((w: any) => w.points.count)
+              .reduce((acc: number, count: number) => acc + count, 0) > 0 ||
+            i.weeks
+              .map((w: any) => w.issues.count)
+              .reduce((acc: number, count: number) => acc + count, 0)
+        )
+        .map((initiative: any) => {
+          return {
+            key: initiative.key,
+            title: initiative.fields.summary,
+            url: initiative.host + '/browse/' + initiative.key,
+            team:
+              initiative.fields.assignee === null
+                ? 'n/a'
+                : initiative.fields.assignee.name,
+            state: initiative.fields.status.name,
+            progressPoints: getProgress(initiative, 'points'),
+            progressIssues: getProgress(initiative, 'issues')
+          };
+        })}
       title={''}
       options={{
         pageSize: 50,
         pageSizeOptions: [10, 20, 50, 100],
-        emptyRowsWhenPaging: false
+        emptyRowsWhenPaging: false,
+        search: false
       }}
     />
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch
-)(InitiativeTable);
+export default InitiativeTable;

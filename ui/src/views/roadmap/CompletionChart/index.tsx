@@ -57,7 +57,7 @@ const CompletionChart: FC<connectedProps> = ({
         <Grid item xs={12}>
           <Paper className={classes.root}>
             <Typography variant='h5' component='h3'>
-              Current completion status
+              Progress over the past weeks
             </Typography>
             <RoadmapCompletionChart
               roadmap={roadmap}
@@ -65,7 +65,9 @@ const CompletionChart: FC<connectedProps> = ({
             />
             <br />
             <Typography component='p' className={classes.smallText}>
-              <i>Displays initiatives with completed {metric}.</i>
+              <i>
+                Displays initiatives with completed {metric} over the period.
+              </i>
             </Typography>
           </Paper>
         </Grid>

@@ -58,15 +58,14 @@ class RoadmapFutureChart extends Component<any, any> {
     this.completionWeeks = {};
     // 100 minimal height to accomodate enought space for the legend
     const chartHeight = 50 + roadmap.byFutureInitiative.length * 25;
+    // @ts-ignore
     return (
       <div style={{ height: chartHeight }}>
-        // @ts-ignore
         <ResponsiveHeatMap
           data={this.buildDataset()}
           keys={roadmap.byFutureInitiative[0].weeks.map((w: any) => w.weekTxt)}
           indexBy='initiative'
           margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
-          pixelRatio={2}
           forceSquare={false}
           axisTop={null}
           axisRight={null}
@@ -91,17 +90,6 @@ class RoadmapFutureChart extends Component<any, any> {
           cellOpacity={1}
           cellBorderColor={'#a4a3a5'}
           labelTextColor={{ from: 'color', modifiers: [['darker', 1.8]] }}
-          defs={[
-            {
-              id: 'lines',
-              type: 'patternLines',
-              background: 'inherit',
-              color: 'rgba(0, 0, 0, 0.1)',
-              rotation: -45,
-              lineWidth: 4,
-              spacing: 7
-            }
-          ]}
           cellShape={({
             data,
             value,
@@ -178,7 +166,6 @@ class RoadmapFutureChart extends Component<any, any> {
               </g>
             );
           }}
-          fill={[{ id: 'lines' }]}
           animate={false}
           motionStiffness={80}
           motionDamping={9}
