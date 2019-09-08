@@ -25,13 +25,14 @@ interface ICompletionObj {
 
 class RoadmapCompletionChart extends Component<any, any> {
   completionWeeks: any = {};
+  dataset: any = {};
 
   /* 
     Display different background colors based on the percentage of the effort spent on a particular activity for a week
   */
   getCompletionColor = (data: any, value: any) => {
     const prct = Math.round(
-      (value * 100) / this.completionWeeks[data.xKey].total
+      (value * 100) / this.completionWeeks[data.xKey].totalCount
     );
     if (prct < 20) {
       return 'rgb(247, 252, 185)';
@@ -43,6 +44,41 @@ class RoadmapCompletionChart extends Component<any, any> {
       return 'rgb(120, 198, 121)';
     }
     return 'rgb(65, 171, 93)';
+  };
+
+  getNonInitiativeTitle = () => {
+    return 'Other activities (not related to initiatives)';
+  };
+
+  getCellDataInitiatives = (initiative: string, weekTxt: string) => {
+    const { roadmap } = this.props;
+    if (initiative !== this.getNonInitiativeTitle()) {
+      return roadmap.byInitiative
+        .find((i: any) => this.getInitiativeTitle(i) === initiative)
+        .weeks.find((w: any) => w.weekTxt === weekTxt).list;
+    } else {
+      return this.completionWeeks[weekTxt].nonInitiativesList;
+    }
+  };
+
+  getInitiativeTitle = (initiative: any) => {
+    return initiative.fields.summary + ' (' + initiative.key + ')';
+  };
+
+  cellClick = (initiative: string, weekTxt: string) => {
+    const { roadmap, defaultPoints } = this.props;
+    console.log(this.completionWeeks[weekTxt]);
+    const cellDataInitiatives = this.getCellDataInitiatives(
+      initiative,
+      weekTxt
+    );
+    const keys = cellDataInitiatives.map((i: any) => i.key);
+    const url =
+      cellDataInitiatives[0].host +
+      '/issues/?jql=key in (' +
+      keys.toString() +
+      ')';
+    window.open(url, '_blank');
   };
 
   buildDataset = () => {
@@ -58,43 +94,80 @@ class RoadmapCompletionChart extends Component<any, any> {
       (i: any) => i.metrics[metric].completed > 0
     )) {
       const initiativeData: IDatasetObj = {
-        initiative: initiative.fields.summary + ' (' + initiative.key + ')'
+        initiative: this.getInitiativeTitle(initiative)
       };
       for (let week of initiative.weeks) {
+        const teamCompletionWeek = roadmap.byTeam
+          .find((t: any) => t.name === null)
+          .weeks.find((w: any) => w.weekStart === week.weekStart);
         if (this.completionWeeks[week.weekTxt] === undefined) {
-          const teamCompletionWeek = roadmap.byTeam
-            .find((t: any) => t.name === null)
-            .weeks.find((w: any) => w.weekStart === week.weekStart);
+          // completionWeeks is used to store stats and data at a week level
           this.completionWeeks[week.weekTxt] = {
             weekStart: week.weekStart,
             weekTxt: week.weekTxt,
-            total:
+            totalList:
+              metric === 'points'
+                ? teamCompletionWeek.list.filter((i: any) => i.points > 0)
+                : teamCompletionWeek.list,
+            totalCount:
               teamCompletionWeek !== undefined
                 ? teamCompletionWeek[metric].count
                 : 0,
-            initiatives: 0,
-            nonInitiatives:
+            initiativesList: [],
+            initiativesCount: 0,
+            // At first we push all issues as if those were not completed in an initiative
+            nonInitiativesList:
+              metric === 'points'
+                ? teamCompletionWeek.list.filter((i: any) => i.points > 0)
+                : teamCompletionWeek.list,
+            nonInitiativesCount:
               teamCompletionWeek !== undefined
                 ? teamCompletionWeek[metric].count
                 : 0
           };
-        } else {
-          this.completionWeeks[week.weekTxt].initiatives =
-            this.completionWeeks[week.weekTxt].initiatives + week[metric].count;
-          this.completionWeeks[week.weekTxt].nonInitiatives =
-            this.completionWeeks[week.weekTxt].total -
-            this.completionWeeks[week.weekTxt].initiatives;
         }
+        this.completionWeeks[week.weekTxt].initiativesCount =
+          this.completionWeeks[week.weekTxt].initiativesCount +
+          week[metric].count;
+        this.completionWeeks[week.weekTxt].nonInitiativesCount =
+          this.completionWeeks[week.weekTxt].totalCount -
+          this.completionWeeks[week.weekTxt].initiativesCount;
         initiativeData[week.weekTxt] = week[metric].count;
+        if (week.list.length > 0) {
+          if (metric === 'points') {
+            this.completionWeeks[week.weekTxt].initiativesList = [
+              ...this.completionWeeks[week.weekTxt].initiativesList,
+              ...week.list.filter((i: any) => i.points > 0)
+            ];
+          } else {
+            this.completionWeeks[week.weekTxt].initiativesList = [
+              ...this.completionWeeks[week.weekTxt].initiativesList,
+              ...week.list
+            ];
+          }
+          // We progressively purge the nonInitiatives from actual initiatives completion
+          this.completionWeeks[
+            week.weekTxt
+          ].nonInitiativesList = this.completionWeeks[
+            week.weekTxt
+          ].nonInitiativesList.filter((i: any) => {
+            for (const initiativeWeek of week.list) {
+              if (initiativeWeek.key === i.key) {
+                return false;
+              }
+            }
+            return true;
+          });
+        }
       }
       dataset.push(initiativeData);
     }
     let nonInitiatives: any = {
-      initiative: 'Other activities (not related to initiatives)'
+      initiative: this.getNonInitiativeTitle()
     };
     for (let week of Object.values(this.completionWeeks)) {
       // @ts-ignore
-      nonInitiatives[week.weekTxt] = week.nonInitiatives;
+      nonInitiatives[week.weekTxt] = week.nonInitiativesCount;
     }
     dataset.push(nonInitiatives);
     return dataset;
@@ -112,11 +185,12 @@ class RoadmapCompletionChart extends Component<any, any> {
       roadmap.byInitiative.filter((i: any) => i.metrics[metric].completed > 0)
         .length *
         20;
+    this.dataset = this.buildDataset();
     return (
       <div style={{ height: chartHeight }}>
         // @ts-ignore
         <ResponsiveHeatMap
-          data={this.buildDataset()}
+          data={this.dataset}
           keys={roadmap.byInitiative[0].weeks.map((w: any) => w.weekTxt)}
           indexBy='initiative'
           margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
@@ -201,7 +275,7 @@ class RoadmapCompletionChart extends Component<any, any> {
                 onMouseMove={onHover}
                 onMouseLeave={onLeave}
                 onClick={e => {
-                  onClick(data, e);
+                  this.cellClick(data.yKey, data.xKey);
                 }}
                 style={{ cursor: 'pointer' }}
               >
@@ -245,133 +319,3 @@ class RoadmapCompletionChart extends Component<any, any> {
 }
 
 export default withStyles(styles)(RoadmapCompletionChart);
-
-/*
-      <div style={{ height: chartHeight }}>
-        // @ts-ignore
-        <ResponsiveHeatMapCanvas
-          data={this.buildDataset().slice(0, 20)}
-          keys={roadmap.byInitiative[0].weeks.map((w: any) => w.weekTxt)}
-          indexBy='initiative'
-          margin={{ top: 100, right: 60, bottom: 60, left: 300 }}
-          pixelRatio={2}
-          forceSquare={false}
-          axisTop={null}
-          axisRight={null}
-          cellBorderWidth={1}
-          axisBottom={{
-            orient: 'top',
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: -90,
-            legend: '',
-            legendOffset: 36
-          }}
-          axisLeft={{
-            orient: 'middle',
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: '',
-            legendPosition: 'middle',
-            legendOffset: -40
-          }}
-          cellOpacity={1}
-          cellBorderColor={'#a4a3a5'}
-          labelTextColor={{ from: 'color', modifiers: [['darker', 1.8]] }}
-          defs={[
-            {
-              id: 'lines',
-              type: 'patternLines',
-              background: 'inherit',
-              color: 'rgba(0, 0, 0, 0.1)',
-              rotation: -45,
-              lineWidth: 4,
-              spacing: 7
-            }
-          ]}
-          cellShape={({
-            data,
-            value,
-            x,
-            y,
-            width,
-            height,
-            color,
-            opacity,
-            borderWidth,
-            borderColor,
-            enableLabel,
-            textColor,
-            onHover,
-            onLeave,
-            onClick,
-            theme
-          }) => {
-            if (value === 0) {
-              return (
-                <g
-                  transform={`translate(${x}, ${y})`}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <rect
-                    x={width * -0.5}
-                    y={height * -0.5}
-                    width={width}
-                    height={height}
-                    fill={''}
-                    fillOpacity={0}
-                    strokeWidth={borderWidth}
-                    stroke={borderColor}
-                    strokeOpacity={opacity}
-                  />
-                </g>
-              );
-            }
-            return (
-              <g
-                transform={`translate(${x}, ${y})`}
-                onMouseEnter={onHover}
-                onMouseMove={onHover}
-                onMouseLeave={onLeave}
-                onClick={e => {
-                  onClick(data, e);
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                <rect
-                  x={width * -0.5}
-                  y={height * -0.5}
-                  width={width}
-                  height={height}
-                  fill={color}
-                  fillOpacity={opacity}
-                  strokeWidth={borderWidth}
-                  stroke={borderColor}
-                  strokeOpacity={opacity}
-                />
-                {enableLabel && (
-                  <text
-                    dominantBaseline='central'
-                    textAnchor='middle'
-                    style={{
-                      ...theme.labels.text,
-                      fill: textColor
-                    }}
-                    fillOpacity={opacity}
-                  >
-                    {value}
-                  </text>
-                )}
-              </g>
-            );
-          }}
-          fill={[{ id: 'lines' }]}
-          animate={true}
-          motionStiffness={80}
-          motionDamping={9}
-          hoverTarget='cell'
-          cellHoverOthersOpacity={0.25}
-        />
-      </div>
-*/

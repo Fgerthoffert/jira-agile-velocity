@@ -1,6 +1,5 @@
 import MaterialTable from 'material-table';
 import React, { FC } from 'react';
-
 import { connect } from 'react-redux';
 
 import { iRootState } from '../../../store';
@@ -20,39 +19,54 @@ const InitiativeTable: FC<any> = ({ defaultPoints, initiatives }) => {
   if (!defaultPoints) {
     metric = 'issues';
   }
+  /*
+actions={[
+        {
+          icon: 'link',
+          tooltip: 'Open in Jira',
+          onClick: (event, rowData: any) => alert('You saved ' + rowData.title)
+        }
+      ]}
+  */
+  const dedaultStyle = { padding: '4px 40px 4px 16px' };
   return (
     <MaterialTable
       columns={[
         {
           title: 'Key',
           field: 'key',
-          cellStyle: { width: 200 }
+          cellStyle: { ...dedaultStyle, width: 200 }
         },
         {
           title: 'Title',
-          field: 'title'
+          field: 'title',
+          cellStyle: { ...dedaultStyle }
         },
         {
           title: 'Team',
           field: 'team',
-          cellStyle: { width: 200 }
+          cellStyle: { ...dedaultStyle, width: 200 }
         },
         {
           title: 'Total',
           field: 'total',
-          cellStyle: { width: 60 }
+          cellStyle: { ...dedaultStyle, width: 60 }
         },
         {
           title: 'Completed',
           field: 'completed',
-          cellStyle: { width: 80 }
+          cellStyle: { ...dedaultStyle, width: 80 }
         },
         {
           title: 'Remaining',
           field: 'remaining',
-          cellStyle: { width: 80 }
+          cellStyle: { ...dedaultStyle, width: 80 }
         },
-        { title: 'State', field: 'state', cellStyle: { width: 80 } }
+        {
+          title: 'State',
+          field: 'state',
+          cellStyle: { ...dedaultStyle, width: 80 }
+        }
       ]}
       data={initiatives.map((initiative: any) => {
         return {
@@ -69,6 +83,11 @@ const InitiativeTable: FC<any> = ({ defaultPoints, initiatives }) => {
         };
       })}
       title={''}
+      options={{
+        pageSize: 50,
+        pageSizeOptions: [10, 20, 50, 100],
+        emptyRowsWhenPaging: false
+      }}
     />
   );
 };
