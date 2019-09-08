@@ -2,6 +2,12 @@ import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -12,8 +18,8 @@ const styles = (theme: Theme) =>
 interface IDataset {
   label: string;
   backgroundColor: string;
-  completed: Array<number>;
-  data: Array<number>;
+  completed: number[];
+  data: number[];
 }
 interface IDatasetObj {
   [key: string]: any;
@@ -65,9 +71,41 @@ class RoadmapCompletionChart extends Component<any, any> {
     return initiative.fields.summary + ' (' + initiative.key + ')';
   };
 
+  getTooltip = (data: any) => {
+    const initiatives = this.getCellDataInitiatives(data.yKey, data.xKey);
+    return (
+      <React.Fragment>
+        <Table size='small'>
+          <TableHead>
+            <TableRow>
+              <TableCell>Key</TableCell>
+              <TableCell align='right'>Summary</TableCell>
+              <TableCell align='right'>Points</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {initiatives.slice(0, 5).map((i: any) => (
+              <TableRow key={i.key}>
+                <TableCell component='th' scope='row'>
+                  {i.key}
+                </TableCell>
+                <TableCell align='right'>{i.fields.summary}</TableCell>
+                <TableCell align='right'>{i.points}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        {initiatives.length > 10 && (
+          <span>
+            <b>Caution:</b> The tooltip only displays the first 5 results.
+          </span>
+        )}
+      </React.Fragment>
+    );
+  };
+
   cellClick = (initiative: string, weekTxt: string) => {
     const { roadmap, defaultPoints } = this.props;
-    console.log(this.completionWeeks[weekTxt]);
     const cellDataInitiatives = this.getCellDataInitiatives(
       initiative,
       weekTxt
@@ -83,20 +121,19 @@ class RoadmapCompletionChart extends Component<any, any> {
 
   buildDataset = () => {
     const { roadmap, defaultPoints } = this.props;
-    console.log(roadmap);
     let metric = 'points';
     if (!defaultPoints) {
       metric = 'issues';
     }
 
-    let dataset: Array<IDatasetObj> = [];
-    for (let initiative of roadmap.byInitiative.filter(
+    const dataset: IDatasetObj[] = [];
+    for (const initiative of roadmap.byInitiative.filter(
       (i: any) => i.metrics[metric].completed > 0
     )) {
       const initiativeData: IDatasetObj = {
         initiative: this.getInitiativeTitle(initiative)
       };
-      for (let week of initiative.weeks) {
+      for (const week of initiative.weeks) {
         const teamCompletionWeek = roadmap.byTeam
           .find((t: any) => t.name === null)
           .weeks.find((w: any) => w.weekStart === week.weekStart);
@@ -162,10 +199,10 @@ class RoadmapCompletionChart extends Component<any, any> {
       }
       dataset.push(initiativeData);
     }
-    let nonInitiatives: any = {
+    const nonInitiatives: any = {
       initiative: this.getNonInitiativeTitle()
     };
-    for (let week of Object.values(this.completionWeeks)) {
+    for (const week of Object.values(this.completionWeeks)) {
       // @ts-ignore
       nonInitiatives[week.weekTxt] = week.nonInitiativesCount;
     }
@@ -218,6 +255,7 @@ class RoadmapCompletionChart extends Component<any, any> {
           }}
           cellOpacity={1}
           cellBorderColor={'#a4a3a5'}
+          tooltip={this.getTooltip}
           labelTextColor={{ from: 'color', modifiers: [['darker', 1.8]] }}
           defs={[
             {
