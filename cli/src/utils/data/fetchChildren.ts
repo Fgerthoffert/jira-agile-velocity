@@ -20,7 +20,7 @@ const fetchChildren = async (
   useCache: boolean
 ) => {
   cli.action.start('Fetching children of: ' + issueKey);
-  let issuesJira = [];
+  let issues = [];
   // If cache is enabled we don't fetch initiatives twice on the same day
   const today = new Date();
   const childrenCache = path.join(
@@ -35,10 +35,10 @@ const fetchChildren = async (
   if (useCache && fs.existsSync(childrenCache)) {
     const input = fs.createReadStream(childrenCache);
     for await (const line of readLines(input)) {
-      issuesJira.push(JSON.parse(line));
+      issues.push(JSON.parse(line));
     }
   } else {
-    issuesJira = await jiraSearchIssues(
+    const issuesJira = await jiraSearchIssues(
       userConfig.jira,
       'issuekey in childIssuesOf(' + issueKey + ')',
       'summary,status,labels,' +
@@ -52,13 +52,19 @@ const fetchChildren = async (
       flags: 'w'
     });
     for (let issue of issuesJira) {
-      issueFileStream.write(JSON.stringify(issue) + '\n');
+      const updatedIssue = {
+        ...issue,
+        host: userConfig.jira.host,
+        jql: 'issuekey in childIssuesOf(' + issueKey + ')'
+      };
+      issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
+      issues.push(updatedIssue);
     }
     issueFileStream.end();
   }
 
   cli.action.stop(' done');
-  return issuesJira;
+  return issues;
 };
 
 export default fetchChildren;

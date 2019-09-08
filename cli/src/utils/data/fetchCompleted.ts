@@ -48,11 +48,17 @@ const fetchCompleted = async (
         if (issuesJira.length > 0) {
           for (let issue of issuesJira) {
             // Adding a closedAt object to record the date at which the issue was actually closed
+            // Attaching points directly to the issues object to avoid having to bring jira-field config specific elements to the UI
             const updatedIssue = {
               ...issue,
               closedAt: scanDay,
               team: teamName,
               host: config.jira.host,
+              points:
+                issue.fields[config.jira.fields.points] === undefined ||
+                issue.fields[config.jira.fields.points] === null
+                  ? 0
+                  : issue.fields[config.jira.fields.points],
               jql: jqlQuery
             };
             issues.push(updatedIssue);

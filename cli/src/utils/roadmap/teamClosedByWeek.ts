@@ -33,7 +33,15 @@ const teamClosedByWeek = (
       weeksTeam.weeks[firstDayWeekKey].list.push(issue);
       weeksTeam.weeks[firstDayWeekKey].issues.count =
         weeksTeam.weeks[firstDayWeekKey].list.length;
-      allTeams.weeks[firstDayWeekKey].list.push(issue);
+
+      // TODO-Need to remove any issues that might be a duplicate due to the filtering applied
+      if (
+        !allTeams.weeks[firstDayWeekKey].list.some(
+          (i: IJiraIssue) => i.key === issue.key
+        )
+      ) {
+        allTeams.weeks[firstDayWeekKey].list.push(issue);
+      }
       allTeams.weeks[firstDayWeekKey].issues.count =
         allTeams.weeks[firstDayWeekKey].list.length;
       if (
