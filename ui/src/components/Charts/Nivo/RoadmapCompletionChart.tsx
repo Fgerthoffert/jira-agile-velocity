@@ -175,6 +175,7 @@ class RoadmapCompletionChart extends Component<any, any> {
     this.dataset = this.buildDataset();
     return (
       <div style={{ height: chartHeight }}>
+        // @ts-ignore
         <ResponsiveHeatMap
           data={this.dataset}
           keys={roadmap.byInitiative[0].weeks.map((w: any) => w.weekTxt)}
