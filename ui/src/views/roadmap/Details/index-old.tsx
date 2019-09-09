@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 
 import { iRootState } from '../../../store';
 
+import TreeGraph from '../TreeGraph';
+
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
   roadmap: state.roadmap.roadmap,
@@ -13,7 +15,9 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
+  setDefaultPoints: dispatch.global.setDefaultPoints,
+  setGraphInitiative: dispatch.roadmap.setGraphInitiative,
+  updateGraph: dispatch.roadmap.updateGraph
 });
 
 const getProgress = (issue: any, metric: string) => {
@@ -89,27 +93,57 @@ const flattenData = (initiatives: any, metric: string) => {
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const Table: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
+const Details: FC<connectedProps> = ({
+  defaultPoints,
+  roadmap,
+  selectedTab,
+  setGraphInitiative,
+  updateGraph
+}) => {
   let metric = 'points';
   if (!defaultPoints) {
     metric = 'issues';
   }
+
+  const selectNode = (rowData: any) => {
+    console.log('select Node');
+    console.log(rowData);
+    setGraphInitiative(
+      roadmap.byInitiative.find((i: any) => i.key === rowData.key)
+    );
+    updateGraph();
+  };
+
   if (Object.values(roadmap).length > 0 && selectedTab === 'table') {
     const issues: any = flattenData(roadmap.byInitiative, metric);
+    const dedaultStyle = { padding: '4px 5px 4px 5px' };
+    /*
+        parentChildData={(row: any, rows: any) =>
+          rows.find((a: any) => a.id === row.parentId)
+        }    
+    */
     return (
       <MaterialTable
         columns={[
-          { title: 'Type', field: 'type', cellStyle: { width: 80 } },
-          { title: 'Key', field: 'key', cellStyle: { width: 200 } },
-          { title: 'Title', field: 'title' },
+          {
+            title: 'Type',
+            field: 'type',
+            cellStyle: { ...dedaultStyle, width: 80 }
+          },
+          {
+            title: 'Key',
+            field: 'key',
+            cellStyle: { ...dedaultStyle, width: 200 }
+          },
+          { title: 'Title', field: 'title', cellStyle: { ...dedaultStyle } },
           { title: 'State', field: 'state', cellStyle: { width: 80 } },
           {
             title: 'Progress',
             field: 'progress',
             type: 'numeric',
-            cellStyle: { width: 160 },
+            cellStyle: { ...dedaultStyle, width: 160 },
             render: rowData => {
-              if (rowData.state === 'Done' && rowData.missingPoints === true) {
+              if (rowData.state === 'Done') {
                 return <span>n/a (missing but done)</span>;
               } else {
                 return (
@@ -126,19 +160,21 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
                 );
               }
             }
-          },
-          {
-            title: '# Missing Estimates',
-            field: 'missingEffort',
-            type: 'numeric',
-            cellStyle: { width: 120 }
           }
         ]}
         data={issues}
-        parentChildData={(row: any, rows: any) =>
-          rows.find((a: any) => a.id === row.parentId)
-        }
-        title={''}
+        title={'Explore initiatives'}
+        detailPanel={rowData => {
+          selectNode(rowData);
+
+          return <TreeGraph initiative={rowData} />;
+        }}
+        options={{
+          pageSize: 50,
+          pageSizeOptions: [10, 20, 50, 100],
+          emptyRowsWhenPaging: false,
+          search: false
+        }}
       />
     );
   } else {
@@ -149,4 +185,4 @@ const Table: FC<connectedProps> = ({ defaultPoints, roadmap, selectedTab }) => {
 export default connect(
   mapState,
   mapDispatch
-)(Table);
+)(Details);

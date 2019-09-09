@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC } from 'react';
-import RoadmapFutureChart from '../../../components/Charts/Nivo/RoadmapFutureChart';
+import RoadmapCompletionChart from '../../../components/Charts/Nivo/RoadmapCompletionChart';
 import Typography from '@material-ui/core/Typography';
 import InitiativeTable from './InitiativeTable';
 import Grid from '@material-ui/core/Grid';
@@ -28,16 +28,22 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
+  setDefaultPoints: dispatch.global.setDefaultPoints,
+  setGraphInitiative: dispatch.roadmap.setGraphInitiative,
+  updateGraph: dispatch.roadmap.updateGraph,
+  setSelectedTab: dispatch.roadmap.setSelectedTab
 });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const CompletionChart: FC<connectedProps> = ({
+const Completion: FC<connectedProps> = ({
   defaultPoints,
   roadmap,
-  selectedTab
+  selectedTab,
+  setGraphInitiative,
+  updateGraph,
+  setSelectedTab
 }) => {
   const classes = useStyles();
   let metric = 'points';
@@ -45,7 +51,7 @@ const CompletionChart: FC<connectedProps> = ({
     metric = 'issues';
   }
 
-  if (Object.values(roadmap).length > 0 && selectedTab === 'futurechart') {
+  if (Object.values(roadmap).length > 0 && selectedTab === 'completionchart') {
     return (
       <Grid
         container
@@ -57,27 +63,28 @@ const CompletionChart: FC<connectedProps> = ({
         <Grid item xs={12}>
           <Paper className={classes.root}>
             <Typography variant='h5' component='h3'>
-              Completion forecast
+              Progress over the past weeks
             </Typography>
-            <RoadmapFutureChart
+            <RoadmapCompletionChart
               roadmap={roadmap}
               defaultPoints={defaultPoints}
             />
             <br />
             <Typography component='p' className={classes.smallText}>
               <i>
-                Displays initiatives assigned to a team, sorted as per the
-                source JQL query. Uses the team's current weekly velocity and
-                remaining effort in {metric} to build a timeline.
+                Displays initiatives with completed {metric} over the period.
               </i>
             </Typography>
           </Paper>
         </Grid>
         <Grid item xs={12}>
           <InitiativeTable
-            initiatives={roadmap.byFutureInitiative}
+            initiatives={roadmap.byInitiative}
             defaultPoints={defaultPoints}
-          />{' '}
+            setGraphInitiative={setGraphInitiative}
+            updateGraph={updateGraph}
+            setSelectedTab={setSelectedTab}
+          />
         </Grid>
       </Grid>
     );
@@ -89,4 +96,4 @@ const CompletionChart: FC<connectedProps> = ({
 export default connect(
   mapState,
   mapDispatch
-)(CompletionChart);
+)(Completion);

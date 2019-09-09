@@ -8,7 +8,7 @@ import * as stream from 'stream';
 import { IConfig, IJiraIssue } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
-import { getTeamId } from '../misc/teamUtils';
+import { getTeamId, getTeamFromAssignee } from '../misc/teamUtils';
 
 /*
     Fetches all initiatives
@@ -51,7 +51,8 @@ const fetchInitiatives = async (
       const updatedIssue = {
         ...issue,
         host: userConfig.jira.host,
-        jql: userConfig.roadmap.jqlInitiatives
+        jql: userConfig.roadmap.jqlInitiatives,
+        team: getTeamFromAssignee(issue, userConfig.roadmap.teams)
       };
       issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
       issues.push(updatedIssue);

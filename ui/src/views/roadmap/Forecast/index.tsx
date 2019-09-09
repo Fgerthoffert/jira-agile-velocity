@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC } from 'react';
-import RoadmapCompletionChart from '../../../components/Charts/Nivo/RoadmapCompletionChart';
+import RoadmapFutureChart from '../../../components/Charts/Nivo/RoadmapFutureChart';
 import Typography from '@material-ui/core/Typography';
 import InitiativeTable from './InitiativeTable';
 import Grid from '@material-ui/core/Grid';
@@ -34,7 +34,7 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const CompletionChart: FC<connectedProps> = ({
+const Forecast: FC<connectedProps> = ({
   defaultPoints,
   roadmap,
   selectedTab
@@ -45,7 +45,7 @@ const CompletionChart: FC<connectedProps> = ({
     metric = 'issues';
   }
 
-  if (Object.values(roadmap).length > 0 && selectedTab === 'completionchart') {
+  if (Object.values(roadmap).length > 0 && selectedTab === 'futurechart') {
     return (
       <Grid
         container
@@ -57,25 +57,37 @@ const CompletionChart: FC<connectedProps> = ({
         <Grid item xs={12}>
           <Paper className={classes.root}>
             <Typography variant='h5' component='h3'>
-              Progress over the past weeks
+              Completion forecast
             </Typography>
-            <RoadmapCompletionChart
+            <RoadmapFutureChart
               roadmap={roadmap}
               defaultPoints={defaultPoints}
             />
             <br />
             <Typography component='p' className={classes.smallText}>
               <i>
-                Displays initiatives with completed {metric} over the period.
+                Displays initiatives assigned to a team, sorted as per the
+                source JQL query. Uses the team's current weekly velocity and
+                remaining effort in {metric} to build a timeline.
               </i>
             </Typography>
           </Paper>
         </Grid>
         <Grid item xs={12}>
           <InitiativeTable
-            initiatives={roadmap.byInitiative}
+            initiatives={roadmap.byFutureInitiative}
             defaultPoints={defaultPoints}
-          />{' '}
+            title={'Assigned to a team'}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <InitiativeTable
+            initiatives={roadmap.byInitiative.filter(
+              (i: any) => i.team === null && i.fields.status.name !== 'Done'
+            )}
+            defaultPoints={defaultPoints}
+            title={'Not assigned to a team'}
+          />
         </Grid>
       </Grid>
     );
@@ -87,4 +99,4 @@ const CompletionChart: FC<connectedProps> = ({
 export default connect(
   mapState,
   mapDispatch
-)(CompletionChart);
+)(Forecast);
