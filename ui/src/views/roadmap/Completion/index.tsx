@@ -31,7 +31,7 @@ const mapDispatch = (dispatch: any) => ({
   setDefaultPoints: dispatch.global.setDefaultPoints,
   setGraphInitiative: dispatch.roadmap.setGraphInitiative,
   updateGraph: dispatch.roadmap.updateGraph,
-  setSelectedTab: dispatch.roadmap.setSelectedTab
+  setOpenGraph: dispatch.roadmap.setOpenGraph
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -43,7 +43,7 @@ const Completion: FC<connectedProps> = ({
   selectedTab,
   setGraphInitiative,
   updateGraph,
-  setSelectedTab
+  setOpenGraph
 }) => {
   const classes = useStyles();
   let metric = 'points';
@@ -80,10 +80,9 @@ const Completion: FC<connectedProps> = ({
         <Grid item xs={12}>
           <InitiativeTable
             initiatives={roadmap.byInitiative}
-            defaultPoints={defaultPoints}
             setGraphInitiative={setGraphInitiative}
             updateGraph={updateGraph}
-            setSelectedTab={setSelectedTab}
+            setOpenGraph={setOpenGraph}
           />
         </Grid>
       </Grid>

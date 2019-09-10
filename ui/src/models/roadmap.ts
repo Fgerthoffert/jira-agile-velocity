@@ -11,16 +11,13 @@ declare global {
   }
 }
 
-const sleep = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
-
 export const roadmap = createModel({
   state: {
     log: {},
     roadmap: {},
     selectedTab: 'completionchart',
 
+    openGraph: false,
     graphInitiative: {},
     issuesGraph: [],
     maxIssuesGraph: 200,
@@ -40,6 +37,9 @@ export const roadmap = createModel({
     },
     setRoadmap(state: any, payload: any) {
       return { ...state, roadmap: payload };
+    },
+    setOpenGraph(state: any, payload: any) {
+      return { ...state, openGraph: payload };
     },
     setGraphInitiative(state: any, payload: any) {
       return { ...state, graphInitiative: JSON.parse(JSON.stringify(payload)) };
@@ -114,7 +114,6 @@ export const roadmap = createModel({
       let t0 = performance.now();
 
       const sourceIssues = fetchGraphIssues(rootState.roadmap.graphInitiative);
-      console.log(sourceIssues);
       let highestDistance = 10;
       if (sourceIssues.length > 0) {
         highestDistance = sourceIssues
@@ -150,8 +149,8 @@ export const roadmap = createModel({
         graphData.push({
           data: {
             group: 'edges',
-            target: child.id,
-            source: rootState.roadmap.graphInitiative.id
+            source: child.id,
+            target: rootState.roadmap.graphInitiative.id
           }
         });
 
@@ -160,8 +159,8 @@ export const roadmap = createModel({
             graphData.push({
               data: {
                 group: 'edges',
-                target: childl1.id,
-                source: child.id
+                source: childl1.id,
+                target: child.id
               }
             });
             if (childl1.children !== undefined && childl1.children.length > 0) {
@@ -169,8 +168,8 @@ export const roadmap = createModel({
                 graphData.push({
                   data: {
                     group: 'edges',
-                    target: childl2.id,
-                    source: childl1.id
+                    source: childl2.id,
+                    target: childl1.id
                   }
                 });
               }

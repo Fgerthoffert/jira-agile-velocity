@@ -161,7 +161,6 @@ class RoadmapCompletionChart extends Component<any, any> {
 
   render() {
     const { roadmap, defaultPoints } = this.props;
-    console.log(roadmap);
     this.completionWeeks = {};
     let metric = 'points';
     if (!defaultPoints) {
@@ -173,6 +172,7 @@ class RoadmapCompletionChart extends Component<any, any> {
         .length *
         20;
     this.dataset = this.buildDataset();
+    // @ts-ignore
     return (
       <div style={{ height: chartHeight }}>
         // @ts-ignore

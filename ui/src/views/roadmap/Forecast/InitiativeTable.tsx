@@ -1,12 +1,20 @@
 import MaterialTable from 'material-table';
 import React, { FC } from 'react';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import BubbleChartIcon from '@material-ui/icons/BubbleChart';
 import IconButton from '@material-ui/core/IconButton';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import { getProgress, getBarVariant } from '../utils';
 
-const InitiativeTable: FC<any> = ({ defaultPoints, initiatives, title }) => {
+const InitiativeTable: FC<any> = ({
+  defaultPoints,
+  initiatives,
+  title,
+  setGraphInitiative,
+  updateGraph,
+  setOpenGraph
+}) => {
   const dedaultStyle = { padding: '4px 5px 4px 5px' };
 
   let metric = 'points';
@@ -32,6 +40,29 @@ const InitiativeTable: FC<any> = ({ defaultPoints, initiatives, title }) => {
           },
           headerStyle: { ...dedaultStyle, width: 20 },
           cellStyle: { ...dedaultStyle, padding: '4px 5px 4px 5px', width: 20 }
+        },
+        {
+          title: '',
+          field: 'url',
+          render: rowData => {
+            return (
+              <IconButton
+                aria-label='open-external'
+                size='small'
+                onClick={() => {
+                  setGraphInitiative(
+                    initiatives.find((i: any) => i.key === rowData.key)
+                  );
+                  updateGraph();
+                  setOpenGraph(true);
+                }}
+              >
+                <BubbleChartIcon fontSize='small' />
+              </IconButton>
+            );
+          },
+          headerStyle: { ...dedaultStyle, width: 20 },
+          cellStyle: { ...dedaultStyle, padding: '4px 0px 4px 0px', width: 20 }
         },
         {
           title: 'Key',

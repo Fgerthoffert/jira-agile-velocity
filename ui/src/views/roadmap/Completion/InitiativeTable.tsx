@@ -8,13 +8,12 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getProgress, getBarVariant } from '../utils';
 
 const InitiativeTable: FC<any> = ({
-  defaultPoints,
   initiatives,
   setGraphInitiative,
   updateGraph,
-  setSelectedTab
+  setOpenGraph
 }) => {
-  const dedaultStyle = { padding: '4px 10px 4px 16px' };
+  const dedaultStyle = { padding: '4px 5px 4px 5px' };
   return (
     <MaterialTable
       columns={[
@@ -48,10 +47,7 @@ const InitiativeTable: FC<any> = ({
                     initiatives.find((i: any) => i.key === rowData.key)
                   );
                   updateGraph();
-                  setSelectedTab('table');
-                  console.log(rowData);
-
-                  console.log('test');
+                  setOpenGraph(true);
                 }}
               >
                 <BubbleChartIcon fontSize='small' />

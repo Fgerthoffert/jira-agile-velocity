@@ -28,7 +28,10 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
+  setDefaultPoints: dispatch.global.setDefaultPoints,
+  setGraphInitiative: dispatch.roadmap.setGraphInitiative,
+  updateGraph: dispatch.roadmap.updateGraph,
+  setOpenGraph: dispatch.roadmap.setOpenGraph
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -37,7 +40,10 @@ type connectedProps = ReturnType<typeof mapState> &
 const Forecast: FC<connectedProps> = ({
   defaultPoints,
   roadmap,
-  selectedTab
+  selectedTab,
+  setGraphInitiative,
+  updateGraph,
+  setOpenGraph
 }) => {
   const classes = useStyles();
   let metric = 'points';
@@ -78,6 +84,9 @@ const Forecast: FC<connectedProps> = ({
             initiatives={roadmap.byFutureInitiative}
             defaultPoints={defaultPoints}
             title={'Assigned to a team'}
+            setGraphInitiative={setGraphInitiative}
+            updateGraph={updateGraph}
+            setOpenGraph={setOpenGraph}
           />
         </Grid>
         <Grid item xs={12}>
@@ -87,6 +96,9 @@ const Forecast: FC<connectedProps> = ({
             )}
             defaultPoints={defaultPoints}
             title={'Not assigned to a team'}
+            setGraphInitiative={setGraphInitiative}
+            updateGraph={updateGraph}
+            setOpenGraph={setOpenGraph}
           />
         </Grid>
       </Grid>

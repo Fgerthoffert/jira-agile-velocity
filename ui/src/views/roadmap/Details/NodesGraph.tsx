@@ -1,13 +1,9 @@
-import React, { Component } from 'react'; // let's also import Component
-import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
+import React, { Component } from 'react';
 
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
 
 import Cytoscape from 'cytoscape';
 import COSEBilkent from 'cytoscape-cose-bilkent';
-//import cytoscapeQtip from 'cytoscape-qtip';
 
 import popper from 'cytoscape-popper';
 
@@ -16,22 +12,12 @@ import 'tippy.js/themes/light-border.css';
 import ReactDOMServer from 'react-dom/server';
 
 import CytoscapeComponent from 'react-cytoscapejs';
-import { iRootState } from '../../store';
+import { iRootState } from '../../../store';
 
 Cytoscape.use(COSEBilkent);
 Cytoscape.use(popper);
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      /*
-      height: 400,
-      width: 400*/
-    }
-  });
-
 const mapState = (state: iRootState) => ({
-  selectedTab: state.roadmap.selectedTab,
   issuesGraph: state.roadmap.issuesGraph
 });
 
@@ -42,7 +28,7 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapState | any> &
   ReturnType<typeof mapDispatch>;
 
-class TreeGraph extends Component<connectedProps> {
+class NodesGraph extends Component<connectedProps> {
   chartRef: any = React.createRef();
   tippyInstances: any = {};
   selectedTippies: any = {};
@@ -59,19 +45,29 @@ class TreeGraph extends Component<connectedProps> {
     this.updateChart(this.chartRef);
   }
 
-  makeTippy = (node: any, text: any, nodeElement: any) => {
+  clickIssue = (node: any) => {
+    if (this.clickedLink === false) {
+      this.clickedLink = true;
+      const url = node.data().host + '/browse/' + node.data().key;
+      window.open(url, '_blank');
+      setTimeout(async () => {
+        this.clickedLink = false;
+      }, 500);
+    }
+  };
+
+  makeTippy = (node: any, text: any) => {
     return Tippy(node.popperRef(), {
-      content: function() {
-        var div = document.createElement('div');
+      content() {
+        let div = document.createElement('div');
         div.innerHTML = text;
-        //return div;
-        return ReactDOMServer.renderToString(<span>Test Tippy</span>);
+        return ReactDOMServer.renderToString(<span>{text}</span>);
       },
       trigger: 'manual',
       theme: 'light-border',
       arrow: true,
       placement: 'bottom',
-      //hideOnClick: true,
+      // hideOnClick: true,
       interactive: true,
       multiple: true,
       sticky: true
@@ -90,56 +86,54 @@ class TreeGraph extends Component<connectedProps> {
 
   updateChart = async (cy: any) => {
     const { issuesGraph } = this.props;
-    console.log(issuesGraph);
-    this.clearTippies();
-    cy.elements().remove();
-    cy.add(issuesGraph);
+    if (issuesGraph.length > 0) {
+      this.clearTippies();
+      cy.elements().remove();
+      cy.add(issuesGraph);
 
-    cy.on('mouseover', 'node', (event: any) => {
-      const nodeId = event.target.id();
-      const dataNode = event.target.data();
-      const node = event.target;
-      if (this.tippyInstances[nodeId] === undefined) {
-        this.tippyInstances[nodeId] = this.makeTippy(
-          node,
-          dataNode.title,
-          dataNode
-        );
-        this.tippyInstances[nodeId].show();
-      }
-    });
+      cy.on('mouseover', 'node', (event: any) => {
+        const nodeId = event.target.id();
+        const dataNode = event.target.data();
+        const node = event.target;
+        if (this.tippyInstances[nodeId] === undefined) {
+          this.tippyInstances[nodeId] = this.makeTippy(
+            node,
+            dataNode.fields.summary + ' (' + dataNode.key + ')'
+          );
+          this.tippyInstances[nodeId].show();
+        }
+      });
 
-    cy.on('mouseout', 'node', (event: any) => {
-      const nodeId = event.target.id();
-      if (this.tippyInstances[nodeId] !== undefined) {
-        this.tippyInstances[nodeId].hide();
-        this.tippyInstances[nodeId].destroy();
-        delete this.tippyInstances[nodeId];
-      }
-    });
+      cy.on('mouseout', 'node', (event: any) => {
+        const nodeId = event.target.id();
+        if (this.tippyInstances[nodeId] !== undefined) {
+          this.tippyInstances[nodeId].hide();
+          this.tippyInstances[nodeId].destroy();
+          delete this.tippyInstances[nodeId];
+        }
+      });
 
-    /*
-    cy.on('click', 'node', (event: any) => {
-      this.clickIssue(event.target);
-    });
-*/
-    let layout = cy.layout({
-      name: 'cose-bilkent',
-      animate: false
-    });
-    layout.run();
-    cy.fit();
+      cy.on('click', 'node', (event: any) => {
+        this.clickIssue(event.target);
+      });
+
+      const layout = cy.layout({
+        name: 'cose-bilkent',
+        animate: false
+      });
+      layout.run();
+    }
   };
 
   render() {
-    const { classes } = this.props;
     const stylesheet = [
       {
         selector: 'node',
         style: {
           width: 10,
-          height: 10
-          //                    content: 'data(id)'
+          height: 10,
+          content: 'data(points)',
+          fontSize: '0.5em'
           //                    shape: 'vee'
         }
       },
@@ -160,21 +154,33 @@ class TreeGraph extends Component<connectedProps> {
         }
       },
       {
-        selector: '[status != "Done"]',
+        selector: '[status = "Done"]',
         style: {
           backgroundColor: '#28a745'
         }
       },
       {
-        selector: '[status = "Done"]',
+        selector: '[status != "Done"]',
         style: {
           backgroundColor: '#cb2431'
         }
       },
       {
-        selector: '[?partial]',
+        selector: '[type = "Story"]',
+        style: {
+          shape: 'ellipse'
+        }
+      },
+      {
+        selector: '[type = "Epic"]',
         style: {
           shape: 'rectangle'
+        }
+      },
+      {
+        selector: '[type = "Initiative"]',
+        style: {
+          shape: 'diamond'
         }
       },
       {
@@ -210,31 +216,14 @@ class TreeGraph extends Component<connectedProps> {
       }
     ];
     return (
-      <div className={classes.root}>
-        <span> This is my initiative</span>
-        <Grid
-          container
-          direction='row'
-          justify='flex-start'
-          alignItems='stretch'
-          spacing={3}
-        >
-          <Grid item xs={4}>
-            <span>Displaying data</span>
-          </Grid>
-          <Grid item xs={8}>
-            <CytoscapeComponent
-              elements={[]}
-              layout={{ name: 'cose-bilkent' }}
-              style={{ height: '600px', width: '300px' }}
-              stylesheet={stylesheet}
-              cy={(cy: any) => (this.chartRef = cy)}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <span>Displaying data</span>
-          </Grid>
-        </Grid>
+      <div style={{ textAlign: 'left' }}>
+        <CytoscapeComponent
+          elements={[]}
+          layout={{ name: 'cose-bilkent' }}
+          style={{ height: '500px' }}
+          stylesheet={stylesheet}
+          cy={(cy: any) => (this.chartRef = cy)}
+        />
       </div>
     );
   }
@@ -243,4 +232,4 @@ class TreeGraph extends Component<connectedProps> {
 export default connect(
   mapState,
   mapDispatch
-)(withStyles(styles)(TreeGraph));
+)(NodesGraph);
