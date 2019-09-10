@@ -59,7 +59,7 @@ class NodesGraph extends Component<connectedProps> {
   makeTippy = (node: any, text: any) => {
     return Tippy(node.popperRef(), {
       content() {
-        let div = document.createElement('div');
+        const div = document.createElement('div');
         div.innerHTML = text;
         return ReactDOMServer.renderToString(<span>{text}</span>);
       },

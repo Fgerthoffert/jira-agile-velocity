@@ -110,8 +110,8 @@ export const roadmap = createModel({
       }
     },
     async updateGraph(payload, rootState) {
-      const log = rootState.roadmap.log;
-      let t0 = performance.now();
+      const logsvc = rootState.roadmap.log;
+      const t0 = performance.now();
 
       const sourceIssues = fetchGraphIssues(rootState.roadmap.graphInitiative);
       let highestDistance = 10;
@@ -135,17 +135,17 @@ export const roadmap = createModel({
         i => i.data.distance <= maxDistance
       );
       this.initGraphData(filteredIssue);
-      var t1 = performance.now();
+      const t1 = performance.now();
 
       this.setGraphUpdating(false);
-      log.info('updateGraph - took ' + (t1 - t0) + ' milliseconds.');
+      logsvc.info('updateGraph - took ' + (t1 - t0) + ' milliseconds.');
     },
 
     async initGraphData(graphIssues, rootState) {
       const graphData = [...graphIssues];
       // append the edges to the initiative
 
-      for (let child of rootState.roadmap.graphInitiative.children) {
+      for (const child of rootState.roadmap.graphInitiative.children) {
         graphData.push({
           data: {
             group: 'edges',
@@ -155,7 +155,7 @@ export const roadmap = createModel({
         });
 
         if (child.children !== undefined && child.children.length > 0) {
-          for (let childl1 of child.children) {
+          for (const childl1 of child.children) {
             graphData.push({
               data: {
                 group: 'edges',
@@ -164,7 +164,7 @@ export const roadmap = createModel({
               }
             });
             if (childl1.children !== undefined && childl1.children.length > 0) {
-              for (let childl2 of childl1.children) {
+              for (const childl2 of childl1.children) {
                 graphData.push({
                   data: {
                     group: 'edges',

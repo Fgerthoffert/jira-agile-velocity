@@ -12,8 +12,8 @@ const styles = (theme: Theme) =>
 interface IDataset {
   label: string;
   backgroundColor: string;
-  completed: Array<number>;
-  data: Array<number>;
+  completed: number[];
+  data: number[];
 }
 interface IDatasetObj {
   [key: string]: any;
@@ -40,12 +40,12 @@ class RoadmapFutureChart extends Component<any, any> {
       metric = 'issues';
     }
 
-    let dataset: Array<IDatasetObj> = [];
-    for (let initiative of roadmap.byFutureInitiative) {
+    const dataset: IDatasetObj[] = [];
+    for (const initiative of roadmap.byFutureInitiative) {
       const initiativeData: IDatasetObj = {
         initiative: initiative.fields.summary + ' (' + initiative.key + ')'
       };
-      for (let week of initiative.weeks) {
+      for (const week of initiative.weeks) {
         initiativeData[week.weekTxt] = week[metric].count;
       }
       dataset.push(initiativeData);
