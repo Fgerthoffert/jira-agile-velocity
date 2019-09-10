@@ -1,6 +1,6 @@
 // tslint:disable-next-line: file-name-casing
 /*
-    This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
+    
 */
 import { getWeek, getYear } from 'date-fns';
 
@@ -8,17 +8,12 @@ import { ICalendar, IConfig, IJiraIssue } from '../../global';
 import { formatDate, startOfWeek } from '../misc/dateUtils';
 import { getTeamId } from '../misc/teamUtils';
 
-const getEmptyCalendarObject = (
-  issues: Array<IJiraIssue>,
-  userConfig: IConfig
-) => {
+const getEmptyRoadmapObject = (lastCalendarWeek: any, futureWeeks: number) => {
   // Sort the array by closedAt
-  issues.sort((a, b) =>
-    a.closedAt > b.closedAt ? 1 : b.closedAt > a.closedAt ? -1 : 0
-  );
   const emptyWeeks: any = {};
-  let currentDate = formatDate(issues[0].closedAt);
-  while (currentDate < formatDate(issues[issues.length - 1].closedAt)) {
+  let cptDays = 0;
+  let currentDate = formatDate(lastCalendarWeek.weekStart);
+  while (cptDays < futureWeeks * 7) {
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
       currentMonthDay = currentMonthDay - currentDate.getDay();
@@ -30,7 +25,6 @@ const getEmptyCalendarObject = (
     );
     if (emptyWeeks[currentWeekYear.toJSON().slice(0, 10)] === undefined) {
       emptyWeeks[currentWeekYear.toJSON().slice(0, 10)] = {
-        list: [],
         issues: { count: 0 },
         points: { count: 0 },
         weekStart: currentWeekYear.toJSON(),
@@ -38,8 +32,9 @@ const getEmptyCalendarObject = (
       };
     }
     currentDate.setDate(currentDate.getDate() + 1);
+    cptDays++;
   }
   return emptyWeeks;
 };
 
-export default getEmptyCalendarObject;
+export default getEmptyRoadmapObject;

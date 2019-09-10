@@ -1,40 +1,40 @@
-import { flags } from "@oclif/command";
-import cli from "cli-ux";
-import * as fs from "fs";
-import * as loadYamlFile from "load-yaml-file";
-import * as path from "path";
+import { flags } from '@oclif/command';
+import cli from 'cli-ux';
+import * as fs from 'fs';
+import * as loadYamlFile from 'load-yaml-file';
+import * as path from 'path';
 
-import Command from "../base";
-import { ICalendar, ICalendarFinal, IConfig } from "../global";
-import fetchCompleted from "../utils/data/fetchCompleted";
-import jiraSearchIssues from "../utils/jira/searchIssues";
-import { getTeamId } from "../utils/misc/teamUtils";
-import getDailyHealthMsg from "../utils/slack/getDailyHealthMsg";
-import sendSlackMsg from "../utils/slack/sendSlackMsg";
-import initCalendar from "../utils/velocity/initCalendar";
-import insertClosed from "../utils/velocity/insertClosed";
-import insertDailyVelocity from "../utils/velocity/insertDailyVelocity";
-import insertForecast from "../utils/velocity/insertForecast";
-import insertHealth from "../utils/velocity/insertHealth";
-import insertOpen from "../utils/velocity/insertOpen";
-import insertWeeklyVelocity from "../utils/velocity/insertWeeklyVelocity";
+import Command from '../base';
+import { ICalendar, ICalendarFinal, IConfig } from '../global';
+import fetchCompleted from '../utils/data/fetchCompleted';
+import jiraSearchIssues from '../utils/jira/searchIssues';
+import { getTeamId } from '../utils/misc/teamUtils';
+import getDailyHealthMsg from '../utils/slack/getDailyHealthMsg';
+import sendSlackMsg from '../utils/slack/sendSlackMsg';
+import initCalendar from '../utils/velocity/initCalendar';
+import insertClosed from '../utils/velocity/insertClosed';
+import insertDailyVelocity from '../utils/velocity/insertDailyVelocity';
+import insertForecast from '../utils/velocity/insertForecast';
+import insertHealth from '../utils/velocity/insertHealth';
+import insertOpen from '../utils/velocity/insertOpen';
+import insertWeeklyVelocity from '../utils/velocity/insertWeeklyVelocity';
 
 export default class Velocity extends Command {
-  static description = "Builds velocity stats by day and week";
+  static description = 'Builds velocity stats by day and week';
 
   static flags = {
     ...Command.flags,
-    help: flags.help({ char: "h" }),
+    help: flags.help({ char: 'h' }),
     type: flags.string({
-      char: "t",
-      description: "Send slack update using issues or points",
-      options: ["issues", "points"],
-      default: "points"
+      char: 't',
+      description: 'Send slack update using issues or points',
+      options: ['issues', 'points'],
+      default: 'points'
     }),
     dryrun: flags.boolean({
-      char: "d",
+      char: 'd',
       default: false,
-      description: "Dry-Run, do not send slack message"
+      description: 'Dry-Run, do not send slack message'
     })
   };
 
@@ -46,10 +46,10 @@ export default class Velocity extends Command {
     for (let team of userConfig.teams) {
       const closedIssues = await fetchCompleted(
         userConfig,
-        this.config.configDir + "/cache/",
+        this.config.configDir + '/cache/',
         team.name
       );
-      console.log("Fetched " + closedIssues.length + " completed issues");
+      console.log('Fetched ' + closedIssues.length + ' completed issues');
 
       const emptyCalendar: ICalendar = initCalendar(team.jqlHistory);
       const calendarWithClosed = await insertClosed(
@@ -83,18 +83,18 @@ export default class Velocity extends Command {
       this.log(slackMsg);
 
       if (!dryrun) {
-        cli.action.start("Sending message to Slack");
+        cli.action.start('Sending message to Slack');
         sendSlackMsg(team.slack.token, team.slack.channel, slackMsg);
-        cli.action.stop(" done");
+        cli.action.stop(' done');
       }
 
-      const cacheDir = this.config.configDir + "/cache/";
+      const cacheDir = this.config.configDir + '/cache/';
       const issueFileStream = fs.createWriteStream(
         path.join(
           cacheDir,
-          "velocity-artifact-" + getTeamId(team.name) + ".json"
+          'velocity-artifacts-' + getTeamId(team.name) + '.json'
         ),
-        { flags: "w" }
+        { flags: 'w' }
       );
       issueFileStream.write(JSON.stringify(calendarWithHealth));
       issueFileStream.end();
@@ -108,18 +108,18 @@ export default class Velocity extends Command {
     const teamConfig = userConfig.teams.find(t => t.name === teamName);
     if (teamConfig !== undefined) {
       cli.action.start(
-        "Fetching open issues for team: " +
+        'Fetching open issues for team: ' +
           teamName +
-          " using JQL: " +
+          ' using JQL: ' +
           teamConfig.jqlRemaining +
-          " "
+          ' '
       );
       const issuesJira = await jiraSearchIssues(
         userConfig.jira,
         teamConfig.jqlRemaining,
-        "labels," + userConfig.jira.fields.points
+        'labels,' + userConfig.jira.fields.points
       );
-      cli.action.stop(" done");
+      cli.action.stop(' done');
       return issuesJira;
     }
     return [];

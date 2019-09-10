@@ -19,8 +19,10 @@ Builds various sets of Agile metrics and dashboards by fetching data from Jira R
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [Data Centric](#data-centric)
+- [Features](#features)
+- [Install](#install)
 - [Configuration](#configuration)
-- [Quick start with Docker](#quick-start-with-docker)
 - [Local installation](#local-installation)
 - [Usage](#usage)
 - [Commands](#commands)
@@ -40,6 +42,52 @@ Jira-agile-velocity aims at being simple and data-centric, leaving interpretatio
 The tool is broken down in 3 codebases in a monorepo configuration, a UI, an API and a CLI (also called jira-agile-velocity on npm). The CLI's role is to fetch and compute metrics, while the UI & API are only there to ease consumption of these metrics in a user-friendly manner.
 
 In its current state, the tool is storing its data in json or ndjson files directly on the filesystem. It is sufficient for the current use case and there is no plan to use a database (i.e. MongoDB) on the short term. Instead, future evolutions will likely move closer to ZenCrepes' implementation, with a common (Github, Jira) indexer and all data served by a search oriented datastore (i.e. Elasticsearch).
+
+# Data Centric
+
+Although much smaller than ZenCrepes, the Jira Agile Velocity tool shares one its core principle: being data-centric and factual, it doesn't account (⚠️ ON PURPOSE ⚠️) for human interpretation.
+
+An example ? the Forecast feature provides a view over the coming weeks, but this view (on purpose) doesn't account for vacations, and the tool doesn't (and will not) provide features to include such events in its forecast. As a DM/PM/Scrum Master (pick-one), you know your team's velocity, and can therefore adjust your estimate based on your experience.
+
+# Features
+
+This tool was built to provide a consolidate view over Jira issues, and link back to Jira whenever possible. Most charts and elements are clickable, so you can easily open in Jira all issues closed by a team on a particular week, remaining issues in an initiative, ...
+
+## Velocity view
+
+The velocity view provides daily and weekly completion metrics as well as velocity calculated using a rolling average, giving your general trend about a team's evolution. It can also be use to assess if stories are granular enough, by quickly highlighting if there is recurring pattern of weeks with higher completion rate (i.e. most stories closed the last week of a sprint).
+
+The view will also take a total of open points and, using the current velocity, provide an estimate in terms of days to completion, using a very simple formula:
+
+```
+Days to completion = Open points / current weekly velocity * 5 business days
+```
+
+As mentioned earlier, these are just factual elements, interpretation whether this estimate is realistic or not, is up to the user.
+
+Clicking on any of the bar-charts will open the corresponding issues in Jira.
+
+## Initiatives view
+
+The initiatives view is divided in two sections, one focused on past completion, the other one uses velocity to forecast a potential implementation schedule.
+
+### Completion
+
+This view is centered around completed work and was built to support the following use cases:
+
+- Identify the proportion of work spent on initiatives vs other activities (is the team being distracted from its roadmap)
+- Identify if some issues have an unclear scope or are not receiving the proper focuse (long-running initiatives, initiatives with large gap between completed stories, ...)
+- Quickly see an initiative's completion state from a points and an issue count point of view
+- Quicly see which team is working on which initiative
+
+This view automatically filters out initiatives which didn't receive any activities over the entire period.
+
+### Forecast
+
+This view is centered around building a roadmap and was built to support the following use cases:
+
+- Identify the amount of work remaining, by team.
+- Provide a roadmap of the upcoming initiatives based on their effort and the team's velocity
 
 # Install
 
@@ -108,6 +156,10 @@ From time-to-time you'll want to update the configuration and see the outcome of
 ```
 
 Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
+
+### Access the UI
+
+In its current configuration, the UI is accessible through `http://127.0.0.1:5000` (or the port configured for jav-ui). It is strongly recommend to configure a reverse proxy (with nginx for example) serving those resources (UI and API) over HTTPS. But this is considered out of scope of this tool.
 
 ## Development environment setup
 

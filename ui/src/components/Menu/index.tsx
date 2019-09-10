@@ -73,9 +73,9 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
       text: 'Velocity'
     },
     {
-      path: '/roadmap',
+      path: '/initiatives',
       icon: <FormatListNumberedIcon />,
-      text: 'Roadmap'
+      text: 'Initiatives'
     }
   ];
 
