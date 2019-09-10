@@ -92,14 +92,18 @@ export const roadmap = createModel({
       // Fetch data
       const setRoadmap = this.setRoadmap;
 
-      if (Object.values(rootState.roadmap.roadmap).length === 0) {
+      if (
+        Object.values(rootState.roadmap.roadmap).length === 0 &&
+        rootState.global.accessToken !== ''
+      ) {
         const host =
           window._env_.API_URL !== undefined
             ? window._env_.API_URL
             : 'http://127.0.0.1:3001';
         axios({
           method: 'get',
-          url: host + '/roadmap'
+          url: host + '/roadmap',
+          headers: { Authorization: 'bearer ' + rootState.global.accessToken }
         })
           .then(response => {
             setRoadmap(response.data);

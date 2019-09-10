@@ -14,7 +14,8 @@ export const global = createModel({
     // Authentication module
     loggedIn: false, // Is the user logged in
     username: '',
-    password: ''
+    password: '',
+    accessToken: ''
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -28,6 +29,9 @@ export const global = createModel({
     },
     setPassword(state: any, payload: any) {
       return { ...state, password: payload };
+    },
+    setAccessToken(state: any, payload: any) {
+      return { ...state, accessToken: payload };
     },
     setShowMenu(state: any, payload: any) {
       return { ...state, showMenu: payload };
@@ -53,7 +57,7 @@ export const global = createModel({
     async logUserIn(payload, rootState) {
       console.log('Log user in');
       // Fetch data
-
+      console.log(rootState.global.accessToken);
       const host =
         window._env_.API_URL !== undefined
           ? window._env_.API_URL
@@ -68,9 +72,14 @@ export const global = createModel({
       })
         .then(response => {
           console.log(response);
+          if (response.status === 201) {
+            this.setAccessToken(response.data.access_token);
+            this.setLoggedIn(true);
+          }
         })
         .catch(error => {
-          console.log(error);
+          this.setAccessToken('');
+          this.setLoggedIn(false);
         });
     }
   }

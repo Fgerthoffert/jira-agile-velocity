@@ -26,14 +26,18 @@ export const velocity = createModel({
       const setTeams = this.setTeams;
       const setSelectedTeam = this.setSelectedTeam;
 
-      if (rootState.velocity.teams.length === 0) {
+      if (
+        rootState.velocity.teams.length === 0 &&
+        rootState.global.accessToken !== ''
+      ) {
         const host =
           window._env_.API_URL !== undefined
             ? window._env_.API_URL
             : 'http://127.0.0.1:3001';
         axios({
           method: 'get',
-          url: host + '/velocity'
+          url: host + '/velocity',
+          headers: { Authorization: 'bearer ' + rootState.global.accessToken }
         })
           .then(response => {
             setTeams(response.data);
