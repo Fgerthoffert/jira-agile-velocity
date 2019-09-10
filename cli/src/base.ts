@@ -59,8 +59,11 @@ export default abstract class extends Command {
     ],
     roadmap: {
       jqlInitiatives: 'type = initiative',
-      forecaseWeeks: 26,
+      forecastWeeks: 26,
       teams: ['Team 1, Team 2']
+    },
+    api: {
+      jwtSecret: 'updateYourSecret'
     }
   };
 
