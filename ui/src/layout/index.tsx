@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Header from '../components/Header';
 import Menu from '../components/Menu';
+import LoginDialog from '../components/LoginDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,6 +50,7 @@ export default function Layout(props: LayoutProps) {
     <div className={classes.root}>
       <CssBaseline />
       <Header />
+      <LoginDialog />
       <Menu />
       <main
         className={clsx(classes.content, {

@@ -2,16 +2,32 @@
 import * as log from 'loglevel';
 import { createModel } from '@rematch/core';
 
+import axios from 'axios';
+
 export const global = createModel({
   state: {
     log: {},
     showMenu: false,
     pageTitle: null,
-    defaultPoints: true
+    defaultPoints: true,
+
+    // Authentication module
+    loggedIn: false, // Is the user logged in
+    username: '',
+    password: ''
   },
   reducers: {
     setLog(state: any, payload: any) {
       return { ...state, log: payload };
+    },
+    setLoggedIn(state: any, payload: any) {
+      return { ...state, loggedIn: payload };
+    },
+    setUsername(state: any, payload: any) {
+      return { ...state, username: payload };
+    },
+    setPassword(state: any, payload: any) {
+      return { ...state, password: payload };
     },
     setShowMenu(state: any, payload: any) {
       return { ...state, showMenu: payload };
@@ -33,6 +49,29 @@ export const global = createModel({
       }
       logger.info('Logger initialized');
       this.setLog(logger);
+    },
+    async logUserIn(payload, rootState) {
+      console.log('Log user in');
+      // Fetch data
+
+      const host =
+        window._env_.API_URL !== undefined
+          ? window._env_.API_URL
+          : 'http://127.0.0.1:3001';
+      axios({
+        method: 'post',
+        url: host + '/login',
+        data: {
+          username: rootState.global.username,
+          password: rootState.global.password
+        }
+      })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 });
