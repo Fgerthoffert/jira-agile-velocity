@@ -113,7 +113,7 @@ export const roadmap = createModel({
         axios({
           method: 'get',
           url: host + '/roadmap',
-          headers: headers
+          headers
         })
           .then(response => {
             setRoadmap(response.data);

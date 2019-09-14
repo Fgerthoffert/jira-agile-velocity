@@ -51,7 +51,7 @@ export const velocity = createModel({
         axios({
           method: 'get',
           url: host + '/velocity',
-          headers: headers
+          headers
         })
           .then(response => {
             setTeams(response.data);
