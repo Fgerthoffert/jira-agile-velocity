@@ -133,7 +133,6 @@ export interface IConfig {
   jira: IConfigJira;
   teams: Array<IConfigTeam>;
   roadmap: IConfigRoadmap;
-  api: { jwtSecret: string };
 }
 
 export interface IConfigTeam {
