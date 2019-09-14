@@ -14,6 +14,7 @@ declare global {
 export const roadmap = createModel({
   state: {
     log: {},
+    loading: false,
     roadmap: {},
     selectedTab: 'completionchart',
 
@@ -37,6 +38,9 @@ export const roadmap = createModel({
     },
     setRoadmap(state: any, payload: any) {
       return { ...state, roadmap: payload };
+    },
+    setLoading(state: any, payload: any) {
+      return { ...state, loading: payload };
     },
     setOpenGraph(state: any, payload: any) {
       return { ...state, openGraph: payload };
@@ -86,30 +90,38 @@ export const roadmap = createModel({
       } else {
         logger.disableAll();
       }
-      logger.info('Logger initialized');
+      logger.info('Roadmap Logger initialized');
       this.setLog(logger);
 
       // Fetch data
       const setRoadmap = this.setRoadmap;
+      const setLoading = this.setLoading;
 
       if (
         Object.values(rootState.roadmap.roadmap).length === 0 &&
         rootState.global.accessToken !== ''
       ) {
+        setLoading(true);
         const host =
           window._env_.API_URL !== undefined
             ? window._env_.API_URL
             : 'http://127.0.0.1:3001';
+        const headers =
+          window._env_.AUTH0_DISABLED !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
         axios({
           method: 'get',
           url: host + '/roadmap',
-          headers: { Authorization: 'bearer ' + rootState.global.accessToken }
+          headers: headers
         })
           .then(response => {
             setRoadmap(response.data);
+            setLoading(false);
           })
           .catch(error => {
             setRoadmap({});
+            setLoading(false);
           });
       }
     },

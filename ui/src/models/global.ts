@@ -1,8 +1,28 @@
 // https://github.com/pimterry/loglevel
 import * as log from 'loglevel';
 import { createModel } from '@rematch/core';
+import createAuth0Client from '@auth0/auth0-spa-js';
 
-import axios from 'axios';
+declare global {
+  interface Window {
+    Auth0: any;
+  }
+}
+
+const setAuth0Config = async () => {
+  const authConfig = {
+    domain: window._env_.AUTH0_DOMAIN,
+    clientId: window._env_.AUTH0_CLIENT_ID,
+    audience: window._env_.AUTH0_AUDIENCE
+  };
+
+  window.Auth0 = await createAuth0Client({
+    domain: authConfig.domain,
+    client_id: authConfig.clientId,
+    audience: authConfig.audience
+  });
+  return window.Auth0;
+};
 
 export const global = createModel({
   state: {
@@ -13,13 +33,27 @@ export const global = createModel({
 
     // Authentication module
     loggedIn: false, // Is the user logged in
-    username: '',
+    auth0Initialized: false,
+    authUser: null,
+    authMessage: '',
+    username: true,
     password: '',
-    accessToken: ''
+    accessToken: '',
+
+    loginMenuOpen: false
   },
   reducers: {
     setLog(state: any, payload: any) {
       return { ...state, log: payload };
+    },
+    setAuth0Initialized(state: any, payload: any) {
+      return { ...state, auth0Initialized: payload };
+    },
+    setAuthMessage(state: any, payload: any) {
+      return { ...state, authMessage: payload };
+    },
+    setAuthUser(state: any, payload: any) {
+      return { ...state, authUser: payload };
     },
     setLoggedIn(state: any, payload: any) {
       return { ...state, loggedIn: payload };
@@ -41,6 +75,18 @@ export const global = createModel({
     },
     setDefaultPoints(state: any, payload: any) {
       return { ...state, defaultPoints: payload };
+    },
+    setLoginMenuOpen(state: any, payload: any) {
+      return { ...state, loginMenuOpen: payload };
+    },
+    setCallbackState(state: any, payload: any) {
+      return {
+        ...state,
+        loggedIn: payload.loggedIn,
+        accessToken: payload.accessToken,
+        authUser: payload.authUser,
+        auth0Initialized: payload.auth0Initialized
+      };
     }
   },
   effects: {
@@ -54,33 +100,57 @@ export const global = createModel({
       logger.info('Logger initialized');
       this.setLog(logger);
     },
-    async logUserIn(payload, rootState) {
-      console.log('Log user in');
-      // Fetch data
-      console.log(rootState.global.accessToken);
-      const host =
-        window._env_.API_URL !== undefined
-          ? window._env_.API_URL
-          : 'http://127.0.0.1:3001';
-      axios({
-        method: 'post',
-        url: host + '/login',
-        data: {
-          username: rootState.global.username,
-          password: rootState.global.password
-        }
-      })
-        .then(response => {
-          console.log(response);
-          if (response.status === 201) {
-            this.setAccessToken(response.data.access_token);
-            this.setLoggedIn(true);
-          }
-        })
-        .catch(error => {
-          this.setAccessToken('');
-          this.setLoggedIn(false);
+
+    async doLogOut() {
+      if (window.Auth0 !== undefined) {
+        window.Auth0.logout({
+          returnTo: window.location.origin
         });
+        this.setLoggedIn(false);
+        this.setAuth0Initialized(false);
+        this.setAuthMessage('');
+        this.setAccessToken('');
+        this.setAuthUser(null);
+      }
+    },
+
+    async initAuth() {
+      log.info('User not logged in, initilizing authentication');
+
+      if (window.Auth0 !== undefined) {
+        this.setAuth0Initialized(true);
+      } else {
+        await setAuth0Config();
+        this.setAuth0Initialized(true);
+      }
+    },
+
+    async loginCallback(payload, rootState) {
+      // tslint:disable-next-line:no-shadowed-variable
+      const log = rootState.global.log;
+      log.info('Received callback, finalizing logging');
+      const auth0 =
+        window.Auth0 === undefined ? await setAuth0Config() : window.Auth0;
+      if (window.Auth0 !== undefined && rootState.global.loggedIn === false) {
+        await auth0.handleRedirectCallback();
+
+        const isLoggedIn = await auth0.isAuthenticated();
+        if (isLoggedIn === true) {
+          const accessToken = await auth0.getTokenSilently();
+          const user = await auth0.getUser();
+          this.setCallbackState({
+            loggedIn: isLoggedIn,
+            accessToken,
+            authUser: user
+          });
+        } else {
+          this.setCallbackState({
+            loggedIn: isLoggedIn,
+            accessToken: '',
+            authUser: null
+          });
+        }
+      }
     }
   }
 });

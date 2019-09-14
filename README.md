@@ -71,23 +71,71 @@ Clicking on any of the bar-charts will open the corresponding issues in Jira.
 
 The initiatives view is divided in two sections, one focused on past completion, the other one uses velocity to forecast a potential implementation schedule.
 
-### Completion
+## Completion View
 
-This view is centered around completed work and was built to support the following use cases:
+<p align="center">
+  <img alt="Initiatives Completion" title="Initiatives completion" src="./docs/initiatives-completion-view.png" width="640" />
+</p>
 
-- Identify the proportion of work spent on initiatives vs other activities (is the team being distracted from its roadmap)
-- Identify if some issues have an unclear scope or are not receiving the proper focuse (long-running initiatives, initiatives with large gap between completed stories, ...)
-- Quickly see an initiative's completion state from a points and an issue count point of view
-- Quicly see which team is working on which initiative
+The initiatives completion view providers an overview over the past X weeks, of points (or issues count), completed by week and by initiative by the teams. Displayed using a heatmap chart, a color scheme is used to highlight the proportion of the teams work (darker = higher proportion). The last line of the chart is an aggregate of all points (or count) completed but not related to an initiative.
 
-This view automatically filters out initiatives which didn't receive any activities over the entire period.
+The heatmap was designed to answer the following questions:
 
-### Forecast
+- Are the teams distracted from working on initiatives (last line with a high proportion of completed activities) ?
+- Are the initiatives properly scoped and receiving the correct focus ?
+- Are the initiatives prioritized properly ?
+- Are the teams consistent in their delivery of an initiative ?
+
+Hovering over the numbers displays the activities completed on that week for that initiative, clicking on it open those results in Jira.
+
+Below the heatmap, a table provide the exact completion status of each initiative, with metrics in both Points and Issue Count, this view can answer the following questions:
+
+- What's the completion progress ?
+- Who's working on those initiatives ?
+- Is there a lot of uncertainties in delivering an initiative ? (for example if 90% of the points are completed, but only 20% of the issues)
+
+The graph view, provides a quick glance of all activities in an Initiative using a tree-like view. Numbers bubble-up for each generation of the tree. Hovering displays the corresponding ticket and clicking on it open it in Jira.
+
+<p align="center">
+  <img alt="Initiatives Completion Graph" title="Initiatives completion graph" src="./docs/initiatives-graph-view.png" width="640" />
+</p>
+
+### Naive Forecast
 
 This view is centered around building a roadmap and was built to support the following use cases:
 
 - Identify the amount of work remaining, by team.
 - Provide a roadmap of the upcoming initiatives based on their effort and the team's velocity
+
+# Authentication
+
+The tool supports two modes, anonymous access (no authentication nor authorization) or using Auth0 as an authentication/authorization provider.
+
+## Anonymous access
+
+Anonymous access is done by bypassing the authentication layer entirely. If Auth0 is disabled, all requests to the API will be accepted and the UI will not display the login views.
+
+## Auth0 access (Authenticated and authorized)
+
+Access to the tool's UI and API can be secured using [Auth0](https://auth0.com) as an authentication and authorization provider.
+
+The power of using something like Auth0 (verus directly integrating with Google OAuth2 for example) is that it entirely delegates the authorization logic to a third party (some might say it's not a good thing), keeping the code (very) simple in our tool. Auth0 can then be configured to allow only a pre-defined list of users, an entire domain, ... with a scripting language to define and configure the authorization logic (see the Rules section in your Auth0 dashboard). Pretty powerful and easy to setup.
+
+### Create an Auth0 application
+
+You will first need to create a "Single Page Application" in the Applications menu, in the settings of your application:
+
+- **Domain** is the Auth0 domain, you need to set `AUTH0_DOMAIN` to that value
+- **Client ID** is used for the UI, you need to set `AUTH0_CLIENT_ID` to that value
+- **Allowed Callback URLs** is the address users are redirected to after log-in, set this value to the domain you are using for the tool's front-end (it could be something like: `http://localhost:3000/` for dev or testing)
+- **Allowed Web Origins** set this value to the domain you are using for the tool's front-end (it could be something like: `http://localhost:3000/` for dev or testing)
+- **Allowed Logout URLs** this is the address users would be redirected to after logging-out, set this value to the domain you are using for the tool's front-end (it could be something like: `http://localhost:3000/` for dev or testing)
+
+### Create an Auth0 API
+
+Then go and create an API in the configuration panel.
+
+- **Identifier**, should be the same value than what is being setup for `AUTH0_DOMAIN` in the UI. You can use your API URL there.
 
 # Install
 

@@ -50,7 +50,7 @@ export default function Layout(props: LayoutProps) {
     <div className={classes.root}>
       <CssBaseline />
       <Header />
-      <LoginDialog />
+      {window._env_.AUTH0_DISABLE !== true && <LoginDialog />}
       <Menu />
       <main
         className={clsx(classes.content, {

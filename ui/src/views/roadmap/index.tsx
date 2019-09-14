@@ -6,6 +6,7 @@ import Details from './Details';
 import Completion from './Completion';
 import Forecast from './Forecast';
 import SectionTabs from './sectiontabs';
+import LoadingBar from './LoadingBar';
 
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
@@ -19,6 +20,7 @@ const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
   initView();
   return (
     <Layout>
+      <LoadingBar />
       <SectionTabs />
       <br />
       <Completion />

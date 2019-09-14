@@ -7,20 +7,23 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 
 import { iRootState } from '../../store';
 
 const mapState = (state: iRootState) => ({
   loggedIn: state.global.loggedIn,
+  authMessage: state.global.authMessage,
   username: state.global.username,
-  password: state.global.password
+  password: state.global.password,
+  auth0Initialized: state.global.auth0Initialized
 });
 
 const mapDispatch = (dispatch: any) => ({
-  logUserIn: dispatch.global.logUserIn,
   setUsername: dispatch.global.setUsername,
-  setPassword: dispatch.global.setPassword
+  setPassword: dispatch.global.setPassword,
+  initAuth: dispatch.global.initAuth,
+  setAuthMessage: dispatch.global.setAuthMessage,
+  loginCallback: dispatch.global.loginCallback
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -28,49 +31,63 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const LoginDialog: FC<connectedProps> = ({
   loggedIn,
-  username,
-  password,
-  logUserIn,
-  setUsername,
-  setPassword
+  auth0Initialized,
+  authMessage,
+  initAuth,
+  setAuthMessage,
+  loginCallback
 }) => {
-  const handleLogin = () => {
-    logUserIn();
+  if (loggedIn === false) {
+    initAuth();
+  }
+  const query = window.location.search;
+  if (query.includes('error_description=')) {
+    const errorMsg = new URLSearchParams(window.location.search).get(
+      'error_description'
+    );
+    if (errorMsg !== authMessage) {
+      setAuthMessage(errorMsg);
+    }
+  }
+  if (
+    query.includes('code=') &&
+    query.includes('state=') &&
+    loggedIn === false &&
+    auth0Initialized === true
+  ) {
+    loginCallback();
+  }
+
+  const openLogin = async () => {
+    await window.Auth0.loginWithRedirect({
+      redirect_uri: window.location.origin
+    });
   };
 
-  const updateUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
+  if (auth0Initialized === false) {
+    return null;
+  }
 
-  const updatePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
   return (
     <Dialog open={!loggedIn} aria-labelledby='form-dialog-title'>
-      <DialogTitle id='form-dialog-title'>Login</DialogTitle>
+      <DialogTitle id='form-dialog-title'>Please Log-in</DialogTitle>
       <DialogContent>
-        <DialogContentText>Please log-in to use the app</DialogContentText>
-        <TextField
-          autoFocus
-          margin='dense'
-          id='username'
-          label='Username'
-          value={username}
-          onChange={updateUsername}
-          fullWidth
-        />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='password'
-          label='Password'
-          value={password}
-          onChange={updatePassword}
-          fullWidth
-        />
+        <DialogContentText>
+          You will be redirected to{' '}
+          <a
+            href='https://auth0.com/'
+            rel='noopener noreferrer'
+            target='_blank'
+          >
+            Auth0
+          </a>
+          , our authentication provider
+          <br />
+          <span style={{ color: '#f44336' }}>{authMessage}</span>
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleLogin} color='primary'>
+        <Button onClick={openLogin} color='primary'>
           Log-in
         </Button>
       </DialogActions>
