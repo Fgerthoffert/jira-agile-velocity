@@ -120,7 +120,7 @@ The point of the tool is to provide a simple and data-centric view over your pro
 
 The field **jqlHistory**, uses the format YYYY-MM-DD and defines how far back in history to fetch data from Jira. This might make the first execution slow (initial data fetch), but subsequent will only fetch new days, which will be much faster.
 
-## Map jira fields
+## Map Jira fields
 
 Most of the configuration settings should be fairly straight forward (username, host, ...), what might be slightly more challenging though is to identify the various ID for some of Jira fields (points, epics, ...), which will be different from one installation to the next.
 
