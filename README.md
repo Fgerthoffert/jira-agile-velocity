@@ -331,12 +331,23 @@ You can now run each application in their own terminal.
 
 ### API
 
+You should be passing environment variable when starting the API (see example below)
+
 ```bash
 > cd api
-> npm run start:dev
+> AUTH0_DOMAIN=agile-jav.auth0.com  AUTH0_AUDIENCE=http://localhost:3001 npm run start:dev npm run start:dev
 ```
 
+The following variables are used:
+
+- CONFIG_PATH : Path on the filesystem containing the configuration file and data cache directory
+- AUTH0_DISABLED : To enable or disable authentification
+- AUTH0_DOMAIN : The Auth0 Domain
+- AUTH0_AUDIENCE": The Auth0 audience
+
 ### UI
+
+When developing with the UI, you can update environment variables by editing the `.env` file in the UI folder
 
 ```bash
 > cd api
