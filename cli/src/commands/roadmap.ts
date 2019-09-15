@@ -126,8 +126,8 @@ export default class Roadmap extends Command {
     const emptyRoadmap = getEmptyRoadmapObject(
       lastCalendarWeek,
       // tslint:disable-next-line: strict-type-predicates
-      userConfig.roadmap.forecaseWeeks !== undefined
-        ? userConfig.roadmap.forecaseWeeks
+      userConfig.roadmap.forecastWeeks !== undefined
+        ? userConfig.roadmap.forecastWeeks
         : 26
     );
     const futureCompletion = crunchRoadmap(
