@@ -116,7 +116,7 @@ This view is centered around building a roadmap and was built to support the fol
 
 # Jira
 
-The point of the tool is to provide a simple and data-centric view over your project management data, not to build an overly complex and highly customizable system. Basically trying to build a tool that could work on top of any workflows, with requiring the team to change any of its current Agile practices. But, for various reasons (mostly due to limitations with Jira), it has not always been possible and there are occurences where the tool is going slightly over what I would have hopped in terms of need for Jira customization.
+The point of the tool is to provide a simple and data-centric view over your project management data, not to build an overly complex and highly customizable system. Basically trying to build a tool that could work on top of any workflows, without requiring the team to change any of its current Agile practices. But, for various reasons (mostly due to limitations with Jira), it has not always been possible and there are occurences where the tool is going slightly over what I would have hopped in terms of need for Jira customization.
 
 The field **jqlHistory**, uses the format YYYY-MM-DD and defines how far back in history to fetch data from Jira. This might make the first execution slow (initial data fetch), but subsequent will only fetch new days, which will be much faster.
 
