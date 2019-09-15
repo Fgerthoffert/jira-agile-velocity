@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { RoadmapService } from './roadmap.service';

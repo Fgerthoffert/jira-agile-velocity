@@ -22,6 +22,9 @@ services:
       - '5001:3001'
     environment:
       - 'CONFIG_PATH=/root/jav-data'
+      - 'AUTH0_DISABLED=true'
+      - 'AUTH0_DOMAIN=agile-jav.auth0.com'
+      - 'AUTH0_AUDIENCE=http://localhost:3001'
     volumes:
       - data-volume:/root/jav-data
 
@@ -31,3 +34,7 @@ services:
       - '5000:80'
     environment:
       - 'API_URL=http://127.0.0.1:5001'
+      - 'AUTH0_DISABLED=true'
+      - 'AUTH0_DOMAIN=agile-jav.auth0.com'
+      - 'AUTH0_CLIENT_ID=sGJDsqzc0VhKgoutaoyLWjyWK9kAwE2f'
+      - 'AUTH0_AUDIENCE=http://localhost:3001'

@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import SwitchPoints from './switchPoints';
+import Login from './Login';
 import { iRootState } from '../../store';
 
 const drawerWidth = 240;
@@ -84,6 +85,7 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
           {pageTitle}
         </Typography>
         <SwitchPoints />
+        {window._env_.AUTH0_DISABLED !== true && <Login />}
       </Toolbar>
     </AppBar>
   );

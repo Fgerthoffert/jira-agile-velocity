@@ -161,4 +161,5 @@ export interface IConfigJira {
 export interface IConfigRoadmap {
   jqlInitiatives: string;
   teams: Array<string>;
+  forecastWeeks: number;
 }

@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { VelocityService } from './velocity.service';
