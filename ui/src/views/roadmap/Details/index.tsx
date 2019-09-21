@@ -89,7 +89,8 @@ const Details: FC<connectedProps> = ({
               <Grid item>
                 <b>Colors:</b>
                 <br />
-                Red: Open <br />
+                Blue: Open <br />
+                Yellow: In Progress <br />
                 Green: Closed <br />
               </Grid>
               <Grid item>

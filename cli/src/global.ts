@@ -153,6 +153,7 @@ export interface IConfigJira {
   host: string;
   fields: {
     points: string;
+    originalPoints: string;
     parentInitiative: string;
     parentEpic: string;
   };

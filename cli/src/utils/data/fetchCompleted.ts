@@ -39,7 +39,10 @@ const fetchCompleted = async (
         const issuesJira = await jiraSearchIssues(
           config.jira,
           jqlQuery,
-          'labels,summary,' + config.jira.fields.points
+          'labels,summary,' +
+            config.jira.fields.points +
+            ',' +
+            config.jira.fields.originalPoints
         );
         //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(issuesDayFilepath, {
@@ -54,11 +57,7 @@ const fetchCompleted = async (
               closedAt: scanDay,
               team: teamName,
               host: config.jira.host,
-              points:
-                issue.fields[config.jira.fields.points] === undefined ||
-                issue.fields[config.jira.fields.points] === null
-                  ? 0
-                  : issue.fields[config.jira.fields.points],
+              points: returnTicketsPoints(issue, config),
               jql: jqlQuery
             };
             issues.push(updatedIssue);
@@ -77,6 +76,22 @@ const fetchCompleted = async (
     }
   }
   return issues;
+};
+
+const returnTicketsPoints = (issue: any, config: IConfig) => {
+  if (
+    issue.fields[config.jira.fields.points] !== undefined &&
+    issue.fields[config.jira.fields.points] !== null
+  ) {
+    return issue.fields[config.jira.fields.points];
+  }
+  if (
+    issue.fields[config.jira.fields.originalPoints] !== undefined &&
+    issue.fields[config.jira.fields.originalPoints] !== null
+  ) {
+    return issue.fields[config.jira.fields.originalPoints];
+  }
+  return 0;
 };
 
 //https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f

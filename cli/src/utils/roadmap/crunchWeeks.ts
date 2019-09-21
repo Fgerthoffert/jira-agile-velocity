@@ -1,7 +1,7 @@
 // tslint:disable-next-line: file-name-casing
 
-import { IConfig, IJiraIssue } from "../../global";
-import { startOfWeek } from "../misc/dateUtils";
+import { IConfig, IJiraIssue } from '../../global';
+import { startOfWeek } from '../misc/dateUtils';
 
 const crunchWeeks = (
   issuesTree: any,
@@ -25,12 +25,22 @@ const crunchWeeks = (
         acc[firstDayWeekKey].points.count = acc[firstDayWeekKey].list
           .filter(
             (issue: IJiraIssue) =>
+              (issue.fields[userConfig.jira.fields.points] !== undefined &&
+                issue.fields[userConfig.jira.fields.points] !== null) ||
+              (issue.fields[userConfig.jira.fields.originalPoints] !==
+                undefined &&
+                issue.fields[userConfig.jira.fields.originalPoints] !== null)
+          )
+          .map((issue: IJiraIssue) => {
+            if (
               issue.fields[userConfig.jira.fields.points] !== undefined &&
               issue.fields[userConfig.jira.fields.points] !== null
-          )
-          .map(
-            (issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points]
-          )
+            ) {
+              return issue.fields[userConfig.jira.fields.points];
+            } else {
+              return issue.fields[userConfig.jira.fields.originalPoints];
+            }
+          })
           .reduce((acc: number, points: number) => acc + points, 0);
       }
     }
