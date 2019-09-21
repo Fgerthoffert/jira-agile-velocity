@@ -30,7 +30,7 @@ const exploreGraph = (
       data: {
         ...childrenIssue,
         distance: distance + 1,
-        status: childrenIssue.fields.status.name,
+        status: childrenIssue.fields.status.statusCategory.name,
         type: childrenIssue.fields.issuetype.name,
         points: childrenIssue.metrics.points.total
       }

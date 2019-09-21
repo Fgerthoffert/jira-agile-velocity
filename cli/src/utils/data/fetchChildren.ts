@@ -43,6 +43,8 @@ const fetchChildren = async (
       'issuekey in childIssuesOf(' + issueKey + ')',
       'summary,status,labels,' +
         userConfig.jira.fields.points +
+        ',' +
+        userConfig.jira.fields.originalPoints +
         ',issuetype,' +
         userConfig.jira.fields.parentInitiative +
         ',' +
@@ -55,7 +57,8 @@ const fetchChildren = async (
       const updatedIssue = {
         ...issue,
         host: userConfig.jira.host,
-        jql: 'issuekey in childIssuesOf(' + issueKey + ')'
+        jql: 'issuekey in childIssuesOf(' + issueKey + ')',
+        points: returnTicketsPoints(issue, userConfig)
       };
       issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
       issues.push(updatedIssue);
@@ -68,6 +71,22 @@ const fetchChildren = async (
 };
 
 export default fetchChildren;
+
+const returnTicketsPoints = (issue: any, config: IConfig) => {
+  if (
+    issue.fields[config.jira.fields.points] !== undefined &&
+    issue.fields[config.jira.fields.points] !== null
+  ) {
+    return issue.fields[config.jira.fields.points];
+  }
+  if (
+    issue.fields[config.jira.fields.originalPoints] !== undefined &&
+    issue.fields[config.jira.fields.originalPoints] !== null
+  ) {
+    return issue.fields[config.jira.fields.originalPoints];
+  }
+  return 0;
+};
 
 //https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
 const readLines = (input: any) => {

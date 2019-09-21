@@ -9,11 +9,11 @@ import { IJiraIssue } from '../global';
 import fetchChildren from '../utils/data/fetchChildren';
 import fetchCompleted from '../utils/data/fetchCompleted';
 import fetchInitiatives from '../utils/data/fetchInitiatives';
+import crunchRoadmap from '../utils/roadmap/crunchRoadmap';
 import getEmptyCalendarObject from '../utils/roadmap/getEmptyCalendarObject';
 import getEmptyRoadmapObject from '../utils/roadmap/getEmptyRoadmapObject';
 import prepareInitiativesData from '../utils/roadmap/prepareInitiativesData';
 import teamClosedByWeek from '../utils/roadmap/teamClosedByWeek';
-import crunchRoadmap from '../utils/roadmap/crunchRoadmap';
 import teamVelocityFromCache from '../utils/roadmap/teamVelocityFromCache';
 
 export default class Roadmap extends Command {

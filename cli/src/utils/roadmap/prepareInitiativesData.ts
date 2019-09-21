@@ -1,9 +1,9 @@
 // tslint:disable-next-line: file-name-casing
 
-import { IConfig } from "../../global";
+import { IConfig } from '../../global';
 
-import crunchMetrics from "./crunchMetrics";
-import crunchWeeks from "./crunchWeeks";
+import crunchMetrics from './crunchMetrics';
+import crunchWeeks from './crunchWeeks';
 
 const prepareInitiativesData = (
   issuesTree: any,

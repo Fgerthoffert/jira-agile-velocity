@@ -2,9 +2,8 @@ import Command, { flags } from '@oclif/command';
 import * as fs from 'fs';
 import * as fse from 'fs-extra';
 import * as jsYaml from 'js-yaml';
-import * as path from 'path';
-
 import * as loadYamlFile from 'load-yaml-file';
+import * as path from 'path';
 
 import { IConfig } from './global';
 
@@ -25,6 +24,7 @@ export default abstract class extends Command {
       host: 'https://jira.myhost.org',
       fields: {
         points: 'customfield_10114',
+        originalPoints: 'customfield_11115',
         parentInitiative: 'customfield_11112',
         parentEpic: 'customfield_10314'
       }

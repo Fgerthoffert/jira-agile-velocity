@@ -335,7 +335,7 @@ You should be passing environment variable when starting the API (see example be
 
 ```bash
 > cd api
-> AUTH0_DOMAIN=agile-jav.auth0.com  AUTH0_AUDIENCE=http://localhost:3001 npm run start:dev npm run start:dev
+> AUTH0_DOMAIN=agile-jav.auth0.com  AUTH0_AUDIENCE=http://localhost:3001 npm run start:dev
 ```
 
 The following variables are used:

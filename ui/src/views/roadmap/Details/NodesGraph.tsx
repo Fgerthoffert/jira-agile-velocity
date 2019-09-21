@@ -156,13 +156,19 @@ class NodesGraph extends Component<connectedProps> {
       {
         selector: '[status = "Done"]',
         style: {
-          backgroundColor: '#28a745'
+          backgroundColor: '#14892c'
         }
       },
       {
-        selector: '[status != "Done"]',
+        selector: '[status = "To Do"]',
         style: {
-          backgroundColor: '#cb2431'
+          backgroundColor: '#4a6785'
+        }
+      },
+      {
+        selector: '[status = "In Progress"]',
+        style: {
+          backgroundColor: '#ffd351'
         }
       },
       {

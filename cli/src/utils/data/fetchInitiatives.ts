@@ -42,6 +42,8 @@ const fetchInitiatives = async (
       userConfig.roadmap.jqlInitiatives,
       'summary,status,labels,' +
         userConfig.jira.fields.points +
+        ',' +
+        userConfig.jira.fields.originalPoints +
         ',issuetype,assignee'
     );
     const issueFileStream = fs.createWriteStream(initiativesCache, {
@@ -52,7 +54,8 @@ const fetchInitiatives = async (
         ...issue,
         host: userConfig.jira.host,
         jql: userConfig.roadmap.jqlInitiatives,
-        team: getTeamFromAssignee(issue, userConfig.roadmap.teams)
+        team: getTeamFromAssignee(issue, userConfig.roadmap.teams),
+        points: returnTicketsPoints(issue, userConfig)
       };
       issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
       issues.push(updatedIssue);
@@ -65,6 +68,22 @@ const fetchInitiatives = async (
 };
 
 export default fetchInitiatives;
+
+const returnTicketsPoints = (issue: any, config: IConfig) => {
+  if (
+    issue.fields[config.jira.fields.points] !== undefined &&
+    issue.fields[config.jira.fields.points] !== null
+  ) {
+    return issue.fields[config.jira.fields.points];
+  }
+  if (
+    issue.fields[config.jira.fields.originalPoints] !== undefined &&
+    issue.fields[config.jira.fields.originalPoints] !== null
+  ) {
+    return issue.fields[config.jira.fields.originalPoints];
+  }
+  return 0;
+};
 
 //https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
 const readLines = (input: any) => {
