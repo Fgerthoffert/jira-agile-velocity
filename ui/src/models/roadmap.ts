@@ -98,8 +98,9 @@ export const roadmap = createModel({
       const setLoading = this.setLoading;
 
       if (
-        Object.values(rootState.roadmap.roadmap).length === 0 &&
-        rootState.global.accessToken !== ''
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
       ) {
         setLoading(true);
         const host =
@@ -107,7 +108,7 @@ export const roadmap = createModel({
             ? window._env_.API_URL
             : 'http://127.0.0.1:3001';
         const headers =
-          window._env_.AUTH0_DISABLED !== true
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
             ? { Authorization: `Bearer ${rootState.global.accessToken}` }
             : {};
         axios({
@@ -123,6 +124,10 @@ export const roadmap = createModel({
             setRoadmap({});
             setLoading(false);
           });
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not present'
+        );
       }
     },
     async updateGraph(payload, rootState) {
