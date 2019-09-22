@@ -43,6 +43,7 @@ export class RoadmapService {
 
 export const getTeamId = (teamName: string) => {
   return String(teamName)
+    .replace('team-', '') // If team is prefixed by team-, we simply remove it from the string
     .replace(/[^a-z0-9+]+/gi, '')
     .toLowerCase();
 };
