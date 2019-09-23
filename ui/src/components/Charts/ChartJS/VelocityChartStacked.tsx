@@ -102,7 +102,7 @@ class VelocityChartStacked extends Component<any, any> {
           mode: 'index',
           intersect: false,
           callbacks: {
-            label: function(tooltipItem: any, data: any) {
+            label: (tooltipItem: any, data: any) => {
               if (
                 tooltipItem.datasetIndex === 0 ||
                 parseInt(tooltipItem.value, 10) === 0
@@ -126,7 +126,7 @@ class VelocityChartStacked extends Component<any, any> {
                 tooltipItem.value
               );
             },
-            title: function(tooltipItems: any, data: any) {
+            title: (tooltipItems: any, data: any) => {
               //              console.log(tooltipItems);
               //              console.log(data);
               const currentWeek = dataset.find(
@@ -156,9 +156,9 @@ class VelocityChartStacked extends Component<any, any> {
         const activeWeeks = clickedWeek.weekDays.filter(
           (d: any) => d.jql !== null
         );
-        for (const [idx, day] of activeWeeks.entries()) {
+        for (const [widx, day] of activeWeeks.entries()) {
           jqlString = jqlString + ' (' + day.jql + ')';
-          if (idx < activeWeeks.length - 1) {
+          if (widx < activeWeeks.length - 1) {
             jqlString = jqlString + ' OR';
           }
         }

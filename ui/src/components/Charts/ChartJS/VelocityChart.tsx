@@ -85,11 +85,10 @@ class VelocityChart extends Component<any, any> {
     if (activePoints[0] !== undefined) {
       const idx = activePoints[0]._index;
       const issues = dataset[idx].completion.list;
-      console.log(issues);
       if (issues.length > 0 && this.allowClick === true) {
         this.allowClick = false;
         //        const keys = issues.map((i: any) => i.key);
-        //const url =
+        // const url =
         //  issues[0].host + '/issues/?jql=key in (' + keys.toString() + ')';
         const url = issues[0].host + '/issues/?jql=' + issues[0].jql;
         window.open(url, '_blank');
