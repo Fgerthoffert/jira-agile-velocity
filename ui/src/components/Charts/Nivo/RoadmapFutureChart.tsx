@@ -2,6 +2,8 @@ import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 
+import { getInitiativeTitle } from './utils';
+
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -43,7 +45,7 @@ class RoadmapFutureChart extends Component<any, any> {
     const dataset: IDatasetObj[] = [];
     for (const initiative of roadmap.byFutureInitiative) {
       const initiativeData: IDatasetObj = {
-        initiative: initiative.fields.summary + ' (' + initiative.key + ')'
+        initiative: getInitiativeTitle(initiative)
       };
       for (const week of initiative.weeks) {
         initiativeData[week.weekTxt] = week[metric].count;
