@@ -37,7 +37,6 @@ class VelocityChart extends Component<any, any> {
     if (this.chart.destroy !== undefined) {
       this.chart.destroy();
     }
-
     this.chart = new Chart(myChartRef, {
       type: 'bar',
       data: {
@@ -88,9 +87,10 @@ class VelocityChart extends Component<any, any> {
       const issues = dataset[idx].completion.list;
       if (issues.length > 0 && this.allowClick === true) {
         this.allowClick = false;
-        const keys = issues.map((i: any) => i.key);
-        const url =
-          issues[0].host + '/issues/?jql=key in (' + keys.toString() + ')';
+        //        const keys = issues.map((i: any) => i.key);
+        // const url =
+        //  issues[0].host + '/issues/?jql=key in (' + keys.toString() + ')';
+        const url = issues[0].host + '/issues/?jql=' + issues[0].jql;
         window.open(url, '_blank');
         setTimeout(() => {
           this.resetAllowClick();

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
+import toMaterialStyle from 'material-color-hash';
+
+import { getInitiativeTitle } from './utils';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -30,6 +33,13 @@ class RoadmapFutureChart extends Component<any, any> {
     Display different background colors based on the percentage of the effort spent on a particular activity for a week
   */
   getCompletionColor = (data: any, value: any) => {
+    const { roadmap } = this.props;
+    const initiative = roadmap.byFutureInitiative.find(
+      (i: any) => getInitiativeTitle(i) === data.yKey
+    );
+    if (initiative !== undefined) {
+      return toMaterialStyle(initiative.team.name, 200).backgroundColor;
+    }
     return 'rgb(65, 171, 93)';
   };
 
@@ -43,7 +53,7 @@ class RoadmapFutureChart extends Component<any, any> {
     const dataset: IDatasetObj[] = [];
     for (const initiative of roadmap.byFutureInitiative) {
       const initiativeData: IDatasetObj = {
-        initiative: initiative.fields.summary + ' (' + initiative.key + ')'
+        initiative: getInitiativeTitle(initiative)
       };
       for (const week of initiative.weeks) {
         initiativeData[week.weekTxt] = week[metric].count;

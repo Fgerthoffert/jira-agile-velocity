@@ -34,8 +34,9 @@ export const velocity = createModel({
       const setSelectedTeam = this.setSelectedTeam;
 
       if (
-        rootState.velocity.teams.length === 0 &&
-        rootState.global.accessToken !== ''
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
       ) {
         log.info('Loading data');
 
@@ -45,7 +46,7 @@ export const velocity = createModel({
             ? window._env_.API_URL
             : 'http://127.0.0.1:3001';
         const headers =
-          window._env_.AUTH0_DISABLED !== true
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
             ? { Authorization: `Bearer ${rootState.global.accessToken}` }
             : {};
         axios({

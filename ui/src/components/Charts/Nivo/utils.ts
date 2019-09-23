@@ -19,7 +19,12 @@ export const getCellDataInitiatives = (
 };
 
 export const getInitiativeTitle = (initiative: any) => {
-  return initiative.fields.summary + ' (' + initiative.key + ')';
+  const maxTitleLength = 30;
+  const initiativeTitle =
+    initiative.fields.summary.length > maxTitleLength
+      ? initiative.fields.summary.slice(0, maxTitleLength) + '...'
+      : initiative.fields.summary;
+  return initiativeTitle + ' (' + initiative.key + ')';
 };
 
 export const getNonInitiativeTitle = () => {

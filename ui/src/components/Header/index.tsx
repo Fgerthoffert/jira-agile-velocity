@@ -85,7 +85,7 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
           {pageTitle}
         </Typography>
         <SwitchPoints />
-        {window._env_.AUTH0_DISABLED !== true && <Login />}
+        {JSON.parse(window._env_.AUTH0_DISABLED) !== true && <Login />}
       </Toolbar>
     </AppBar>
   );

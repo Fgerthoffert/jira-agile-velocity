@@ -115,13 +115,14 @@ export const global = createModel({
     },
 
     async initAuth() {
-      log.info('User not logged in, initilizing authentication');
-
-      if (window.Auth0 !== undefined) {
-        this.setAuth0Initialized(true);
-      } else {
-        await setAuth0Config();
-        this.setAuth0Initialized(true);
+      if (JSON.parse(window._env_.AUTH0_DISABLED) !== true) {
+        log.info('User not logged in, initializing authentication');
+        if (window.Auth0 !== undefined) {
+          this.setAuth0Initialized(true);
+        } else {
+          await setAuth0Config();
+          this.setAuth0Initialized(true);
+        }
       }
     },
 
