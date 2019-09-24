@@ -282,8 +282,8 @@ Once the directory is created, you can start the environment:
 
 ```bash
 > mkdir /tmp/jav-data # Replace with the desired directory to store cache and config on host
-> docker-compose pull -f docker-compose.yml # Fetches the latest version of the containers
-> docker-compose up -d -f docker-compose.yml # Run the containers
+> docker-compose pull # Fetches the latest version of the containers
+> docker-compose up -d # Run the containers in deamon mode (you can remove -d to see log messages)
 ```
 
 Note: The cli container is not configured with a cron to refresh data, you'd need to configure this on your host environment (see configuration update below)
