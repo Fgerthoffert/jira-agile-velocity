@@ -5,10 +5,9 @@ import * as path from 'path';
 import * as readline from 'readline';
 import * as stream from 'stream';
 
-import { IConfig, IJiraIssue } from '../../global';
+import { IConfig } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
-import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
-import { getTeamId, getTeamFromAssignee } from '../misc/teamUtils';
+import { getTeamFromAssignee } from '../misc/teamUtils';
 
 /*
     Fetches all initiatives

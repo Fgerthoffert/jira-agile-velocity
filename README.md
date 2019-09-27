@@ -1,6 +1,8 @@
 [![CircleCI](https://circleci.com/gh/Fgerthoffert/jira-agile-velocity/tree/master.svg?style=svg)](https://circleci.com/gh/Fgerthoffert/jira-agile-velocity/tree/master)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/fgerthoffert/jira-agile-velocity)
 [![License](https://img.shields.io/npm/l/jira-agile-velocity.svg)](https://github.com/fgerthoffert/jira-agile-velocity/blob/master/package.json)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Fgerthoffert/jira-agile-velocity.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Fgerthoffert/jira-agile-velocity/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Fgerthoffert/jira-agile-velocity.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Fgerthoffert/jira-agile-velocity/context:javascript)
 
 | API                                                                           | UI                                                                          | CLI                                                                                                                                                                                                                                                                                              |
 | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

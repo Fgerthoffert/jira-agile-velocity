@@ -1,7 +1,4 @@
 // tslint:disable-next-line: file-name-casing
-
-import { IConfig, IJiraIssue } from '../../global';
-import { startOfWeek } from '../misc/dateUtils';
 import { getTeamId } from '../misc/teamUtils';
 
 const crunchRoadmap = (
@@ -144,5 +141,4 @@ const fillWeek = (
       issues: { count: weekCompletedIssues }
     };
   });
-  return weeks;
 };

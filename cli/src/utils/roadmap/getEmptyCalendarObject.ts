@@ -4,9 +4,8 @@
 */
 import { getWeek, getYear } from 'date-fns';
 
-import { ICalendar, IConfig, IJiraIssue } from '../../global';
-import { formatDate, startOfWeek } from '../misc/dateUtils';
-import { getTeamId } from '../misc/teamUtils';
+import { IConfig, IJiraIssue } from '../../global';
+import { formatDate } from '../misc/dateUtils';
 
 const getEmptyCalendarObject = (
   issues: Array<IJiraIssue>,

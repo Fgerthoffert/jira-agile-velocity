@@ -1,4 +1,4 @@
-import { ICalendarFinal, IConfig } from "../../global";
+import { IConfig } from '../../global';
 
 const getDailyHealthMsg = (
   calendar: any,
@@ -9,88 +9,88 @@ const getDailyHealthMsg = (
   const teamConfig = userConfig.teams.find(t => t.name === teamName);
   if (teamConfig !== undefined) {
     const jiraLinkRemaining =
-      userConfig.jira.host + "/issues/?jql=" + teamConfig.jqlRemaining;
+      userConfig.jira.host + '/issues/?jql=' + teamConfig.jqlRemaining;
     const jiraLinkClosedDay =
       userConfig.jira.host +
-      "/issues/?jql=" +
+      '/issues/?jql=' +
       teamConfig.jqlCompletion +
-      " ON(" +
+      ' ON(' +
       calendar.health.days.completion.msgJira +
-      ")";
+      ')';
     const jiraLinkClosedWeek =
       userConfig.jira.host +
-      "/issues/?jql=" +
+      '/issues/?jql=' +
       teamConfig.jqlCompletion +
-      " AFTER(" +
+      ' AFTER(' +
       calendar.health.weeks.completion.msgJira +
-      ")";
+      ')';
     let messageString =
-      "Howdy " +
+      'Howdy ' +
       teamConfig.name +
-      ", here are our velocity stats, live from Jira.\n" +
-      "Remaining: " +
-      "*<" +
+      ', here are our velocity stats, live from Jira.\n' +
+      'Remaining: ' +
+      '*<' +
       jiraLinkRemaining +
-      "|" +
+      '|' +
       calendar.forecast.completion[type].openCount +
-      " " +
+      ' ' +
       type +
-      ">*\n" +
-      "On " +
+      '>*\n' +
+      'On ' +
       calendar.health.days.completion.msgTxt +
-      ", we completed: " +
-      "*<" +
+      ', we completed: ' +
+      '*<' +
       jiraLinkClosedDay +
-      "|" +
+      '|' +
       calendar.health.days.completion[type].count +
-      " " +
+      ' ' +
       type +
-      ">*" +
-      " [Max: " +
+      '>*' +
+      ' [Max: ' +
       calendar.health.days.completion[type].max +
-      " / Min: " +
+      ' / Min: ' +
       calendar.health.days.completion[type].min +
-      " / Avg: " +
+      ' / Avg: ' +
       calendar.health.days.completion[type].avg +
-      " for " +
+      ' for ' +
       calendar.health.days.completion.msgTxt +
-      "s]\n" +
-      "This week (" +
+      's]\n' +
+      'This week (' +
       calendar.health.weeks.completion.msgTxt +
-      ") we completed: " +
-      "*<" +
+      ') we completed: ' +
+      '*<' +
       jiraLinkClosedWeek +
-      "|" +
+      '|' +
       calendar.health.weeks.completion[type].count +
-      " " +
+      ' ' +
       type +
-      ">*" +
-      " [Max: " +
+      '>*' +
+      ' [Max: ' +
       calendar.health.weeks.completion[type].max +
-      " / Min: " +
+      ' / Min: ' +
       calendar.health.weeks.completion[type].min +
-      " / Avg: " +
+      ' / Avg: ' +
       calendar.health.weeks.completion[type].avg +
-      "]\n" +
-      "Our weekly velocity is currently at " +
+      ']\n' +
+      'Our weekly velocity is currently at ' +
       calendar.health.weeks.velocity[type].current +
-      " " +
+      ' ' +
       type +
-      "/week and is going: *" +
+      '/week and is going: *' +
       calendar.health.weeks.velocity[type].trend +
-      "* (from " +
+      '* (from ' +
       calendar.health.weeks.velocity[type].previous +
-      " /week)\n" +
-      "Estimated completion in: *" +
+      ' /week)\n' +
+      'Estimated completion in: *' +
       calendar.forecast.completion[type].effortDays +
-      "* days\n" +
-      "_Velocity calculated using a 4 weeks rolling window, current day & week are excluded from calculations._\n" +
-      "_" +
+      '* days\n' +
+      '_Velocity calculated using a 4 weeks rolling window, current day & week are excluded from calculations._\n' +
+      '_' +
       teamConfig.slack.explanation +
-      "_";
+      '_';
     return messageString;
   }
-  return "";
+  return '';
 };
 
 export default getDailyHealthMsg;

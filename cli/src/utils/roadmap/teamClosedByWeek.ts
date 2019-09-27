@@ -2,11 +2,9 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
-import { getWeek, getYear } from 'date-fns';
 
-import { ICalendar, IConfig, IJiraIssue } from '../../global';
-import { formatDate, startOfWeek } from '../misc/dateUtils';
-import { getTeamId } from '../misc/teamUtils';
+import { IConfig, IJiraIssue } from '../../global';
+import { startOfWeek } from '../misc/dateUtils';
 
 const teamClosedByWeek = (
   issues: Array<IJiraIssue>,
