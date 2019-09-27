@@ -1,10 +1,5 @@
 // tslint:disable-next-line: file-name-casing
-import * as fs from "fs";
-import * as path from "path";
-import * as readline from "readline";
-import * as stream from "stream";
-
-import { ICalendar, IJiraIssue } from "../../global";
+import { ICalendar, IJiraIssue } from '../../global';
 
 /*
     Receives an empty calendar and populates it with issues by reading files from cache
@@ -33,7 +28,7 @@ const insertClosed = async (
       }
       if (
         issue.fields.labels.filter(
-          (label: string) => stringClean(label) === stringClean("Scope Change")
+          (label: string) => stringClean(label) === stringClean('Scope Change')
         ).length !== 0
       ) {
         updatedCalendar.days[issue.closedAt].scopeChangeCompletion.issues
@@ -83,7 +78,7 @@ const insertClosed = async (
       }
       if (
         issue.fields.labels.filter(
-          (label: string) => stringClean(label) === stringClean("Scope Change")
+          (label: string) => stringClean(label) === stringClean('Scope Change')
         ).length !== 0
       ) {
         updatedCalendar.weeks[closedWeekKey].scopeChangeCompletion.issues
@@ -119,7 +114,7 @@ const insertClosed = async (
 
 const stringClean = (labelName: string) => {
   return String(labelName)
-    .replace(/[^a-z0-9+]+/gi, "")
+    .replace(/[^a-z0-9+]+/gi, '')
     .toLowerCase();
 };
 

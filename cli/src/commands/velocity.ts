@@ -1,7 +1,6 @@
 import { flags } from '@oclif/command';
 import cli from 'cli-ux';
 import * as fs from 'fs';
-import * as loadYamlFile from 'load-yaml-file';
 import * as path from 'path';
 
 import Command from '../base';

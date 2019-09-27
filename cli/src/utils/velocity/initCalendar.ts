@@ -2,10 +2,10 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
-import { getWeek, getYear } from "date-fns";
+import { getWeek, getYear } from 'date-fns';
 
-import { ICalendar, IConfig } from "../../global";
-import { formatDate } from "../misc/dateUtils";
+import { ICalendar } from '../../global';
+import { formatDate } from '../misc/dateUtils';
 
 const initCalendar = (fromDate: string) => {
   let initObject: ICalendar = {
@@ -16,13 +16,13 @@ const initCalendar = (fromDate: string) => {
     health: {}
   };
   const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
   ];
   const emptyCompletion = {
     issues: { count: 0, velocity: 0 },
@@ -58,7 +58,7 @@ const initCalendar = (fromDate: string) => {
         weekStart: currentWeekYear.toJSON(),
         date: currentWeekYear.toJSON(),
         weekNb: getWeek(currentWeekYear),
-        weekTxt: getYear(currentWeekYear) + "." + getWeek(currentWeekYear),
+        weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
         weekJira: currentWeekYear.toJSON().slice(0, 10),
         completion: { ...emptyCompletion },
         scopeChangeCompletion: { ...emptyCompletion }

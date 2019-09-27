@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Req,
-  Get,
-  HttpException,
-  HttpStatus,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Req, Get } from '@nestjs/common';
 import { Request } from 'express';
 import { VelocityService } from './velocity.service';
 

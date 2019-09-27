@@ -3,10 +3,7 @@
     
 */
 import { getWeek, getYear } from 'date-fns';
-
-import { ICalendar, IConfig, IJiraIssue } from '../../global';
-import { formatDate, startOfWeek } from '../misc/dateUtils';
-import { getTeamId } from '../misc/teamUtils';
+import { formatDate } from '../misc/dateUtils';
 
 const getEmptyRoadmapObject = (lastCalendarWeek: any, futureWeeks: number) => {
   // Sort the array by closedAt
