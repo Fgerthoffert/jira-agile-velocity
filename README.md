@@ -282,8 +282,53 @@ Once the directory is created, you can start the environment:
 
 ```bash
 > mkdir /tmp/jav-data # Replace with the desired directory to store cache and config on host
-> docker-compose pull -f docker-compose.yml # Fetches the latest version of the containers
-> docker-compose up -d -f docker-compose.yml # Run the containers
+> docker-compose pull # Fetches the latest version of the containers
+> docker-compose up -d # Run the containers in deamon mode (you can remove -d to see log messages)
+```
+
+#### Specific Windows configuration
+
+On Windows, the configuration file below has to be used and two additional steps are needed.
+- Step 1: Select the local drive to be shared (see https://docs.docker.com/docker-for-windows/#shared-drives)
+- Step 2: Enable the paths conversion typing the following command line `set COMPOSE_CONVERT_WINDOWS_PATHS=1` (see https://docs.docker.com/compose/reference/envvars/#compose_convert_windows_paths)
+
+```yaml
+version: '3.7'
+
+services:
+  jav-cli:
+    image: fgerthoffert/jav-cli:latest
+    environment:
+      - 'CONFIG_DIR=/root/jav-data'
+    volumes:
+      - type: bind
+        source: c:/docker-tmp
+        target: /root/jav-data
+
+  jav-api:
+    image: fgerthoffert/jav-api:latest
+    ports:
+      - '5001:3001'
+    environment:
+      - 'CONFIG_PATH=/root/jav-data'
+      - 'AUTH0_DISABLED=true'
+      - 'AUTH0_DOMAIN=agile-jav.auth0.com'
+      - 'AUTH0_AUDIENCE=http://localhost:5001'
+    volumes:
+      - type: bind
+        source: c:/docker-tmp
+        target: /root/jav-data
+
+  jav-ui:
+    image: fgerthoffert/jav-ui:latest
+    ports:
+      - '5000:80'
+    environment:
+      - 'API_URL=http://127.0.0.1:5001'
+      - 'AUTH0_DISABLED=true'
+      - 'AUTH0_DOMAIN=agile-jav.auth0.com'
+      - 'AUTH0_CLIENT_ID=sGJDsqzc0VhKgoutaoyLWjyWK9kAwE2f'
+      - 'AUTH0_AUDIENCE=http://localhost:5001'
 ```
 
 Note: The cli container is not configured with a cron to refresh data, you'd need to configure this on your host environment (see configuration update below)
