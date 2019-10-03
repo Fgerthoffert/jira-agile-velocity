@@ -71,7 +71,10 @@ export default class Velocity extends Command {
       };
 
       const calendarWithForecast = insertForecast(calendarVelocity);
-      const calendarWithHealth = insertHealth(calendarWithForecast);
+      const calendarWithHealth = {
+        ...insertHealth(calendarWithForecast),
+        updatedAt: new Date().toJSON() // Adding updated date to the payload
+      };
 
       const slackMsg = getDailyHealthMsg(
         calendarWithHealth,
