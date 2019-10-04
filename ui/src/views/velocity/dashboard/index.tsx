@@ -4,6 +4,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import format from 'date-fns/format';
 
 import { iRootState } from '../../../store';
 
@@ -17,6 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     smallText: {
       fontSize: '0.8em'
+    },
+    updatedAt: {
+      textAlign: 'left',
+      fontSize: '0.8em',
+      fontStyle: 'italic'
     }
   })
 );
@@ -48,6 +54,15 @@ const Dashboard: FC<connectedProps> = ({
   if (useTeam !== undefined) {
     return (
       <Grid container spacing={1}>
+        <Grid item xs={12} className={classes.updatedAt}>
+          <span>
+            Last updated:{' '}
+            {format(
+              new Date(useTeam.velocity.updatedAt),
+              'E yyyy/MM/dd, hh:mm a'
+            )}
+          </span>
+        </Grid>
         <Grid item xs={4}>
           <Paper>
             <Typography variant='h5' component='h3'>

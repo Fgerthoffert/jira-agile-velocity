@@ -138,6 +138,7 @@ export default class Roadmap extends Command {
 
     // FINAL STAGE
     const roadmapArtifact = {
+      updatedAt: new Date().toJSON(),
       byTeam: closedIssuesByWeekAndTeam,
       byInitiative: closedIssuesByWeekAndInitiative,
       byFutureInitiative: futureCompletion
