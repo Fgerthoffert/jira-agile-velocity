@@ -30,7 +30,7 @@ const initCalendar = (fromDate: string) => {
     list: []
   };
   let toDay = new Date();
-  toDay.setDate(toDay.getDate() - 2);
+  toDay.setDate(toDay.getDate() - 1); // We don't process current day, only fetching closed issues on past days
   let currentDate = formatDate(fromDate);
   while (currentDate < toDay) {
     currentDate.setDate(currentDate.getDate() + 1);
