@@ -23,7 +23,7 @@ const fetchCompleted = async (
   const teamConfig = config.teams.find(t => t.name === teamName);
   if (teamConfig !== undefined) {
     let toDay = new Date();
-    toDay.setDate(toDay.getDate() - 2);
+    toDay.setDate(toDay.getDate() - 1);
     const dates = getDaysBetweenDates(formatDate(teamConfig.jqlHistory), toDay);
     for (let scanDay of dates) {
       const issuesDayFilepath = path.join(
