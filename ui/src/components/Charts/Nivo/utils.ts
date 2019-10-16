@@ -39,9 +39,11 @@ export const getCompletionColor = (
   value: any,
   completionWeeks: any
 ) => {
-  const prct = Math.round(
-    (value * 100) / completionWeeks[data.xKey].totalCount
-  );
+  let prct = 0;
+  if (completionWeeks[data.xKey] !== undefined) {
+    prct = Math.round((value * 100) / completionWeeks[data.xKey].totalCount);
+  }
+
   if (prct < 20) {
     return 'rgb(247, 252, 185)';
   } else if (prct >= 20 && prct < 40) {

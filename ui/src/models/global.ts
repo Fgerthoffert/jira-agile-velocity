@@ -121,6 +121,31 @@ export const global = createModel({
           this.setAuth0Initialized(true);
         } else {
           await setAuth0Config();
+          /*
+          try {
+            const response = await window.Auth0.getTokenSilently();
+            console.log(response);
+          } catch (error) {
+            console.error(error);
+          }
+          console.log(window.Auth0);
+          */
+          /*
+          const test = window.Auth0.checkSession(
+            {
+              scope: 'openid profile email'
+            },
+            function(err: any, authResult: any) {
+              // err if automatic parseHash fails
+              if (err !== undefined && err) {
+                console.error(err);
+                return;
+              }
+              console.log(authResult);
+            }
+          );
+          */
+
           this.setAuth0Initialized(true);
         }
       }

@@ -136,12 +136,41 @@ export default class Roadmap extends Command {
       closedIssuesByWeekAndInitiative
     );
 
+    const issuesWithLabels = this.getIssuesWithLabels(issuesTree, treeRoot);
+    const specsState = userConfig.roadmap.specsStates.map((state: string) => {
+      return {
+        name: state,
+        list: issuesWithLabels
+          .filter((issue: any) => {
+            if (
+              issue.fields.labels.find(
+                (label: string) =>
+                  getStrippedLabel(label) === getStrippedLabel(state)
+              ) !== undefined
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          })
+          .map((issue: any) => {
+            return {
+              id: issue.id,
+              key: issue.key,
+              fields: issue.fields,
+              host: issue.host,
+              points: issue.points
+            };
+          })
+      };
+    });
     // FINAL STAGE
     const roadmapArtifact = {
       updatedAt: new Date().toJSON(),
       byTeam: closedIssuesByWeekAndTeam,
       byInitiative: closedIssuesByWeekAndInitiative,
-      byFutureInitiative: futureCompletion
+      byFutureInitiative: futureCompletion,
+      bySpecsState: specsState
     };
 
     this.showArtifactsTable(roadmapArtifact, type);
@@ -170,6 +199,23 @@ export default class Roadmap extends Command {
       jsonObject.push(initiative);
     }
     return jsonObject;
+  };
+
+  getIssuesWithLabels = (issuesTree: any, node: any) => {
+    const issues = [];
+    for (const initiative of issuesTree.childrenIterator(node)) {
+      for (const epic of issuesTree.childrenIterator(initiative)) {
+        if (epic.fields.labels.length > 0) {
+          issues.push(epic);
+        }
+        for (const story of issuesTree.childrenIterator(epic)) {
+          if (story.fields.labels.length > 0) {
+            issues.push(story);
+          }
+        }
+      }
+    }
+    return issues;
   };
 
   showArtifactsTable = (roadmapArtifact: any, type: string) => {
@@ -383,3 +429,9 @@ export default class Roadmap extends Command {
     );
   };
 }
+
+const getStrippedLabel = (label: string) => {
+  return String(label)
+    .replace(/[^a-z0-9+]+/gi, '')
+    .toLowerCase();
+};

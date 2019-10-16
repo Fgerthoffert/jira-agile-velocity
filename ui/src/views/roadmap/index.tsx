@@ -5,6 +5,7 @@ import Layout from '../../layout';
 import Details from './Details';
 import Completion from './Completion';
 import Forecast from './Forecast';
+import Specs from './Specs';
 import SectionTabs from './sectiontabs';
 import LoadingBar from './LoadingBar';
 
@@ -24,6 +25,7 @@ const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
       <SectionTabs />
       <br />
       <Completion />
+      <Specs />
       <Forecast />
       <Details />
     </Layout>
