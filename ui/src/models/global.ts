@@ -102,6 +102,7 @@ export const global = createModel({
     },
 
     async doLogOut() {
+      console.log('doLogOut');
       if (window.Auth0 !== undefined) {
         window.Auth0.logout({
           returnTo: window.location.origin
@@ -121,6 +122,32 @@ export const global = createModel({
           this.setAuth0Initialized(true);
         } else {
           await setAuth0Config();
+          console.log(window.Auth0);
+          /*
+          try {
+            const response = await window.Auth0.getTokenSilently();
+            console.log(response);
+          } catch (error) {
+            console.error(error);
+          }
+          console.log(window.Auth0);
+          */
+          /*
+          const test = window.Auth0.checkSession(
+            {
+              scope: 'openid profile email'
+            },
+            function(err: any, authResult: any) {
+              // err if automatic parseHash fails
+              if (err !== undefined && err) {
+                console.error(err);
+                return;
+              }
+              console.log(authResult);
+            }
+          );
+          */
+
           this.setAuth0Initialized(true);
         }
       }

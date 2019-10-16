@@ -163,4 +163,5 @@ export interface IConfigRoadmap {
   jqlInitiatives: string;
   teams: Array<string>;
   forecastWeeks: number;
+  specsStates: Array<string>;
 }
