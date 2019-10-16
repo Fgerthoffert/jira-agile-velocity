@@ -102,7 +102,6 @@ export const global = createModel({
     },
 
     async doLogOut() {
-      console.log('doLogOut');
       if (window.Auth0 !== undefined) {
         window.Auth0.logout({
           returnTo: window.location.origin
@@ -122,7 +121,6 @@ export const global = createModel({
           this.setAuth0Initialized(true);
         } else {
           await setAuth0Config();
-          console.log(window.Auth0);
           /*
           try {
             const response = await window.Auth0.getTokenSilently();
