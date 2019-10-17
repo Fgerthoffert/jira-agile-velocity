@@ -39,7 +39,7 @@ const fetchCompleted = async (
         const issuesJira = await jiraSearchIssues(
           config.jira,
           jqlQuery,
-          'labels,summary,' +
+          'labels,summary,issuetype,assignee,' +
             config.jira.fields.points +
             ',' +
             config.jira.fields.originalPoints
