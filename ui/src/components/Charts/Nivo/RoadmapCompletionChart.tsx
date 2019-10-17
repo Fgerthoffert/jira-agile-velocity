@@ -2,7 +2,7 @@ import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 
-import RoadmapTooltip from './RoadmapTooltip';
+import RoadmapTooltip from './RoadmapTooltip/index';
 
 import {
   getInitiativeTitle,
@@ -37,12 +37,13 @@ class RoadmapCompletionChart extends Component<any, any> {
   dataset: any = {};
 
   getTooltip = (data: any) => {
-    const { roadmap } = this.props;
+    const { roadmap, defaultPoints } = this.props;
     return (
       <RoadmapTooltip
         data={data}
         roadmap={roadmap}
         completionWeeks={this.completionWeeks}
+        defaultPoints={defaultPoints}
       />
     );
   };
