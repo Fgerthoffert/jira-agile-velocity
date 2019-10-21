@@ -73,6 +73,11 @@ class VelocityChart extends Component<any, any> {
           position: 'nearest',
           mode: 'index',
           intersect: false
+        },
+        plugins: {
+          datalabels: {
+            display: false
+          }
         }
       }
     });
@@ -103,7 +108,7 @@ class VelocityChart extends Component<any, any> {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <canvas id='myChart' ref={this.chartRef} />
+        <canvas id='VelocityChart' ref={this.chartRef} />
       </div>
     );
   }

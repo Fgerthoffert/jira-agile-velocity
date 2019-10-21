@@ -82,6 +82,11 @@ class VelocityChartStacked extends Component<any, any> {
       },
       options: {
         onClick: this.clickChart,
+        plugins: {
+          datalabels: {
+            display: false
+          }
+        },
         scales: {
           yAxes: [
             {
@@ -190,7 +195,7 @@ class VelocityChartStacked extends Component<any, any> {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <canvas id='myChart' ref={this.chartRef} />
+        <canvas id='VelocityChartStacked' ref={this.chartRef} />
       </div>
     );
   }
