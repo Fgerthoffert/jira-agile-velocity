@@ -60,6 +60,11 @@ class DataBreakdown extends Component<any, any> {
         },
         animation: {
           animateRotate: false
+        },
+        plugins: {
+          datalabels: {
+            display: true
+          }
         }
       }
     });
@@ -69,7 +74,7 @@ class DataBreakdown extends Component<any, any> {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <canvas id='myChart' ref={this.chartRef} height='200' />
+        <canvas id='DataBreakdown' ref={this.chartRef} height='200' />
       </div>
     );
   }
