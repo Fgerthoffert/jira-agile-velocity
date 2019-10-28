@@ -431,9 +431,10 @@ export default class Roadmap extends Command {
     );
   };
 }
-
+/*
 const getStrippedLabel = (label: string) => {
   return String(label)
     .replace(/[^a-z0-9+]+/gi, '')
     .toLowerCase();
 };
+*/
