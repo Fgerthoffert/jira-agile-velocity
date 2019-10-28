@@ -149,7 +149,7 @@ class VelocityChartStacked extends Component<any, any> {
 
   // https://jsfiddle.net/u1szh96g/208/
   clickChart = (event: any) => {
-    const { dataset } = this.props;
+    const { dataset, jiraHost, jqlCompletion } = this.props;
     const activePoints = this.chart.getElementsAtEvent(event);
     if (activePoints[0] !== undefined) {
       const idx = activePoints[0]._index;
@@ -159,15 +159,21 @@ class VelocityChartStacked extends Component<any, any> {
         const clickedWeek = dataset[idx];
         let jqlString = '';
         const activeWeeks = clickedWeek.weekDays.filter(
-          (d: any) => d.jql !== null
+          (d: any) => d.list.length > 0
         );
         for (const [widx, day] of activeWeeks.entries()) {
-          jqlString = jqlString + ' (' + day.jql + ')';
+          jqlString =
+            jqlString +
+            ' (' +
+            jqlCompletion +
+            ' ON(' +
+            day.list[0].closedAt +
+            '))';
           if (widx < activeWeeks.length - 1) {
             jqlString = jqlString + ' OR';
           }
         }
-        const url = issues[0].host + '/issues/?jql=' + jqlString;
+        const url = jiraHost + '/issues/?jql=' + jqlString;
         window.open(url, '_blank');
         setTimeout(() => {
           this.resetAllowClick();

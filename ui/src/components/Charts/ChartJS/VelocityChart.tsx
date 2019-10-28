@@ -85,7 +85,7 @@ class VelocityChart extends Component<any, any> {
 
   // https://jsfiddle.net/u1szh96g/208/
   clickChart = (event: any) => {
-    const { dataset } = this.props;
+    const { dataset, jiraHost, jqlCompletion } = this.props;
     const activePoints = this.chart.getElementsAtEvent(event);
     if (activePoints[0] !== undefined) {
       const idx = activePoints[0]._index;
@@ -95,7 +95,13 @@ class VelocityChart extends Component<any, any> {
         //        const keys = issues.map((i: any) => i.key);
         // const url =
         //  issues[0].host + '/issues/?jql=key in (' + keys.toString() + ')';
-        const url = issues[0].host + '/issues/?jql=' + issues[0].jql;
+        const url =
+          jiraHost +
+          '/issues/?jql=' +
+          jqlCompletion +
+          ' ON(' +
+          issues[0].closedAt +
+          ')';
         window.open(url, '_blank');
         setTimeout(() => {
           this.resetAllowClick();
