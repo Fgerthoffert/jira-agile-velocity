@@ -40,7 +40,7 @@ const fetchInitiatives = async (
     const issuesJira = await jiraSearchIssues(
       userConfig.jira,
       userConfig.roadmap.jqlInitiatives,
-      'summary,status,labels,' +
+      'summary,status,' +
         userConfig.jira.fields.points +
         ',' +
         userConfig.jira.fields.originalPoints +

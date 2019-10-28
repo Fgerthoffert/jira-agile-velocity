@@ -9,6 +9,7 @@ import { getProgress, getBarVariant } from '../utils';
 
 const InitiativeTable: FC<any> = ({
   initiatives,
+  jiraHost,  
   setGraphInitiative,
   updateGraph,
   setOpenGraph
@@ -135,7 +136,7 @@ const InitiativeTable: FC<any> = ({
           return {
             key: initiative.key,
             title: initiative.fields.summary,
-            url: initiative.host + '/browse/' + initiative.key,
+            url: jiraHost + '/browse/' + initiative.key,
             team:
               initiative.fields.assignee === null
                 ? 'n/a'

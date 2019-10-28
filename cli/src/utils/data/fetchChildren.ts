@@ -40,7 +40,7 @@ const fetchChildren = async (
     const issuesJira = await jiraSearchIssues(
       userConfig.jira,
       'issuekey in childIssuesOf(' + issueKey + ')',
-      'summary,status,labels,assignee,' +
+      'summary,status,assignee,' +
         userConfig.jira.fields.points +
         ',' +
         userConfig.jira.fields.originalPoints +

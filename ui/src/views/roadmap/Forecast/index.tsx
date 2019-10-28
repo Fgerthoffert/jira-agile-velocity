@@ -94,6 +94,7 @@ const Forecast: FC<connectedProps> = ({
         <Grid item xs={12}>
           <InitiativeTable
             initiatives={roadmap.byFutureInitiative}
+            jiraHost={roadmap.host}
             defaultPoints={defaultPoints}
             title={'Assigned to a team'}
             setGraphInitiative={setGraphInitiative}
@@ -106,6 +107,7 @@ const Forecast: FC<connectedProps> = ({
             initiatives={roadmap.byInitiative.filter(
               (i: any) => i.team === null && i.fields.status.name !== 'Done'
             )}
+            jiraHost={roadmap.host}
             defaultPoints={defaultPoints}
             title={'Not assigned to a team'}
             setGraphInitiative={setGraphInitiative}
