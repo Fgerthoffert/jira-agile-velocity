@@ -8,6 +8,7 @@ import * as stream from 'stream';
 import { IConfig } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { getTeamFromAssignee } from '../misc/teamUtils';
+import { cleanIssue } from '../misc/jiraUtils';
 
 /*
     Fetches all initiatives
@@ -56,8 +57,8 @@ const fetchInitiatives = async (
         team: getTeamFromAssignee(issue, userConfig.roadmap.teams),
         points: returnTicketsPoints(issue, userConfig)
       };
-      issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
-      issues.push(updatedIssue);
+      issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
+      issues.push(cleanIssue(updatedIssue));
     }
     issueFileStream.end();
   }

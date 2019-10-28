@@ -61,7 +61,7 @@ const fetchCompleted = async (
               //              jql: jqlQuery
             });
 
-            issues.push(updatedIssue);
+            issues.push(cleanIssue(updatedIssue));
             issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
           }
         }
@@ -71,7 +71,7 @@ const fetchCompleted = async (
         const input = fs.createReadStream(issuesDayFilepath);
         for await (const line of readLines(input)) {
           const issue = JSON.parse(line);
-          issues.push(cleanIssue({ ...issue }));
+          issues.push(cleanIssue(cleanIssue({ ...issue })));
         }
       }
     }

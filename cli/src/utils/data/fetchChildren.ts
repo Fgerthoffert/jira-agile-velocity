@@ -7,6 +7,7 @@ import * as stream from 'stream';
 
 import { IConfig } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
+import { cleanIssue } from '../misc/jiraUtils';
 
 /*
     Fetches all initiatives
@@ -55,11 +56,11 @@ const fetchChildren = async (
       const updatedIssue = {
         ...issue,
         host: userConfig.jira.host,
-        jql: 'issuekey in childIssuesOf(' + issueKey + ')',
+        //jql: 'issuekey in childIssuesOf(' + issueKey + ')',
         points: returnTicketsPoints(issue, userConfig)
       };
-      issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
-      issues.push(updatedIssue);
+      issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
+      issues.push(cleanIssue(updatedIssue));
     }
     issueFileStream.end();
   }

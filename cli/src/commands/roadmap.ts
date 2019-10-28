@@ -167,6 +167,7 @@ export default class Roadmap extends Command {
     // FINAL STAGE
     const roadmapArtifact = {
       updatedAt: new Date().toJSON(),
+      host: userConfig.jira.host,
       byTeam: closedIssuesByWeekAndTeam,
       byInitiative: closedIssuesByWeekAndInitiative,
       byFutureInitiative: futureCompletion,
