@@ -18,7 +18,8 @@ Cytoscape.use(COSEBilkent);
 Cytoscape.use(popper);
 
 const mapState = (state: iRootState) => ({
-  issuesGraph: state.roadmap.issuesGraph
+  issuesGraph: state.roadmap.issuesGraph,
+  roadmap: state.roadmap.roadmap
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -46,9 +47,10 @@ class NodesGraph extends Component<connectedProps> {
   }
 
   clickIssue = (node: any) => {
+    const { roadmap } = this.props;
     if (this.clickedLink === false) {
       this.clickedLink = true;
-      const url = node.data().host + '/browse/' + node.data().key;
+      const url = roadmap.host + '/browse/' + node.data().key;
       window.open(url, '_blank');
       setTimeout(async () => {
         this.clickedLink = false;

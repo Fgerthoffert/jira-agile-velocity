@@ -92,6 +92,7 @@ const Completion: FC<connectedProps> = ({
         <Grid item xs={12}>
           <InitiativeTable
             initiatives={roadmap.byInitiative}
+            jiraHost={roadmap.host}
             setGraphInitiative={setGraphInitiative}
             updateGraph={updateGraph}
             setOpenGraph={setOpenGraph}

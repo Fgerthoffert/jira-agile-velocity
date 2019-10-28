@@ -17,6 +17,7 @@ import insertForecast from '../utils/velocity/insertForecast';
 import insertHealth from '../utils/velocity/insertHealth';
 import insertOpen from '../utils/velocity/insertOpen';
 import insertWeeklyVelocity from '../utils/velocity/insertWeeklyVelocity';
+import { cleanIssue } from '../utils/misc/jiraUtils';
 
 export default class Velocity extends Command {
   static description = 'Builds velocity stats by day and week';
@@ -73,7 +74,9 @@ export default class Velocity extends Command {
       const calendarWithForecast = insertForecast(calendarVelocity);
       const calendarWithHealth = {
         ...insertHealth(calendarWithForecast),
-        updatedAt: new Date().toJSON() // Adding updated date to the payload
+        updatedAt: new Date().toJSON(), // Adding updated date to the payload
+        host: userConfig.jira.host, // Adding Jira host config
+        jqlCompletion: team.jqlCompletion // Adding JQL completion query
       };
 
       const slackMsg = getDailyHealthMsg(
@@ -109,6 +112,7 @@ export default class Velocity extends Command {
   fetchOpenIssues = async (userConfig: IConfig, teamName: string) => {
     const teamConfig = userConfig.teams.find(t => t.name === teamName);
     if (teamConfig !== undefined) {
+      const openIssues = [];
       cli.action.start(
         'Fetching open issues for team: ' +
           teamName +
@@ -121,6 +125,9 @@ export default class Velocity extends Command {
         teamConfig.jqlRemaining,
         'labels,' + userConfig.jira.fields.points
       );
+      for (let issue of issuesJira) {
+        openIssues.push(cleanIssue(issue));
+      }
       cli.action.stop(' done');
       return issuesJira;
     }

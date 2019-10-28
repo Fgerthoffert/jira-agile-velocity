@@ -9,6 +9,7 @@ import { getProgress, getBarVariant } from '../utils';
 
 const InitiativeTable: FC<any> = ({
   defaultPoints,
+  jiraHost,
   initiatives,
   title,
   setGraphInitiative,
@@ -146,7 +147,7 @@ const InitiativeTable: FC<any> = ({
           key: initiative.key,
           team: initiative.team === null ? 'n/a' : initiative.team.name,
           title: initiative.fields.summary,
-          url: initiative.host + '/browse/' + initiative.key,
+          url: jiraHost + '/browse/' + initiative.key,
           velocity:
             initiative.team === null
               ? 'n/a'

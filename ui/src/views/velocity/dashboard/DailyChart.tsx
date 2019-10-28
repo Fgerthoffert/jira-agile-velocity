@@ -22,5 +22,12 @@ export default function WeeklyChart(props: WeeklyChartsProps) {
       };
     });
 
-  return <VelocityChart dataset={dataset} defaultPoints={defaultPoints} />;
+  return (
+    <VelocityChart
+      dataset={dataset}
+      defaultPoints={defaultPoints}
+      jiraHost={velocity.host}
+      jqlCompletion={velocity.jqlCompletion}
+    />
+  );
 }

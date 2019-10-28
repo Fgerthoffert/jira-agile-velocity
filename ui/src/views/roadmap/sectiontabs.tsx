@@ -28,7 +28,6 @@ const SectionTabs: FC<connectedProps> = ({ selectedTab, setSelectedTab }) => {
       centered
     >
       <Tab label='Completion' key='completionchart' value='completionchart' />
-      <Tab label='Prep.' key='prep' value='prep' />
       <Tab label='Naive Forecast' key='futurechart' value='futurechart' />
     </Tabs>
   );

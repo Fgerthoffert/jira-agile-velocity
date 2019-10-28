@@ -58,7 +58,7 @@ class RoadmapCompletionChart extends Component<any, any> {
     );
     const keys = cellDataInitiatives.map((i: any) => i.key);
     const url =
-      cellDataInitiatives[0].host +
+      roadmap.host +
       '/issues/?jql=key in (' +
       keys.toString() +
       ')';

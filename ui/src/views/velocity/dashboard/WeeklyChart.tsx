@@ -65,11 +65,12 @@ export default function WeeklyChart(props: WeeklyChartsProps) {
     }
     return { ...week, weekDays };
   });
-
   return (
     <VelocityChartStacked
       dataset={datasetWithDays}
       defaultPoints={defaultPoints}
+      jiraHost={velocity.host}
+      jqlCompletion={velocity.jqlCompletion}
     />
   );
 }

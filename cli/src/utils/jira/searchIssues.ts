@@ -1,7 +1,7 @@
 // tslint:disable-next-line: file-name-casing
-import axios from "axios";
+import axios from 'axios';
 
-import { IConfigJira } from "../../global";
+import { IConfigJira } from '../../global';
 
 const jiraSearchIssues = async (
   jiraConfig: IConfigJira,
@@ -9,8 +9,8 @@ const jiraSearchIssues = async (
   field: string
 ) => {
   const response = await axios({
-    method: "get",
-    url: jiraConfig.host + "/rest/api/2/search",
+    method: 'get',
+    url: jiraConfig.host + '/rest/api/2/search',
     auth: {
       username: jiraConfig.username,
       password: jiraConfig.password

@@ -9,7 +9,7 @@ import { IConfig, IJiraIssue } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
 import { getTeamId } from '../misc/teamUtils';
-
+import { cleanIssue } from '../misc/jiraUtils';
 /*
     Fetches all completed issues, per day from a team
 */
@@ -52,15 +52,16 @@ const fetchCompleted = async (
           for (let issue of issuesJira) {
             // Adding a closedAt object to record the date at which the issue was actually closed
             // Attaching points directly to the issues object to avoid having to bring jira-field config specific elements to the UI
-            const updatedIssue = {
+            const updatedIssue = cleanIssue({
               ...issue,
               closedAt: scanDay,
               team: teamName,
-              host: config.jira.host,
-              points: returnTicketsPoints(issue, config),
-              jql: jqlQuery
-            };
-            issues.push(updatedIssue);
+              //              host: config.jira.host,
+              points: returnTicketsPoints(issue, config)
+              //              jql: jqlQuery
+            });
+
+            issues.push(cleanIssue(updatedIssue));
             issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
           }
         }
@@ -70,7 +71,7 @@ const fetchCompleted = async (
         const input = fs.createReadStream(issuesDayFilepath);
         for await (const line of readLines(input)) {
           const issue = JSON.parse(line);
-          issues.push({ ...issue });
+          issues.push(cleanIssue(cleanIssue({ ...issue })));
         }
       }
     }

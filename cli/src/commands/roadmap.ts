@@ -136,6 +136,7 @@ export default class Roadmap extends Command {
       closedIssuesByWeekAndInitiative
     );
 
+/*
     const issuesWithLabels = this.getIssuesWithLabels(issuesTree, treeRoot);
     const specsState = userConfig.roadmap.specsStates.map((state: string) => {
       return {
@@ -164,13 +165,14 @@ export default class Roadmap extends Command {
           })
       };
     });
+    */
     // FINAL STAGE
     const roadmapArtifact = {
       updatedAt: new Date().toJSON(),
+      host: userConfig.jira.host,
       byTeam: closedIssuesByWeekAndTeam,
       byInitiative: closedIssuesByWeekAndInitiative,
-      byFutureInitiative: futureCompletion,
-      bySpecsState: specsState
+      byFutureInitiative: futureCompletion
     };
 
     this.showArtifactsTable(roadmapArtifact, type);
@@ -200,7 +202,7 @@ export default class Roadmap extends Command {
     }
     return jsonObject;
   };
-
+/*
   getIssuesWithLabels = (issuesTree: any, node: any) => {
     const issues = [];
     for (const initiative of issuesTree.childrenIterator(node)) {
@@ -217,7 +219,7 @@ export default class Roadmap extends Command {
     }
     return issues;
   };
-
+*/
   showArtifactsTable = (roadmapArtifact: any, type: string) => {
     const columnsByTeam: any = {
       name: {
