@@ -6,52 +6,34 @@ import * as readline from 'readline';
 import * as stream from 'stream';
 
 import { ConfigService } from '../config.service';
-import { isUndefined } from 'util';
 
 @Injectable()
-export class VelocityService {
-  private readonly logger = new Logger(VelocityService.name);
+export class TeamsService {
+  private readonly logger = new Logger(TeamsService.name);
   configBasePath: string;
 
   constructor(config: ConfigService) {
     this.configBasePath = config.get('CONFIG_DIR');
   }
 
-  async getVelocity(teamId: string): Promise<any> {
-    const teamsVelocity = {};
+  async getTeams(): Promise<any> {
+    const teamsTeam = [];
     const configFilePath = path.join(this.configBasePath, 'config.yml');
     if (fs.existsSync(configFilePath)) {
       this.logger.log('Opening configuration file: ' + configFilePath);
       const userConfig = await loadYamlFile(configFilePath);
-
-      const currentTeam = userConfig.teams.find(
-        (t: any) => teamId === getTeamId(t.name),
-      );
-      if (currentTeam !== undefined) {
-        const teamCacheFile = path.join(
-          this.configBasePath + '/cache/',
-          'velocity-artifacts-' + getTeamId(currentTeam.name) + '.json',
-        );
-        if (fs.existsSync(teamCacheFile)) {
-          const input = fs.createReadStream(teamCacheFile);
-          for await (const line of readLines(input)) {
-            return {
-              id: getTeamId(currentTeam.name),
-              velocity: JSON.parse(line),
-            };
-          }
-        }
-      } else {
-        this.logger.log(
-          'Error, unable to find team: ' + teamId + ' in configuration',
-        );
+      for (const team of userConfig.teams) {
+        teamsTeam.push({
+          id: getTeamId(team.name),
+          name: team.name,
+        });
       }
     } else {
       this.logger.log(
         'Error, unable to find configuration file: ' + configFilePath,
       );
     }
-    return teamsVelocity;
+    return teamsTeam;
   }
 }
 

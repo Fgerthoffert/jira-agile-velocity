@@ -4,13 +4,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { VelocityModule } from './velocity/velocity.module';
 import { RoadmapModule } from './roadmap/roadmap.module';
+import { TeamsModule } from './teams/teams.module';
 import { ConfigModule } from './config.module';
 import { ConfigService } from './config.service';
 
 import { AuthenticationMiddleware } from './auth/authentication.middleware';
 
 @Module({
-  imports: [VelocityModule, RoadmapModule, ConfigModule],
+  imports: [VelocityModule, RoadmapModule, TeamsModule, ConfigModule],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -28,6 +29,7 @@ export class AppModule {
         .forRoutes(
           { path: '/velocity', method: RequestMethod.GET },
           { path: '/roadmap', method: RequestMethod.GET },
+          { path: '/teams', method: RequestMethod.GET },
         );
     }
   }

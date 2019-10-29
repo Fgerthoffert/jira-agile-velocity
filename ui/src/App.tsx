@@ -23,6 +23,7 @@ const App: FC<connectedProps> = ({ initApp }) => {
         <Switch>
           <Route exact name='index' path='/' component={Default} />
           <Route exact path='/velocity' component={Velocity} />
+          <Route exact path='/velocity/:tab' component={Velocity} />
           <Route exact path='/initiatives' component={Roadmap} />
         </Switch>
       </Router>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -29,12 +29,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
+  velocity: state.velocity.velocity,
   teams: state.velocity.teams,
   selectedTeam: state.velocity.selectedTeam
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
+  setDefaultPoints: dispatch.global.setDefaultPoints,
+  fetchTeamData: dispatch.velocity.fetchTeamData
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -43,14 +45,25 @@ type connectedProps = ReturnType<typeof mapState> &
 const Dashboard: FC<connectedProps> = ({
   defaultPoints,
   teams,
-  selectedTeam
+  selectedTeam,
+  velocity,
+  fetchTeamData
 }) => {
   const classes = useStyles();
+
+  const teamVelocity: any = velocity.find((t: any) => t.id === selectedTeam);
+  useEffect(() => {
+    // If team !== null but corresponding team 's data hasn't been loaded
+    if (teamVelocity === undefined) {
+      fetchTeamData(selectedTeam);
+    }
+  });
+
   let metric = 'points';
   if (!defaultPoints) {
     metric = 'issues';
   }
-  const useTeam: any = teams.find((t: any) => t.team === selectedTeam);
+  const useTeam: any = velocity.find((t: any) => t.id === selectedTeam);
   if (useTeam !== undefined) {
     return (
       <Grid container spacing={1}>
