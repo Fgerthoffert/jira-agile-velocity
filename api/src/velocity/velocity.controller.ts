@@ -1,4 +1,4 @@
-import { Controller, Req, Get } from '@nestjs/common';
+import { Controller, Req, Get, Param } from '@nestjs/common';
 import { Request } from 'express';
 import { VelocityService } from './velocity.service';
 
@@ -6,9 +6,9 @@ import { VelocityService } from './velocity.service';
 export class VelocityController {
   constructor(private velocityService: VelocityService) {}
 
-  @Get()
-  async getVelocity(@Req() request: Request) {
-    const velocity = await this.velocityService.getVelocity();
+  @Get(':teamId')
+  async getVelocity(@Param() params, @Req() request: Request) {
+    const velocity = await this.velocityService.getVelocity(params.teamId);
     return velocity;
   }
 }

@@ -16,19 +16,20 @@ const mapDispatch = (dispatch: any) => ({
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
-const TeamsTabs: FC<connectedProps> = ({
+const TeamsTabs: FC<any> = ({
   teams,
+  changeTab,
   selectedTeam,
   setSelectedTeam
 }) => {
-  function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    changeTab(newValue);
     setSelectedTeam(newValue);
-  }
-  if (Object.values(teams).length === 0) {
+  };
+  if (teams.length === 0) {
     return null;
   }
-  const selectedTeamValue =
-    selectedTeam === null ? teams[0].team : selectedTeam;
+  const selectedTeamValue = selectedTeam === null ? teams[0].id : selectedTeam;
   return (
     <Tabs
       value={selectedTeamValue}
@@ -38,7 +39,7 @@ const TeamsTabs: FC<connectedProps> = ({
       centered
     >
       {teams.map((team: any) => {
-        return <Tab label={team.team} key={team.team} value={team.team} />;
+        return <Tab label={team.name} key={team.id} value={team.id} />;
       })}
     </Tabs>
   );
