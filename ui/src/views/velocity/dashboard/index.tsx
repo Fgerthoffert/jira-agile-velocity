@@ -85,7 +85,7 @@ const Dashboard: FC<connectedProps> = ({
               {useTeam.velocity.forecast.completion[metric].openCount}
             </Typography>
             <Typography component='p' className={classes.smallText}>
-              <i>Sum of all {metric} across remaining issues</i>
+              <i>Sum of all {metric} across remaining issues.</i>
             </Typography>
           </Paper>
         </Grid>
