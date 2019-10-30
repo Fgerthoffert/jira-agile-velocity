@@ -26,6 +26,8 @@ export interface IDays {
   weekDay: number;
   weekDayTxt: string;
   weekDayJira: string;
+  weekNb: number;
+  weekTxt: string;
   completion: ICompletion;
   scopeChangeCompletion: ICompletion;
 }
