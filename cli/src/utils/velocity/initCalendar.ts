@@ -39,6 +39,8 @@ const initCalendar = (fromDate: string) => {
       weekDay: currentDate.getDay(),
       weekDayJira: currentDate.toJSON().slice(0, 10),
       weekDayTxt: days[currentDate.getDay()],
+      weekNb: getWeek(currentDate),
+      weekTxt: getYear(currentDate) + '.' + getWeek(currentDate),
       completion: { ...emptyCompletion },
       scopeChangeCompletion: { ...emptyCompletion }
     };

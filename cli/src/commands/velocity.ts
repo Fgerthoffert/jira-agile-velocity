@@ -74,13 +74,42 @@ export default class Velocity extends Command {
       const calendarWithForecast = insertForecast(calendarVelocity);
       const calendarWithHealth = {
         ...insertHealth(calendarWithForecast),
-        updatedAt: new Date().toJSON(), // Adding updated date to the payload
-        host: userConfig.jira.host, // Adding Jira host config
+        updatedAt: new Date().toJSON(),   // Adding updated date to the payload
+        host: userConfig.jira.host,       // Adding Jira host config
         jqlCompletion: team.jqlCompletion // Adding JQL completion query
       };
 
+      // Prune issues list from the object
+      const trimmedPayload = {
+        ...calendarWithHealth,
+        days: calendarWithHealth.days.map((d: any) => {
+          if (d.completion.list !== undefined) {
+            delete d.completion.list
+          }
+          if (d.scopeChangeCompletion.list !== undefined) {
+            delete d.scopeChangeCompletion.list
+          }
+          return d;
+        }),
+        weeks: calendarWithHealth.weeks.map((w: any) => {
+          if (w.completion.list !== undefined) {
+            delete w.completion.list
+          }
+          if (w.scopeChangeCompletion.list !== undefined) {
+            delete w.scopeChangeCompletion.list
+          }
+          return w;
+        }),
+        open: (o: any) => {
+          if (o.list !== undefined) {
+            delete o.list
+          }
+          return o;
+        }
+      };
+    
       const slackMsg = getDailyHealthMsg(
-        calendarWithHealth,
+        trimmedPayload,
         type,
         userConfig,
         team.name
@@ -101,7 +130,7 @@ export default class Velocity extends Command {
         ),
         { flags: 'w' }
       );
-      issueFileStream.write(JSON.stringify(calendarWithHealth));
+      issueFileStream.write(JSON.stringify(trimmedPayload));
       issueFileStream.end();
     }
   }

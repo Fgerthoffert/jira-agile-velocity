@@ -59,12 +59,14 @@ class VelocityChartStacked extends Component<any, any> {
         //        borderColor: '#64b5f6',
         borderWidth: 2,
         data: dataset.map(
-          (w: any) =>
-            w.weekDays.find((d: any) => d.weekdayTxt === day).completion[metric]
-              .count
+          (w: any) => {
+            const currentDay = w.weekDays.find((d: any) => d.weekDayTxt === day);
+            return currentDay === undefined ? 0 : currentDay.completion[metric].count
+          }            
         )
       });
     }
+
     this.chart = new Chart(myChartRef, {
       type: 'bar',
       data: {
@@ -124,16 +126,14 @@ class VelocityChartStacked extends Component<any, any> {
               const currentDay =
                 currentWeek.weekDays[tooltipItem.datasetIndex - 1];
               return (
-                currentDay.weekdayTxt +
+                currentDay.weekDayTxt +
                 ' (' +
-                currentDay.date.toJSON().slice(6, 10) +
+                currentDay.weekDayJira +
                 '): ' +
                 tooltipItem.value
               );
             },
             title: (tooltipItems: any, data: any) => {
-              //              console.log(tooltipItems);
-              //              console.log(data);
               const currentWeek = dataset.find(
                 (w: any) => w.weekTxt === tooltipItems[0].xLabel
               );
@@ -153,13 +153,12 @@ class VelocityChartStacked extends Component<any, any> {
     const activePoints = this.chart.getElementsAtEvent(event);
     if (activePoints[0] !== undefined) {
       const idx = activePoints[0]._index;
-      const issues = dataset[idx].completion.list;
-      if (issues.length > 0 && this.allowClick === true) {
+      if (this.allowClick === true) {
         this.allowClick = false;
         const clickedWeek = dataset[idx];
         let jqlString = '';
         const activeWeeks = clickedWeek.weekDays.filter(
-          (d: any) => d.list.length > 0
+          (d: any) => d.completion.issues.count > 0
         );
         for (const [widx, day] of activeWeeks.entries()) {
           jqlString =
@@ -167,7 +166,7 @@ class VelocityChartStacked extends Component<any, any> {
             ' (' +
             jqlCompletion +
             ' ON(' +
-            day.list[0].closedAt +
+            day.weekDayJira +
             '))';
           if (widx < activeWeeks.length - 1) {
             jqlString = jqlString + ' OR';
