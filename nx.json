@@ -1,0 +1,24 @@
+{
+  "npmScope": "jira-agile-velocity",
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "jav-ui": {
+      "tags": []
+    },
+    "jav-ui-e2e": {
+      "tags": []
+    },
+    "jav-api": {
+      "tags": []
+    },
+    "jav-cli": {
+      "tags": []
+    }
+  }
+}

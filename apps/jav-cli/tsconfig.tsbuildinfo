@@ -1,0 +1,1775 @@
+{
+  "program": {
+    "fileInfos": {
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "ff5688d6b2fcfef06842a395d7ff4d5730d45b724d4c48913118c889829052a1",
+        "signature": "ff5688d6b2fcfef06842a395d7ff4d5730d45b724d4c48913118c889829052a1"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
+        "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.d.ts": {
+        "version": "5f217838d25704474d9ef93774f04164889169ca31475fe423a9de6758f058d1",
+        "signature": "5f217838d25704474d9ef93774f04164889169ca31475fe423a9de6758f058d1"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.d.ts": {
+        "version": "459097c7bdd88fc5731367e56591e4f465f2c9de81a35427a7bd473165c34743",
+        "signature": "459097c7bdd88fc5731367e56591e4f465f2c9de81a35427a7bd473165c34743"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.d.ts": {
+        "version": "9c67dcc7ca897b61f58d57d487bc9f07950546e5ac8701cbc41a8a4fec48b091",
+        "signature": "9c67dcc7ca897b61f58d57d487bc9f07950546e5ac8701cbc41a8a4fec48b091"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.d.ts": {
+        "version": "0fc0f68d3f4d94aa65fab955592e4a9f2066e6f8ee2f66fcc45adf4037fc167b",
+        "signature": "0fc0f68d3f4d94aa65fab955592e4a9f2066e6f8ee2f66fcc45adf4037fc167b"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.d.ts": {
+        "version": "1c05c805f62c1c06a60b7812cd8de2dff7a5bda2218ce5edda5d9d298b1c48e1",
+        "signature": "1c05c805f62c1c06a60b7812cd8de2dff7a5bda2218ce5edda5d9d298b1c48e1"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "2d53f3741e5a4f78a90f623387d71a1cc809bb258f10cdaec034b67cbf71022f",
+        "signature": "2d53f3741e5a4f78a90f623387d71a1cc809bb258f10cdaec034b67cbf71022f"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "4ab19088d508f9e62bfc61c157e8a65b2afaefa251ecca315e7d20b5b97b256f",
+        "signature": "4ab19088d508f9e62bfc61c157e8a65b2afaefa251ecca315e7d20b5b97b256f"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0",
+        "signature": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122",
+        "signature": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210",
+        "signature": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "e6b8ff2798f8ebd7a1c7afd8671f2cb67ee1901c422f5964d74b0b34c6574ea2",
+        "signature": "e6b8ff2798f8ebd7a1c7afd8671f2cb67ee1901c422f5964d74b0b34c6574ea2"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
+        "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
+        "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
+        "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
+        "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.array.include.d.ts": {
+        "version": "3f96f1e570aedbd97bf818c246727151e873125d0512e4ae904330286c721bc0",
+        "signature": "3f96f1e570aedbd97bf818c246727151e873125d0512e4ae904330286c721bc0"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.object.d.ts": {
+        "version": "ff8ad203e83338289b0f5defc1a5b5c253fb7d251b464db497383f915a0df3f4",
+        "signature": "ff8ad203e83338289b0f5defc1a5b5c253fb7d251b464db497383f915a0df3f4"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": {
+        "version": "b8667586a618c5cf64523d4e500ae39e781428abfb28f3de441fc66b56144b6f",
+        "signature": "b8667586a618c5cf64523d4e500ae39e781428abfb28f3de441fc66b56144b6f"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.string.d.ts": {
+        "version": "21df2e0059f14dcb4c3a0e125859f6b6ff01332ee24b0065a741d121250bc71c",
+        "signature": "21df2e0059f14dcb4c3a0e125859f6b6ff01332ee24b0065a741d121250bc71c"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.intl.d.ts": {
+        "version": "c1759cb171c7619af0d2234f2f8fb2a871ee88e956e2ed91bb61778e41f272c6",
+        "signature": "c1759cb171c7619af0d2234f2f8fb2a871ee88e956e2ed91bb61778e41f272c6"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": {
+        "version": "28569d59e07d4378cb3d54979c4c60f9f06305c9bb6999ffe6cab758957adc46",
+        "signature": "28569d59e07d4378cb3d54979c4c60f9f06305c9bb6999ffe6cab758957adc46"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts": {
+        "version": "93c0c9ae60e46e4d1389dd33936bbfa24d9c66ef83a1569fcbb67a46432405e0",
+        "signature": "93c0c9ae60e46e4d1389dd33936bbfa24d9c66ef83a1569fcbb67a46432405e0"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": {
+        "version": "16c06e535d8e03be7c35735f9ce92c9e591cfea50cdcd0ac1353a0b85c60ab10",
+        "signature": "16c06e535d8e03be7c35735f9ce92c9e591cfea50cdcd0ac1353a0b85c60ab10"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.intl.d.ts": {
+        "version": "1b820b57379c726f94af50cd60053674af53ff9d079c1563cc70071e8b757dd0",
+        "signature": "1b820b57379c726f94af50cd60053674af53ff9d079c1563cc70071e8b757dd0"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.promise.d.ts": {
+        "version": "efe049114bad1035b0aa9a4a0359f50ab776e3897c411521e51d3013079cbd62",
+        "signature": "efe049114bad1035b0aa9a4a0359f50ab776e3897c411521e51d3013079cbd62"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.regexp.d.ts": {
+        "version": "e7780d04cd4120ee554c665829db2bbdd6b947cbaa3c150b7d9ea74df3beb2e8",
+        "signature": "e7780d04cd4120ee554c665829db2bbdd6b947cbaa3c150b7d9ea74df3beb2e8"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.array.d.ts": {
+        "version": "fc7c02b980e7dda0ed14d57ee71705c09efc51ec6286a10b971a25a3bb29262b",
+        "signature": "fc7c02b980e7dda0ed14d57ee71705c09efc51ec6286a10b971a25a3bb29262b"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.object.d.ts": {
+        "version": "989b95205f1189943fab0ce12a39c80570edf8f200aca60e0fdc500afc4d5859",
+        "signature": "989b95205f1189943fab0ce12a39c80570edf8f200aca60e0fdc500afc4d5859"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.string.d.ts": {
+        "version": "9a13dd96b56e11eb3b170b9dbdb2e6b323b0023e9a0a275554f1116c1a0b2658",
+        "signature": "9a13dd96b56e11eb3b170b9dbdb2e6b323b0023e9a0a275554f1116c1a0b2658"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.symbol.d.ts": {
+        "version": "7a842c21e0fe143eb3ad4d689a1470bab5ed9bc7fd7223fe8b56cbae27038d62",
+        "signature": "7a842c21e0fe143eb3ad4d689a1470bab5ed9bc7fd7223fe8b56cbae27038d62"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts": {
+        "version": "f6e0c89daaf72eac38dfb1d5ef0972183f7f26a68da15bfe5bcb7cfccf0c7db8",
+        "signature": "f6e0c89daaf72eac38dfb1d5ef0972183f7f26a68da15bfe5bcb7cfccf0c7db8"
+      },
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.bigint.d.ts": {
+        "version": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8",
+        "signature": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8"
+      },
+      "../../node_modules/tslib/tslib.d.ts": {
+        "version": "4984b48a97160eac5282ffeae690315420a626de83ccf6045c36d934c5c957c0",
+        "signature": "4984b48a97160eac5282ffeae690315420a626de83ccf6045c36d934c5c957c0"
+      },
+      "../../node_modules/@oclif/parser/lib/args.d.ts": {
+        "version": "b8fac2a2a066d140f34e5e0c698440f1f8c8a94eea2c95d156ce821ed53336e2",
+        "signature": "b8fac2a2a066d140f34e5e0c698440f1f8c8a94eea2c95d156ce821ed53336e2"
+      },
+      "../../node_modules/@oclif/parser/lib/alphabet.d.ts": {
+        "version": "2f79c688ac24759632fe8dda94c822d169cbe2a11f37fe6de1588d653af051ca",
+        "signature": "2f79c688ac24759632fe8dda94c822d169cbe2a11f37fe6de1588d653af051ca"
+      },
+      "../../node_modules/@oclif/parser/lib/flags.d.ts": {
+        "version": "a4f3f52371398d6a6e42e32f0bae5279ebd9c40a1c27d5e687d559f936290629",
+        "signature": "a4f3f52371398d6a6e42e32f0bae5279ebd9c40a1c27d5e687d559f936290629"
+      },
+      "../../node_modules/@oclif/parser/lib/metadata.d.ts": {
+        "version": "ebdcf50c5fdb4f68caf05066fb3bd839436a3c39c3154d65dd81a8855382b5e5",
+        "signature": "ebdcf50c5fdb4f68caf05066fb3bd839436a3c39c3154d65dd81a8855382b5e5"
+      },
+      "../../node_modules/@oclif/parser/lib/parse.d.ts": {
+        "version": "ee66d834ddc05efda67651fd52023eef1c8b471e20ec2baee05043f1f62ef635",
+        "signature": "ee66d834ddc05efda67651fd52023eef1c8b471e20ec2baee05043f1f62ef635"
+      },
+      "../../node_modules/@oclif/parser/lib/help.d.ts": {
+        "version": "34e73f0523e9afb52074fcec0844a6334d48bdb2977f944b3e6648da99755bba",
+        "signature": "34e73f0523e9afb52074fcec0844a6334d48bdb2977f944b3e6648da99755bba"
+      },
+      "../../node_modules/@oclif/parser/lib/index.d.ts": {
+        "version": "0096b80854aa269e2d6cb47d7d264cf376ee27f902f71406fb09faa0288432bb",
+        "signature": "0096b80854aa269e2d6cb47d7d264cf376ee27f902f71406fb09faa0288432bb"
+      },
+      "../../node_modules/@oclif/config/lib/command.d.ts": {
+        "version": "e959961027053278d3c8bde65a01f7726697229ea3cb798b0d15ffdec888ec02",
+        "signature": "e959961027053278d3c8bde65a01f7726697229ea3cb798b0d15ffdec888ec02"
+      },
+      "../../node_modules/@oclif/config/lib/hooks.d.ts": {
+        "version": "b05352898b844a87fd8ef31b0420dfa584b2c058e39677bd51e0d942af1afe60",
+        "signature": "b05352898b844a87fd8ef31b0420dfa584b2c058e39677bd51e0d942af1afe60"
+      },
+      "../../node_modules/@oclif/config/lib/pjson.d.ts": {
+        "version": "1e1fa6121eed38a97f548077cd06a16afba9a62e9cc7945d69c0c867449abdbd",
+        "signature": "1e1fa6121eed38a97f548077cd06a16afba9a62e9cc7945d69c0c867449abdbd"
+      },
+      "../../node_modules/@oclif/config/lib/manifest.d.ts": {
+        "version": "4108bca6ec2cc28598948e80fca629bb096ca3371091ee3bbca6f87c8a8ff3e1",
+        "signature": "4108bca6ec2cc28598948e80fca629bb096ca3371091ee3bbca6f87c8a8ff3e1"
+      },
+      "../../node_modules/@oclif/config/lib/topic.d.ts": {
+        "version": "bd80422c68e0575fee07883efc93fdbf32da39f76ab8479d56eba05e7fac8363",
+        "signature": "bd80422c68e0575fee07883efc93fdbf32da39f76ab8479d56eba05e7fac8363"
+      },
+      "../../node_modules/@oclif/config/lib/plugin.d.ts": {
+        "version": "a32bf18b0d7717fbd6217fe18835f32924cd58ac978bdcb88f3fb9577ff6bb05",
+        "signature": "a32bf18b0d7717fbd6217fe18835f32924cd58ac978bdcb88f3fb9577ff6bb05"
+      },
+      "../../node_modules/@oclif/config/lib/config.d.ts": {
+        "version": "6a30fa9391f874f455bdf5e6216b3fe46112f6cb7063af7c675e5def6c11909d",
+        "signature": "6a30fa9391f874f455bdf5e6216b3fe46112f6cb7063af7c675e5def6c11909d"
+      },
+      "../../node_modules/@oclif/config/lib/index.d.ts": {
+        "version": "03d343b7b13b8809088b45ab0f6f442adc2b49e2a77ab375d205d018f0d56785",
+        "signature": "03d343b7b13b8809088b45ab0f6f442adc2b49e2a77ab375d205d018f0d56785"
+      },
+      "../../node_modules/@oclif/command/lib/flags.d.ts": {
+        "version": "05eda68ac87ac88cd53ce9b34ae06f60074ca1cf3af121aef15897d4ddb76bb8",
+        "signature": "05eda68ac87ac88cd53ce9b34ae06f60074ca1cf3af121aef15897d4ddb76bb8"
+      },
+      "../../node_modules/@oclif/command/lib/command.d.ts": {
+        "version": "5f8e8d891075ea91098fe14dad95d7d85e9f5853134d6bc12d5a7ecdb9ab6316",
+        "signature": "5f8e8d891075ea91098fe14dad95d7d85e9f5853134d6bc12d5a7ecdb9ab6316"
+      },
+      "../../node_modules/@oclif/command/lib/main.d.ts": {
+        "version": "fc1f16ae8cc4ba5bd55869f317a0c2ec0775f47b61b7d61c691bd9b5fc602208",
+        "signature": "fc1f16ae8cc4ba5bd55869f317a0c2ec0775f47b61b7d61c691bd9b5fc602208"
+      },
+      "../../node_modules/@oclif/command/lib/index.d.ts": {
+        "version": "778d7164f3612aad776e12987f46889f3fe3541e5d9aed5f673daed728b643d5",
+        "signature": "778d7164f3612aad776e12987f46889f3fe3541e5d9aed5f673daed728b643d5"
+      },
+      "../../node_modules/@types/events/index.d.ts": {
+        "version": "400db42c3a46984118bff14260d60cec580057dc1ab4c2d7310beb643e4f5935",
+        "signature": "400db42c3a46984118bff14260d60cec580057dc1ab4c2d7310beb643e4f5935"
+      },
+      "../../node_modules/@types/node/inspector.d.ts": {
+        "version": "fc514174d61a5d9a9ccca41424ffd92f36ff3aa4616fd1fd4e26df51563f5749",
+        "signature": "fc514174d61a5d9a9ccca41424ffd92f36ff3aa4616fd1fd4e26df51563f5749"
+      },
+      "../../node_modules/@types/node/index.d.ts": {
+        "version": "c1822231cac080ba96fb492c55ad4d8b1199ab16c3a074bb61b68c71b1e889a3",
+        "signature": "c1822231cac080ba96fb492c55ad4d8b1199ab16c3a074bb61b68c71b1e889a3"
+      },
+      "../../node_modules/@types/fs-extra/index.d.ts": {
+        "version": "062fd391f70e8816148e3ba09f2aa5b26db4529f3007d6bfad7776526dd828e6",
+        "signature": "062fd391f70e8816148e3ba09f2aa5b26db4529f3007d6bfad7776526dd828e6"
+      },
+      "../../node_modules/@types/js-yaml/index.d.ts": {
+        "version": "a42b7d08df859d5d5774a43c161a70656b7e58c0593f249f5d403a393e0b91c6",
+        "signature": "a42b7d08df859d5d5774a43c161a70656b7e58c0593f249f5d403a393e0b91c6"
+      },
+      "./types/load-yaml-file.d.ts": {
+        "version": "239a90f1102d6bbe8d7c7499fe3864b3dfa6a036c2c99bd15cf91193b0d7253c",
+        "signature": "239a90f1102d6bbe8d7c7499fe3864b3dfa6a036c2c99bd15cf91193b0d7253c"
+      },
+      "./src/global.ts": {
+        "version": "6ce1b7b36ceafa2ad054b3965cb6f75c64f6820bd05f59efb2232bb6a3f7f470",
+        "signature": "73c43306db68a23a837a966566442fd49e394ccd715c46f44f0498fdee1e6dae"
+      },
+      "./src/base.ts": {
+        "version": "39915babff20a3534fe1037c0bb4a6b716e72a8ebd52070bd245577619e92fa7",
+        "signature": "c9b0665f3eae096b34c8dd7573a752c72fbc333f7629b6488d8d75a43ab53ef2"
+      },
+      "./src/fs-ndjson.d.ts": {
+        "version": "c5783b2958cb5964011fe9e815234a4ce07a195df8e25f6fda6f31bfab889e49",
+        "signature": "c5783b2958cb5964011fe9e815234a4ce07a195df8e25f6fda6f31bfab889e49"
+      },
+      "./src/index.ts": {
+        "version": "04b2123e996b5c865eec449a1c670c10cee24d12b9f1a97979c0dbbceecc3384",
+        "signature": "04b2123e996b5c865eec449a1c670c10cee24d12b9f1a97979c0dbbceecc3384"
+      },
+      "./src/commands/init.ts": {
+        "version": "eab3ab7639bfbd5f957052faed08820a0947459b418b87f4bb80c65bf15d3753",
+        "signature": "b255ae783a6fdd02a8e2d47985cc259c19c403988559ba3f6ef9b979ce91288f"
+      },
+      "../../node_modules/@oclif/errors/lib/handle.d.ts": {
+        "version": "207218b7704a71e718a25a35101afb2206581fd07c878c34540038639ad2759e",
+        "signature": "207218b7704a71e718a25a35101afb2206581fd07c878c34540038639ad2759e"
+      },
+      "../../node_modules/@oclif/errors/lib/errors/cli.d.ts": {
+        "version": "ce944b8fd9225950f1d3921b04e5a1746dd90d963de872b1401fcee52cc437a9",
+        "signature": "ce944b8fd9225950f1d3921b04e5a1746dd90d963de872b1401fcee52cc437a9"
+      },
+      "../../node_modules/@oclif/errors/lib/errors/exit.d.ts": {
+        "version": "2ec1aa91f5a7e5c87e32a3ab3bea3f3bc2c78700502a27139974479d272788d6",
+        "signature": "2ec1aa91f5a7e5c87e32a3ab3bea3f3bc2c78700502a27139974479d272788d6"
+      },
+      "../../node_modules/@oclif/errors/lib/logger.d.ts": {
+        "version": "1b9f1ba55985edc074f18ddfe23c6c93d8463ff30651482e8783e56ca0df0653",
+        "signature": "1b9f1ba55985edc074f18ddfe23c6c93d8463ff30651482e8783e56ca0df0653"
+      },
+      "../../node_modules/@oclif/errors/lib/config.d.ts": {
+        "version": "e12f2c48252d0ae261db2be28206e4f1cc282fa5459a0f991a09f86bb766543f",
+        "signature": "e12f2c48252d0ae261db2be28206e4f1cc282fa5459a0f991a09f86bb766543f"
+      },
+      "../../node_modules/@oclif/errors/lib/index.d.ts": {
+        "version": "ba093d7f1d0b2d57e2fc3059949eb8f65cfd6b08e1a9642917a6aa752029c7d7",
+        "signature": "ba093d7f1d0b2d57e2fc3059949eb8f65cfd6b08e1a9642917a6aa752029c7d7"
+      },
+      "../../node_modules/cli-ux/lib/action/base.d.ts": {
+        "version": "a9ba23c7b641dea92c5d98353488e23860b9782e6aaf96a87a0144b2bcf13450",
+        "signature": "a9ba23c7b641dea92c5d98353488e23860b9782e6aaf96a87a0144b2bcf13450"
+      },
+      "../../node_modules/cli-ux/lib/config.d.ts": {
+        "version": "a1e9782e97415229412198fc4bde18586184fda2ff104ede5288b3870436a28c",
+        "signature": "a1e9782e97415229412198fc4bde18586184fda2ff104ede5288b3870436a28c"
+      },
+      "../../node_modules/cli-ux/lib/exit.d.ts": {
+        "version": "168840936351f71eba6047f128bd450e7f1d724ef92d66d1514f98907061e2e9",
+        "signature": "168840936351f71eba6047f128bd450e7f1d724ef92d66d1514f98907061e2e9"
+      },
+      "../../node_modules/cli-ux/lib/prompt.d.ts": {
+        "version": "e3d2b40728279d9695a6af01d145bd3953cd34e77be3ec76784d6c7690f0502c",
+        "signature": "e3d2b40728279d9695a6af01d145bd3953cd34e77be3ec76784d6c7690f0502c"
+      },
+      "../../node_modules/cli-ux/lib/styled/table.d.ts": {
+        "version": "98bf75a1d6c19b9e82e802649d25355ade5a732cbaa87dd5bf6c3823914c5d39",
+        "signature": "98bf75a1d6c19b9e82e802649d25355ade5a732cbaa87dd5bf6c3823914c5d39"
+      },
+      "../../node_modules/cli-ux/lib/styled/header.d.ts": {
+        "version": "de8ede1a3263a477c17a9702db5eb4bf65c64f0a5cfc2843db886fa9f3bd8e76",
+        "signature": "de8ede1a3263a477c17a9702db5eb4bf65c64f0a5cfc2843db886fa9f3bd8e76"
+      },
+      "../../node_modules/cli-ux/lib/styled/json.d.ts": {
+        "version": "172c8da34d1fb46bcc97ec7e5829a8e1a71ec444757fcb3b5b90c004b9b45741",
+        "signature": "172c8da34d1fb46bcc97ec7e5829a8e1a71ec444757fcb3b5b90c004b9b45741"
+      },
+      "../../node_modules/cli-ux/lib/styled/tree.d.ts": {
+        "version": "54fd36881589b2edf82f3cd1b4b6f057b791385136a0fcafe7dfb5eed633c658",
+        "signature": "54fd36881589b2edf82f3cd1b4b6f057b791385136a0fcafe7dfb5eed633c658"
+      },
+      "../../node_modules/cli-ux/lib/open.d.ts": {
+        "version": "b53125286827258e0c254c9dd31c5b6f77ecb1494e5b3ea65b3258fa43035107",
+        "signature": "b53125286827258e0c254c9dd31c5b6f77ecb1494e5b3ea65b3258fa43035107"
+      },
+      "../../node_modules/cli-ux/lib/index.d.ts": {
+        "version": "a9ab29787c2be8f1b576badc3bcc8f5e5284e0926bb5a9c677bafd10f3312766",
+        "signature": "a9ab29787c2be8f1b576badc3bcc8f5e5284e0926bb5a9c677bafd10f3312766"
+      },
+      "./types/symbol-tree.d.ts": {
+        "version": "9eb4cf1077b42d96c33de3eff984e3c714685f4194bc964ded29b5266510b5cb",
+        "signature": "9eb4cf1077b42d96c33de3eff984e3c714685f4194bc964ded29b5266510b5cb"
+      },
+      "../../node_modules/axios/index.d.ts": {
+        "version": "9b3812f5ae5c9c8c9daf7107e1041f4ad9d19aebd12b738a81f22a1ac1f5e371",
+        "signature": "9b3812f5ae5c9c8c9daf7107e1041f4ad9d19aebd12b738a81f22a1ac1f5e371"
+      },
+      "./src/utils/jira/searchissues.ts": {
+        "version": "eb588f19b1a4d7f19278f321ca50ac40d389d13066523059137240a4e79188d1",
+        "signature": "d48dbcd4335e3bb234aa2cfd6befd3857e04a61d74020b0db093ebd14236713c"
+      },
+      "./src/utils/misc/jirautils.ts": {
+        "version": "e013502980f14164c7d936b8f003601cf55bf8820c5c76e3a4b2263754c69f95",
+        "signature": "81840fbcfe432bb11340c4d0ad62d4efe89bb3caa6717f08efc16a618e029125"
+      },
+      "./src/utils/data/fetchchildren.ts": {
+        "version": "094053d940fa9cb3ac6104da51f39a299b870a6878c7383757cb813ee6d23153",
+        "signature": "665774294f4e712d40ba06f069535841b2d0dbb84f09e31b401f7c34acaf5458"
+      },
+      "./src/utils/misc/dateutils.ts": {
+        "version": "7eeea149d2bb53aca02cbb8f6e04d67ce48a13d40d8a08b84c296e726ad15e31",
+        "signature": "97a467e4280c6482554e3a3d793b1cfb368742177de442b109b35c85565f41e8"
+      },
+      "./src/utils/misc/teamutils.ts": {
+        "version": "71c7f7576e438b2c2e980f8d1945628c8da53708a7726c5287351e08979009a5",
+        "signature": "b89fae8269487664b39886687a14cec6a87aab174b4ed12400424b924ed41a99"
+      },
+      "./src/utils/data/fetchcompleted.ts": {
+        "version": "640880d4bbb46f48e5faa489953974d154199cc0bd57e741087c3e0dd0f5f708",
+        "signature": "dd4424190a743b98b8572da553aa4874aa19f6311eb376fce13253c9f621b3a2"
+      },
+      "./src/utils/data/fetchinitiatives.ts": {
+        "version": "ae13b8d159eff677a03551f280e58e088dff122dddbc619f9fad40b1b8b6eed2",
+        "signature": "bc0110738c3e5de635fc451fe0176e625cc8a857b1d243ae82ddb7d861fffd52"
+      },
+      "./src/utils/roadmap/crunchroadmap.ts": {
+        "version": "22df1edd173ce21575224489263af884af8603e88c680e2a0129e1b1c8c40cfa",
+        "signature": "2bdfb43cac23eb29ab302dfb38be6d765a4c729881f9b67c31b6941ee59acd28"
+      },
+      "../../node_modules/date-fns/typings.d.ts": {
+        "version": "90a19511f239248525ea8c80736bb3b142953a55f682a3a76405b5a9fee07548",
+        "signature": "90a19511f239248525ea8c80736bb3b142953a55f682a3a76405b5a9fee07548"
+      },
+      "./src/utils/roadmap/getemptycalendarobject.ts": {
+        "version": "a847e9d20e76ff2519459541e11e5a80abc4ec983dcc49df81193387f65f5549",
+        "signature": "900d834f6485fb9b8da06f304ebd967b499069bae63210ccdb55989ee836f979"
+      },
+      "./src/utils/roadmap/getemptyroadmapobject.ts": {
+        "version": "410281dbbd7e2c3b23c07f54037e22279e7caf70acc0b6d892c52c2ce61324d9",
+        "signature": "c9307a5375050efc8b111d28d5ea82e280b0bbccee67626349bbaa8c08e91bf0"
+      },
+      "./src/utils/initiatives/crunchmetrics.ts": {
+        "version": "5b20343d57dd0a03daf303701a768af500e94682349b94f9164e332993253591",
+        "signature": "53a7ce03a1f598876698f5d0c7f694887c3c336099cec065d7d2f53a00ca4d29"
+      },
+      "./src/utils/initiatives/crunchweeks.ts": {
+        "version": "a2a9a679a3fa1164cad7556ae2c0256bbfdc0097a267a8cd70a02f6843a442e4",
+        "signature": "840a66180695fa5944cb4ad10455a1def601205bd628a30205af5f5df8730578"
+      },
+      "./src/utils/initiatives/prepareinitiativesdata.ts": {
+        "version": "e566ab957a7444936ea9c3af16d0214854515b659cff9f4b5896e9c53c96cd82",
+        "signature": "83e21b1c1b4c6b44a529e5edc6896d0dd2eee373e17eddcbcfd9c61204b25208"
+      },
+      "./src/utils/roadmap/teamclosedbyweek.ts": {
+        "version": "a66b3e54ee1c4e1814fb95958e684ad61d570f98ddce4fa0f37998d096c18498",
+        "signature": "1ef2c59f362f34983dd2549b4dd79a8b18d672414a4d1af634791ffdd56566f3"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts": {
+        "version": "99113e4c4599427330953ea8c0090f7b540d761cb9f162d39d65a130458feef4",
+        "signature": "99113e4c4599427330953ea8c0090f7b540d761cb9f162d39d65a130458feef4"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts": {
+        "version": "c58be3e560989a877531d3ff7c9e5db41c5dd9282480ccf197abfcc708a95b8d",
+        "signature": "c58be3e560989a877531d3ff7c9e5db41c5dd9282480ccf197abfcc708a95b8d"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/mutable.d.ts": {
+        "version": "4d1462b70f05fd1b16d7d4f78ac195824560a1dd96407de0a1fe964f3ec0e9d4",
+        "signature": "4d1462b70f05fd1b16d7d4f78ac195824560a1dd96407de0a1fe964f3ec0e9d4"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge.d.ts": {
+        "version": "50d22844db90a0dcd359afeb59dd1e9a384d977b4b363c880b4e65047237a29e",
+        "signature": "50d22844db90a0dcd359afeb59dd1e9a384d977b4b363c880b4e65047237a29e"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge-exclusive.d.ts": {
+        "version": "b065ba1b9a52bc541a638fa4b11115644001bcf82a0a0b984b7c1834451bd2b5",
+        "signature": "b065ba1b9a52bc541a638fa4b11115644001bcf82a0a0b984b7c1834451bd2b5"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/require-at-least-one.d.ts": {
+        "version": "cb328633afdbf2115fc1b44d5cf95558ca2bf84a4b36f6ce82a998e198c47bf6",
+        "signature": "cb328633afdbf2115fc1b44d5cf95558ca2bf84a4b36f6ce82a998e198c47bf6"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/readonly-deep.d.ts": {
+        "version": "d8b4c196cedbfbdd557ab5d5c609c32d8a77a86ac1a5e7406a06413ab56a1d67",
+        "signature": "d8b4c196cedbfbdd557ab5d5c609c32d8a77a86ac1a5e7406a06413ab56a1d67"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/literal-union.d.ts": {
+        "version": "091af8276fbc70609a00e296840bd284a2fe29df282f0e8dae2de9f0a706685f",
+        "signature": "091af8276fbc70609a00e296840bd284a2fe29df282f0e8dae2de9f0a706685f"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/promisable.d.ts": {
+        "version": "537aff717746703d2157ec563b5de4f6393ce9f69a84ae62b49e9b6c80b6e587",
+        "signature": "537aff717746703d2157ec563b5de4f6393ce9f69a84ae62b49e9b6c80b6e587"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/source/package-json.d.ts": {
+        "version": "8b108d831999b4c6b1df9c39cdcc57c059ef19219c441e5b61bca20aabb9f411",
+        "signature": "8b108d831999b4c6b1df9c39cdcc57c059ef19219c441e5b61bca20aabb9f411"
+      },
+      "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts": {
+        "version": "8714e4fab09146efd7db2d969cbeb50559225f09f40a2171d7ac122572d0d269",
+        "signature": "8714e4fab09146efd7db2d969cbeb50559225f09f40a2171d7ac122572d0d269"
+      },
+      "../../node_modules/load-json-file/index.d.ts": {
+        "version": "bb162cf8c173d2eee4eca68cf7083519839cbe9f5f8b5597b4e9b822c746f09e",
+        "signature": "bb162cf8c173d2eee4eca68cf7083519839cbe9f5f8b5597b4e9b822c746f09e"
+      },
+      "./src/utils/roadmap/teamvelocityfromcache.ts": {
+        "version": "092c906e6d3a25a60c07577093ed9b06ac29d85b1ab0dbc0d2ede590527aafe9",
+        "signature": "6fb53b80cd28098ea86edf1518418a244d177ba1c8f8d88c15771a91f35aa48d"
+      },
+      "./src/commands/initiatives.ts": {
+        "version": "0d7be2d939bafdb519f0fd6f3798c8f7bbf46c79cf4b37bad7b7bdee9ee1a0dc",
+        "signature": "9848e5c04fe62be48e856316bd35c5aabe8db0a168fd98f71aefe28180ef5984"
+      },
+      "./src/utils/roadmap/crunchmetrics.ts": {
+        "version": "5b20343d57dd0a03daf303701a768af500e94682349b94f9164e332993253591",
+        "signature": "53a7ce03a1f598876698f5d0c7f694887c3c336099cec065d7d2f53a00ca4d29"
+      },
+      "./src/utils/roadmap/crunchweeks.ts": {
+        "version": "a2a9a679a3fa1164cad7556ae2c0256bbfdc0097a267a8cd70a02f6843a442e4",
+        "signature": "840a66180695fa5944cb4ad10455a1def601205bd628a30205af5f5df8730578"
+      },
+      "./src/utils/roadmap/prepareinitiativesdata.ts": {
+        "version": "e566ab957a7444936ea9c3af16d0214854515b659cff9f4b5896e9c53c96cd82",
+        "signature": "83e21b1c1b4c6b44a529e5edc6896d0dd2eee373e17eddcbcfd9c61204b25208"
+      },
+      "./src/commands/roadmap.ts": {
+        "version": "9a91639bd74599c4c03acc9b310408de56782d1398c9db122b3798e8fb1a4b78",
+        "signature": "b275c4676b4efeeee3ada443b7c7fe5618cf5bcd06dcd7f04128a0012c4f761b"
+      },
+      "./src/utils/slack/getdailyhealthmsg.ts": {
+        "version": "6610352b80bb02190b0156d496b41906b80552dc9142bffbf4c7a2c2e9229ab0",
+        "signature": "a7e03815845f141c22abe985acaa669fa3d90612331165541308599a7145be00"
+      },
+      "../../node_modules/slack/slack.d.ts": {
+        "version": "7a421e9a7324dc6298d9dcca46d15673b351b93cfdea5f531e5e74aa1dfab018",
+        "signature": "7a421e9a7324dc6298d9dcca46d15673b351b93cfdea5f531e5e74aa1dfab018"
+      },
+      "./src/utils/slack/sendslackmsg.ts": {
+        "version": "40d7cb5f9600ff4dc93666d0fca5a29bbe431730dc4bd1dbe0c4c658aac1ba6d",
+        "signature": "0a7e356543393a56286c7305cd9eb9431942552501466a1758e8b3c59ee9b096"
+      },
+      "./src/utils/velocity/initcalendar.ts": {
+        "version": "5e4a63cac78f9769ed9df1d37f1cf80df47e4c13e05a53c1d2ab6a792fc2e6ce",
+        "signature": "810e288df7c38a775ee7af851b379aa36389d1b7338b964930d767712c2a0343"
+      },
+      "./src/utils/velocity/insertclosed.ts": {
+        "version": "932330fe9a3b69fc2ad043561dd92deb84136f15f007b4ef36fe61f292edf8b3",
+        "signature": "3bc3f1382e666cb70444d71f39d02b74efb963a18910fe910884c0aa2fbacc6c"
+      },
+      "./src/utils/velocity/calculateaveragevelocity.ts": {
+        "version": "fe8237b84eecfe9f7b2c3e1685dafe13da5e69139140970875cfb839a3b3edef",
+        "signature": "8a4327056227acaf5ad688504014b679c0f321bd4ad908aa0eaa108302f8d9b8"
+      },
+      "./src/utils/velocity/insertdailyvelocity.ts": {
+        "version": "18eee1d1d8fb1da820a52025fbc0da7bd24a02c8d9690e16971a973548a2692e",
+        "signature": "6bb0ab10e3c684e82182754d4cbfdac3d8d47816a924ca810f3188d41a41be23"
+      },
+      "./src/utils/velocity/insertforecast.ts": {
+        "version": "90eb37c227e893cf4c37c01cf9d6dd5bb366d5ddeb2e0c04d13064edc59377f4",
+        "signature": "4e5bee1e3dd80845e12666de3bb0441156d22c67cc3b74e77943779190ca1df9"
+      },
+      "./src/utils/velocity/inserthealth.ts": {
+        "version": "3013302b00ad60b86d6e562468964b54c6b8d060b8dd90b3ec388abc5914ae05",
+        "signature": "c9f9ef987ab6be97590d39050f0f298cb1633baa3e9a0a3b86b1a31f8d04d8a9"
+      },
+      "./src/utils/velocity/insertopen.ts": {
+        "version": "688cc83328e9fa07de239808bca1ec603b2bc76b87e4acbd40257a7c03b8067d",
+        "signature": "4c1f52491ace8dd9e5cc10b433c4402826f1ec75887923b2fd2ab6a5dd0eb875"
+      },
+      "./src/utils/velocity/insertweeklyvelocity.ts": {
+        "version": "95c5b345d0bc8911608ea715efbd314f35ebeca070cd5ecb6158dc57a8df943c",
+        "signature": "b3f0c885154968daf830c3c83b544ae44032abb9b8853e0febb0949b556f4740"
+      },
+      "./src/commands/velocity.ts": {
+        "version": "1cfb964c618bd91cb3063b47620d21c643c10ff12688a569a27cfd53e1b5e3ff",
+        "signature": "835f9e007652faf36b9f01195caba1345b0cc61064adc50af9ab63a47a994fd3"
+      },
+      "./src/environments/environment.prod.ts": {
+        "version": "365e9914fc285641a8c9152fa331c83164325564451bd2b05c73859ceaf54a3c",
+        "signature": "198908c19aa7d11799179ac38420b417cb20f930d91eeca9069cbfa077f58a35"
+      },
+      "./src/environments/environment.ts": {
+        "version": "74f174365d8c8576d4e090c9bdc0c822f3c5c9a68ee49211940dedaa2617d189",
+        "signature": "198908c19aa7d11799179ac38420b417cb20f930d91eeca9069cbfa077f58a35"
+      },
+      "./src/utils/roadmap/issuesclosedbyweek.ts": {
+        "version": "64bf10ef71be6f043374255a437cc356f2a02dff9524447d503186e835144079",
+        "signature": "def8a7d01cae3df8205b338829630c5b81da0dab8d36fb4735319997d086a1c5"
+      },
+      "../../node_modules/@types/jest-diff/index.d.ts": {
+        "version": "6ecb326999da47034eff85653423767152858fbb7acf0433f7603c9abf1e3f06",
+        "signature": "6ecb326999da47034eff85653423767152858fbb7acf0433f7603c9abf1e3f06"
+      },
+      "../../node_modules/jest-diff/build/types.d.ts": {
+        "version": "71ba0678a3c647f5c0706ae975c031ace0d464e60f9ce56eaa7f1678d065aab7",
+        "signature": "71ba0678a3c647f5c0706ae975c031ace0d464e60f9ce56eaa7f1678d065aab7"
+      },
+      "../../node_modules/jest-diff/build/index.d.ts": {
+        "version": "162c6f2951bd80ae6e16679378f382200b26bba9de8f255af3a2895fbfa670b4",
+        "signature": "162c6f2951bd80ae6e16679378f382200b26bba9de8f255af3a2895fbfa670b4"
+      },
+      "../../node_modules/@types/jest/index.d.ts": {
+        "version": "325579572bbd1c262bb79e50167ac3333c97bbc44cadf9f97725946f3a15bb43",
+        "signature": "325579572bbd1c262bb79e50167ac3333c97bbc44cadf9f97725946f3a15bb43"
+      }
+    },
+    "options": {
+      "rootDir": "../..",
+      "sourceMap": true,
+      "declaration": true,
+      "moduleResolution": 2,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "importHelpers": true,
+      "target": 4,
+      "module": 1,
+      "typeRoots": [
+        "../../node_modules/@types"
+      ],
+      "lib": [
+        "lib.es2017.d.ts",
+        "lib.dom.d.ts"
+      ],
+      "skipLibCheck": true,
+      "skipDefaultLibCheck": true,
+      "baseUrl": "./",
+      "paths": {
+        "*": [
+          "types/*"
+        ]
+      },
+      "types": [
+        "node",
+        "jest"
+      ],
+      "strict": true,
+      "composite": true,
+      "configFilePath": "./tsconfig.json"
+    },
+    "referencedMap": {
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es5.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.dom.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.array.include.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.object.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.string.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.intl.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.intl.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.promise.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.regexp.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.array.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.object.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.string.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.symbol.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.bigint.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/tslib/tslib.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/args.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/alphabet.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/flags.d.ts": [
+        "../../node_modules/@oclif/parser/lib/alphabet.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/metadata.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/parse.d.ts": [
+        "../../node_modules/@oclif/parser/lib/args.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/parser/lib/metadata.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/help.d.ts": [
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/index.d.ts": [
+        "../../node_modules/@oclif/parser/lib/args.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/parser/lib/parse.d.ts",
+        "../../node_modules/@oclif/parser/lib/help.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/command.d.ts": [
+        "../../node_modules/@oclif/parser/lib/index.d.ts",
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/hooks.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/pjson.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/manifest.d.ts": [
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/topic.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/plugin.d.ts": [
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/@oclif/config/lib/manifest.d.ts",
+        "../../node_modules/@oclif/config/lib/pjson.d.ts",
+        "../../node_modules/@oclif/config/lib/topic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/config.d.ts": [
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/@oclif/config/lib/hooks.d.ts",
+        "../../node_modules/@oclif/config/lib/pjson.d.ts",
+        "../../node_modules/@oclif/config/lib/plugin.d.ts",
+        "../../node_modules/@oclif/config/lib/topic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/index.d.ts": [
+        "../../node_modules/@oclif/config/lib/config.d.ts",
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/@oclif/config/lib/hooks.d.ts",
+        "../../node_modules/@oclif/config/lib/manifest.d.ts",
+        "../../node_modules/@oclif/config/lib/pjson.d.ts",
+        "../../node_modules/@oclif/config/lib/plugin.d.ts",
+        "../../node_modules/@oclif/config/lib/topic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/flags.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/command.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/index.d.ts",
+        "../../node_modules/@oclif/command/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/main.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/index.d.ts": [
+        "../../node_modules/@oclif/command/lib/command.d.ts",
+        "../../node_modules/@oclif/command/lib/flags.d.ts",
+        "../../node_modules/@oclif/command/lib/main.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/events/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/node/inspector.d.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/node/index.d.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/@types/node/inspector.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/fs-extra/index.d.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/js-yaml/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./types/load-yaml-file.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/global.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/base.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/@types/fs-extra/index.d.ts",
+        "../../node_modules/@types/js-yaml/index.d.ts",
+        "./types/load-yaml-file.d.ts",
+        "./src/global.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/fs-ndjson.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/index.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/commands/init.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "./src/base.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/handle.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/errors/cli.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/errors/exit.d.ts": [
+        "../../node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/logger.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/config.d.ts": [
+        "../../node_modules/@oclif/errors/lib/logger.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/index.d.ts": [
+        "../../node_modules/@oclif/errors/lib/handle.d.ts",
+        "../../node_modules/@oclif/errors/lib/errors/exit.d.ts",
+        "../../node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "../../node_modules/@oclif/errors/lib/logger.d.ts",
+        "../../node_modules/@oclif/errors/lib/config.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/action/base.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/config.d.ts": [
+        "../../node_modules/cli-ux/lib/action/base.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/exit.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/prompt.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/table.d.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/header.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/json.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/tree.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/open.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/index.d.ts": [
+        "../../node_modules/@oclif/errors/lib/index.d.ts",
+        "../../node_modules/cli-ux/lib/action/base.d.ts",
+        "../../node_modules/cli-ux/lib/config.d.ts",
+        "../../node_modules/cli-ux/lib/exit.d.ts",
+        "../../node_modules/cli-ux/lib/prompt.d.ts",
+        "../../node_modules/cli-ux/lib/styled/table.d.ts",
+        "../../node_modules/cli-ux/lib/styled/header.d.ts",
+        "../../node_modules/cli-ux/lib/styled/json.d.ts",
+        "../../node_modules/cli-ux/lib/styled/tree.d.ts",
+        "../../node_modules/cli-ux/lib/open.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./types/symbol-tree.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/axios/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/jira/searchissues.ts": [
+        "../../node_modules/axios/index.d.ts",
+        "./src/global.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/misc/jirautils.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/data/fetchchildren.ts": [
+        "../../node_modules/cli-ux/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "./src/fs-ndjson.d.ts",
+        "./src/global.ts",
+        "./src/utils/jira/searchissues.ts",
+        "./src/utils/misc/jirautils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/misc/dateutils.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/misc/teamutils.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/data/fetchcompleted.ts": [
+        "../../node_modules/cli-ux/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "./src/fs-ndjson.d.ts",
+        "./src/global.ts",
+        "./src/utils/jira/searchissues.ts",
+        "./src/utils/misc/dateutils.ts",
+        "./src/utils/misc/teamutils.ts",
+        "./src/utils/misc/jirautils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/data/fetchinitiatives.ts": [
+        "../../node_modules/cli-ux/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "./src/fs-ndjson.d.ts",
+        "./src/global.ts",
+        "./src/utils/jira/searchissues.ts",
+        "./src/utils/misc/teamutils.ts",
+        "./src/utils/misc/jirautils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/crunchroadmap.ts": [
+        "./src/utils/misc/teamutils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/date-fns/typings.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/getemptycalendarobject.ts": [
+        "../../node_modules/date-fns/typings.d.ts",
+        "./src/global.ts",
+        "./src/utils/misc/dateutils.ts"
+      ],
+      "./src/utils/roadmap/getemptyroadmapobject.ts": [
+        "../../node_modules/date-fns/typings.d.ts",
+        "./src/utils/misc/dateutils.ts"
+      ],
+      "./src/utils/initiatives/crunchmetrics.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/initiatives/crunchweeks.ts": [
+        "./src/global.ts",
+        "./src/utils/misc/dateutils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/initiatives/prepareinitiativesdata.ts": [
+        "./src/global.ts",
+        "./src/utils/initiatives/crunchmetrics.ts",
+        "./src/utils/initiatives/crunchweeks.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/teamclosedbyweek.ts": [
+        "./src/global.ts",
+        "./src/utils/misc/dateutils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/mutable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge-exclusive.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/require-at-least-one.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/readonly-deep.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/literal-union.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/promisable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/package-json.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/mutable.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/merge.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/merge-exclusive.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/require-at-least-one.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/readonly-deep.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/literal-union.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/promisable.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/package-json.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/index.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/teamvelocityfromcache.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/load-json-file/index.d.ts",
+        "./src/global.ts",
+        "./src/utils/misc/teamutils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/commands/initiatives.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/cli-ux/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "./types/symbol-tree.d.ts",
+        "./src/base.ts",
+        "./src/global.ts",
+        "./src/utils/data/fetchchildren.ts",
+        "./src/utils/data/fetchcompleted.ts",
+        "./src/utils/data/fetchinitiatives.ts",
+        "./src/utils/roadmap/crunchroadmap.ts",
+        "./src/utils/roadmap/getemptycalendarobject.ts",
+        "./src/utils/roadmap/getemptyroadmapobject.ts",
+        "./src/utils/initiatives/prepareinitiativesdata.ts",
+        "./src/utils/roadmap/teamclosedbyweek.ts",
+        "./src/utils/roadmap/teamvelocityfromcache.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/crunchmetrics.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/crunchweeks.ts": [
+        "./src/global.ts",
+        "./src/utils/misc/dateutils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/prepareinitiativesdata.ts": [
+        "./src/global.ts",
+        "./src/utils/roadmap/crunchmetrics.ts",
+        "./src/utils/roadmap/crunchweeks.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/commands/roadmap.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/cli-ux/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "./types/symbol-tree.d.ts",
+        "./src/base.ts",
+        "./src/global.ts",
+        "./src/utils/data/fetchchildren.ts",
+        "./src/utils/data/fetchcompleted.ts",
+        "./src/utils/data/fetchinitiatives.ts",
+        "./src/utils/roadmap/crunchroadmap.ts",
+        "./src/utils/roadmap/getemptycalendarobject.ts",
+        "./src/utils/roadmap/getemptyroadmapobject.ts",
+        "./src/utils/roadmap/prepareinitiativesdata.ts",
+        "./src/utils/roadmap/teamclosedbyweek.ts",
+        "./src/utils/roadmap/teamvelocityfromcache.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/slack/getdailyhealthmsg.ts": [
+        "./src/global.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/slack/slack.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/slack/sendslackmsg.ts": [
+        "../../node_modules/slack/slack.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/initcalendar.ts": [
+        "../../node_modules/date-fns/typings.d.ts",
+        "./src/global.ts",
+        "./src/utils/misc/dateutils.ts"
+      ],
+      "./src/utils/velocity/insertclosed.ts": [
+        "./src/global.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/calculateaveragevelocity.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/insertdailyvelocity.ts": [
+        "./src/global.ts",
+        "./src/utils/velocity/calculateaveragevelocity.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/insertforecast.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/inserthealth.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/insertopen.ts": [
+        "./src/global.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/velocity/insertweeklyvelocity.ts": [
+        "./src/global.ts",
+        "./src/utils/velocity/calculateaveragevelocity.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/commands/velocity.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/cli-ux/lib/index.d.ts",
+        "../../node_modules/@types/node/index.d.ts",
+        "./src/base.ts",
+        "./src/global.ts",
+        "./src/utils/data/fetchcompleted.ts",
+        "./src/utils/jira/searchissues.ts",
+        "./src/utils/misc/teamutils.ts",
+        "./src/utils/slack/getdailyhealthmsg.ts",
+        "./src/utils/slack/sendslackmsg.ts",
+        "./src/utils/velocity/initcalendar.ts",
+        "./src/utils/velocity/insertclosed.ts",
+        "./src/utils/velocity/insertdailyvelocity.ts",
+        "./src/utils/velocity/insertforecast.ts",
+        "./src/utils/velocity/inserthealth.ts",
+        "./src/utils/velocity/insertopen.ts",
+        "./src/utils/velocity/insertweeklyvelocity.ts",
+        "./src/utils/misc/jirautils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/environments/environment.prod.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/environments/environment.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/issuesclosedbyweek.ts": [
+        "./src/global.ts",
+        "./src/utils/misc/dateutils.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/jest-diff/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/jest-diff/build/types.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/jest-diff/build/index.d.ts": [
+        "../../node_modules/jest-diff/build/types.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/jest/index.d.ts": [
+        "../../node_modules/jest-diff/build/index.d.ts",
+        "../../node_modules/@types/jest-diff/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es5.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.dom.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.array.include.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.object.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.string.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.intl.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.intl.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.promise.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.regexp.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.array.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.object.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.string.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.symbol.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.bigint.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/tslib/tslib.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/args.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/index.d.ts": [
+        "../../node_modules/@oclif/parser/lib/args.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/parser/lib/parse.d.ts",
+        "../../node_modules/@oclif/parser/lib/help.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/command.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/index.d.ts",
+        "../../node_modules/@oclif/command/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/index.d.ts": [
+        "../../node_modules/@oclif/command/lib/command.d.ts",
+        "../../node_modules/@oclif/command/lib/flags.d.ts",
+        "../../node_modules/@oclif/command/lib/main.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/commands/velocity.ts": [
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "./src/global.ts",
+        "./src/base.ts"
+      ],
+      "./src/commands/roadmap.ts": [
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "./src/base.ts"
+      ],
+      "./src/commands/initiatives.ts": [
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "./src/base.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/table.d.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/index.d.ts": [
+        "../../node_modules/@oclif/errors/lib/index.d.ts",
+        "../../node_modules/cli-ux/lib/action/base.d.ts",
+        "../../node_modules/cli-ux/lib/config.d.ts",
+        "../../node_modules/cli-ux/lib/exit.d.ts",
+        "../../node_modules/cli-ux/lib/prompt.d.ts",
+        "../../node_modules/cli-ux/lib/styled/table.d.ts",
+        "../../node_modules/cli-ux/lib/styled/header.d.ts",
+        "../../node_modules/cli-ux/lib/styled/json.d.ts",
+        "../../node_modules/cli-ux/lib/styled/tree.d.ts",
+        "../../node_modules/cli-ux/lib/open.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/data/fetchinitiatives.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/data/fetchcompleted.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/data/fetchchildren.ts": [
+        "./src/global.ts"
+      ],
+      "./src/index.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts"
+      ],
+      "./src/base.ts": [
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "./src/global.ts"
+      ],
+      "./src/commands/init.ts": [
+        "./src/base.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/main.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/@oclif/command/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/command/lib/flags.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/index.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/command.d.ts": [
+        "../../node_modules/@oclif/parser/lib/index.d.ts",
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/index.d.ts": [
+        "../../node_modules/@oclif/config/lib/config.d.ts",
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/@oclif/config/lib/hooks.d.ts",
+        "../../node_modules/@oclif/config/lib/manifest.d.ts",
+        "../../node_modules/@oclif/config/lib/pjson.d.ts",
+        "../../node_modules/@oclif/config/lib/plugin.d.ts",
+        "../../node_modules/@oclif/config/lib/topic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/hooks.d.ts": [
+        "../../node_modules/@oclif/config/lib/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/config.d.ts": [
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/@oclif/config/lib/hooks.d.ts",
+        "../../node_modules/@oclif/config/lib/pjson.d.ts",
+        "../../node_modules/@oclif/config/lib/plugin.d.ts",
+        "../../node_modules/@oclif/config/lib/topic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/plugin.d.ts": [
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/@oclif/config/lib/manifest.d.ts",
+        "../../node_modules/@oclif/config/lib/pjson.d.ts",
+        "../../node_modules/@oclif/config/lib/topic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/manifest.d.ts": [
+        "../../node_modules/@oclif/config/lib/command.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/parse.d.ts": [
+        "../../node_modules/@oclif/parser/lib/args.d.ts",
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/@oclif/parser/lib/metadata.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/alphabet.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/flags.d.ts": [
+        "../../node_modules/@oclif/parser/lib/alphabet.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/help.d.ts": [
+        "../../node_modules/@oclif/parser/lib/flags.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/parser/lib/metadata.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/pjson.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/config/lib/topic.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/events/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/node/inspector.d.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/node/index.d.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/@types/node/inspector.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/teamvelocityfromcache.ts": [
+        "./src/global.ts"
+      ],
+      "../../node_modules/@types/fs-extra/index.d.ts": [
+        "../../node_modules/@types/node/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/js-yaml/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./types/load-yaml-file.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./src/utils/roadmap/issuesclosedbyweek.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/velocity/insertweeklyvelocity.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/velocity/insertopen.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/velocity/insertdailyvelocity.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/velocity/insertclosed.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/velocity/initcalendar.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/slack/getdailyhealthmsg.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/roadmap/prepareinitiativesdata.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/roadmap/crunchweeks.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/roadmap/teamclosedbyweek.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/initiatives/prepareinitiativesdata.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/initiatives/crunchweeks.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/roadmap/getemptycalendarobject.ts": [
+        "./src/global.ts"
+      ],
+      "./src/utils/jira/searchissues.ts": [
+        "./src/global.ts"
+      ],
+      "./src/fs-ndjson.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/handle.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/index.d.ts": [
+        "../../node_modules/@oclif/errors/lib/handle.d.ts",
+        "../../node_modules/@oclif/errors/lib/errors/exit.d.ts",
+        "../../node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "../../node_modules/@oclif/errors/lib/logger.d.ts",
+        "../../node_modules/@oclif/errors/lib/config.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/errors/cli.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/errors/exit.d.ts": [
+        "../../node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/logger.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@oclif/errors/lib/config.d.ts": [
+        "../../node_modules/@oclif/errors/lib/logger.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/action/base.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/config.d.ts": [
+        "../../node_modules/cli-ux/lib/action/base.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/exit.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/prompt.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/header.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/json.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/styled/tree.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/cli-ux/lib/open.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "./types/symbol-tree.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/axios/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/date-fns/typings.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/mutable.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/merge.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/merge-exclusive.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/require-at-least-one.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/readonly-deep.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/literal-union.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/promisable.d.ts",
+        "../../node_modules/load-json-file/node_modules/type-fest/source/package-json.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/index.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/package-json.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/require-at-least-one.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/mutable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge-exclusive.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/readonly-deep.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/literal-union.d.ts": [
+        "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/load-json-file/node_modules/type-fest/source/promisable.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/slack/slack.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/jest-diff/index.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/@types/jest/index.d.ts": [
+        "../../node_modules/jest-diff/build/index.d.ts",
+        "../../node_modules/@types/jest-diff/index.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/jest-diff/build/types.d.ts": [
+        "../../node_modules/date-fns/typings.d.ts"
+      ],
+      "../../node_modules/jest-diff/build/index.d.ts": [
+        "../../node_modules/jest-diff/build/types.d.ts",
+        "../../node_modules/date-fns/typings.d.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "../../node_modules/tslib/tslib.d.ts",
+      "../../node_modules/@oclif/parser/lib/args.d.ts",
+      "../../node_modules/@oclif/parser/lib/alphabet.d.ts",
+      "../../node_modules/@oclif/parser/lib/flags.d.ts",
+      "../../node_modules/@oclif/parser/lib/metadata.d.ts",
+      "../../node_modules/@oclif/parser/lib/parse.d.ts",
+      "../../node_modules/@oclif/parser/lib/help.d.ts",
+      "../../node_modules/@oclif/parser/lib/index.d.ts",
+      "../../node_modules/@oclif/config/lib/command.d.ts",
+      "../../node_modules/@oclif/config/lib/hooks.d.ts",
+      "../../node_modules/@oclif/config/lib/pjson.d.ts",
+      "../../node_modules/@oclif/config/lib/manifest.d.ts",
+      "../../node_modules/@oclif/config/lib/topic.d.ts",
+      "../../node_modules/@oclif/config/lib/plugin.d.ts",
+      "../../node_modules/@oclif/config/lib/config.d.ts",
+      "../../node_modules/@oclif/config/lib/index.d.ts",
+      "../../node_modules/@oclif/command/lib/flags.d.ts",
+      "../../node_modules/@oclif/command/lib/command.d.ts",
+      "../../node_modules/@oclif/command/lib/main.d.ts",
+      "../../node_modules/@oclif/command/lib/index.d.ts",
+      "../../node_modules/@types/events/index.d.ts",
+      "../../node_modules/@types/node/inspector.d.ts",
+      "../../node_modules/@types/node/index.d.ts",
+      "../../node_modules/@types/fs-extra/index.d.ts",
+      "../../node_modules/@types/js-yaml/index.d.ts",
+      "./types/load-yaml-file.d.ts",
+      "./src/global.ts",
+      "./src/base.ts",
+      "./src/fs-ndjson.d.ts",
+      "./src/index.ts",
+      "./src/commands/init.ts",
+      "../../node_modules/@oclif/errors/lib/handle.d.ts",
+      "../../node_modules/@oclif/errors/lib/errors/cli.d.ts",
+      "../../node_modules/@oclif/errors/lib/errors/exit.d.ts",
+      "../../node_modules/@oclif/errors/lib/logger.d.ts",
+      "../../node_modules/@oclif/errors/lib/config.d.ts",
+      "../../node_modules/@oclif/errors/lib/index.d.ts",
+      "../../node_modules/cli-ux/lib/action/base.d.ts",
+      "../../node_modules/cli-ux/lib/config.d.ts",
+      "../../node_modules/cli-ux/lib/exit.d.ts",
+      "../../node_modules/cli-ux/lib/prompt.d.ts",
+      "../../node_modules/cli-ux/lib/styled/table.d.ts",
+      "../../node_modules/cli-ux/lib/styled/header.d.ts",
+      "../../node_modules/cli-ux/lib/styled/json.d.ts",
+      "../../node_modules/cli-ux/lib/styled/tree.d.ts",
+      "../../node_modules/cli-ux/lib/open.d.ts",
+      "../../node_modules/cli-ux/lib/index.d.ts",
+      "./types/symbol-tree.d.ts",
+      "../../node_modules/axios/index.d.ts",
+      "./src/utils/jira/searchissues.ts",
+      "./src/utils/misc/jirautils.ts",
+      "./src/utils/data/fetchchildren.ts",
+      "./src/utils/misc/dateutils.ts",
+      "./src/utils/misc/teamutils.ts",
+      "./src/utils/data/fetchcompleted.ts",
+      "./src/utils/data/fetchinitiatives.ts",
+      "./src/utils/roadmap/crunchroadmap.ts",
+      "../../node_modules/date-fns/typings.d.ts",
+      "./src/utils/roadmap/getemptycalendarobject.ts",
+      "./src/utils/roadmap/getemptyroadmapobject.ts",
+      "./src/utils/initiatives/crunchmetrics.ts",
+      "./src/utils/initiatives/crunchweeks.ts",
+      "./src/utils/initiatives/prepareinitiativesdata.ts",
+      "./src/utils/roadmap/teamclosedbyweek.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/basic.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/except.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/mutable.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/merge-exclusive.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/require-at-least-one.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/readonly-deep.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/literal-union.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/promisable.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/source/package-json.d.ts",
+      "../../node_modules/load-json-file/node_modules/type-fest/index.d.ts",
+      "../../node_modules/load-json-file/index.d.ts",
+      "./src/utils/roadmap/teamvelocityfromcache.ts",
+      "./src/commands/initiatives.ts",
+      "./src/utils/roadmap/crunchmetrics.ts",
+      "./src/utils/roadmap/crunchweeks.ts",
+      "./src/utils/roadmap/prepareinitiativesdata.ts",
+      "./src/commands/roadmap.ts",
+      "./src/utils/slack/getdailyhealthmsg.ts",
+      "../../node_modules/slack/slack.d.ts",
+      "./src/utils/slack/sendslackmsg.ts",
+      "./src/utils/velocity/initcalendar.ts",
+      "./src/utils/velocity/insertclosed.ts",
+      "./src/utils/velocity/calculateaveragevelocity.ts",
+      "./src/utils/velocity/insertdailyvelocity.ts",
+      "./src/utils/velocity/insertforecast.ts",
+      "./src/utils/velocity/inserthealth.ts",
+      "./src/utils/velocity/insertopen.ts",
+      "./src/utils/velocity/insertweeklyvelocity.ts",
+      "./src/commands/velocity.ts",
+      "./src/environments/environment.prod.ts",
+      "./src/environments/environment.ts",
+      "./src/utils/roadmap/issuesclosedbyweek.ts",
+      "../../node_modules/@types/jest-diff/index.d.ts",
+      "../../node_modules/jest-diff/build/types.d.ts",
+      "../../node_modules/jest-diff/build/index.d.ts",
+      "../../node_modules/@types/jest/index.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es5.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.dom.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.intl.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.promise.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.array.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.object.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.string.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.es2019.symbol.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts",
+      "../../../../../.nvm/versions/node/v12.13.0/lib/node_modules/typescript/lib/lib.esnext.bigint.d.ts"
+    ]
+  },
+  "version": "3.6.4"
+}

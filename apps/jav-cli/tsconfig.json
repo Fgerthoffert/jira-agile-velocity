@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "types": ["node", "jest"],
+    "strict": true,
+    "target": "es2017",
+    "composite": true,
+    "baseUrl": "./",
+    "outDir": "../../dist/",
+    "paths": {
+      "*": ["types/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/__tests__/*"],
+  "rules": {
+    "file-name-casing": [true, { ".tsx": "pascal-case", ".ts": "camel-case" }]
+  }
+}
