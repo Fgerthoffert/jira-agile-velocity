@@ -9,12 +9,13 @@ import { IConfig } from './global';
 
 export default abstract class extends Command {
   static flags = {
+    // eslint-disable-next-line
     env_user_config: flags.string({
       required: false,
       env: 'USER_CONFIG',
       description:
-        'User Configuration passed as an environment variable, takes precedence over config file'
-    })
+        'User Configuration passed as an environment variable, takes precedence over config file',
+    }),
   };
 
   userConfig = {
@@ -26,8 +27,8 @@ export default abstract class extends Command {
         points: 'customfield_10114',
         originalPoints: 'customfield_11115',
         parentInitiative: 'customfield_11112',
-        parentEpic: 'customfield_10314'
-      }
+        parentEpic: 'customfield_10314',
+      },
     },
     teams: [
       {
@@ -40,8 +41,8 @@ export default abstract class extends Command {
         slack: {
           token: '',
           channel: '',
-          explanation: ''
-        }
+          explanation: '',
+        },
       },
       {
         name: 'Team 2',
@@ -53,9 +54,9 @@ export default abstract class extends Command {
         slack: {
           token: '',
           channel: '',
-          explanation: ''
-        }
-      }
+          explanation: '',
+        },
+      },
     ],
     roadmap: {
       jqlInitiatives: 'type = initiative',
@@ -66,9 +67,9 @@ export default abstract class extends Command {
         'PM Elaboration',
         'Design',
         'DM Review',
-        'Execution'
-      ]
-    }
+        'Execution',
+      ],
+    },
   };
 
   setUserConfig(userConfig: IConfig) {
@@ -77,6 +78,7 @@ export default abstract class extends Command {
 
   async init() {
     const { flags } = this.parse();
+    // eslint-disable-next-line
     const { env_user_config } = flags;
 
     if (process.env.CONFIG_DIR !== undefined) {
@@ -86,28 +88,29 @@ export default abstract class extends Command {
     fse.ensureDirSync(this.config.configDir);
     fse.ensureDirSync(this.config.configDir + '/cache/');
 
+    // eslint-disable-next-line
     if (env_user_config !== undefined) {
       this.setUserConfig(JSON.parse(env_user_config));
     } else {
       if (!fs.existsSync(path.join(this.config.configDir, 'config.yml'))) {
         fs.writeFileSync(
           path.join(this.config.configDir, 'config.yml'),
-          jsYaml.safeDump(this.userConfig)
+          jsYaml.safeDump(this.userConfig),
         );
         this.log(
           'Initialized configuration file with defaults in: ' +
-            path.join(this.config.configDir, 'config.yml')
+            path.join(this.config.configDir, 'config.yml'),
         );
         this.log('Please EDIT the configuration file first');
         this.exit();
       } else {
         this.log(
           'Configuration file exists: ' +
-            path.join(this.config.configDir, 'config.yml')
+            path.join(this.config.configDir, 'config.yml'),
         );
 
         const userConfig = await loadYamlFile(
-          path.join(this.config.configDir, 'config.yml')
+          path.join(this.config.configDir, 'config.yml'),
         );
         this.setUserConfig(userConfig);
         //console.log(this.userConfig);

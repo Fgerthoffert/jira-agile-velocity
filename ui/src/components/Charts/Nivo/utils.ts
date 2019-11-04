@@ -1,21 +1,6 @@
 // tslint:disable-next-line: file-name-casing
-
-/*
-tbc
-*/
-export const getCellDataInitiatives = (
-  initiative: string,
-  weekTxt: string,
-  roadmap: any,
-  completionWeeks: any
-) => {
-  if (initiative !== getNonInitiativeTitle()) {
-    return roadmap.byInitiative
-      .find((i: any) => getInitiativeTitle(i) === initiative)
-      .weeks.find((w: any) => w.weekTxt === weekTxt).list;
-  } else {
-    return completionWeeks[weekTxt].nonInitiativesList;
-  }
+export const getNonInitiativeTitle = () => {
+  return 'Other activities (not related to initiatives)';
 };
 
 export const getInitiativeTitle = (initiative: any) => {
@@ -27,8 +12,22 @@ export const getInitiativeTitle = (initiative: any) => {
   return initiativeTitle + ' (' + initiative.key + ')';
 };
 
-export const getNonInitiativeTitle = () => {
-  return 'Other activities (not related to initiatives)';
+/*
+tbc
+*/
+export const getCellDataInitiatives = (
+  initiative: string,
+  weekTxt: string,
+  roadmap: any,
+  completionWeeks: any,
+) => {
+  if (initiative !== getNonInitiativeTitle()) {
+    return roadmap.byInitiative
+      .find((i: any) => getInitiativeTitle(i) === initiative)
+      .weeks.find((w: any) => w.weekTxt === weekTxt).list;
+  } else {
+    return completionWeeks[weekTxt].nonInitiativesList;
+  }
 };
 
 /* 
@@ -37,7 +36,7 @@ export const getNonInitiativeTitle = () => {
 export const getCompletionColor = (
   data: any,
   value: any,
-  completionWeeks: any
+  completionWeeks: any,
 ) => {
   let prct = 0;
   if (completionWeeks[data.xKey] !== undefined) {

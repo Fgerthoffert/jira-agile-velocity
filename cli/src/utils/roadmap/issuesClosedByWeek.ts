@@ -9,31 +9,27 @@ import { startOfWeek } from '../misc/dateUtils';
 const issuesClosedByWeek = (
   issues: Array<IJiraIssue>,
   userConfig: IConfig,
-  emptyCalendar: any,
+  emptyCalendar: any
 ) => {
-  let weeks = JSON.parse(JSON.stringify(emptyCalendar));
+  const weeks = JSON.parse(JSON.stringify(emptyCalendar));
 
-  for (let issue of issues) {
+  for (const issue of issues) {
     const firstDayWeekDate = startOfWeek(new Date(issue.closedAt));
     const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
     weeks[firstDayWeekKey].list.push(issue);
-    weeks[firstDayWeekKey].issues.count =
-      weeks[firstDayWeekKey].list.length;
+    weeks[firstDayWeekKey].issues.count = weeks[firstDayWeekKey].list.length;
 
     if (
       issue.fields[userConfig.jira.fields.points] !== undefined &&
       issue.fields[userConfig.jira.fields.points] !== null
     ) {
-      weeks[firstDayWeekKey].points.count = weeks[
-        firstDayWeekKey
-      ].list.filter(
+      weeks[firstDayWeekKey].points.count = weeks[firstDayWeekKey].list
+        .filter(
           (issue: IJiraIssue) =>
             issue.fields[userConfig.jira.fields.points] !== undefined &&
             issue.fields[userConfig.jira.fields.points] !== null
         )
-        .map(
-          (issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points]
-        )
+        .map((issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points])
         .reduce((acc: number, points: number) => acc + points, 0);
     }
   }

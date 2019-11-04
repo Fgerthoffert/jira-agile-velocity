@@ -1,10 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as readline from 'readline';
-import * as stream from 'stream';
+import * as loadJsonFile from 'load-json-file';
 
 import { ConfigService } from '../config.service';
+
+export const getTeamId = (teamName: string) => {
+  return String(teamName)
+    .replace('team-', '') // If team is prefixed by team-, we simply remove it from the string
+    .replace(/[^a-z0-9+]+/gi, '')
+    .toLowerCase();
+};
 
 @Injectable()
 export class RoadmapService {
@@ -27,10 +33,7 @@ export class RoadmapService {
       );
       if (fs.existsSync(artifactCacheFile)) {
         this.logger.log('Opening configuration file: ' + artifactCacheFile);
-        const input = fs.createReadStream(artifactCacheFile);
-        for await (const line of readLines(input)) {
-          roadmap = JSON.parse(line);
-        }
+        roadmap = loadJsonFile.sync(artifactCacheFile);
       }
     } else {
       this.logger.log(
@@ -40,23 +43,3 @@ export class RoadmapService {
     return roadmap;
   }
 }
-
-export const getTeamId = (teamName: string) => {
-  return String(teamName)
-    .replace('team-', '') // If team is prefixed by team-, we simply remove it from the string
-    .replace(/[^a-z0-9+]+/gi, '')
-    .toLowerCase();
-};
-
-// https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
-const readLines = (input: any) => {
-  const output = new stream.PassThrough({ objectMode: true });
-  const rl = readline.createInterface({ input });
-  rl.on('line', line => {
-    output.write(line);
-  });
-  rl.on('close', () => {
-    output.push(null);
-  });
-  return output;
-};

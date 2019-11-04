@@ -39,9 +39,18 @@
     "nyc": "^13.3.0",
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
+    "typescript": "^3.5.3",
+    "prettier": "^1.18.2",
+    "tslint": "^5.19.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "tslint-plugin-prettier": "^2.0.1",
+    "tslint-react": "^4.0.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.2.0"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -71,7 +80,8 @@
     "posttest": "tslint -p test -t stylish -c ./tsconfig.json",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "lint": "eslint . --ext .js,.ts"
   },
   "types": "lib/index.d.ts"
 }

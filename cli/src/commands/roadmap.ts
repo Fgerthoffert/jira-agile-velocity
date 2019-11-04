@@ -38,6 +38,7 @@ export default class Roadmap extends Command {
 
   async run() {
     const { flags } = this.parse(Roadmap);
+    // eslint-disable-next-line
     let { type, cache } = flags;
     const userConfig = this.userConfig;
     const cacheDir = this.config.configDir + '/cache/';
@@ -54,7 +55,7 @@ export default class Roadmap extends Command {
     }
     // Creates an array of all closed issues across all teams
     let closedIssues: Array<IJiraIssue> = [];
-    for (let team of userConfig.teams) {
+    for (const team of userConfig.teams) {
       const teamIssues = await fetchCompleted(
         userConfig,
         this.config.configDir + '/cache/',
@@ -83,7 +84,7 @@ export default class Roadmap extends Command {
     //Note: Parent field (if parent is INITIATIVE): customfield_11112
     const issuesTree = new SymbolTree();
     const treeRoot = {};
-    for (let initiative of initiativesIssues) {
+    for (const initiative of initiativesIssues) {
       issuesTree.appendChild(treeRoot, initiative);
       const children = await fetchChildren(
         userConfig,
@@ -91,12 +92,12 @@ export default class Roadmap extends Command {
         cacheDir,
         cache
       );
-      for (let l1child of children.filter(
+      for (const l1child of children.filter(
         (ic: any) =>
           ic.fields[userConfig.jira.fields.parentInitiative] === initiative.key
       )) {
         issuesTree.appendChild(initiative, l1child);
-        for (let l2child of children.filter(
+        for (const l2child of children.filter(
           (ic: any) =>
             ic.fields[userConfig.jira.fields.parentEpic] === l1child.key
         )) {
@@ -136,7 +137,7 @@ export default class Roadmap extends Command {
       closedIssuesByWeekAndInitiative
     );
 
-/*
+    /*
     const issuesWithLabels = this.getIssuesWithLabels(issuesTree, treeRoot);
     const specsState = userConfig.roadmap.specsStates.map((state: string) => {
       return {
@@ -202,7 +203,7 @@ export default class Roadmap extends Command {
     }
     return jsonObject;
   };
-/*
+  /*
   getIssuesWithLabels = (issuesTree: any, node: any) => {
     const issues = [];
     for (const initiative of issuesTree.childrenIterator(node)) {
@@ -233,7 +234,7 @@ export default class Roadmap extends Command {
         }
       }
     };
-    for (let week of roadmapArtifact.byTeam[0].weeks) {
+    for (const week of roadmapArtifact.byTeam[0].weeks) {
       const weekId = week.weekStart.slice(0, 10);
       columnsByTeam[weekId] = { header: weekId };
     }
@@ -245,7 +246,7 @@ export default class Roadmap extends Command {
     cli.table(
       roadmapArtifact.byTeam.map((team: any) => {
         const teamData = { ...team };
-        for (let week of team.weeks) {
+        for (const week of team.weeks) {
           const weekId = week.weekStart.slice(0, 10);
           teamData[weekId] = week[type].count;
         }
@@ -343,14 +344,14 @@ export default class Roadmap extends Command {
         }
       }
     };
-    for (let week of roadmapArtifact.byInitiative[0].weeks) {
+    for (const week of roadmapArtifact.byInitiative[0].weeks) {
       const weekId = week.weekStart.slice(0, 10);
       columnsByInitiative[weekId] = { header: weekId };
     }
     cli.table(
       roadmapArtifact.byInitiative.map((initiative: any) => {
         const initiativeData = { ...initiative };
-        for (let week of initiative.weeks) {
+        for (const week of initiative.weeks) {
           const weekId = week.weekStart.slice(0, 10);
           initiativeData[weekId] = week[type].count;
         }
@@ -412,7 +413,7 @@ export default class Roadmap extends Command {
       }
     };
     if (roadmapArtifact.byFutureInitiative.length > 0) {
-      for (let week of roadmapArtifact.byFutureInitiative[0].weeks) {
+      for (const week of roadmapArtifact.byFutureInitiative[0].weeks) {
         const weekId = week.weekStart.slice(0, 10);
         columnsFuture[weekId] = { header: weekId };
       }
@@ -421,7 +422,7 @@ export default class Roadmap extends Command {
     cli.table(
       roadmapArtifact.byFutureInitiative.map((initiative: any) => {
         const initiativeData = { ...initiative };
-        for (let week of initiative.weeks) {
+        for (const week of initiative.weeks) {
           const weekId = week.weekStart.slice(0, 10);
           initiativeData[weekId] = week[type].count;
         }

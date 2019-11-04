@@ -16,13 +16,13 @@ const getEmptyCalendarObject = (
     a.closedAt > b.closedAt ? 1 : b.closedAt > a.closedAt ? -1 : 0
   );
   const emptyWeeks: any = {};
-  let currentDate = formatDate(issues[0].closedAt);
+  const currentDate = formatDate(issues[0].closedAt);
   while (currentDate < formatDate(issues[issues.length - 1].closedAt)) {
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
       currentMonthDay = currentMonthDay - currentDate.getDay();
     }
-    let currentWeekYear: any = new Date(
+    const currentWeekYear: any = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       currentMonthDay

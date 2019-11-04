@@ -24,7 +24,7 @@ const getDailyHealthMsg = (
       ' AFTER(' +
       calendar.health.weeks.completion.msgJira +
       ')';
-    let messageString =
+    const messageString =
       'Howdy ' +
       teamConfig.name +
       ', here are our velocity stats, live from Jira.\n' +

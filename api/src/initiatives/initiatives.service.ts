@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as loadYamlFile from 'load-yaml-file';
+import * as readline from 'readline';
+import * as stream from 'stream';
+import * as loadJsonFile from 'load-json-file';
 
 import { ConfigService } from '../config.service';
 
@@ -13,31 +15,33 @@ export const getTeamId = (teamName: string) => {
 };
 
 @Injectable()
-export class TeamsService {
-  private readonly logger = new Logger(TeamsService.name);
+export class InitiativesService {
+  private readonly logger = new Logger(InitiativesService.name);
   configBasePath: string;
 
   constructor(config: ConfigService) {
     this.configBasePath = config.get('CONFIG_DIR');
   }
 
-  async getTeams(): Promise<any> {
-    const teamsTeam = [];
+  async getInitiatives(): Promise<any> {
+    let initiatives = [];
+
     const configFilePath = path.join(this.configBasePath, 'config.yml');
     if (fs.existsSync(configFilePath)) {
       this.logger.log('Opening configuration file: ' + configFilePath);
-      const userConfig = await loadYamlFile(configFilePath);
-      for (const team of userConfig.teams) {
-        teamsTeam.push({
-          id: getTeamId(team.name),
-          name: team.name,
-        });
+      const artifactCacheFile = path.join(
+        this.configBasePath + '/cache/',
+        'initiatives-artifacts.json'
+      );
+      if (fs.existsSync(artifactCacheFile)) {
+        this.logger.log('Opening configuration file: ' + artifactCacheFile);
+        initiatives = loadJsonFile.sync(artifactCacheFile);
       }
     } else {
       this.logger.log(
-        'Error, unable to find configuration file: ' + configFilePath,
+        'Error, unable to find configuration file: ' + configFilePath
       );
     }
-    return teamsTeam;
+    return initiatives;
   }
 }

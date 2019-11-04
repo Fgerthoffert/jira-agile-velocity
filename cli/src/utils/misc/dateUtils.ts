@@ -5,7 +5,7 @@
 */
 export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
   const days = [];
-  let currentDate = startDate;
+  const currentDate = startDate;
   while (currentDate < endDate) {
     days.push(currentDate.toJSON().slice(0, 10));
     currentDate.setDate(currentDate.getDate() + 1);
@@ -18,13 +18,13 @@ export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
 */
 export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
   const weeks: Array<string> = [];
-  let currentDate = startDate;
+  const currentDate = startDate;
   while (currentDate < endDate) {
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
       currentMonthDay = currentMonthDay - currentDate.getDay();
     }
-    let currentWeekYear = new Date(
+    const currentWeekYear = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       currentMonthDay
@@ -43,7 +43,7 @@ export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
     Takes a date string and returns a date mid-day 
 */
 export const formatDate = (dateString: string) => {
-  let day = new Date(dateString);
+  const day = new Date(dateString);
   day.setUTCHours(12);
   day.setUTCMinutes(0);
   day.setUTCSeconds(0);
