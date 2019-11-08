@@ -6,7 +6,6 @@ import Details from './Details';
 import Completion from './Completion';
 import Forecast from './Forecast';
 import SectionTabs from './sectiontabs';
-import LoadingBar from './LoadingBar';
 import DataStatus from './DataStatus';
 
 const mapDispatch = (dispatch: any) => ({
@@ -29,7 +28,6 @@ const Roadmap: FC<connectedProps> = ({
   });
   return (
     <Layout>
-      <LoadingBar />
       <SectionTabs />
       <DataStatus />
       <br />
