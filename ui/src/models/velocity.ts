@@ -41,7 +41,6 @@ export const velocity = createModel({
       }
 
       this.loadTeamsFromCache(currentTab);
-
       if (
         JSON.parse(window._env_.AUTH0_DISABLED) === true ||
         (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
@@ -51,11 +50,14 @@ export const velocity = createModel({
         this.refreshTeams(currentTab);
       } else {
         log.info(
-          'Not loading data, either there is already some data in cache or user token not present',
+          'Not loading data, either there is already some data in cache or user token not (yet) present',
         );
       }
     },
-
+    async updateSelectedTeam(teamId, rootState) {
+      this.setSelectedTeam(teamId);
+      this.fetchTeamData(teamId);
+    },
     async loadTeamsFromCache(currentTab, rootState) {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
@@ -78,11 +80,11 @@ export const velocity = createModel({
       }
     },
 
-    async loadVelocityFromCache(payload, rootState) {
+    async loadVelocityFromCache(teamId, rootState) {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
       const cacheVelocity = reactLocalStorage.getObject('cache-velocity');
-      if (Object.keys(cacheVelocity).length > 0) {
+      if (cacheVelocity.find((t: any) => t.id === teamId) !== undefined) {
         log.info(
           'Loading Velocity data from cache while call to the backend is happening',
         );
@@ -91,51 +93,10 @@ export const velocity = createModel({
     },
 
     async refreshTeams(currentTab, rootState) {
-      const setTeams = this.setTeams;
-      const setLoading = this.setLoading;
-      const setSelectedTeam = this.setSelectedTeam;
-      setLoading(true);
-      const host =
-        window._env_.API_URL !== undefined
-          ? window._env_.API_URL
-          : 'http://127.0.0.1:3001';
-      const headers =
-        JSON.parse(window._env_.AUTH0_DISABLED) !== true
-          ? { Authorization: `Bearer ${rootState.global.accessToken}` }
-          : {};
-      axios({
-        method: 'get',
-        url: host + '/teams',
-        headers,
-      })
-        .then(response => {
-          setTeams(response.data);
-          reactLocalStorage.setObject('cache-velocityTeams', response.data);
-          // Set value to
-          const selectedTeam =
-            response.data.find((t: any) => t.id === currentTab) === undefined
-              ? response.data[0].id
-              : response.data.find((t: any) => t.id === currentTab).id;
-          setSelectedTeam(selectedTeam);
-          setLoading(false);
-        })
-        .catch(error => {
-          setTeams([]);
-          setSelectedTeam(null);
-          setLoading(false);
-        });
-    },
-
-    async fetchTeamData(teamId, rootState) {
-      this.loadVelocityFromCache(teamId);
-      const setVelocity = this.setVelocity;
-      const setLoading = this.setLoading;
-      if (
-        rootState.velocity.teams.find((t: any) => t.id === teamId) !== undefined
-      ) {
-        const log = rootState.global.log;
-        log.info('Fetching data for team: ' + teamId);
-
+      if (rootState.velocity.loading === false) {
+        const setTeams = this.setTeams;
+        const setLoading = this.setLoading;
+        const updateSelectedTeam = this.updateSelectedTeam;
         setLoading(true);
         const host =
           window._env_.API_URL !== undefined
@@ -147,23 +108,69 @@ export const velocity = createModel({
             : {};
         axios({
           method: 'get',
-          url: host + '/velocity/' + teamId,
+          url: host + '/teams',
           headers,
         })
           .then(response => {
-            const updatedVelocity = [
-              ...rootState.velocity.velocity.filter(
-                (t: any) => t.id !== teamId,
-              ),
-              response.data,
-            ];
-            setVelocity(updatedVelocity);
-            reactLocalStorage.setObject('cache-velocity', updatedVelocity);
+            setTeams(response.data);
+            reactLocalStorage.setObject('cache-velocityTeams', response.data);
+            // Set value to
+            const selectedTeam =
+              response.data.find((t: any) => t.id === currentTab) === undefined
+                ? response.data[0].id
+                : response.data.find((t: any) => t.id === currentTab).id;
+            updateSelectedTeam(selectedTeam);
             setLoading(false);
           })
           .catch(error => {
+            setTeams([]);
+            updateSelectedTeam(null);
             setLoading(false);
           });
+      }
+    },
+
+    async fetchTeamData(teamId, rootState) {
+      this.loadVelocityFromCache(teamId);
+      if (rootState.velocity.loading === false) {
+        const setVelocity = this.setVelocity;
+        const setLoading = this.setLoading;
+        if (
+          rootState.velocity.teams.find((t: any) => t.id === teamId) !==
+          undefined
+        ) {
+          const log = rootState.global.log;
+          log.info('Fetching data for team: ' + teamId);
+
+          setLoading(true);
+          const host =
+            window._env_.API_URL !== undefined
+              ? window._env_.API_URL
+              : 'http://127.0.0.1:3001';
+          const headers =
+            JSON.parse(window._env_.AUTH0_DISABLED) !== true
+              ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+              : {};
+          axios({
+            method: 'get',
+            url: host + '/velocity/' + teamId,
+            headers,
+          })
+            .then(response => {
+              const updatedVelocity = [
+                ...rootState.velocity.velocity.filter(
+                  (t: any) => t.id !== teamId,
+                ),
+                response.data,
+              ];
+              setVelocity(updatedVelocity);
+              reactLocalStorage.setObject('cache-velocity', updatedVelocity);
+              setLoading(false);
+            })
+            .catch(error => {
+              setLoading(false);
+            });
+        }
       }
     },
   },

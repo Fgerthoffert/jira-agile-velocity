@@ -7,11 +7,11 @@ import { iRootState } from '../../store';
 
 const mapState = (state: iRootState) => ({
   teams: state.velocity.teams,
-  selectedTeam: state.velocity.selectedTeam
+  selectedTeam: state.velocity.selectedTeam,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setSelectedTeam: dispatch.velocity.setSelectedTeam
+  updateSelectedTeam: dispatch.velocity.updateSelectedTeam,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -20,11 +20,11 @@ const TeamsTabs: FC<any> = ({
   teams,
   changeTab,
   selectedTeam,
-  setSelectedTeam
+  updateSelectedTeam,
 }) => {
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    changeTab(newValue);
-    setSelectedTeam(newValue);
+  const handleChange = (event: React.ChangeEvent<{}>, teamId: string) => {
+    changeTab(teamId);
+    updateSelectedTeam(teamId);
   };
   if (teams.length === 0) {
     return null;
@@ -34,8 +34,8 @@ const TeamsTabs: FC<any> = ({
     <Tabs
       value={selectedTeamValue}
       onChange={handleChange}
-      indicatorColor='primary'
-      textColor='primary'
+      indicatorColor="primary"
+      textColor="primary"
       centered
     >
       {teams.map((team: any) => {
@@ -47,5 +47,5 @@ const TeamsTabs: FC<any> = ({
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(TeamsTabs);
