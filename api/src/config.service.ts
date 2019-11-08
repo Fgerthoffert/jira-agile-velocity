@@ -11,6 +11,7 @@ export class ConfigService {
   private readonly envConfig: EnvConfig;
 
   constructor() {
+    // eslint-disable-next-line
     const untildify = require('untildify');
     const defaultEnv = {
       CONFIG_DIR: '~/.config/jira-agile-velocity/',

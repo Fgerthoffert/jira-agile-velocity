@@ -1,5 +1,4 @@
-import { Controller, Req, Get } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 
 @Controller('teams')
@@ -7,7 +6,7 @@ export class TeamsController {
   constructor(private teamsService: TeamsService) {}
 
   @Get()
-  async getTeams(@Req() request: Request) {
+  async getTeams() {
     const teams = await this.teamsService.getTeams();
     return teams;
   }

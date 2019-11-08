@@ -24,7 +24,7 @@
     "downlevelIteration": true,
     "importHelpers": true
   },
-  "include": ["src"],
+  "include": ["src", "env-config.js"],
   "rules": {
     "file-name-casing": [true, { ".tsx": "pascal-case", ".ts": "camel-case" }]
   }

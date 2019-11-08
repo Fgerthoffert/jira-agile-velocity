@@ -9,13 +9,13 @@ const getEmptyRoadmapObject = (lastCalendarWeek: any, futureWeeks: number) => {
   // Sort the array by closedAt
   const emptyWeeks: any = {};
   let cptDays = 0;
-  let currentDate = formatDate(lastCalendarWeek.weekStart);
+  const currentDate = formatDate(lastCalendarWeek.weekStart);
   while (cptDays < futureWeeks * 7) {
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
       currentMonthDay = currentMonthDay - currentDate.getDay();
     }
-    let currentWeekYear: any = new Date(
+    const currentWeekYear: any = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       currentMonthDay

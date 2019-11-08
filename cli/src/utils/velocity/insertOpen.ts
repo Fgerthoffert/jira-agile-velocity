@@ -1,5 +1,5 @@
 // tslint:disable-next-line: file-name-casing
-import { ICalendar, IJiraIssue } from "../../global";
+import { ICalendar, IJiraIssue } from '../../global';
 
 /*
     This function add details about the open issues
@@ -7,6 +7,7 @@ import { ICalendar, IJiraIssue } from "../../global";
 const insertOpen = (
   calendar: ICalendar,
   issues: Array<IJiraIssue>,
+  // eslint-disable-next-line
   jira_points: string
 ) => {
   const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));

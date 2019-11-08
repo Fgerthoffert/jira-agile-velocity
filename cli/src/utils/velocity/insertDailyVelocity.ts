@@ -1,14 +1,14 @@
 // tslint:disable-next-line: file-name-casing
-import { ICalendar, IDays } from "../../global";
+import { ICalendar, IDays } from '../../global';
 
-import calculateAverageVelocity from "./calculateAverageVelocity";
+import calculateAverageVelocity from './calculateAverageVelocity';
 
 /*
     This function calculates and insert daily velocity metrics
 */
 const insertDailyVelocity = (calendar: ICalendar) => {
   const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
-  let ticketsPerDay: Array<IDays> = Object.values(updatedCalendar.days);
+  const ticketsPerDay: Array<IDays> = Object.values(updatedCalendar.days);
 
   let startIdx = 0;
   for (let idx = 0; idx < ticketsPerDay.length; idx++) {
@@ -32,30 +32,30 @@ const insertDailyVelocity = (calendar: ICalendar) => {
           ticketsPerDay[idx].date
       );
       */
-      let currentWindowIssues = ticketsPerDay.slice(startIdx, idx);
+      const currentWindowIssues = ticketsPerDay.slice(startIdx, idx);
       ticketsPerDay[idx].completion.issues.velocity = calculateAverageVelocity(
         currentWindowIssues,
-        "completion",
-        "issues"
+        'completion',
+        'issues'
       );
       ticketsPerDay[idx].completion.points.velocity = calculateAverageVelocity(
         currentWindowIssues,
-        "completion",
-        "points"
+        'completion',
+        'points'
       );
       ticketsPerDay[
         idx
       ].scopeChangeCompletion.issues.velocity = calculateAverageVelocity(
         currentWindowIssues,
-        "scopeChangeCompletion",
-        "issues"
+        'scopeChangeCompletion',
+        'issues'
       );
       ticketsPerDay[
         idx
       ].scopeChangeCompletion.points.velocity = calculateAverageVelocity(
         currentWindowIssues,
-        "scopeChangeCompletion",
-        "points"
+        'scopeChangeCompletion',
+        'points'
       );
     }
   }

@@ -18,14 +18,14 @@ const teamClosedByWeek = (
     name: null,
     weeks: JSON.parse(JSON.stringify(emptyCalendar))
   };
-  for (let team of userConfig.roadmap.teams) {
+  for (const team of userConfig.roadmap.teams) {
     // WeeksTeam record aggregated values for one single team
     const weeksTeam = {
       name: team,
       weeks: JSON.parse(JSON.stringify(emptyCalendar)),
       velocity: teamVelocity.find(v => v.team === team).velocity
     };
-    for (let issue of issues.filter(i => i.team === team)) {
+    for (const issue of issues.filter(i => i.team === team)) {
       const firstDayWeekDate = startOfWeek(new Date(issue.closedAt));
       const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
       weeksTeam.weeks[firstDayWeekKey].list.push(issue);

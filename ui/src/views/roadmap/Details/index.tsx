@@ -16,11 +16,11 @@ import { iRootState } from '../../../store';
 
 const mapState = (state: iRootState) => ({
   openGraph: state.roadmap.openGraph,
-  graphInitiative: state.roadmap.graphInitiative
+  graphInitiative: state.roadmap.graphInitiative,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setOpenGraph: dispatch.roadmap.setOpenGraph
+  setOpenGraph: dispatch.roadmap.setOpenGraph,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -29,7 +29,7 @@ type connectedProps = ReturnType<typeof mapState> &
 const Details: FC<connectedProps> = ({
   openGraph,
   setOpenGraph,
-  graphInitiative
+  graphInitiative,
 }) => {
   const closeGraph = () => {
     setOpenGraph(false);
@@ -44,30 +44,30 @@ const Details: FC<connectedProps> = ({
       maxWidth={'lg'}
       open={openGraph}
       onClose={closeGraph}
-      aria-labelledby='max-width-dialog-title'
+      aria-labelledby="max-width-dialog-title"
     >
-      <DialogTitle id='max-width-dialog-title'>
-        {graphInitiative.fields.summary + '(' + graphInitiative.key + ')'}
+      <DialogTitle id="max-width-dialog-title">
+        {graphInitiative.summary + '(' + graphInitiative.key + ')'}
       </DialogTitle>
       <DialogContent>
-        <Grid container direction='row' justify='flex-start' spacing={3}>
+        <Grid container direction="row" justify="flex-start" spacing={3}>
           <Grid item xs={9}>
             <NodesGraph />
           </Grid>
           <Grid item xs={3}>
             <Grid
               container
-              direction='column'
-              justify='flex-start'
-              alignItems='flex-start'
+              direction="column"
+              justify="flex-start"
+              alignItems="flex-start"
               spacing={1}
             >
               <Grid item>
                 <Grid
                   container
-                  direction='row'
-                  justify='space-evenly'
-                  alignItems='center'
+                  direction="row"
+                  justify="space-evenly"
+                  alignItems="center"
                 >
                   <Grid item>
                     <ResetGraph />
@@ -102,7 +102,7 @@ const Details: FC<connectedProps> = ({
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeGraph} color='primary'>
+        <Button onClick={closeGraph} color="primary">
           Close
         </Button>
       </DialogActions>
@@ -112,5 +112,5 @@ const Details: FC<connectedProps> = ({
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(Details);

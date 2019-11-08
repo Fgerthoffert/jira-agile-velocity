@@ -1,13 +1,27 @@
 // tslint:disable-next-line: file-name-casing
+import { getWeek, getYear } from 'date-fns';
 
 /*
     Returns an array of all days between two dates
 */
 export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
-  const days = [];
-  let currentDate = startDate;
+  const days: Array<any> = [];
+  const currentDate = startDate;
   while (currentDate < endDate) {
-    days.push(currentDate.toJSON().slice(0, 10));
+    let currentMonthDay = currentDate.getDate();
+    if (currentDate.getDay() !== 0) {
+      currentMonthDay = currentMonthDay - currentDate.getDay();
+    }
+    const currentWeekYear: any = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentMonthDay,
+    );
+    days.push({
+      date: new Date(currentDate),
+      weekStart: currentWeekYear,
+      weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
+    });
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return days;
@@ -18,16 +32,16 @@ export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
 */
 export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
   const weeks: Array<string> = [];
-  let currentDate = startDate;
+  const currentDate = startDate;
   while (currentDate < endDate) {
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
       currentMonthDay = currentMonthDay - currentDate.getDay();
     }
-    let currentWeekYear = new Date(
+    const currentWeekYear = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
-      currentMonthDay
+      currentMonthDay,
     );
     if (
       weeks.find(w => w === currentWeekYear.toJSON().slice(0, 10)) === undefined
@@ -43,7 +57,7 @@ export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
     Takes a date string and returns a date mid-day 
 */
 export const formatDate = (dateString: string) => {
-  let day = new Date(dateString);
+  const day = new Date(dateString);
   day.setUTCHours(12);
   day.setUTCMinutes(0);
   day.setUTCSeconds(0);
@@ -59,7 +73,7 @@ export const startOfWeek = (date: Date) => {
   const currentWeekYear: any = new Date(
     date.getFullYear(),
     date.getMonth(),
-    currentMonthDay
+    currentMonthDay,
   );
   return currentWeekYear;
 };

@@ -2,76 +2,13 @@
 import cli from 'cli-ux';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as readline from 'readline';
-import * as stream from 'stream';
+import * as fsNdjson from 'fs-ndjson';
 
 import { IConfig } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { cleanIssue } from '../misc/jiraUtils';
 
-/*
-    Fetches all initiatives
-*/
-const fetchChildren = async (
-  userConfig: IConfig,
-  issueKey: string,
-  cacheDir: string,
-  useCache: boolean
-) => {
-  cli.action.start('Fetching children of: ' + issueKey);
-  let issues = [];
-  // If cache is enabled we don't fetch initiatives twice on the same day
-  const today = new Date();
-  const childrenCache = path.join(
-    cacheDir,
-    'roadmap-childcache-' +
-      issueKey +
-      '-' +
-      today.toJSON().slice(0, 10) +
-      '.ndjson'
-  );
-
-  if (useCache && fs.existsSync(childrenCache)) {
-    const input = fs.createReadStream(childrenCache);
-    for await (const line of readLines(input)) {
-      issues.push(JSON.parse(line));
-    }
-  } else {
-    const issuesJira = await jiraSearchIssues(
-      userConfig.jira,
-      'issuekey in childIssuesOf(' + issueKey + ')',
-      'summary,status,assignee,' +
-        userConfig.jira.fields.points +
-        ',' +
-        userConfig.jira.fields.originalPoints +
-        ',issuetype,' +
-        userConfig.jira.fields.parentInitiative +
-        ',' +
-        userConfig.jira.fields.parentEpic
-    );
-    const issueFileStream = fs.createWriteStream(childrenCache, {
-      flags: 'w'
-    });
-    for (let issue of issuesJira) {
-      const updatedIssue = {
-        ...issue,
-        host: userConfig.jira.host,
-        //jql: 'issuekey in childIssuesOf(' + issueKey + ')',
-        points: returnTicketsPoints(issue, userConfig)
-      };
-      issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
-      issues.push(cleanIssue(updatedIssue));
-    }
-    issueFileStream.end();
-  }
-
-  cli.action.stop(' done');
-  return issues;
-};
-
-export default fetchChildren;
-
-const returnTicketsPoints = (issue: any, config: IConfig) => {
+const getPoints = (issue: any, config: IConfig) => {
   if (
     issue.fields[config.jira.fields.points] !== undefined &&
     issue.fields[config.jira.fields.points] !== null
@@ -87,15 +24,61 @@ const returnTicketsPoints = (issue: any, config: IConfig) => {
   return 0;
 };
 
-//https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
-const readLines = (input: any) => {
-  const output = new stream.PassThrough({ objectMode: true });
-  const rl = readline.createInterface({ input });
-  rl.on('line', line => {
-    output.write(line);
-  });
-  rl.on('close', () => {
-    output.push(null);
-  });
-  return output;
+/*
+    Fetches all initiatives
+*/
+const fetchChildren = async (
+  userConfig: IConfig,
+  issueKey: string,
+  cacheDir: string,
+  useCache: boolean,
+) => {
+  cli.action.start('Fetching children of: ' + issueKey);
+  let issues: any = [];
+  // If cache is enabled we don't fetch initiatives twice on the same day
+  const today = new Date();
+  const childrenCache = path.join(
+    cacheDir,
+    'roadmap-childcache-' +
+      issueKey +
+      '-' +
+      today.toJSON().slice(0, 10) +
+      '.ndjson',
+  );
+
+  if (useCache && fs.existsSync(childrenCache)) {
+    issues = fsNdjson.readFileSync(childrenCache);
+  } else {
+    const issuesJira = await jiraSearchIssues(
+      userConfig.jira,
+      'issuekey in childIssuesOf(' + issueKey + ')',
+      'summary,status,assignee,' +
+        userConfig.jira.fields.points +
+        ',' +
+        userConfig.jira.fields.originalPoints +
+        ',issuetype,' +
+        userConfig.jira.fields.parentInitiative +
+        ',' +
+        userConfig.jira.fields.parentEpic,
+    );
+    const issueFileStream = fs.createWriteStream(childrenCache, {
+      flags: 'w',
+    });
+    for (const issue of issuesJira) {
+      const updatedIssue = {
+        ...issue,
+        host: userConfig.jira.host,
+        //jql: 'issuekey in childIssuesOf(' + issueKey + ')',
+        points: getPoints(issue, userConfig),
+      };
+      issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
+      issues.push(cleanIssue(updatedIssue));
+    }
+    issueFileStream.end();
+  }
+
+  cli.action.stop(' done');
+  return issues;
 };
+
+export default fetchChildren;

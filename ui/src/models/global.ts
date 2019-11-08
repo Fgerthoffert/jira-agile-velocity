@@ -13,13 +13,15 @@ const setAuth0Config = async () => {
   const authConfig = {
     domain: window._env_.AUTH0_DOMAIN,
     clientId: window._env_.AUTH0_CLIENT_ID,
-    audience: window._env_.AUTH0_AUDIENCE
+    audience: window._env_.AUTH0_AUDIENCE,
   };
 
+  // eslint-disable-next-line
   window.Auth0 = await createAuth0Client({
     domain: authConfig.domain,
+    // eslint-disable-next-line
     client_id: authConfig.clientId,
-    audience: authConfig.audience
+    audience: authConfig.audience,
   });
   return window.Auth0;
 };
@@ -40,7 +42,7 @@ export const global = createModel({
     password: '',
     accessToken: '',
 
-    loginMenuOpen: false
+    loginMenuOpen: false,
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -85,9 +87,9 @@ export const global = createModel({
         loggedIn: payload.loggedIn,
         accessToken: payload.accessToken,
         authUser: payload.authUser,
-        auth0Initialized: payload.auth0Initialized
+        auth0Initialized: payload.auth0Initialized,
       };
-    }
+    },
   },
   effects: {
     async initApp() {
@@ -104,7 +106,7 @@ export const global = createModel({
     async doLogOut() {
       if (window.Auth0 !== undefined) {
         window.Auth0.logout({
-          returnTo: window.location.origin
+          returnTo: window.location.origin,
         });
         this.setLoggedIn(false);
         this.setAuth0Initialized(false);
@@ -167,16 +169,16 @@ export const global = createModel({
           this.setCallbackState({
             loggedIn: isLoggedIn,
             accessToken,
-            authUser: user
+            authUser: user,
           });
         } else {
           this.setCallbackState({
             loggedIn: isLoggedIn,
             accessToken: '',
-            authUser: null
+            authUser: null,
           });
         }
       }
-    }
-  }
+    },
+  },
 });

@@ -5,11 +5,11 @@
 const insertForecast = (calendar: any) => {
   const updatedCalendar = JSON.parse(JSON.stringify(calendar));
 
-  let ticketsPerWeek: any = Object.values(updatedCalendar.weeks);
+  const ticketsPerWeek: any = Object.values(updatedCalendar.weeks);
   const lastWeek = ticketsPerWeek[ticketsPerWeek.length - 1];
   //  console.log(lastWeek);
   updatedCalendar.forecast = {
-    range: "4w",
+    range: '4w',
     completion: {
       issues: {
         openCount: updatedCalendar.open.issues.count,

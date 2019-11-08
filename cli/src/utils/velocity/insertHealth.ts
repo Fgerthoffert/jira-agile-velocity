@@ -7,16 +7,16 @@ const insertHealth = (calendar: any) => {
   let lastDay = false;
   let lastWeek = false;
   let referenceDay = null;
-  let health: any = {
+  const health: any = {
     days: {
       velocity: {
         issues: {
-          trend: "DOWN",
+          trend: 'DOWN',
           previous: 0,
           current: 0
         },
         points: {
-          trend: "DOWN",
+          trend: 'DOWN',
           previous: 0,
           current: 0
         }
@@ -43,12 +43,12 @@ const insertHealth = (calendar: any) => {
     weeks: {
       velocity: {
         issues: {
-          trend: "DOWN",
+          trend: 'DOWN',
           previous: 0,
           current: 0
         },
         points: {
-          trend: "DOWN",
+          trend: 'DOWN',
           previous: 0,
           current: 0
         }
@@ -84,7 +84,7 @@ const insertHealth = (calendar: any) => {
       health.days.completion.msgTxt = updatedCalendar.days[i].weekDayTxt;
       health.days.completion.msgJira = updatedCalendar.days[i].weekDayJira;
 
-      for (let type of ["issues", "points"]) {
+      for (const type of ['issues', 'points']) {
         health.days.velocity[type].current =
           updatedCalendar.days[i].completion[type].velocity;
         health.days.velocity[type].previous =
@@ -93,12 +93,12 @@ const insertHealth = (calendar: any) => {
           updatedCalendar.days[i].completion[type].velocity >
           updatedCalendar.days[i - 1].completion[type].velocity
         ) {
-          health.days.velocity[type].trend = "UP";
+          health.days.velocity[type].trend = 'UP';
         } else if (
           updatedCalendar.days[i].completion[type].velocity ===
           updatedCalendar.days[i - 1].completion[type].velocity
         ) {
-          health.days.velocity[type].trend = "FLAT";
+          health.days.velocity[type].trend = 'FLAT';
         }
         health.days.completion[type].count =
           updatedCalendar.days[i].completion[type].count;
@@ -116,7 +116,7 @@ const insertHealth = (calendar: any) => {
   }
 
   //Once done going through the loop, generate min/max/avg
-  for (let type of ["issues", "points"]) {
+  for (const type of ['issues', 'points']) {
     health.days.completion[type].min = Math.min(
       ...health.days.completion[type].list
     );
@@ -139,7 +139,7 @@ const insertHealth = (calendar: any) => {
       health.weeks.completion.msgTxt = updatedCalendar.weeks[i].weekTxt;
       health.weeks.completion.msgJira = updatedCalendar.weeks[i].weekJira;
 
-      for (let type of ["issues", "points"]) {
+      for (const type of ['issues', 'points']) {
         health.weeks.velocity[type].current =
           updatedCalendar.weeks[i].completion[type].velocity;
         health.weeks.velocity[type].previous =
@@ -148,12 +148,12 @@ const insertHealth = (calendar: any) => {
           updatedCalendar.weeks[i].completion[type].velocity >
           updatedCalendar.weeks[i - 1].completion[type].velocity
         ) {
-          health.weeks.velocity[type].trend = "UP";
+          health.weeks.velocity[type].trend = 'UP';
         } else if (
           updatedCalendar.weeks[i].completion[type].velocity ===
           updatedCalendar.weeks[i - 1].completion[type].velocity
         ) {
-          health.weeks.velocity[type].trend = "FLAT";
+          health.weeks.velocity[type].trend = 'FLAT';
         }
         health.weeks.completion[type].count =
           updatedCalendar.weeks[i].completion[type].count;
@@ -169,7 +169,7 @@ const insertHealth = (calendar: any) => {
   }
 
   //Once done going through the loop, generate min/max/avg
-  for (let type of ["issues", "points"]) {
+  for (const type of ['issues', 'points']) {
     health.weeks.completion[type].min = Math.min(
       ...health.weeks.completion[type].list
     );

@@ -8,7 +8,7 @@ import { ICalendar } from '../../global';
 import { formatDate } from '../misc/dateUtils';
 
 const initCalendar = (fromDate: string) => {
-  let initObject: ICalendar = {
+  const initObject: ICalendar = {
     days: {},
     weeks: {},
     open: {},
@@ -29,9 +29,9 @@ const initCalendar = (fromDate: string) => {
     points: { count: 0, velocity: 0 },
     list: []
   };
-  let toDay = new Date();
+  const toDay = new Date();
   toDay.setDate(toDay.getDate() - 1); // We don't process current day, only fetching closed issues on past days
-  let currentDate = formatDate(fromDate);
+  const currentDate = formatDate(fromDate);
   while (currentDate < toDay) {
     currentDate.setDate(currentDate.getDate() + 1);
     initObject.days[currentDate.toJSON().slice(0, 10)] = {
@@ -48,7 +48,7 @@ const initCalendar = (fromDate: string) => {
     if (currentDate.getDay() !== 0) {
       currentMonthDay = currentMonthDay - currentDate.getDay();
     }
-    let currentWeekYear = new Date(
+    const currentWeekYear = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       currentMonthDay

@@ -1,6 +1,12 @@
 // tslint:disable-next-line: file-name-casing
 import { ICalendar, IJiraIssue } from '../../global';
 
+const stringClean = (labelName: string) => {
+  return String(labelName)
+    .replace(/[^a-z0-9+]+/gi, '')
+    .toLowerCase();
+};
+
 /*
     Receives an empty calendar and populates it with issues by reading files from cache
 */
@@ -10,7 +16,7 @@ const insertClosed = async (
   closedIssues: Array<IJiraIssue>
 ) => {
   const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
-  for (let issue of closedIssues) {
+  for (const issue of closedIssues) {
     // tslint:disable-next-line: strict-type-predicates
     if (updatedCalendar.days[issue.closedAt] !== undefined) {
       updatedCalendar.days[issue.closedAt].completion.issues.count++;
@@ -110,12 +116,6 @@ const insertClosed = async (
   }
   */
   return updatedCalendar;
-};
-
-const stringClean = (labelName: string) => {
-  return String(labelName)
-    .replace(/[^a-z0-9+]+/gi, '')
-    .toLowerCase();
 };
 
 export default insertClosed;

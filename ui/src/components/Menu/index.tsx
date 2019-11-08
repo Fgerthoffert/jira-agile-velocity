@@ -4,7 +4,7 @@ import {
   makeStyles,
   useTheme,
   Theme,
-  createStyles
+  createStyles,
 } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
       width: drawerWidth,
-      flexShrink: 0
+      flexShrink: 0,
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
     },
     noLink: {},
     drawerHeader: {
@@ -37,28 +37,29 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       padding: theme.spacing(0, 1),
       ...theme.mixins.toolbar,
-      justifyContent: 'flex-end'
-    }
-  })
+      justifyContent: 'flex-end',
+    },
+  }),
 );
 
 const mapState = (state: iRootState) => ({
-  showMenu: state.global.showMenu
+  showMenu: state.global.showMenu,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setShowMenu: dispatch.global.setShowMenu
+  setShowMenu: dispatch.global.setShowMenu,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
 const AdapterLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  (props, ref) => <Link innerRef={ref as any} {...props} />
+  (props, ref) => <Link innerRef={ref as any} {...props} />,
 );
 
 const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
   const handleDrawerClose = () => {
+    console.log('handleDrawerClose');
     setShowMenu(false);
     return undefined;
   };
@@ -70,13 +71,13 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
     {
       path: '/velocity',
       icon: <BarChartIcon />,
-      text: 'Velocity'
+      text: 'Velocity',
     },
     {
       path: '/initiatives',
       icon: <FormatListNumberedIcon />,
-      text: 'Initiatives'
-    }
+      text: 'Initiatives',
+    },
   ];
 
   return (
@@ -85,12 +86,12 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
       open={showMenu}
       onClose={handleDrawerClose}
       classes={{
-        paper: classes.drawerPaper
+        paper: classes.drawerPaper,
       }}
     >
       <div
         className={classes.drawerHeader}
-        role='presentation'
+        role="presentation"
         onClick={handleDrawerClose}
         onKeyDown={handleDrawerClose}
       >
@@ -119,5 +120,5 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(Menu);

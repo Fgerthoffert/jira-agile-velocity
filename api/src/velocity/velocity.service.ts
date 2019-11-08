@@ -2,11 +2,16 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as loadYamlFile from 'load-yaml-file';
-import * as readline from 'readline';
-import * as stream from 'stream';
+import * as loadJsonFile from 'load-json-file';
 
 import { ConfigService } from '../config.service';
-import { isUndefined } from 'util';
+
+export const getTeamId = (teamName: string) => {
+  return String(teamName)
+    .replace('team-', '') // If team is prefixed by team-, we simply remove it from the string
+    .replace(/[^a-z0-9+]+/gi, '')
+    .toLowerCase();
+};
 
 @Injectable()
 export class VelocityService {
@@ -33,13 +38,10 @@ export class VelocityService {
           'velocity-artifacts-' + getTeamId(currentTeam.name) + '.json',
         );
         if (fs.existsSync(teamCacheFile)) {
-          const input = fs.createReadStream(teamCacheFile);
-          for await (const line of readLines(input)) {
-            return {
-              id: getTeamId(currentTeam.name),
-              velocity: JSON.parse(line),
-            };
-          }
+          return {
+            id: getTeamId(currentTeam.name),
+            velocity: loadJsonFile.sync(teamCacheFile),
+          };
         }
       } else {
         this.logger.log(
@@ -54,23 +56,3 @@ export class VelocityService {
     return teamsVelocity;
   }
 }
-
-export const getTeamId = (teamName: string) => {
-  return String(teamName)
-    .replace('team-', '') // If team is prefixed by team-, we simply remove it from the string
-    .replace(/[^a-z0-9+]+/gi, '')
-    .toLowerCase();
-};
-
-// https://medium.com/@wietsevenema/node-js-using-for-await-to-read-lines-from-a-file-ead1f4dd8c6f
-const readLines = (input: any) => {
-  const output = new stream.PassThrough({ objectMode: true });
-  const rl = readline.createInterface({ input });
-  rl.on('line', line => {
-    output.write(line);
-  });
-  rl.on('close', () => {
-    output.push(null);
-  });
-  return output;
-};

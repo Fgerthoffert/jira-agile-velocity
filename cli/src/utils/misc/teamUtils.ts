@@ -12,7 +12,7 @@ export const getTeamFromAssignee = (issue: any, teams: Array<string>) => {
   if (issue.fields.assignee === null) {
     return null;
   } else {
-    for (let team of teams) {
+    for (const team of teams) {
       if (getTeamId(issue.fields.assignee.name) === getTeamId(team)) {
         return team;
       }

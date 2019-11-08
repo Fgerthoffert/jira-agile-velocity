@@ -12,7 +12,7 @@ export const velocity = createModel({
     teams: [],
     selectedTeam: null,
     loading: false,
-    velocity: []
+    velocity: [],
   },
   reducers: {
     setTeams(state: any, payload: any) {
@@ -26,7 +26,7 @@ export const velocity = createModel({
     },
     setLoading(state: any, payload: any) {
       return { ...state, loading: payload };
-    }
+    },
   },
   effects: {
     async initView(currentTab, rootState) {
@@ -47,7 +47,7 @@ export const velocity = createModel({
         this.refreshTeams(currentTab);
       } else {
         log.info(
-          'Not loading data, either there is already some data in cache or user token not present'
+          'Not loading data, either there is already some data in cache or user token not present',
         );
       }
     },
@@ -68,13 +68,13 @@ export const velocity = createModel({
       axios({
         method: 'get',
         url: host + '/teams',
-        headers
+        headers,
       })
         .then(response => {
           setTeams(response.data);
           // Set value to
           const selectedTeam = response.data.find(
-            (t: any) => t.id === currentTab
+            (t: any) => t.id === currentTab,
           );
           if (selectedTeam === undefined) {
             setSelectedTeam(response.data[0].id);
@@ -111,7 +111,7 @@ export const velocity = createModel({
         axios({
           method: 'get',
           url: host + '/velocity/' + teamId,
-          headers
+          headers,
         })
           .then(response => {
             setVelocity([...rootState.velocity.velocity, response.data]);
@@ -121,6 +121,6 @@ export const velocity = createModel({
             setLoading(false);
           });
       }
-    }
-  }
+    },
+  },
 });

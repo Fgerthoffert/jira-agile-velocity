@@ -8,14 +8,16 @@ import TeamsTabs from './teamtabs';
 import LoadingBar from './LoadingBar';
 
 import { iRootState } from '../../store';
+import DataStatus from './DataStatus';
 
 const mapState = (state: iRootState) => ({
-  selectedTeam: state.velocity.selectedTeam
+  selectedTeam: state.velocity.selectedTeam,
 });
 
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
-  initView: dispatch.velocity.initView
+  initView: dispatch.velocity.initView,
+  setShowMenu: dispatch.global.setShowMenu,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -26,11 +28,13 @@ const Velocity: FC<any> = ({
   initView,
   match,
   history,
-  selectedTeam
+  selectedTeam,
+  setShowMenu,
 }) => {
   setPageTitle('Velocity');
 
   useEffect(() => {
+    setShowMenu(false);
     if (selectedTeam === null) {
       initView(match.params.tab);
     }
@@ -42,7 +46,7 @@ const Velocity: FC<any> = ({
   // Receive request to change tab, update URL accordingly
   const changeTab = (newTab: string) => {
     history.push({
-      pathname: '/velocity/' + newTab
+      pathname: '/velocity/' + newTab,
     });
   };
 
@@ -50,6 +54,7 @@ const Velocity: FC<any> = ({
     <Layout>
       <LoadingBar />
       <TeamsTabs changeTab={changeTab} />
+      <DataStatus />
       <br />
       <Dashboard />
     </Layout>
@@ -59,5 +64,5 @@ const Velocity: FC<any> = ({
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(withRouter(Velocity));

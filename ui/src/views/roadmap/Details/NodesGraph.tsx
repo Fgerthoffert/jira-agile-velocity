@@ -19,11 +19,11 @@ Cytoscape.use(popper);
 
 const mapState = (state: iRootState) => ({
   issuesGraph: state.roadmap.issuesGraph,
-  roadmap: state.roadmap.roadmap
+  roadmap: state.roadmap.roadmap,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setGraphNode: dispatch.roadmap.setGraphNode
+  setGraphNode: dispatch.roadmap.setGraphNode,
 });
 
 type connectedProps = ReturnType<typeof mapState | any> &
@@ -72,7 +72,7 @@ class NodesGraph extends Component<connectedProps> {
       // hideOnClick: true,
       interactive: true,
       multiple: true,
-      sticky: true
+      sticky: true,
     });
   };
 
@@ -100,7 +100,7 @@ class NodesGraph extends Component<connectedProps> {
         if (this.tippyInstances[nodeId] === undefined) {
           this.tippyInstances[nodeId] = this.makeTippy(
             node,
-            dataNode.fields.summary + ' (' + dataNode.key + ')'
+            dataNode.summary + ' (' + dataNode.key + ')',
           );
           this.tippyInstances[nodeId].show();
         }
@@ -121,7 +121,7 @@ class NodesGraph extends Component<connectedProps> {
 
       const layout = cy.layout({
         name: 'cose-bilkent',
-        animate: false
+        animate: false,
       });
       layout.run();
     }
@@ -135,9 +135,9 @@ class NodesGraph extends Component<connectedProps> {
           width: 10,
           height: 10,
           content: 'data(points)',
-          fontSize: '0.5em'
+          fontSize: '0.5em',
           //                    shape: 'vee'
-        }
+        },
       },
       {
         selector: 'edge',
@@ -146,71 +146,71 @@ class NodesGraph extends Component<connectedProps> {
           'target-arrow-shape': 'triangle',
           width: 2,
           'line-color': '#ddd',
-          'target-arrow-color': '#ddd'
-        }
+          'target-arrow-color': '#ddd',
+        },
       },
       {
         selector: ':parent',
         style: {
-          'background-opacity': 0.333
-        }
+          'background-opacity': 0.333,
+        },
       },
       {
         selector: '[status = "Done"]',
         style: {
-          backgroundColor: '#14892c'
-        }
+          backgroundColor: '#14892c',
+        },
       },
       {
         selector: '[status = "To Do"]',
         style: {
-          backgroundColor: '#4a6785'
-        }
+          backgroundColor: '#4a6785',
+        },
       },
       {
         selector: '[status = "In Progress"]',
         style: {
-          backgroundColor: '#ffd351'
-        }
+          backgroundColor: '#ffd351',
+        },
       },
       {
         selector: '[type = "Story"]',
         style: {
-          shape: 'ellipse'
-        }
+          shape: 'ellipse',
+        },
       },
       {
         selector: '[type = "Epic"]',
         style: {
-          shape: 'rectangle'
-        }
+          shape: 'rectangle',
+        },
       },
       {
         selector: '[type = "Initiative"]',
         style: {
-          shape: 'diamond'
-        }
+          shape: 'diamond',
+        },
       },
       {
         selector: '[distance = 0]',
         style: {
           width: 20,
-          height: 20
-        }
+          height: 20,
+        },
       },
       {
         selector: 'edge.not-path',
         style: {
           opacity: 0.1,
-          'z-index': 0
-        }
+          'z-index': 0,
+        },
       },
       {
         selector: 'node.not-path',
         style: {
           opacity: 0.333,
-          'z-index': 0
-        }
+          'z-index': 0,
+        },
       },
       {
         selector: 'edge.path',
@@ -219,9 +219,9 @@ class NodesGraph extends Component<connectedProps> {
           'z-index': 0,
           width: 4,
           'line-color': '#2196f3',
-          'target-arrow-color': '#2196f3'
-        }
-      }
+          'target-arrow-color': '#2196f3',
+        },
+      },
     ];
     return (
       <div style={{ textAlign: 'left' }}>
@@ -239,5 +239,5 @@ class NodesGraph extends Component<connectedProps> {
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(NodesGraph);

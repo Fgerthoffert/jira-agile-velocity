@@ -1,4 +1,16 @@
 // tslint:disable-next-line: file-name-casing
+export const getNonInitiativeTitle = () => {
+  return 'Orphaned Tickets';
+};
+
+export const getInitiativeTitle = (initiative: any) => {
+  const maxTitleLength = 30;
+  const initiativeTitle =
+    initiative.summary.length > maxTitleLength
+      ? initiative.summary.slice(0, maxTitleLength) + '...'
+      : initiative.summary;
+  return initiativeTitle + ' (' + initiative.key + ')';
+};
 
 /*
 tbc
@@ -7,41 +19,26 @@ export const getCellDataInitiatives = (
   initiative: string,
   weekTxt: string,
   roadmap: any,
-  completionWeeks: any
 ) => {
   if (initiative !== getNonInitiativeTitle()) {
-    return roadmap.byInitiative
+    return roadmap.initiatives
       .find((i: any) => getInitiativeTitle(i) === initiative)
       .weeks.find((w: any) => w.weekTxt === weekTxt).list;
   } else {
-    return completionWeeks[weekTxt].nonInitiativesList;
+    return roadmap.orphanIssues.find((w: any) => w.weekTxt === weekTxt).list;
   }
-};
-
-export const getInitiativeTitle = (initiative: any) => {
-  const maxTitleLength = 30;
-  const initiativeTitle =
-    initiative.fields.summary.length > maxTitleLength
-      ? initiative.fields.summary.slice(0, maxTitleLength) + '...'
-      : initiative.fields.summary;
-  return initiativeTitle + ' (' + initiative.key + ')';
-};
-
-export const getNonInitiativeTitle = () => {
-  return 'Other activities (not related to initiatives)';
 };
 
 /* 
     Display different background colors based on the percentage of the effort spent on a particular activity for a week
   */
-export const getCompletionColor = (
-  data: any,
-  value: any,
-  completionWeeks: any
-) => {
+export const getCompletionColor = (data: any, value: any, dataset: any) => {
   let prct = 0;
-  if (completionWeeks[data.xKey] !== undefined) {
-    prct = Math.round((value * 100) / completionWeeks[data.xKey].totalCount);
+  const weekCompletion = dataset
+    .map((row: any) => row[data.xKey])
+    .reduce((acc: number, count: number) => acc + count, 0);
+  if (weekCompletion > 0) {
+    prct = Math.round((value * 100) / weekCompletion);
   }
 
   if (prct < 20) {
