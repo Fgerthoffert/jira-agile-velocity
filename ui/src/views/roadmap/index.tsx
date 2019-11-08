@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import Layout from '../../layout';
@@ -12,13 +12,21 @@ import DataStatus from './DataStatus';
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
   initView: dispatch.roadmap.initView,
+  setShowMenu: dispatch.global.setShowMenu,
 });
 
 type connectedProps = ReturnType<typeof mapDispatch>;
 
-const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
+const Roadmap: FC<connectedProps> = ({
+  setPageTitle,
+  initView,
+  setShowMenu,
+}) => {
   setPageTitle('Initiatives');
-  initView();
+  useEffect(() => {
+    setShowMenu(false);
+    initView();
+  });
   return (
     <Layout>
       <LoadingBar />

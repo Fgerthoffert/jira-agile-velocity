@@ -17,6 +17,7 @@ const mapState = (state: iRootState) => ({
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
   initView: dispatch.velocity.initView,
+  setShowMenu: dispatch.global.setShowMenu,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -28,10 +29,12 @@ const Velocity: FC<any> = ({
   match,
   history,
   selectedTeam,
+  setShowMenu,
 }) => {
   setPageTitle('Velocity');
 
   useEffect(() => {
+    setShowMenu(false);
     if (selectedTeam === null) {
       initView(match.params.tab);
     }
