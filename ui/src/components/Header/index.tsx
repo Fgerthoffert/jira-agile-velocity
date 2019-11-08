@@ -17,41 +17,41 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1
+      flexGrow: 1,
     },
     appBar: {
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
+        duration: theme.transitions.duration.leavingScreen,
+      }),
     },
     appBarShift: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      })
+        duration: theme.transitions.duration.enteringScreen,
+      }),
     },
     menuButton: {
-      marginRight: theme.spacing(2)
+      marginRight: theme.spacing(2),
     },
     hide: {
-      display: 'none'
+      display: 'none',
     },
     title: {
-      flexGrow: 1
-    }
-  })
+      flexGrow: 1,
+    },
+  }),
 );
 
 const mapState = (state: iRootState) => ({
   showMenu: state.global.showMenu,
-  pageTitle: state.global.pageTitle
+  pageTitle: state.global.pageTitle,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setShowMenu: dispatch.global.setShowMenu
+  setShowMenu: dispatch.global.setShowMenu,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -66,22 +66,22 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
 
   return (
     <AppBar
-      position='fixed'
+      position="fixed"
       className={clsx(classes.appBar, {
-        [classes.appBarShift]: showMenu
+        [classes.appBarShift]: showMenu,
       })}
     >
       <Toolbar>
         <IconButton
-          color='inherit'
-          aria-label='open drawer'
+          color="inherit"
+          aria-label="open drawer"
           onClick={handleDrawerOpen}
-          edge='start'
+          edge="start"
           className={clsx(classes.menuButton, showMenu && classes.hide)}
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant='h6' noWrap className={classes.title}>
+        <Typography variant="h6" noWrap className={classes.title}>
           {pageTitle}
         </Typography>
         <SwitchPoints />
@@ -93,5 +93,5 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(Header);

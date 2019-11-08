@@ -2,6 +2,7 @@
 import * as log from 'loglevel';
 import { createModel } from '@rematch/core';
 import axios from 'axios';
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 import { fetchGraphIssues } from '../utils/graph';
 
@@ -92,8 +93,22 @@ export const roadmap = createModel({
       }
       logger.info('Roadmap Logger initialized');
       this.setLog(logger);
+      this.loadDataFromCache();
       this.loadData();
     },
+
+    async loadDataFromCache(roadmap, rootState) {
+      // If previous data was loaded and saved in localstorage
+      // it will first display the cache, while the call to the backend is happening
+      const cacheRoadmap = reactLocalStorage.getObject('cache-roadmap');
+      if (Object.keys(cacheRoadmap).length > 0) {
+        log.info(
+          'Loading Roadmap data from cache while call to the backend is happening',
+        );
+        this.setRoadmap(reactLocalStorage.getObject('cache-roadmap'));
+      }
+    },
+
     async loadData(roadmap, rootState) {
       // Fetch data
       const setRoadmap = this.setRoadmap;
@@ -121,7 +136,6 @@ export const roadmap = createModel({
         })
           .then(response => {
             augmentRoadmap(response.data);
-            setRoadmap(response.data);
             setLoading(false);
           })
           .catch(error => {
@@ -168,6 +182,7 @@ export const roadmap = createModel({
           };
         }),
       };
+      reactLocalStorage.setObject('cache-roadmap', augmentedRoadmap);
       this.setRoadmap(augmentedRoadmap);
     },
 

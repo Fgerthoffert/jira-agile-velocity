@@ -29,6 +29,7 @@ const setAuth0Config = async () => {
 export const global = createModel({
   state: {
     log: {},
+    loading: false,
     showMenu: false,
     pageTitle: null,
     defaultPoints: true,
@@ -47,6 +48,9 @@ export const global = createModel({
   reducers: {
     setLog(state: any, payload: any) {
       return { ...state, log: payload };
+    },
+    setLoading(state: any, payload: any) {
+      return { ...state, loading: payload };
     },
     setAuth0Initialized(state: any, payload: any) {
       return { ...state, auth0Initialized: payload };
@@ -122,33 +126,10 @@ export const global = createModel({
         if (window.Auth0 !== undefined) {
           this.setAuth0Initialized(true);
         } else {
+          this.setLoading(true);
           await setAuth0Config();
-          /*
-          try {
-            const response = await window.Auth0.getTokenSilently();
-            console.log(response);
-          } catch (error) {
-            console.error(error);
-          }
-          console.log(window.Auth0);
-          */
-          /*
-          const test = window.Auth0.checkSession(
-            {
-              scope: 'openid profile email'
-            },
-            function(err: any, authResult: any) {
-              // err if automatic parseHash fails
-              if (err !== undefined && err) {
-                console.error(err);
-                return;
-              }
-              console.log(authResult);
-            }
-          );
-          */
-
           this.setAuth0Initialized(true);
+          this.setLoading(false);
         }
       }
     },
@@ -156,6 +137,7 @@ export const global = createModel({
     async loginCallback(payload, rootState) {
       // tslint:disable-next-line:no-shadowed-variable
       const log = rootState.global.log;
+      this.setLoading(true);
       log.info('Received callback, finalizing logging');
       const auth0 =
         window.Auth0 === undefined ? await setAuth0Config() : window.Auth0;
@@ -179,6 +161,7 @@ export const global = createModel({
           });
         }
       }
+      this.setLoading(false);
     },
   },
 });

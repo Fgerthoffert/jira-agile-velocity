@@ -6,35 +6,36 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import LoginDialog from '../components/LoginDialog';
+import LoadingBar from './LoadingBar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex'
+      display: 'flex',
     },
     drawerHeader: {
       display: 'flex',
       alignItems: 'center',
       padding: theme.spacing(0, 1),
       ...theme.mixins.toolbar,
-      justifyContent: 'flex-end'
+      justifyContent: 'flex-end',
     },
     content: {
       flexGrow: 1,
       padding: theme.spacing(3),
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
+        duration: theme.transitions.duration.leavingScreen,
+      }),
     },
     contentShift: {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
+        duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0
-    }
-  })
+      marginLeft: 0,
+    },
+  }),
 );
 
 export interface LayoutProps {
@@ -54,10 +55,12 @@ export default function Layout(props: LayoutProps) {
       <Menu />
       <main
         className={clsx(classes.content, {
-          [classes.contentShift]: open
+          [classes.contentShift]: open,
         })}
       >
         <div className={classes.drawerHeader} />
+        <LoadingBar />
+
         {children}
       </main>
     </div>

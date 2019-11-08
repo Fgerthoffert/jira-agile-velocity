@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import Layout from '../../layout';
 import Dashboard from './dashboard';
 import TeamsTabs from './teamtabs';
-import LoadingBar from './LoadingBar';
 
 import { iRootState } from '../../store';
 import DataStatus from './DataStatus';
@@ -52,7 +51,6 @@ const Velocity: FC<any> = ({
 
   return (
     <Layout>
-      <LoadingBar />
       <TeamsTabs changeTab={changeTab} />
       <DataStatus />
       <br />

@@ -1,5 +1,7 @@
+import * as log from 'loglevel';
 import { createModel } from '@rematch/core';
 import axios from 'axios';
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 declare global {
   interface Window {
@@ -38,6 +40,8 @@ export const velocity = createModel({
         return true;
       }
 
+      this.loadTeamsFromCache(currentTab);
+
       if (
         JSON.parse(window._env_.AUTH0_DISABLED) === true ||
         (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
@@ -49,6 +53,40 @@ export const velocity = createModel({
         log.info(
           'Not loading data, either there is already some data in cache or user token not present',
         );
+      }
+    },
+
+    async loadTeamsFromCache(currentTab, rootState) {
+      // If previous data was loaded and saved in localstorage
+      // it will first display the cache, while the call to the backend is happening
+      const cacheVelocityTeams = reactLocalStorage.getObject(
+        'cache-velocityTeams',
+      );
+      if (Object.keys(cacheVelocityTeams).length > 0) {
+        log.info(
+          'Loading Teams data from cache while call to the backend is happening',
+        );
+        this.setTeams(reactLocalStorage.getObject('cache-velocityTeams'));
+        const selectedTeam = cacheVelocityTeams.find(
+          (t: any) => t.id === currentTab,
+        );
+        if (selectedTeam === undefined) {
+          this.setSelectedTeam(cacheVelocityTeams[0].id);
+        } else {
+          this.setSelectedTeam(selectedTeam.id);
+        }
+      }
+    },
+
+    async loadVelocityFromCache(payload, rootState) {
+      // If previous data was loaded and saved in localstorage
+      // it will first display the cache, while the call to the backend is happening
+      const cacheVelocity = reactLocalStorage.getObject('cache-velocity');
+      if (Object.keys(cacheVelocity).length > 0) {
+        log.info(
+          'Loading Velocity data from cache while call to the backend is happening',
+        );
+        this.setVelocity(reactLocalStorage.getObject('cache-velocity'));
       }
     },
 
@@ -72,15 +110,13 @@ export const velocity = createModel({
       })
         .then(response => {
           setTeams(response.data);
+          reactLocalStorage.setObject('cache-velocityTeams', response.data);
           // Set value to
-          const selectedTeam = response.data.find(
-            (t: any) => t.id === currentTab,
-          );
-          if (selectedTeam === undefined) {
-            setSelectedTeam(response.data[0].id);
-          } else {
-            setSelectedTeam(selectedTeam.id);
-          }
+          const selectedTeam =
+            response.data.find((t: any) => t.id === currentTab) === undefined
+              ? response.data[0].id
+              : response.data.find((t: any) => t.id === currentTab).id;
+          setSelectedTeam(selectedTeam);
           setLoading(false);
         })
         .catch(error => {
@@ -91,6 +127,7 @@ export const velocity = createModel({
     },
 
     async fetchTeamData(teamId, rootState) {
+      this.loadVelocityFromCache(teamId);
       const setVelocity = this.setVelocity;
       const setLoading = this.setLoading;
       if (
@@ -114,7 +151,15 @@ export const velocity = createModel({
           headers,
         })
           .then(response => {
-            setVelocity([...rootState.velocity.velocity, response.data]);
+            const updatedVelocity = [
+              ...rootState.velocity.velocity.filter(
+                (t: any) => t.id !== teamId,
+              ),
+              response.data,
+            ];
+            setVelocity(updatedVelocity);
+            console.log(updatedVelocity);
+            reactLocalStorage.setObject('cache-velocity', updatedVelocity);
             setLoading(false);
           })
           .catch(error => {
