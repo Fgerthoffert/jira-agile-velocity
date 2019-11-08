@@ -158,7 +158,6 @@ export const velocity = createModel({
               response.data,
             ];
             setVelocity(updatedVelocity);
-            console.log(updatedVelocity);
             reactLocalStorage.setObject('cache-velocity', updatedVelocity);
             setLoading(false);
           })

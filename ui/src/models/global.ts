@@ -130,6 +130,16 @@ export const global = createModel({
           await setAuth0Config();
           this.setAuth0Initialized(true);
           this.setLoading(false);
+          const isLoggedIn = await window.Auth0.isAuthenticated();
+          if (isLoggedIn === true) {
+            const accessToken = await window.Auth0.getTokenSilently();
+            const user = await window.Auth0.getUser();
+            this.setCallbackState({
+              loggedIn: isLoggedIn,
+              accessToken,
+              authUser: user,
+            });
+          }
         }
       }
     },

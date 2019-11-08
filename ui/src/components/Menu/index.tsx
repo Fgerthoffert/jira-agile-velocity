@@ -59,7 +59,6 @@ const AdapterLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
 
 const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
   const handleDrawerClose = () => {
-    console.log('handleDrawerClose');
     setShowMenu(false);
     return undefined;
   };
