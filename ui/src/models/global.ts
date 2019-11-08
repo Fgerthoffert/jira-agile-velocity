@@ -140,6 +140,7 @@ export const global = createModel({
               authUser: user,
             });
           }
+          log.info('Authentication initialized');
         }
       }
     },

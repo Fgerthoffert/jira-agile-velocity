@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -49,14 +49,6 @@ const Dashboard: FC<connectedProps> = ({
   fetchTeamData,
 }) => {
   const classes = useStyles();
-
-  const teamVelocity: any = velocity.find((t: any) => t.id === selectedTeam);
-  useEffect(() => {
-    // If team !== null but corresponding team 's data hasn't been loaded
-    if (teamVelocity === undefined) {
-      fetchTeamData(selectedTeam);
-    }
-  });
 
   let metric = 'points';
   if (!defaultPoints) {

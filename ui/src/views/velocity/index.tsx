@@ -11,6 +11,7 @@ import DataStatus from './DataStatus';
 
 const mapState = (state: iRootState) => ({
   selectedTeam: state.velocity.selectedTeam,
+  loggedIn: state.global.loggedIn,
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -29,12 +30,12 @@ const Velocity: FC<any> = ({
   history,
   selectedTeam,
   setShowMenu,
+  loggedIn,
 }) => {
   setPageTitle('Velocity');
-
   useEffect(() => {
     setShowMenu(false);
-    if (selectedTeam === null) {
+    if (selectedTeam === null && loggedIn === true) {
       initView(match.params.tab);
     }
     if (match.params.tab === undefined && selectedTeam !== null) {
