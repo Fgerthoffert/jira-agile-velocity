@@ -55,7 +55,7 @@ const Forecast: FC<connectedProps> = ({
   if (!defaultPoints) {
     metric = 'issues';
   }
-
+  console.log(roadmap.initiatives);
   if (Object.values(roadmap).length > 0 && selectedTab === 'futurechart') {
     return (
       <Grid
@@ -109,7 +109,7 @@ const Forecast: FC<connectedProps> = ({
         <Grid item xs={12}>
           <InitiativeTable
             initiatives={roadmap.initiatives.filter(
-              (i: any) => i.status.category !== 'Done',
+              (i: any) => i.status.category !== 'Done' && i.assignee === null,
             )}
             jiraHost={roadmap.host}
             defaultPoints={defaultPoints}
