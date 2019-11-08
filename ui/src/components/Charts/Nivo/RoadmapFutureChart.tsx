@@ -8,8 +8,8 @@ import { getInitiativeTitle } from './utils';
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      height: 800
-    }
+      height: 800,
+    },
   });
 
 interface IDataset {
@@ -34,26 +34,26 @@ class RoadmapFutureChart extends Component<any, any> {
   */
   getCompletionColor = (data: any, value: any) => {
     const { roadmap } = this.props;
-    const initiative = roadmap.byFutureInitiative.find(
-      (i: any) => getInitiativeTitle(i) === data.yKey
+    const initiative = roadmap.futureCompletion.find(
+      (i: any) => getInitiativeTitle(i) === data.yKey,
     );
     if (initiative !== undefined) {
-      return toMaterialStyle(initiative.team.name, 200).backgroundColor;
+      return toMaterialStyle(initiative.team.team, 200).backgroundColor;
     }
     return 'rgb(65, 171, 93)';
   };
 
-  buildDataset = () => {
-    const { roadmap, defaultPoints } = this.props;
+  buildDataset = (initiatives: any) => {
+    const { defaultPoints } = this.props;
     let metric = 'points';
     if (!defaultPoints) {
       metric = 'issues';
     }
 
     const dataset: IDatasetObj[] = [];
-    for (const initiative of roadmap.byFutureInitiative) {
+    for (const initiative of initiatives) {
       const initiativeData: IDatasetObj = {
-        initiative: getInitiativeTitle(initiative)
+        initiative: getInitiativeTitle(initiative),
       };
       for (const week of initiative.weeks) {
         initiativeData[week.weekTxt] = week[metric].count;
@@ -64,17 +64,24 @@ class RoadmapFutureChart extends Component<any, any> {
   };
 
   render() {
-    const { roadmap } = this.props;
+    const { roadmap, defaultPoints } = this.props;
+    let metric = 'points';
+    if (!defaultPoints) {
+      metric = 'issues';
+    }
+    //console.log(roadmap.futureCompletion);
+    const initiatives = roadmap.futureCompletion.filter(
+      (i: any) => i.metrics[metric].remaining > 0,
+    );
     this.completionWeeks = {};
     // 100 minimal height to accomodate enought space for the legend
-    const chartHeight = 50 + roadmap.byFutureInitiative.length * 25;
-    // @ts-ignore
+    const chartHeight = 50 + initiatives.length * 25;
     return (
       <div style={{ height: chartHeight }}>
         <ResponsiveHeatMap
-          data={this.buildDataset()}
-          keys={roadmap.byFutureInitiative[0].weeks.map((w: any) => w.weekTxt)}
-          indexBy='initiative'
+          data={this.buildDataset(initiatives)}
+          keys={initiatives[0].weeks.map((w: any) => w.weekTxt)}
+          indexBy="initiative"
           margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
           forceSquare={false}
           axisTop={null}
@@ -86,7 +93,7 @@ class RoadmapFutureChart extends Component<any, any> {
             tickPadding: 5,
             tickRotation: -90,
             legend: '',
-            legendOffset: 36
+            legendOffset: 36,
           }}
           axisLeft={{
             orient: 'middle',
@@ -95,7 +102,7 @@ class RoadmapFutureChart extends Component<any, any> {
             tickRotation: 0,
             legend: '',
             legendPosition: 'middle',
-            legendOffset: -40
+            legendOffset: -40,
           }}
           cellOpacity={1}
           cellBorderColor={'#a4a3a5'}
@@ -116,8 +123,8 @@ class RoadmapFutureChart extends Component<any, any> {
             onHover,
             onLeave,
             onClick,
-            theme
-          }) => {
+            theme,
+          }: any) => {
             if (value === 0) {
               return (
                 <g
@@ -162,11 +169,11 @@ class RoadmapFutureChart extends Component<any, any> {
                 />
                 {enableLabel && (
                   <text
-                    dominantBaseline='central'
-                    textAnchor='middle'
+                    dominantBaseline="central"
+                    textAnchor="middle"
                     style={{
                       ...theme.labels.text,
-                      fill: textColor
+                      fill: textColor,
                     }}
                     fillOpacity={opacity}
                   >
@@ -179,7 +186,7 @@ class RoadmapFutureChart extends Component<any, any> {
           animate={false}
           motionStiffness={80}
           motionDamping={9}
-          hoverTarget='cell'
+          hoverTarget="cell"
           cellHoverOthersOpacity={0.25}
         />
       </div>

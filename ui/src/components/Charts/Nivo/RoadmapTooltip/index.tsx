@@ -21,17 +21,12 @@ export interface TooltipProps {
 }
 
 export default function RoadmapTooltip(props: TooltipProps) {
-  const { data, roadmap, completionWeeks, defaultPoints } = props;
-  const initiatives = getCellDataInitiatives(
-    data.yKey,
-    data.xKey,
-    roadmap,
-    completionWeeks
-  );
+  const { data, roadmap, defaultPoints } = props;
+  const initiatives = getCellDataInitiatives(data.yKey, data.xKey, roadmap);
 
   const typesGroup = _.groupBy(initiatives, (value: any) => {
-    if (value.fields.issuetype !== undefined) {
-      return value.fields.issuetype.name;
+    if (value.type !== undefined) {
+      return value.type.name;
     } else {
       return null;
     }
@@ -43,18 +38,18 @@ export default function RoadmapTooltip(props: TooltipProps) {
       name: key,
       list: typesGroup[key],
       issues: {
-        count: typesGroup[key].length
+        count: typesGroup[key].length,
       },
       points: {
         count: typesGroup[key]
           .map(issue => issue.points)
-          .reduce((acc, count) => acc + count, 0)
-      }
+          .reduce((acc, count) => acc + count, 0),
+      },
     });
   });
 
   const projectsGroup = _.groupBy(initiatives, value =>
-    value.key.replace(/[^a-z+]+/gi, '')
+    value.key.replace(/[^a-z+]+/gi, ''),
   );
   const projects: any = [];
   Object.keys(projectsGroup).forEach((key: any) => {
@@ -62,35 +57,35 @@ export default function RoadmapTooltip(props: TooltipProps) {
       name: key,
       list: projectsGroup[key],
       issues: {
-        count: projectsGroup[key].length
+        count: projectsGroup[key].length,
       },
       points: {
         count: projectsGroup[key]
           .map((issue: any) => {
             return issue.points;
           })
-          .reduce((acc: number, count: number) => acc + count, 0)
-      }
+          .reduce((acc: number, count: number) => acc + count, 0),
+      },
     });
   });
   return (
     <React.Fragment>
-      <Table size='small'>
+      <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Key</TableCell>
-            <TableCell align='right'>Summary</TableCell>
-            <TableCell align='right'>Points</TableCell>
+            <TableCell align="right">Summary</TableCell>
+            <TableCell align="right">Points</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {initiatives.slice(0, 5).map((i: any) => (
             <TableRow key={i.key}>
-              <TableCell component='th' scope='row'>
+              <TableCell component="th" scope="row">
                 {i.key}
               </TableCell>
-              <TableCell align='right'>{i.fields.summary}</TableCell>
-              <TableCell align='right'>{i.points}</TableCell>
+              <TableCell align="right">{i.summary}</TableCell>
+              <TableCell align="right">{i.points}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -104,15 +99,15 @@ export default function RoadmapTooltip(props: TooltipProps) {
           </i>
         </span>
       )}
-      <Grid container direction='row' justify='center' alignItems='center'>
+      <Grid container direction="row" justify="center" alignItems="center">
         <Grid item xs={6}>
-          <Typography variant='h6' component='h6'>
+          <Typography variant="h6" component="h6">
             Projects
           </Typography>
           <DataBreakdown dataset={projects} defaultPoints={defaultPoints} />
         </Grid>
         <Grid item xs={6}>
-          <Typography variant='h6' component='h6'>
+          <Typography variant="h6" component="h6">
             Types
           </Typography>
           <DataBreakdown dataset={types} defaultPoints={defaultPoints} />

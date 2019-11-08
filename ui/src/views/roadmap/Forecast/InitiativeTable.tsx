@@ -5,7 +5,7 @@ import BubbleChartIcon from '@material-ui/icons/BubbleChart';
 import IconButton from '@material-ui/core/IconButton';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
-import { getProgress, getBarVariant } from '../utils';
+import { getProgress, getBarVariant, getEstimateState } from '../utils';
 
 const InitiativeTable: FC<any> = ({
   defaultPoints,
@@ -14,7 +14,7 @@ const InitiativeTable: FC<any> = ({
   title,
   setGraphInitiative,
   updateGraph,
-  setOpenGraph
+  setOpenGraph,
 }) => {
   const dedaultStyle = { padding: '4px 5px 4px 5px' };
 
@@ -31,16 +31,18 @@ const InitiativeTable: FC<any> = ({
           render: rowData => {
             return (
               <IconButton
-                aria-label='open-external'
-                size='small'
+                aria-label="open-external"
+                size="small"
                 href={rowData.url}
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                <OpenInNewIcon fontSize='small' />
+                <OpenInNewIcon fontSize="small" />
               </IconButton>
             );
           },
           headerStyle: { ...dedaultStyle, width: 20 },
-          cellStyle: { ...dedaultStyle, padding: '4px 5px 4px 5px', width: 20 }
+          cellStyle: { ...dedaultStyle, padding: '4px 5px 4px 5px', width: 20 },
         },
         {
           title: '',
@@ -48,51 +50,51 @@ const InitiativeTable: FC<any> = ({
           render: rowData => {
             return (
               <IconButton
-                aria-label='open-external'
-                size='small'
+                aria-label="open-external"
+                size="small"
                 onClick={() => {
                   setGraphInitiative(
-                    initiatives.find((i: any) => i.key === rowData.key)
+                    initiatives.find((i: any) => i.key === rowData.key),
                   );
                   updateGraph();
                   setOpenGraph(true);
                 }}
               >
-                <BubbleChartIcon fontSize='small' />
+                <BubbleChartIcon fontSize="small" />
               </IconButton>
             );
           },
           headerStyle: { ...dedaultStyle, width: 20 },
-          cellStyle: { ...dedaultStyle, padding: '4px 0px 4px 0px', width: 20 }
+          cellStyle: { ...dedaultStyle, padding: '4px 0px 4px 0px', width: 20 },
         },
         {
           title: 'Key',
           field: 'key',
-          cellStyle: { ...dedaultStyle, width: 200 }
+          cellStyle: { ...dedaultStyle, width: 200 },
         },
         {
           title: 'Title',
           field: 'title',
-          cellStyle: { ...dedaultStyle }
+          cellStyle: { ...dedaultStyle },
         },
         {
           title: 'Team',
           field: 'team',
-          cellStyle: { ...dedaultStyle, width: 200 }
+          cellStyle: { ...dedaultStyle, width: 200 },
         },
         {
           title: 'Velocity /week',
           field: 'velocity',
           type: 'numeric',
           headerStyle: { ...dedaultStyle, width: 60 },
-          cellStyle: { ...dedaultStyle, width: 60 }
+          cellStyle: { ...dedaultStyle, width: 60 },
         },
         {
           title: 'Remaining',
           field: 'remaining',
           type: 'numeric',
           headerStyle: { ...dedaultStyle, width: 60 },
-          cellStyle: { ...dedaultStyle, width: 60 }
+          cellStyle: { ...dedaultStyle, width: 60 },
         },
         {
           title: 'Points',
@@ -113,7 +115,22 @@ const InitiativeTable: FC<any> = ({
                 }
               />
             );
-          }
+          },
+        },
+        {
+          title: 'Estimated',
+          field: 'progressEstimate',
+          headerStyle: { ...dedaultStyle, width: 120 },
+          cellStyle: { ...dedaultStyle, width: 120 },
+          render: rowData => {
+            return (
+              <span style={{ color: '#000' }}>
+                {rowData.progressEstimate.progress}% (
+                {rowData.progressEstimate.esimtated}/
+                {rowData.progressEstimate.total})
+              </span>
+            );
+          },
         },
         {
           title: 'Issues Count',
@@ -134,28 +151,32 @@ const InitiativeTable: FC<any> = ({
                 }
               />
             );
-          }
+          },
         },
         {
           title: 'State',
           field: 'state',
-          cellStyle: { ...dedaultStyle, width: 80 }
-        }
+          cellStyle: { ...dedaultStyle, width: 80 },
+        },
       ]}
       data={initiatives.map((initiative: any) => {
         return {
           key: initiative.key,
-          team: initiative.team === null ? 'n/a' : initiative.team.name,
-          title: initiative.fields.summary,
+          team:
+            initiative.assignee === null
+              ? 'n/a'
+              : initiative.assignee.displayName,
+          title: initiative.summary,
           url: jiraHost + '/browse/' + initiative.key,
           velocity:
-            initiative.team === null
+            initiative.team === null || initiative.team === undefined
               ? 'n/a'
               : initiative.team.velocity[metric].current,
           remaining: initiative.metrics[metric].remaining,
-          state: initiative.fields.status.name,
+          state: initiative.status.name,
           progressPoints: getProgress(initiative, 'points'),
-          progressIssues: getProgress(initiative, 'issues')
+          progressIssues: getProgress(initiative, 'issues'),
+          progressEstimate: getEstimateState(initiative),
         };
       })}
       title={title}
@@ -163,7 +184,7 @@ const InitiativeTable: FC<any> = ({
         pageSize: 50,
         pageSizeOptions: [10, 20, 50, 100],
         emptyRowsWhenPaging: false,
-        search: false
+        search: false,
       }}
     />
   );

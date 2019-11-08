@@ -1,8 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as readline from 'readline';
-import * as stream from 'stream';
 import * as loadJsonFile from 'load-json-file';
 
 import { ConfigService } from '../config.service';
@@ -31,7 +29,7 @@ export class InitiativesService {
       this.logger.log('Opening configuration file: ' + configFilePath);
       const artifactCacheFile = path.join(
         this.configBasePath + '/cache/',
-        'initiatives-artifacts.json'
+        'initiatives-artifacts.json',
       );
       if (fs.existsSync(artifactCacheFile)) {
         this.logger.log('Opening configuration file: ' + artifactCacheFile);
@@ -39,7 +37,7 @@ export class InitiativesService {
       }
     } else {
       this.logger.log(
-        'Error, unable to find configuration file: ' + configFilePath
+        'Error, unable to find configuration file: ' + configFilePath,
       );
     }
     return initiatives;

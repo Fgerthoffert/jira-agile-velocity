@@ -1,13 +1,27 @@
 // tslint:disable-next-line: file-name-casing
+import { getWeek, getYear } from 'date-fns';
 
 /*
     Returns an array of all days between two dates
 */
 export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
-  const days = [];
+  const days: Array<any> = [];
   const currentDate = startDate;
   while (currentDate < endDate) {
-    days.push(currentDate.toJSON().slice(0, 10));
+    let currentMonthDay = currentDate.getDate();
+    if (currentDate.getDay() !== 0) {
+      currentMonthDay = currentMonthDay - currentDate.getDay();
+    }
+    const currentWeekYear: any = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentMonthDay,
+    );
+    days.push({
+      date: new Date(currentDate),
+      weekStart: currentWeekYear,
+      weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
+    });
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return days;
@@ -27,7 +41,7 @@ export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
     const currentWeekYear = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
-      currentMonthDay
+      currentMonthDay,
     );
     if (
       weeks.find(w => w === currentWeekYear.toJSON().slice(0, 10)) === undefined
@@ -59,7 +73,7 @@ export const startOfWeek = (date: Date) => {
   const currentWeekYear: any = new Date(
     date.getFullYear(),
     date.getMonth(),
-    currentMonthDay
+    currentMonthDay,
   );
   return currentWeekYear;
 };

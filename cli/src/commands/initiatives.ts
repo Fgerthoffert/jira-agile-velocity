@@ -9,13 +9,14 @@ import { IJiraIssue } from '../global';
 import fetchChildren from '../utils/data/fetchChildren';
 import fetchCompleted from '../utils/data/fetchCompleted';
 import fetchInitiatives from '../utils/data/fetchInitiatives';
-import crunchRoadmap from '../utils/roadmap/crunchRoadmap';
-import getEmptyCalendarObject from '../utils/roadmap/getEmptyCalendarObject';
-import getEmptyRoadmapObject from '../utils/roadmap/getEmptyRoadmapObject';
+import crunchRoadmap from '../utils/initiatives/crunchRoadmap';
+import getEmptyCalendar from '../utils/initiatives/getEmptyCalendar';
+import getEmptyRoadmap from '../utils/initiatives/getEmptyRoadmap';
 import prepareInitiativesData from '../utils/initiatives/prepareInitiativesData';
-import teamClosedByWeek from '../utils/roadmap/teamClosedByWeek';
+import prepareOrphanIssues from '../utils/initiatives/prepareOrphanIssues';
 import teamVelocityFromCache from '../utils/roadmap/teamVelocityFromCache';
-import { isUndefined } from 'util';
+import { exportTree } from '../utils/misc/treeUtils';
+import optimizePayload from '../utils/initiatives/optimizePayload';
 
 export default class Roadmap extends Command {
   static description = 'Builds a roadmap from a set of issues';
@@ -27,14 +28,14 @@ export default class Roadmap extends Command {
       char: 't',
       description: 'Use issues of points for metrics',
       options: ['issues', 'points'],
-      default: 'points'
+      default: 'points',
     }),
     cache: flags.boolean({
       char: 'c',
       description:
         'Use cached version of the child issues (mostly useful for dev)',
-      default: false
-    })
+      default: false,
+    }),
   };
 
   async run() {
@@ -45,13 +46,13 @@ export default class Roadmap extends Command {
     const cacheDir = this.config.configDir + '/cache/';
     if (cache) {
       this.log(
-        '=================================================================================='
+        '==================================================================================',
       );
       this.log(
-        'Will be fetching data from cache. NO CALLS WILL BE MADE TO JIRA TO REFRESH DATA '
+        'Will be fetching data from cache. NO CALLS WILL BE MADE TO JIRA TO REFRESH DATA ',
       );
       this.log(
-        '=================================================================================='
+        '==================================================================================',
       );
     }
 
@@ -62,18 +63,35 @@ export default class Roadmap extends Command {
       const teamIssues = await fetchCompleted(
         userConfig,
         this.config.configDir + '/cache/',
-        team.name
+        team.name,
       );
-      closedIssues = [...closedIssues, ...teamIssues];
+      // Merge the two arrays but filter out tickets already present (i.e that could be obtained by different queries)
+      closedIssues = [
+        ...closedIssues,
+        ...teamIssues.filter(
+          (tIssue: any) =>
+            closedIssues.find((cIssue: any) => cIssue.key === tIssue.key) ===
+            undefined,
+        ),
+      ];
     }
-    const emptyCalendar = getEmptyCalendarObject(closedIssues, userConfig);
+    this.log('Number of issues closed in the period: ' + closedIssues.length);
+
+    // Build an empty weekly calendar, from the first closed issue to the last closed issue
+    const emptyCalendar = getEmptyCalendar(closedIssues, userConfig);
+
+    const velocityTeamCache = await teamVelocityFromCache(userConfig, cacheDir);
+    this.log(
+      'Fetched velocity metrics for ' + velocityTeamCache.length + ' teams',
+    );
 
     // Fetch all initiatives and its children
     const initiativesIssues = await fetchInitiatives(
       userConfig,
       cacheDir,
-      cache
+      cache,
     );
+    this.log('Number of initiatives fetched: ' + initiativesIssues.length);
 
     // Fetch all of the initiatives children and build a tree
     const issuesTree = new SymbolTree();
@@ -84,86 +102,109 @@ export default class Roadmap extends Command {
         userConfig,
         initiative.key,
         cacheDir,
-        cache
+        cache,
       );
       for (const l1child of children.filter(
         (ic: any) =>
-          ic.fields[userConfig.jira.fields.parentInitiative] === initiative.key
+          ic.fields[userConfig.jira.fields.parentInitiative] === initiative.key,
       )) {
         issuesTree.appendChild(initiative, l1child);
         for (const l2child of children.filter(
           (ic: any) =>
-            ic.fields[userConfig.jira.fields.parentEpic] === l1child.key
+            ic.fields[userConfig.jira.fields.parentEpic] === l1child.key,
         )) {
           issuesTree.appendChild(l1child, l2child);
         }
       }
     }
-    console.log(issuesTree);
 
-    // Update all of the tree nodes with actual metrics
+    cli.action.start('Preparing metrics for all initiatives in the tree ');
+    // Update the tree with completion and week by week metrics
     prepareInitiativesData(
       issuesTree,
       treeRoot,
       0,
       closedIssues,
       emptyCalendar,
-      userConfig
+      userConfig,
     );
+    cli.action.stop(' done');
 
-    const initiativeArtifact = {
+    cli.action.start('Creating an export payload');
+    const rawInitiativesTree = exportTree(issuesTree, treeRoot);
+    cli.action.stop(' done');
+
+    cli.action.start('Preparing orphan issues');
+    //Get an array of all orphaned issues
+    const orphanIssues = prepareOrphanIssues(
+      issuesTree,
+      treeRoot,
+      closedIssues,
+    );
+    //Add orphaned issues to a weekly calendar
+    const orphanWeekly = emptyCalendar.map((week: any) => {
+      const weekIssues = orphanIssues.filter(
+        (issue: any) => week.weekStart === issue.weekStart,
+      );
+      return {
+        ...week,
+        list: weekIssues,
+        issues: {
+          count: weekIssues.length,
+        },
+        points: {
+          count: weekIssues
+            .map((issue: any) => issue.points)
+            .reduce((acc: number, points: number) => acc + points, 0),
+        },
+      };
+    });
+    cli.action.stop(' done');
+
+    cli.action.start('Forecasting future completion');
+    const emptyRoadmap = getEmptyRoadmap(
+      emptyCalendar[emptyCalendar.length - 1],
+      // tslint:disable-next-line: strict-type-predicates
+      userConfig.roadmap.forecastWeeks !== undefined
+        ? userConfig.roadmap.forecastWeeks
+        : 26,
+    );
+    const futureCompletion = crunchRoadmap(
+      emptyRoadmap,
+      velocityTeamCache,
+      rawInitiativesTree,
+    );
+    cli.action.stop(' done');
+
+    const rawInitiativesArtifact = {
       updatedAt: new Date().toJSON(),
       host: userConfig.jira.host,
-      initiatives: this.exportInitiativesData(issuesTree, treeRoot),
-      initiativesTree: this.exportSimplifiedTree(issuesTree, treeRoot)
-    };
-
-    const issueFileStream = fs.createWriteStream(
-      path.join(cacheDir, 'initiatives-artifacts.json'),
-      { flags: 'w' }
-    );
-    issueFileStream.write(JSON.stringify(initiativeArtifact));
-    issueFileStream.end();
-  }
-
-  exportInitiativesData = (issuesTree: any, node: any) => {
-    const jsonObject = [];
-    for (const initiative of issuesTree.childrenIterator(node)) {
-      jsonObject.push(initiative);
-    }
-    return jsonObject;
-  };
-
-  exportSimplifiedTree = (issuesTree: any, node: any) => {
-    const jsonObject = [];
-    for (const initiative of issuesTree.childrenIterator(node)) {
-      const epics = [];
-      for (const epic of issuesTree.childrenIterator(initiative)) {
-        const stories = [];
-        for (const story of issuesTree.childrenIterator(epic)) {
-          stories.push(this.simplifyIssue(story));
-        }
-        epic.children = stories;
-        epics.push(this.simplifyIssue(epic));
-      }
-      initiative.children = epics;
-      jsonObject.push(this.simplifyIssue(initiative));
-    }
-    return jsonObject;
-  };
-
-  simplifyIssue = (issue: any) => {
-    return {
-      id: issue.id,
-      key: issue.key,
-      summary: issue.fields.summary,
-      status: issue.fields.status.statusCategory.name,
-      type: issue.fields.issuetype.name,
-      metrics: {
-        points: issue.metrics.points.total,
-        issues: issue.metrics.issues.total
+      calendar: {
+        completed: emptyCalendar,
+        roadmap: emptyRoadmap,
       },
-      children: issue.children !== undefined ? issue.children : null
+      initiatives: rawInitiativesTree,
+      orphanIssues: orphanWeekly,
+      futureCompletion: futureCompletion,
     };
-  };
+
+    cli.action.start('Optimizing payload for frontend');
+    const slimInitiativesArtifact = optimizePayload(rawInitiativesArtifact);
+    cli.action.stop(' done');
+
+    // Export data to file
+    const initiativesRawFileStream = fs.createWriteStream(
+      path.join(cacheDir, 'initiatives-artifacts-raw.json'),
+      { flags: 'w' },
+    );
+    initiativesRawFileStream.write(JSON.stringify(rawInitiativesArtifact));
+    initiativesRawFileStream.end();
+
+    const initiativesSlimFileStream = fs.createWriteStream(
+      path.join(cacheDir, 'initiatives-artifacts.json'),
+      { flags: 'w' },
+    );
+    initiativesSlimFileStream.write(JSON.stringify(slimInitiativesArtifact));
+    initiativesSlimFileStream.end();
+  }
 }

@@ -7,15 +7,12 @@ import { getWeek, getYear } from 'date-fns';
 import { IConfig, IJiraIssue } from '../../global';
 import { formatDate } from '../misc/dateUtils';
 
-const getEmptyCalendarObject = (
-  issues: Array<IJiraIssue>,
-  userConfig: IConfig,
-) => {
+const getEmptyCalendar = (issues: Array<IJiraIssue>, userConfig: IConfig) => {
   // Sort the array by closedAt
   issues.sort((a, b) =>
     a.closedAt > b.closedAt ? 1 : b.closedAt > a.closedAt ? -1 : 0,
   );
-  const emptyWeeks: any = {};
+  const emptyWeeks: any = [];
   const currentDate = formatDate(issues[0].closedAt);
   while (currentDate < formatDate(issues[issues.length - 1].closedAt)) {
     let currentMonthDay = currentDate.getDate();
@@ -27,18 +24,23 @@ const getEmptyCalendarObject = (
       currentDate.getMonth(),
       currentMonthDay,
     );
-    if (emptyWeeks[currentWeekYear.toJSON().slice(0, 10)] === undefined) {
-      emptyWeeks[currentWeekYear.toJSON().slice(0, 10)] = {
+    const weekTxt = getYear(currentWeekYear) + '.' + getWeek(currentWeekYear);
+    if (
+      emptyWeeks.find(
+        (week: any) => week.weekStart === currentWeekYear.toJSON(),
+      ) === undefined
+    ) {
+      emptyWeeks.push({
         list: [],
         issues: { count: 0 },
         points: { count: 0 },
         weekStart: currentWeekYear.toJSON(),
-        weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
-      };
+        weekTxt,
+      });
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return emptyWeeks;
 };
 
-export default getEmptyCalendarObject;
+export default getEmptyCalendar;

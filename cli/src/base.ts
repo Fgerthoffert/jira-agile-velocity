@@ -29,6 +29,7 @@ export default abstract class extends Command {
         parentInitiative: 'customfield_11112',
         parentEpic: 'customfield_10314',
       },
+      excludeDays: [],
     },
     teams: [
       {
@@ -38,6 +39,7 @@ export default abstract class extends Command {
         jqlRemaining:
           'Insert a JQL query to collect a list of tickets to be completed',
         jqlHistory: '2019-07-01',
+        excludeDays: [],
         slack: {
           token: '',
           channel: '',
@@ -51,6 +53,7 @@ export default abstract class extends Command {
         jqlRemaining:
           'Insert a JQL query to collect a list of tickets to be completed',
         jqlHistory: '2019-07-01',
+        excludeDays: [],
         slack: {
           token: '',
           channel: '',

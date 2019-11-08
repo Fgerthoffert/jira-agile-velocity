@@ -30,7 +30,7 @@ export const roadmap = createModel({
     graphNodeSelectedDialog: false,
     graphNode: {},
     graphPathStart: {},
-    graphPathEnd: {}
+    graphPathEnd: {},
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -80,10 +80,10 @@ export const roadmap = createModel({
     },
     setGraphPathEnd(state, payload) {
       return { ...state, graphPathEnd: payload };
-    }
+    },
   },
   effects: {
-    async initView(payload, rootState) {
+    async initView() {
       const logger = log.noConflict();
       if (process.env.NODE_ENV !== 'production') {
         logger.enableAll();
@@ -92,9 +92,12 @@ export const roadmap = createModel({
       }
       logger.info('Roadmap Logger initialized');
       this.setLog(logger);
-
+      this.loadData();
+    },
+    async loadData(roadmap, rootState) {
       // Fetch data
       const setRoadmap = this.setRoadmap;
+      const augmentRoadmap = this.augmentRoadmap;
       const setLoading = this.setLoading;
 
       if (
@@ -113,10 +116,11 @@ export const roadmap = createModel({
             : {};
         axios({
           method: 'get',
-          url: host + '/roadmap',
-          headers
+          url: host + '/initiatives',
+          headers,
         })
           .then(response => {
+            augmentRoadmap(response.data);
             setRoadmap(response.data);
             setLoading(false);
           })
@@ -126,10 +130,47 @@ export const roadmap = createModel({
           });
       } else {
         log.info(
-          'Not loading data, either there is already some data in cache or user token not present'
+          'Not loading data, either there is already some data in cache or user token not present',
         );
       }
     },
+    // Adds empty weeks to the payload
+    // Basically it add to the array, empty roadmap days
+    async augmentRoadmap(roadmap) {
+      const augmentedRoadmap = {
+        ...roadmap,
+        initiatives: roadmap.initiatives.map((i: any) => {
+          return {
+            ...i,
+            weeks: roadmap.calendar.completed.map((w: any) => {
+              const initiativeWeek = i.weeks.find(
+                (iw: any) => iw.weekStart === w.weekStart,
+              );
+              if (initiativeWeek !== undefined) {
+                return initiativeWeek;
+              }
+              return w;
+            }),
+          };
+        }),
+        futureCompletion: roadmap.futureCompletion.map((i: any) => {
+          return {
+            ...i,
+            weeks: roadmap.calendar.roadmap.map((w: any) => {
+              const roadmapWeek = i.weeks.find(
+                (iw: any) => iw.weekStart === w.weekStart,
+              );
+              if (roadmapWeek !== undefined) {
+                return roadmapWeek;
+              }
+              return w;
+            }),
+          };
+        }),
+      };
+      this.setRoadmap(augmentedRoadmap);
+    },
+
     async updateGraph(payload, rootState) {
       const logsvc = rootState.roadmap.log;
       const t0 = performance.now();
@@ -153,7 +194,7 @@ export const roadmap = createModel({
         maxDistance = highestDistance;
       }
       const filteredIssue = sourceIssues.filter(
-        i => i.data.distance <= maxDistance
+        i => i.data.distance <= maxDistance,
       );
       this.initGraphData(filteredIssue);
       const t1 = performance.now();
@@ -171,8 +212,8 @@ export const roadmap = createModel({
           data: {
             group: 'edges',
             source: child.id,
-            target: rootState.roadmap.graphInitiative.id
-          }
+            target: rootState.roadmap.graphInitiative.id,
+          },
         });
 
         if (child.children !== undefined && child.children.length > 0) {
@@ -181,8 +222,8 @@ export const roadmap = createModel({
               data: {
                 group: 'edges',
                 source: childl1.id,
-                target: child.id
-              }
+                target: child.id,
+              },
             });
             if (childl1.children !== undefined && childl1.children.length > 0) {
               for (const childl2 of childl1.children) {
@@ -190,8 +231,8 @@ export const roadmap = createModel({
                   data: {
                     group: 'edges',
                     source: childl2.id,
-                    target: childl1.id
-                  }
+                    target: childl1.id,
+                  },
                 });
               }
             }
@@ -199,6 +240,6 @@ export const roadmap = createModel({
         }
       }
       this.setIssuesGraph(graphData);
-    }
-  }
+    },
+  },
 });

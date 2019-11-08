@@ -7,10 +7,11 @@ import Completion from './Completion';
 import Forecast from './Forecast';
 import SectionTabs from './sectiontabs';
 import LoadingBar from './LoadingBar';
+import DataStatus from './DataStatus';
 
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
-  initView: dispatch.roadmap.initView
+  initView: dispatch.roadmap.initView,
 });
 
 type connectedProps = ReturnType<typeof mapDispatch>;
@@ -22,6 +23,7 @@ const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
     <Layout>
       <LoadingBar />
       <SectionTabs />
+      <DataStatus />
       <br />
       <Completion />
       <Forecast />
@@ -32,5 +34,5 @@ const Roadmap: FC<connectedProps> = ({ setPageTitle, initView }) => {
 
 export default connect(
   null,
-  mapDispatch
+  mapDispatch,
 )(Roadmap);

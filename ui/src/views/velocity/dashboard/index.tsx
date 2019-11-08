@@ -4,7 +4,6 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import format from 'date-fns/format';
 
 import { iRootState } from '../../../store';
 
@@ -14,29 +13,29 @@ import DailyChart from './DailyChart';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(3, 2)
+      padding: theme.spacing(3, 2),
     },
     smallText: {
-      fontSize: '0.8em'
+      fontSize: '0.8em',
     },
     updatedAt: {
       textAlign: 'left',
       fontSize: '0.8em',
-      fontStyle: 'italic'
-    }
-  })
+      fontStyle: 'italic',
+    },
+  }),
 );
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
   velocity: state.velocity.velocity,
   teams: state.velocity.teams,
-  selectedTeam: state.velocity.selectedTeam
+  selectedTeam: state.velocity.selectedTeam,
 });
 
 const mapDispatch = (dispatch: any) => ({
   setDefaultPoints: dispatch.global.setDefaultPoints,
-  fetchTeamData: dispatch.velocity.fetchTeamData
+  fetchTeamData: dispatch.velocity.fetchTeamData,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -47,7 +46,7 @@ const Dashboard: FC<connectedProps> = ({
   teams,
   selectedTeam,
   velocity,
-  fetchTeamData
+  fetchTeamData,
 }) => {
   const classes = useStyles();
 
@@ -67,60 +66,51 @@ const Dashboard: FC<connectedProps> = ({
   if (useTeam !== undefined) {
     return (
       <Grid container spacing={1}>
-        <Grid item xs={12} className={classes.updatedAt}>
-          <span>
-            Last updated:{' '}
-            {format(
-              new Date(useTeam.velocity.updatedAt),
-              'E yyyy/MM/dd, hh:mm a'
-            )}
-          </span>
-        </Grid>
         <Grid item xs={4}>
           <Paper>
-            <Typography variant='h5' component='h3'>
+            <Typography variant="h5" component="h3">
               Open Points
             </Typography>
-            <Typography variant='h6' component='h3'>
+            <Typography variant="h6" component="h3">
               {useTeam.velocity.forecast.completion[metric].openCount}
             </Typography>
-            <Typography component='p' className={classes.smallText}>
+            <Typography component="p" className={classes.smallText}>
               <i>Sum of all {metric} across remaining issues.</i>
             </Typography>
           </Paper>
         </Grid>
         <Grid item xs={4}>
           <Paper>
-            <Typography variant='h5' component='h3'>
+            <Typography variant="h5" component="h3">
               Current Velocity
             </Typography>
-            <Typography variant='h6' component='h3'>
+            <Typography variant="h6" component="h3">
               {useTeam.velocity.forecast.completion[metric].velocity}/week
             </Typography>
-            <Typography component='p' className={classes.smallText}>
+            <Typography component="p" className={classes.smallText}>
               Using rolling average
             </Typography>
           </Paper>
         </Grid>
         <Grid item xs={4}>
           <Paper>
-            <Typography variant='h5' component='h3'>
+            <Typography variant="h5" component="h3">
               Days to Completion
             </Typography>
-            <Typography variant='h6' component='h3'>
+            <Typography variant="h6" component="h3">
               {useTeam.velocity.forecast.completion[metric].effortDays}
             </Typography>
-            <Typography component='p' className={classes.smallText}>
+            <Typography component="p" className={classes.smallText}>
               Estimate = Open / Current weekly velocity * 5 business days
             </Typography>
           </Paper>
         </Grid>
         <Grid item xs={6}>
           <Paper>
-            <Typography variant='h5' component='h3'>
+            <Typography variant="h5" component="h3">
               Daily
             </Typography>
-            <Typography component='p'>
+            <Typography component="p">
               Calculated using {metric}, and 20 days rolling average
             </Typography>
             <DailyChart
@@ -131,10 +121,10 @@ const Dashboard: FC<connectedProps> = ({
         </Grid>
         <Grid item xs={6}>
           <Paper>
-            <Typography variant='h5' component='h3'>
+            <Typography variant="h5" component="h3">
               Weekly
             </Typography>
-            <Typography component='p'>
+            <Typography component="p">
               Calculated using {metric}, and 4 weeks rolling average
             </Typography>
             <WeeklyChart
@@ -151,5 +141,5 @@ const Dashboard: FC<connectedProps> = ({
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
 )(Dashboard);

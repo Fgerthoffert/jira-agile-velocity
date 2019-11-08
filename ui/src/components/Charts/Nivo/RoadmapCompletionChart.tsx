@@ -8,14 +8,14 @@ import {
   getInitiativeTitle,
   getNonInitiativeTitle,
   getCellDataInitiatives,
-  getCompletionColor
+  getCompletionColor,
 } from './utils';
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      height: 800
-    }
+      height: 800,
+    },
   });
 
 interface IDataset {
@@ -54,14 +54,9 @@ class RoadmapCompletionChart extends Component<any, any> {
       initiative,
       weekTxt,
       roadmap,
-      this.completionWeeks
     );
     const keys = cellDataInitiatives.map((i: any) => i.key);
-    const url =
-      roadmap.host +
-      '/issues/?jql=key in (' +
-      keys.toString() +
-      ')';
+    const url = roadmap.host + '/issues/?jql=key in (' + keys.toString() + ')';
     window.open(url, '_blank');
   };
 
@@ -73,88 +68,27 @@ class RoadmapCompletionChart extends Component<any, any> {
     }
 
     const dataset: IDatasetObj[] = [];
-    for (const initiative of roadmap.byInitiative.filter(
+    for (const initiative of roadmap.initiatives.filter(
       // Filter down to display only initiatives with issues completed over the displayed weeks
       (i: any) =>
         i.weeks
           .map((w: any) => w[metric].count)
-          .reduce((acc: number, count: number) => acc + count, 0) > 0
+          .reduce((acc: number, count: number) => acc + count, 0) > 0,
     )) {
       const initiativeData: IDatasetObj = {
-        initiative: getInitiativeTitle(initiative)
+        initiative: getInitiativeTitle(initiative),
       };
       for (const week of initiative.weeks) {
-        const teamCompletionWeek = roadmap.byTeam
-          .find((t: any) => t.name === null)
-          .weeks.find((w: any) => w.weekStart === week.weekStart);
-        if (this.completionWeeks[week.weekTxt] === undefined) {
-          // completionWeeks is used to store stats and data at a week level
-          this.completionWeeks[week.weekTxt] = {
-            weekStart: week.weekStart,
-            weekTxt: week.weekTxt,
-            totalList:
-              metric === 'points'
-                ? teamCompletionWeek.list.filter((i: any) => i.points > 0)
-                : teamCompletionWeek.list,
-            totalCount:
-              teamCompletionWeek !== undefined
-                ? teamCompletionWeek[metric].count
-                : 0,
-            initiativesList: [],
-            initiativesCount: 0,
-            // At first we push all issues as if those were not completed in an initiative
-            nonInitiativesList:
-              metric === 'points'
-                ? teamCompletionWeek.list.filter((i: any) => i.points > 0)
-                : teamCompletionWeek.list,
-            nonInitiativesCount:
-              teamCompletionWeek !== undefined
-                ? teamCompletionWeek[metric].count
-                : 0
-          };
-        }
-        this.completionWeeks[week.weekTxt].initiativesCount =
-          this.completionWeeks[week.weekTxt].initiativesCount +
-          week[metric].count;
-        this.completionWeeks[week.weekTxt].nonInitiativesCount =
-          this.completionWeeks[week.weekTxt].totalCount -
-          this.completionWeeks[week.weekTxt].initiativesCount;
         initiativeData[week.weekTxt] = week[metric].count;
-        if (week.list.length > 0) {
-          if (metric === 'points') {
-            this.completionWeeks[week.weekTxt].initiativesList = [
-              ...this.completionWeeks[week.weekTxt].initiativesList,
-              ...week.list.filter((i: any) => i.points > 0)
-            ];
-          } else {
-            this.completionWeeks[week.weekTxt].initiativesList = [
-              ...this.completionWeeks[week.weekTxt].initiativesList,
-              ...week.list
-            ];
-          }
-          // We progressively purge the nonInitiatives from actual initiatives completion
-          this.completionWeeks[
-            week.weekTxt
-          ].nonInitiativesList = this.completionWeeks[
-            week.weekTxt
-          ].nonInitiativesList.filter((i: any) => {
-            for (const initiativeWeek of week.list) {
-              if (initiativeWeek.key === i.key) {
-                return false;
-              }
-            }
-            return true;
-          });
-        }
       }
       dataset.push(initiativeData);
     }
     const nonInitiatives: any = {
-      initiative: getNonInitiativeTitle()
+      initiative: getNonInitiativeTitle(),
     };
-    for (const week of Object.values(this.completionWeeks)) {
+    for (const week of roadmap.orphanIssues) {
       // @ts-ignore
-      nonInitiatives[week.weekTxt] = week.nonInitiativesCount;
+      nonInitiatives[week.weekTxt] = week[metric].count;
     }
     dataset.push(nonInitiatives);
     return dataset;
@@ -169,18 +103,17 @@ class RoadmapCompletionChart extends Component<any, any> {
     }
     const chartHeight =
       50 +
-      roadmap.byInitiative.filter((i: any) => i.metrics[metric].completed > 0)
+      roadmap.initiatives.filter((i: any) => i.metrics[metric].completed > 0)
         .length *
         20;
     this.dataset = this.buildDataset();
     // @ts-ignore
     return (
       <div style={{ height: chartHeight }}>
-        // @ts-ignore
         <ResponsiveHeatMap
           data={this.dataset}
-          keys={roadmap.byInitiative[0].weeks.map((w: any) => w.weekTxt)}
-          indexBy='initiative'
+          keys={roadmap.initiatives[0].weeks.map((w: any) => w.weekTxt)}
+          indexBy="initiative"
           margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
           forceSquare={false}
           axisTop={null}
@@ -192,7 +125,7 @@ class RoadmapCompletionChart extends Component<any, any> {
             tickPadding: 5,
             tickRotation: -90,
             legend: '',
-            legendOffset: 36
+            legendOffset: 36,
           }}
           axisLeft={{
             orient: 'middle',
@@ -201,7 +134,7 @@ class RoadmapCompletionChart extends Component<any, any> {
             tickRotation: 0,
             legend: '',
             legendPosition: 'middle',
-            legendOffset: -40
+            legendOffset: -40,
           }}
           cellOpacity={1}
           cellBorderColor={'#a4a3a5'}
@@ -223,8 +156,8 @@ class RoadmapCompletionChart extends Component<any, any> {
             onHover,
             onLeave,
             onClick,
-            theme
-          }) => {
+            theme,
+          }: any) => {
             if (value === 0) {
               return (
                 <g
@@ -261,7 +194,7 @@ class RoadmapCompletionChart extends Component<any, any> {
                   y={height * -0.5}
                   width={width}
                   height={height}
-                  fill={getCompletionColor(data, value, this.completionWeeks)}
+                  fill={getCompletionColor(data, value, this.dataset)}
                   fillOpacity={opacity}
                   strokeWidth={borderWidth}
                   stroke={borderColor}
@@ -269,11 +202,11 @@ class RoadmapCompletionChart extends Component<any, any> {
                 />
                 {enableLabel && (
                   <text
-                    dominantBaseline='central'
-                    textAnchor='middle'
+                    dominantBaseline="central"
+                    textAnchor="middle"
                     style={{
                       ...theme.labels.text,
-                      fill: textColor
+                      fill: textColor,
                     }}
                     fillOpacity={opacity}
                   >
@@ -286,7 +219,7 @@ class RoadmapCompletionChart extends Component<any, any> {
           animate={false}
           motionStiffness={80}
           motionDamping={9}
-          hoverTarget='cell'
+          hoverTarget="cell"
           cellHoverOthersOpacity={0.25}
         />
       </div>

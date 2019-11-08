@@ -1,3 +1,52 @@
+interface PayloadIssue {
+  id: string;
+  key: string;
+  summary: string;
+  type: {
+    name: string;
+    iconUrl: string;
+  };
+  status: {
+    name: string;
+    category: string;
+  };
+  isLeaf: string;
+  metrics: {
+    points: {
+      total: number;
+      completed: number;
+      remaining: number;
+      missing: number;
+    };
+    issues: {
+      total: number;
+      completed: number;
+      remaining: number;
+      missing: number;
+    };
+  };
+}
+interface PayloadInitiative extends PayloadIssue {
+  weeks: Array<PayloadWeek>;
+  children: Array<PayloadTree>;
+}
+
+interface PayloadTree extends PayloadIssue {
+  children: Array<PayloadTree>;
+}
+
+interface PayloadWeek {
+  list: Array<PayloadIssue>;
+  metrics: {
+    issues: {
+      total: number;
+    };
+    points: {
+      total: number;
+    };
+  };
+}
+
 // eslint-disable-next-line
 interface ICompletion {
   issues: {
@@ -157,6 +206,7 @@ export interface IConfigTeam {
   jqlCompletion: string;
   jqlRemaining: string;
   jqlHistory: string;
+  excludeDays: Array<string>;
   slack: {
     token: string;
     channel: string;
@@ -175,6 +225,7 @@ export interface IConfigJira {
     parentInitiative: string;
     parentEpic: string;
   };
+  excludeDays: Array<string>;
 }
 
 // eslint-disable-next-line

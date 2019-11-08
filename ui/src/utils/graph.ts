@@ -6,13 +6,13 @@ const exploreGraph = (
   parentIssue.children.forEach((childrenIssue: any) => {
     const node: any = {
       id: childrenIssue.id,
-      label: childrenIssue.fields.summary,
+      label: childrenIssue.summary,
       group: 'nodes',
       data: {
         ...childrenIssue,
         distance: distance + 1,
-        status: childrenIssue.fields.status.statusCategory.name,
-        type: childrenIssue.fields.issuetype.name,
+        status: childrenIssue.status.category,
+        type: childrenIssue.type.name,
         points: childrenIssue.metrics.points.total,
       },
     };
@@ -32,12 +32,12 @@ export const fetchGraphIssues = (initiative: any) => {
     {
       id: initiative.id,
       group: 'nodes',
-      label: initiative.fields.summary,
+      label: initiative.summary,
       data: {
         ...initiative,
         distance: 0,
-        status: initiative.fields.status.name,
-        type: initiative.fields.issuetype.name,
+        status: initiative.status.category,
+        type: initiative.type.name,
         points: initiative.metrics.points.total,
       },
     },

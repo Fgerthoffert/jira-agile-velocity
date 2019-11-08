@@ -11,14 +11,18 @@ const prepareInitiativesData = (
   level: number,
   closedIssues: Array<any>,
   emptyCalendar: any,
-  userConfig: IConfig
+  userConfig: IConfig,
 ) => {
   if (node.key !== undefined) {
     node.level = level;
     node.metrics = crunchMetrics(issuesTree, node);
     node.isLeaf = issuesTree.hasChildren(node) ? false : true;
-    node.weeks = Object.values(
-      crunchWeeks(issuesTree, node, closedIssues, emptyCalendar, userConfig)
+    node.weeks = crunchWeeks(
+      issuesTree,
+      node,
+      closedIssues,
+      emptyCalendar,
+      userConfig,
     );
   }
   for (const children of issuesTree.childrenIterator(node)) {
@@ -28,7 +32,7 @@ const prepareInitiativesData = (
       level + 1,
       closedIssues,
       emptyCalendar,
-      userConfig
+      userConfig,
     );
   }
   return [];

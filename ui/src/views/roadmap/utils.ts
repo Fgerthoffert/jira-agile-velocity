@@ -5,13 +5,33 @@ export const getProgress = (issue: any, metric: string) => {
       Math.round(
         ((issue.metrics[metric].completed * 100) /
           issue.metrics[metric].total) *
-          10
+          10,
       ) / 10;
   }
   return {
     completed: issue.metrics[metric].completed,
     total: issue.metrics[metric].total,
-    progress: progressPrct
+    progress: progressPrct,
+  };
+};
+
+export const getEstimateState = (initiative: any) => {
+  let estimatedPrct = 100;
+  if (initiative.metrics.points.missing > 0) {
+    estimatedPrct =
+      Math.round(
+        (((initiative.metrics.issues.total -
+          initiative.metrics.points.missing) *
+          100) /
+          initiative.metrics.issues.total) *
+          10,
+      ) / 10;
+  }
+  return {
+    esimtated:
+      initiative.metrics.issues.total - initiative.metrics.points.missing,
+    total: initiative.metrics.issues.total,
+    progress: estimatedPrct,
   };
 };
 
