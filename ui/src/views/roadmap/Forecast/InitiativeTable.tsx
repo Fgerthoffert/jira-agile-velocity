@@ -48,6 +48,15 @@ const InitiativeTable: FC<any> = ({
           title: '',
           field: 'url',
           render: rowData => {
+            const initiative = initiatives.find(
+              (i: any) => i.key === rowData.key,
+            );
+            if (
+              initiative.children === undefined ||
+              initiative.children.length === 0
+            ) {
+              return null;
+            }
             return (
               <IconButton
                 aria-label="open-external"

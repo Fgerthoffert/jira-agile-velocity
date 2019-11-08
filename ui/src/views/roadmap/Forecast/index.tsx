@@ -86,7 +86,18 @@ const Forecast: FC<connectedProps> = ({
         </Grid>
         <Grid item xs={12}>
           <InitiativeTable
-            initiatives={roadmap.futureCompletion}
+            initiatives={roadmap.futureCompletion.map((i: any) => {
+              const sourceInitiatice = roadmap.initiatives.find(
+                (si: any) => si.key === i.key,
+              );
+              return {
+                ...i,
+                children:
+                  sourceInitiatice !== undefined
+                    ? sourceInitiatice.children
+                    : undefined,
+              };
+            })}
             jiraHost={roadmap.host}
             defaultPoints={defaultPoints}
             title={'Assigned to a team'}
