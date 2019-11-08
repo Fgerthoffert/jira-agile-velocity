@@ -27,7 +27,7 @@ jobs:
           command: cd cli && npm install
       - run:
           name: Linting
-          command: cd cli && npm run posttest
+          command: cd cli && npm run lint
       - run:
           name: Display version
           command: ./cli/bin/run --version
@@ -41,10 +41,6 @@ jobs:
           root: .
           paths: .
 
-  cli-node-8:
-    <<: *cli-test
-    docker:
-      - image: node:8
   cli-node-10:
     <<: *cli-test
     docker:
@@ -312,7 +308,6 @@ workflows:
     jobs:
       - cli-node-latest
       - cli-node-10
-      - cli-node-8
       - cli-cache:
           filters:
             tags:
