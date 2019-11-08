@@ -55,7 +55,6 @@ const Forecast: FC<connectedProps> = ({
   if (!defaultPoints) {
     metric = 'issues';
   }
-  console.log(roadmap.initiatives);
   if (Object.values(roadmap).length > 0 && selectedTab === 'futurechart') {
     return (
       <Grid
