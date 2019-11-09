@@ -116,7 +116,7 @@ const crunchRoadmap = (
     // We filter out initiatives without assignees as well as initiatives not related to the team
     const teamInitiatives = openInitiatives
       .filter(i => i.fields.assignee !== null)
-      .filter(i => i.fields.status.StatusCategory !== 'Done')
+      .filter(i => i.fields.status.statusCategory.name !== 'Done')
       .filter(i => getTeamId(i.fields.assignee.name) === getTeamId(team.team));
     for (const initiative of teamInitiatives) {
       // Start naive, add the calendar and completion into a template
