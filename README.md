@@ -291,6 +291,7 @@ Once the directory is created, you can start the environment:
 #### Specific Windows configuration
 
 On Windows, the configuration file below has to be used and two additional steps are needed.
+
 - Step 1: Select the local drive to be shared (see https://docs.docker.com/docker-for-windows/#shared-drives)
 - Step 2: Enable the paths conversion typing the following command line `set COMPOSE_CONVERT_WINDOWS_PATHS=1` (see https://docs.docker.com/compose/reference/envvars/#compose_convert_windows_paths)
 
@@ -340,7 +341,7 @@ Note: The cli container is not configured with a cron to refresh data, you'd nee
 To refresh or manually load data, you can run a command directly towards the CLI docker containing using the following command:
 
 ```bash
-> docker exec -it jira-agile-velocity_jav-cli_1 /usr/share/jav/startup.sh
+> docker exec -it jira-agile-velocity_jav-cli_1 /usr/share/jav/refresh.sh
 ```
 
 Replace the container name (jira-agile-velocity_jav-cli_1) with the actual name for the CLI container obtained by executing `docker ps`.
