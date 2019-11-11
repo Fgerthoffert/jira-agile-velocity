@@ -69,9 +69,14 @@ const optimizePayload = (payload: any) => {
       ...simplifyIssue(initiative),
       team: initiative.team,
       metrics: initiative.metrics,
-      weeks: initiative.weeks.filter(
-        (w: any) => w.issues.count > 0 || w.points.count > 0,
-      ),
+      weeks: initiative.weeks
+        .filter((w: any) => w.issues.count > 0 || w.points.count > 0)
+        .map((week: any) => {
+          return {
+            ...week,
+            list: week.list.map((i: any) => simplifyIssue(i)),
+          };
+        }),
     };
   });
 

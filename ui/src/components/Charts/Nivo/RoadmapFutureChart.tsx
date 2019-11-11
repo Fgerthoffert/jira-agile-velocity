@@ -43,6 +43,16 @@ class RoadmapFutureChart extends Component<any, any> {
     return 'rgb(65, 171, 93)';
   };
 
+  cellClick = (initiative: string, weekTxt: string) => {
+    const { roadmap } = this.props;
+    const cellData = roadmap.futureCompletion
+      .find((i: any) => getInitiativeTitle(i) === initiative)
+      .weeks.find((w: any) => w.weekTxt === weekTxt).list;
+    const keys = cellData.map((i: any) => i.key);
+    const url = roadmap.host + '/issues/?jql=key in (' + keys.toString() + ')';
+    window.open(url, '_blank');
+  };
+
   buildDataset = (initiatives: any) => {
     const { defaultPoints } = this.props;
     let metric = 'points';
@@ -152,7 +162,7 @@ class RoadmapFutureChart extends Component<any, any> {
                 onMouseMove={onHover}
                 onMouseLeave={onLeave}
                 onClick={e => {
-                  onClick(data, e);
+                  this.cellClick(data.yKey, data.xKey);
                 }}
                 style={{ cursor: 'pointer' }}
               >

@@ -1,5 +1,6 @@
 // tslint:disable-next-line: file-name-casing
 import { getTeamId } from '../misc/teamUtils';
+import { exit } from '@oclif/errors';
 
 const fillWeek = (
   weeks: Array<any>,
@@ -30,6 +31,7 @@ const fillWeek = (
           acc.weekTxt = iWeek.weekTxt;
           acc.points.count = acc.points.count + iWeek.points.count;
           acc.issues.count = acc.issues.count + iWeek.issues.count;
+          acc.list = [...acc.list, ...iWeek.list];
         }
         return acc;
       },
@@ -38,6 +40,7 @@ const fillWeek = (
         weekTxt: '',
         points: { count: 0 },
         issues: { count: 0 },
+        list: [],
       },
     );
 
@@ -101,6 +104,7 @@ const fillWeek = (
       ...week,
       points: { count: weekCompletedPoints },
       issues: { count: weekCompletedIssues },
+      list: overallWeekCompletion.list,
     };
   });
 };
@@ -130,7 +134,7 @@ const crunchRoadmap = (
           team.velocity.points.current,
           initiative.metrics.points.remaining,
           initiativesRoadmap.filter(
-            i => getTeamId(i.fields.assignee.name) === getTeamId(team.team),
+            i => getTeamId(i.team.team) === getTeamId(team.team),
           ),
           teamInitiatives,
         ),
