@@ -11,6 +11,7 @@ COPY ./refresh.sh /usr/share/jav/
 
 WORKDIR /usr/share/jav/
 RUN chmod +x ./startup.sh
+RUN chmod +x ./refresh.sh
 
 RUN npm install -g jira-agile-velocity@latest
 
