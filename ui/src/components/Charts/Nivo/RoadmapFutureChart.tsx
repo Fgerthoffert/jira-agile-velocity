@@ -50,7 +50,9 @@ class RoadmapFutureChart extends Component<any, any> {
       .weeks.find((w: any) => w.weekTxt === weekTxt).list;
     const keys = cellData.map((i: any) => i.key);
     const url = roadmap.host + '/issues/?jql=key in (' + keys.toString() + ')';
-    window.open(url, '_blank');
+    if (keys.length > 0) {
+      window.open(url, '_blank');
+    }
   };
 
   buildDataset = (initiatives: any) => {
