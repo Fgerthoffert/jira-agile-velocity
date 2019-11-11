@@ -58,8 +58,14 @@ export default class Roadmap extends Command {
 
     // Creates an array of all closed issues across all teams
     // this is needed to identify which issues have been closed but are not assigned to an initiative
+    // This also filters out to only issues listed in the roadmap.teams section, to avoid catch-all rules and issues from being counted twice
     let closedIssues: Array<IJiraIssue> = [];
-    for (const team of userConfig.teams) {
+    for (const team of userConfig.teams.filter(
+      (t: any) =>
+        userConfig.roadmap.teams.find(
+          (teamName: string) => t.name === teamName,
+        ) !== undefined,
+    )) {
       const teamIssues = await fetchCompleted(
         userConfig,
         this.config.configDir + '/cache/',

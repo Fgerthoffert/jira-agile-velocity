@@ -35,7 +35,10 @@ const Velocity: FC<any> = ({
   setPageTitle('Velocity');
   useEffect(() => {
     setShowMenu(false);
-    if (selectedTeam === null && loggedIn === true) {
+    if (
+      selectedTeam === null &&
+      (loggedIn === true || JSON.parse(window._env_.AUTH0_DISABLED) === true)
+    ) {
       initView(match.params.tab);
     }
     if (match.params.tab === undefined && selectedTeam !== null) {

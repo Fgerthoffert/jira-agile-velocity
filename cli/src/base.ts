@@ -65,13 +65,6 @@ export default abstract class extends Command {
       jqlInitiatives: 'type = initiative',
       forecastWeeks: 26,
       teams: ['Team 1, Team 2'],
-      specsStates: [
-        'PM Kickoff',
-        'PM Elaboration',
-        'Design',
-        'DM Review',
-        'Execution',
-      ],
     },
   };
 
