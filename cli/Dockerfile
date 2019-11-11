@@ -7,6 +7,7 @@ MAINTAINER Francois Gerthoffert
 RUN apk add --no-cache bash
 
 COPY ./startup.sh /usr/share/jav/
+COPY ./refresh.sh /usr/share/jav/
 
 WORKDIR /usr/share/jav/
 RUN chmod +x ./startup.sh
