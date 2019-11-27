@@ -219,8 +219,8 @@ class RoadmapCompletionChart extends Component<any, any> {
           animate={false}
           motionStiffness={80}
           motionDamping={9}
-          hoverTarget="cell"
-          cellHoverOthersOpacity={0.25}
+          hoverTarget="rowColumn"
+          cellHoverOthersOpacity={0.1}
         />
       </div>
     );

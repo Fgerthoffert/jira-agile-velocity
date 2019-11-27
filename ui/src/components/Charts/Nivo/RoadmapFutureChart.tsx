@@ -48,9 +48,10 @@ class RoadmapFutureChart extends Component<any, any> {
     const cellData = roadmap.futureCompletion
       .find((i: any) => getInitiativeTitle(i) === initiative)
       .weeks.find((w: any) => w.weekTxt === weekTxt).list;
-    const keys = cellData.map((i: any) => i.key);
-    const url = roadmap.host + '/issues/?jql=key in (' + keys.toString() + ')';
-    if (keys.length > 0) {
+    if (cellData.length > 0) {
+      const keys = cellData.map((i: any) => i.key);
+      const url =
+        roadmap.host + '/issues/?jql=key in (' + keys.toString() + ')';
       window.open(url, '_blank');
     }
   };
@@ -198,8 +199,8 @@ class RoadmapFutureChart extends Component<any, any> {
           animate={false}
           motionStiffness={80}
           motionDamping={9}
-          hoverTarget="cell"
-          cellHoverOthersOpacity={0.25}
+          hoverTarget="row"
+          cellHoverOthersOpacity={0.1}
         />
       </div>
     );
