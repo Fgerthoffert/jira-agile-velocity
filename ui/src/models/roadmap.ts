@@ -32,6 +32,8 @@ export const roadmap = createModel({
     graphNode: {},
     graphPathStart: {},
     graphPathEnd: {},
+    showDeleteModal: false,
+    deleteModalCacheDays: [],
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -81,6 +83,12 @@ export const roadmap = createModel({
     },
     setGraphPathEnd(state, payload) {
       return { ...state, graphPathEnd: payload };
+    },
+    setShowDeleteModal(state: any, payload: any) {
+      return { ...state, showDeleteModal: payload };
+    },
+    setDeleteModalCacheDays(state: any, payload: any) {
+      return { ...state, deleteModalCacheDays: payload };
     },
   },
   effects: {
@@ -148,6 +156,87 @@ export const roadmap = createModel({
         );
       }
     },
+
+    async clearCacheDay(cacheDay, rootState) {
+      // Fetch data
+      const setDeleteModalCacheDays = this.setDeleteModalCacheDays;
+      const deleteModalRefreshCacheDays = this.deleteModalRefreshCacheDays;
+      const setLoading = this.setLoading;
+      console.log(cacheDay);
+
+      if (
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
+      ) {
+        setLoading(true);
+        const host =
+          window._env_.API_URL !== undefined
+            ? window._env_.API_URL
+            : 'http://127.0.0.1:3001';
+        const headers =
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
+        axios({
+          method: 'delete',
+          url: host + '/cachedays/' + cacheDay,
+          headers,
+        })
+          .then(response => {
+            setDeleteModalCacheDays(response.data);
+            setLoading(false);
+          })
+          .catch(error => {
+            setLoading(false);
+            deleteModalRefreshCacheDays();
+          });
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not present',
+        );
+      }
+    },
+
+    async deleteModalRefreshCacheDays(roadmap, rootState) {
+      // Fetch data
+      const setDeleteModalCacheDays = this.setDeleteModalCacheDays;
+      const setLoading = this.setLoading;
+
+      if (
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
+      ) {
+        setLoading(true);
+        const host =
+          window._env_.API_URL !== undefined
+            ? window._env_.API_URL
+            : 'http://127.0.0.1:3001';
+        const headers =
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
+        axios({
+          method: 'get',
+          url: host + '/cachedays',
+          headers,
+        })
+          .then(response => {
+            setDeleteModalCacheDays(response.data);
+            setLoading(false);
+          })
+          .catch(error => {
+            setDeleteModalCacheDays([]);
+            setLoading(false);
+          });
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not present',
+        );
+      }
+    },
+
     // Adds empty weeks to the payload
     // Basically it add to the array, empty roadmap days
     async augmentRoadmap(roadmap) {
