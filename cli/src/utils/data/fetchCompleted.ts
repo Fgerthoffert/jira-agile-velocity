@@ -58,6 +58,12 @@ const fetchCompleted = async (
             scanDay.date.toJSON().slice(0, 10) +
             '.ndjson',
         );
+        // If a file is marked clear, it gets deleted
+        // .clear file are simply used by the UI to know how many files are pending data refresh
+        // And therefore avoid having a very large number of deletion requests triggered at once from the UI
+        if (fs.existsSync(issuesDayFilepath + '.clear')) {
+          fs.unlinkSync(issuesDayFilepath + '.clear');
+        }
         if (!fs.existsSync(issuesDayFilepath)) {
           cli.action.start(
             'Fetching data for day: ' +

@@ -7,6 +7,7 @@ import Completion from './Completion';
 import Forecast from './Forecast';
 import SectionTabs from './sectiontabs';
 import DataStatus from './DataStatus';
+import DeleteModal from './DeleteModal';
 
 const mapDispatch = (dispatch: any) => ({
   setPageTitle: dispatch.global.setPageTitle,
@@ -30,6 +31,7 @@ const Roadmap: FC<connectedProps> = ({
     <Layout>
       <SectionTabs />
       <DataStatus />
+      <DeleteModal />
       <br />
       <Completion />
       <Forecast />

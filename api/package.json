@@ -38,7 +38,8 @@
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
     "save": "^2.4.0",
-    "untildify": "^4.0.0"
+    "untildify": "^4.0.0",
+    "xregexp": "^4.2.4"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",

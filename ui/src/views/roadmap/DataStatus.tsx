@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import format from 'date-fns/format';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { connect } from 'react-redux';
 
@@ -31,12 +32,19 @@ const mapState = (state: iRootState) => ({
 
 const mapDispatch = (dispatch: any) => ({
   loadData: dispatch.roadmap.loadData,
+  setShowDeleteModal: dispatch.roadmap.setShowDeleteModal,
+  deleteModalRefreshCacheDays: dispatch.roadmap.deleteModalRefreshCacheDays,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const DataStatus: FC<connectedProps> = ({ roadmap, loadData }) => {
+const DataStatus: FC<connectedProps> = ({
+  roadmap,
+  loadData,
+  setShowDeleteModal,
+  deleteModalRefreshCacheDays,
+}) => {
   const classes = useStyles();
   if (Object.values(roadmap).length > 0) {
     return (
@@ -57,6 +65,18 @@ const DataStatus: FC<connectedProps> = ({ roadmap, loadData }) => {
         <Grid item>
           <IconButton
             aria-label="delete"
+            size="small"
+            onClick={() => {
+              deleteModalRefreshCacheDays();
+              setShowDeleteModal(true);
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="refresh"
             size="small"
             onClick={() => {
               loadData();
