@@ -23,16 +23,16 @@ const readLines = (input: any) => {
 
 const teamVelocityFromCache = async (userConfig: IConfig, cacheDir: string) => {
   const teamsVelocity = [];
-  for (const team of userConfig.teams) {
+  for (const team of userConfig.roadmap.teams) {
     const teamCacheFile = path.join(
       cacheDir,
-      'velocity-artifacts-' + getTeamId(team.name) + '.json'
+      'velocity-artifacts-' + getTeamId(team) + '.json',
     );
     if (fs.existsSync(teamCacheFile)) {
       const teamVelocity: any = loadJsonFile.sync(teamCacheFile);
       teamsVelocity.push({
-        team: team.name,
-        velocity: teamVelocity.health.weeks.velocity
+        team: team,
+        velocity: teamVelocity.health.weeks.velocity,
       });
     }
   }
