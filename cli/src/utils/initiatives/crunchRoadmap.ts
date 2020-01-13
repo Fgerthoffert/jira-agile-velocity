@@ -144,11 +144,6 @@ const crunchRoadmap = (
         ),
       };
       initiativesRoadmap.push(teamInitiative);
-
-      //      console.log(teamInitiative.weeks[0].list);
-      if (initiative.key === 'BACKLOG-10498') {
-        exit();
-      }
     }
   }
   return initiativesRoadmap;
