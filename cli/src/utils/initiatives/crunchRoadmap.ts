@@ -67,7 +67,9 @@ const fillWeek = (
     ) {
       // There are remaining points for the initiative but some points have already been assigned to the week from other initiatives
       const maxRemainingPoints =
-        velocityPoints - overallWeekCompletion.points.count;
+        velocityPoints - overallWeekCompletion.points.count > 0
+          ? velocityPoints - overallWeekCompletion.points.count
+          : 0;
       weekCompletedPoints =
         maxRemainingPoints > currentRemainingPoints
           ? currentRemainingPoints
@@ -92,7 +94,9 @@ const fillWeek = (
     ) {
       // There are remaining issues for the initiative but some issues have already been assigned to the week from other initiatives
       const maxRemainingIssues =
-        velocityIssues - overallWeekCompletion.issues.count;
+        velocityIssues - overallWeekCompletion.issues.count > 0
+          ? velocityIssues - overallWeekCompletion.issues.count
+          : 0;
       weekCompletedIssues =
         maxRemainingIssues > currentRemainingIssues
           ? currentRemainingIssues
@@ -140,6 +144,11 @@ const crunchRoadmap = (
         ),
       };
       initiativesRoadmap.push(teamInitiative);
+
+      //      console.log(teamInitiative.weeks[0].list);
+      if (initiative.key === 'BACKLOG-10498') {
+        exit();
+      }
     }
   }
   return initiativesRoadmap;
