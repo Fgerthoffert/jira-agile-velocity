@@ -93,9 +93,6 @@ const Details: FC<connectedProps> = ({ openGraph, roadmap, setOpenGraph, graphIn
 				<ChildrenTable
 					children={graphInitiative.children.filter((c: any) => c.type.name === 'Epic')}
 					jiraHost={roadmap.host}
-					setGraphInitiative={() => {}}
-					updateGraph={() => {}}
-					setOpenGraph={() => {}}
 				/>
 			</DialogContent>
 			<DialogActions>

@@ -6,7 +6,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import { getProgress, getBarVariant, getEstimateState } from '../utils';
 
-const InitiativeTable: FC<any> = ({ children, jiraHost, setGraphInitiative, updateGraph, setOpenGraph }) => {
+const InitiativeTable: FC<any> = ({ children, jiraHost }) => {
 	const dedaultStyle = { padding: '4px 5px 4px 5px' };
 	return (
 		<MaterialTable
