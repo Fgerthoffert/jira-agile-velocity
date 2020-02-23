@@ -1,1 +1,1 @@
-declare module "load-yaml-file";
+declare module 'load-yaml-file';

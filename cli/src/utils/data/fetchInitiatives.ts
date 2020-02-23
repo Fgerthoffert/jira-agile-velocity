@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 import cli from 'cli-ux';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -52,6 +51,7 @@ const fetchInitiatives = async (
 
   if (useCache && fs.existsSync(initiativesCache)) {
     issues = fsNdjson.readFileSync(initiativesCache);
+    // eslint-disable-next-line no-negated-condition
   } else if (toDate !== undefined) {
     issues = [];
   } else {

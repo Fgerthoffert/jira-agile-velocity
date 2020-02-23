@@ -1,4 +1,6 @@
-// tslint:disable-next-line: file-name-casing
+/* eslint max-depth: ["error", 7] */
+/* eslint-env es6 */
+
 import cli from 'cli-ux';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -8,7 +10,6 @@ import { IConfig, IJiraIssue } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
 import { getTeamId } from '../misc/teamUtils';
-import { formatISO } from 'date-fns';
 
 const returnTicketsPoints = (issue: any, config: IConfig) => {
   if (
@@ -40,9 +41,9 @@ const fetchCompleted = async (
   const teamConfig = config.teams.find(t => t.name === teamName);
   if (teamConfig !== undefined) {
     const excludeDays =
-      teamConfig.excludeDays !== undefined
-        ? [...config.jira.excludeDays, ...teamConfig.excludeDays]
-        : config.jira.excludeDays;
+      teamConfig.excludeDays === undefined
+        ? config.jira.excludeDays
+        : [...config.jira.excludeDays, ...teamConfig.excludeDays];
     let toDay = new Date();
     toDay.setDate(toDay.getDate() - 1);
     if (toDate !== undefined) {
@@ -70,6 +71,7 @@ const fetchCompleted = async (
         if (fs.existsSync(issuesDayFilepath + '.clear')) {
           fs.unlinkSync(issuesDayFilepath + '.clear');
         }
+        // eslint-disable-next-line no-negated-condition
         if (!fs.existsSync(issuesDayFilepath)) {
           cli.action.start(
             'Fetching data for day: ' +
@@ -91,7 +93,7 @@ const fetchCompleted = async (
               ',' +
               config.jira.fields.originalPoints,
           );
-          //Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
+          // Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
           const issueFileStream = fs.createWriteStream(issuesDayFilepath, {
             flags: 'a',
           });

@@ -1,24 +1,24 @@
-// tslint:disable-next-line: file-name-casing
-
 import { IConfig } from '../../global';
 
 import crunchMetrics from './crunchMetrics';
 import crunchWeeks from './crunchWeeks';
 
+/* eslint max-params: ["error", 6] */
+/* eslint-env es6 */
 const prepareInitiativesData = (
   issuesTree: any,
   node: any,
   level: number,
   closedIssues: Array<any>,
   emptyCalendar: any,
-  userConfig: IConfig
+  userConfig: IConfig,
 ) => {
   if (node.key !== undefined) {
     node.level = level;
     node.metrics = crunchMetrics(issuesTree, node);
-    node.isLeaf = issuesTree.hasChildren(node) ? false : true;
+    node.isLeaf = !issuesTree.hasChildren(node);
     node.weeks = Object.values(
-      crunchWeeks(issuesTree, node, closedIssues, emptyCalendar, userConfig)
+      crunchWeeks(issuesTree, node, closedIssues, emptyCalendar, userConfig),
     );
   }
   for (const children of issuesTree.childrenIterator(node)) {
@@ -28,7 +28,7 @@ const prepareInitiativesData = (
       level + 1,
       closedIssues,
       emptyCalendar,
-      userConfig
+      userConfig,
     );
   }
   return [];

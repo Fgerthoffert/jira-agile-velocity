@@ -1,6 +1,7 @@
-// tslint:disable-next-line: file-name-casing
 import { getTeamId } from '../misc/teamUtils';
 
+/* eslint max-params: ["error", 7] */
+/* eslint-env es6 */
 const fillWeek = (
   weeks: Array<any>,
   velocityIssues: number,
@@ -8,7 +9,7 @@ const fillWeek = (
   velocityPoints: number,
   remainingPoints: number,
   initiativesRoadmap: Array<any>, // We need to look back at history to avoid parrallel initiatives for the same team
-  teamInitiatives: Array<any> // We need to look back at history to avoid parrallel initiatives for the same team
+  teamInitiatives: Array<any>, // We need to look back at history to avoid parrallel initiatives for the same team
 ) => {
   if (remainingPoints === 0 && remainingIssues === 0) {
     return weeks;
@@ -20,11 +21,11 @@ const fillWeek = (
     // Get total number of points completed that week across all issues
     const overallWeekCompletion = [
       ...initiativesRoadmap,
-      ...teamInitiatives
+      ...teamInitiatives,
     ].reduce(
       (acc: any, initiative: any) => {
         for (const iWeek of initiative.weeks.filter(
-          (w: any) => w.weekStart === week.weekStart
+          (w: any) => w.weekStart === week.weekStart,
         )) {
           acc.weekStart = iWeek.weekStart;
           acc.weekTxt = iWeek.weekTxt;
@@ -37,8 +38,8 @@ const fillWeek = (
         weekStart: '',
         weekTxt: '',
         points: { count: 0 },
-        issues: { count: 0 }
-      }
+        issues: { count: 0 },
+      },
     );
 
     if (
@@ -57,7 +58,7 @@ const fillWeek = (
         velocityPoints > currentRemainingPoints
           ? currentRemainingPoints
           : velocityPoints;
-      currentRemainingPoints = currentRemainingPoints - weekCompletedPoints;
+      currentRemainingPoints -= weekCompletedPoints;
     } else if (
       currentRemainingPoints > 0 &&
       overallWeekCompletion.points.count > 0
@@ -69,7 +70,7 @@ const fillWeek = (
         maxRemainingPoints > currentRemainingPoints
           ? currentRemainingPoints
           : maxRemainingPoints;
-      currentRemainingPoints = currentRemainingPoints - weekCompletedPoints;
+      currentRemainingPoints -= weekCompletedPoints;
     }
 
     let weekCompletedIssues = 0;
@@ -82,7 +83,7 @@ const fillWeek = (
         velocityIssues > currentRemainingIssues
           ? currentRemainingIssues
           : velocityIssues;
-      currentRemainingIssues = currentRemainingIssues - weekCompletedIssues;
+      currentRemainingIssues -= weekCompletedIssues;
     } else if (
       currentRemainingIssues > 0 &&
       overallWeekCompletion.issues.count > 0
@@ -94,13 +95,13 @@ const fillWeek = (
         maxRemainingIssues > currentRemainingIssues
           ? currentRemainingIssues
           : maxRemainingIssues;
-      currentRemainingIssues = currentRemainingIssues - weekCompletedIssues;
+      currentRemainingIssues -= weekCompletedIssues;
     }
 
     return {
       ...week,
       points: { count: weekCompletedPoints },
-      issues: { count: weekCompletedIssues }
+      issues: { count: weekCompletedIssues },
     };
   });
 };
@@ -108,7 +109,7 @@ const fillWeek = (
 const crunchRoadmap = (
   emptyRoadmap: any,
   closedIssuesByWeekAndTeam: Array<any>,
-  closedIssuesByWeekAndInitiative: Array<any>
+  closedIssuesByWeekAndInitiative: Array<any>,
 ) => {
   // Start with processing initiatives by team
   const initiativesRoadmap: Array<any> = [];
@@ -130,10 +131,10 @@ const crunchRoadmap = (
           team.velocity.points.current,
           initiative.metrics.points.remaining,
           initiativesRoadmap.filter(
-            i => getTeamId(i.fields.assignee.name) === getTeamId(team.name)
+            i => getTeamId(i.fields.assignee.name) === getTeamId(team.name),
           ),
-          teamInitiatives
-        )
+          teamInitiatives,
+        ),
       };
       initiativesRoadmap.push(teamInitiative);
     }

@@ -1,7 +1,7 @@
-// tslint:disable-next-line: file-name-casing
 import { getTeamId } from '../misc/teamUtils';
-import { exit } from '@oclif/errors';
 
+/* eslint max-params: ["error", 7] */
+/* eslint-env es6 */
 const fillWeek = (
   weeks: Array<any>,
   velocityIssues: number,
@@ -60,7 +60,7 @@ const fillWeek = (
         velocityPoints > currentRemainingPoints
           ? currentRemainingPoints
           : velocityPoints;
-      currentRemainingPoints = currentRemainingPoints - weekCompletedPoints;
+      currentRemainingPoints -= weekCompletedPoints;
     } else if (
       currentRemainingPoints > 0 &&
       overallWeekCompletion.points.count > 0
@@ -74,7 +74,7 @@ const fillWeek = (
         maxRemainingPoints > currentRemainingPoints
           ? currentRemainingPoints
           : maxRemainingPoints;
-      currentRemainingPoints = currentRemainingPoints - weekCompletedPoints;
+      currentRemainingPoints -= weekCompletedPoints;
     }
 
     let weekCompletedIssues = 0;
@@ -87,7 +87,7 @@ const fillWeek = (
         velocityIssues > currentRemainingIssues
           ? currentRemainingIssues
           : velocityIssues;
-      currentRemainingIssues = currentRemainingIssues - weekCompletedIssues;
+      currentRemainingIssues -= weekCompletedIssues;
     } else if (
       currentRemainingIssues > 0 &&
       overallWeekCompletion.issues.count > 0
@@ -101,7 +101,7 @@ const fillWeek = (
         maxRemainingIssues > currentRemainingIssues
           ? currentRemainingIssues
           : maxRemainingIssues;
-      currentRemainingIssues = currentRemainingIssues - weekCompletedIssues;
+      currentRemainingIssues -= weekCompletedIssues;
     }
 
     return {

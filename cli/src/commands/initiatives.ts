@@ -40,8 +40,7 @@ export default class Roadmap extends Command {
 
   async run() {
     const { flags } = this.parse(Roadmap);
-    // eslint-disable-next-line
-    let { type, cache } = flags;
+    const { cache } = flags;
     const userConfig = this.userConfig;
     const cacheDir = this.config.configDir + '/cache/';
     if (cache) {
@@ -85,7 +84,7 @@ export default class Roadmap extends Command {
     this.log('Number of issues closed in the period: ' + closedIssues.length);
 
     // Build an empty weekly calendar, from the first closed issue to the last closed issue
-    const emptyCalendar = getEmptyCalendar(closedIssues, userConfig);
+    const emptyCalendar = getEmptyCalendar(closedIssues);
 
     const velocityTeamCache = await teamVelocityFromCache(userConfig, cacheDir);
     this.log(
@@ -142,13 +141,13 @@ export default class Roadmap extends Command {
     cli.action.stop(' done');
 
     cli.action.start('Preparing orphan issues');
-    //Get an array of all orphaned issues
+    // Get an array of all orphaned issues
     const orphanIssues = prepareOrphanIssues(
       issuesTree,
       treeRoot,
       closedIssues,
     );
-    //Add orphaned issues to a weekly calendar
+    // Add orphaned issues to a weekly calendar
     const orphanWeekly = emptyCalendar.map((week: any) => {
       const weekIssues = orphanIssues.filter(
         (issue: any) => week.weekStart === issue.weekStart,
@@ -172,9 +171,9 @@ export default class Roadmap extends Command {
     const emptyRoadmap = getEmptyRoadmap(
       emptyCalendar[emptyCalendar.length - 1],
       // tslint:disable-next-line: strict-type-predicates
-      userConfig.roadmap.forecastWeeks !== undefined
-        ? userConfig.roadmap.forecastWeeks
-        : 26,
+      userConfig.roadmap.forecastWeeks === undefined
+        ? 26
+        : userConfig.roadmap.forecastWeeks,
     );
 
     const futureCompletion = crunchRoadmap(

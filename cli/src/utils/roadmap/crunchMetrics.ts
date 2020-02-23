@@ -1,6 +1,6 @@
-// tslint:disable-next-line: file-name-casing
 
-//import { IConfig } from "../../global";
+
+// import { IConfig } from "../../global";
 
 const crunchMetrics = (issuesTree: any, node: any) => {
   return issuesTree.treeToArray(node).reduce(
@@ -34,8 +34,8 @@ const crunchMetrics = (issuesTree: any, node: any) => {
     {
       missingPoints: false,
       points: { total: 0, completed: 0, remaining: 0, missing: 0 },
-      issues: { total: 0, completed: 0, remaining: 0 }
-    }
+      issues: { total: 0, completed: 0, remaining: 0 },
+    },
   );
 };
 

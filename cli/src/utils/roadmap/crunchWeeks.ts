@@ -1,8 +1,8 @@
-// tslint:disable-next-line: file-name-casing
-
 import { IConfig, IJiraIssue } from '../../global';
 import { startOfWeek, formatISO } from 'date-fns';
 
+/* eslint max-params: ["error", 6] */
+/* eslint-env es6 */
 const crunchWeeks = (
   issuesTree: any,
   node: any,
@@ -40,9 +40,8 @@ const crunchWeeks = (
               issue.fields[userConfig.jira.fields.points] !== null
             ) {
               return issue.fields[userConfig.jira.fields.points];
-            } else {
-              return issue.fields[userConfig.jira.fields.originalPoints];
             }
+            return issue.fields[userConfig.jira.fields.originalPoints];
           })
           .reduce((acc: number, points: number) => acc + points, 0);
       }

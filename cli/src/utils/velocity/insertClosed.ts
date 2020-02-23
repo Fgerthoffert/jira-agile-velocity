@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 import { ICalendar, IJiraIssue } from '../../global';
 
 const stringClean = (labelName: string) => {
@@ -13,11 +12,10 @@ const stringClean = (labelName: string) => {
 const insertClosed = async (
   calendar: ICalendar,
   jiraPointsField: string,
-  closedIssues: Array<IJiraIssue>
+  closedIssues: Array<IJiraIssue>,
 ) => {
   const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
   for (const issue of closedIssues) {
-    // tslint:disable-next-line: strict-type-predicates
     if (updatedCalendar.days[issue.closedAt] !== undefined) {
       updatedCalendar.days[issue.closedAt].completion.issues.count++;
       updatedCalendar.days[issue.closedAt].completion.list.push(issue);
@@ -29,18 +27,18 @@ const insertClosed = async (
           issue.closedAt
         ].completion.points.count += parseInt(
           issue.fields[jiraPointsField],
-          10
+          10,
         );
       }
       if (
         issue.fields.labels.filter(
-          (label: string) => stringClean(label) === stringClean('Scope Change')
+          (label: string) => stringClean(label) === stringClean('Scope Change'),
         ).length !== 0
       ) {
         updatedCalendar.days[issue.closedAt].scopeChangeCompletion.issues
           .count++;
         updatedCalendar.days[issue.closedAt].scopeChangeCompletion.list.push(
-          issue
+          issue,
         );
         if (
           issue.fields[jiraPointsField] !== undefined &&
@@ -50,7 +48,7 @@ const insertClosed = async (
             issue.closedAt
           ].scopeChangeCompletion.points.count += parseInt(
             issue.fields[jiraPointsField],
-            10
+            10,
           );
         }
       }
@@ -59,15 +57,15 @@ const insertClosed = async (
     const closedDate = new Date(issue.closedAt);
     let closedMonthDay = closedDate.getDate();
     if (closedDate.getDay() !== 0) {
+      // eslint-disable-next-line operator-assignment
       closedMonthDay = closedMonthDay - closedDate.getDay();
     }
     const closedWeek = new Date(
       closedDate.getFullYear(),
       closedDate.getMonth(),
-      closedMonthDay
+      closedMonthDay,
     );
     const closedWeekKey = closedWeek.toJSON().slice(0, 10);
-    // tslint:disable-next-line: strict-type-predicates
     if (updatedCalendar.weeks[closedWeekKey] !== undefined) {
       updatedCalendar.weeks[closedWeekKey].completion.issues.count++;
       updatedCalendar.weeks[closedWeekKey].completion.list.push(issue);
@@ -79,18 +77,18 @@ const insertClosed = async (
           closedWeekKey
         ].completion.points.count += parseInt(
           issue.fields[jiraPointsField],
-          10
+          10,
         );
       }
       if (
         issue.fields.labels.filter(
-          (label: string) => stringClean(label) === stringClean('Scope Change')
+          (label: string) => stringClean(label) === stringClean('Scope Change'),
         ).length !== 0
       ) {
         updatedCalendar.weeks[closedWeekKey].scopeChangeCompletion.issues
           .count++;
         updatedCalendar.weeks[closedWeekKey].scopeChangeCompletion.list.push(
-          issue
+          issue,
         );
         if (
           issue.fields[jiraPointsField] !== undefined &&
@@ -100,7 +98,7 @@ const insertClosed = async (
             closedWeekKey
           ].scopeChangeCompletion.points.count += parseInt(
             issue.fields[jiraPointsField],
-            10
+            10,
           );
         }
       }

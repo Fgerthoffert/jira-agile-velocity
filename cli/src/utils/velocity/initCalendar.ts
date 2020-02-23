@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
@@ -35,6 +34,7 @@ const initCalendar = (fromDate: string, toDate?: string | undefined) => {
     toDay = new Date(toDate);
   }
   const currentDate = formatDate(fromDate);
+  // eslint-disable-next-line no-unmodified-loop-condition
   while (currentDate < toDay) {
     currentDate.setDate(currentDate.getDate() + 1);
     const weekTxt =

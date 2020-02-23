@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
@@ -33,7 +32,7 @@ const teamClosedByWeek = (
       weeksTeam.weeks[firstDayWeekKey].issues.count =
         weeksTeam.weeks[firstDayWeekKey].list.length;
 
-      // TODO-Need to remove any issues that might be a duplicate due to the filtering applied
+      // Need to remove any issues that might be a duplicate due to the filtering applied
       if (
         !allTeams.weeks[firstDayWeekKey].list.some(
           (i: IJiraIssue) => i.key === issue.key,

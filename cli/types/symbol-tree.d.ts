@@ -1,1 +1,1 @@
-declare module "symbol-tree";
+declare module 'symbol-tree';

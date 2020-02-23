@@ -1,4 +1,4 @@
-// tslint:disable-next-line: file-name-casing
+
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
