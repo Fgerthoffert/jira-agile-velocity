@@ -54,6 +54,7 @@ class HistoryFocusChart extends Component<any, any> {
             borderColor: 'rgb(54, 162, 235)',
             type: 'line',
             fill: true,
+            lineTension: 0,
             pointRadius: 5,
           },
           {
@@ -65,6 +66,7 @@ class HistoryFocusChart extends Component<any, any> {
             borderColor: 'rgb(255, 99, 132)',
             type: 'line',
             fill: true,
+            lineTension: 0,
             pointRadius: 5,
           },
           {
@@ -83,6 +85,7 @@ class HistoryFocusChart extends Component<any, any> {
             borderColor: 'rgb(201, 203, 207)',
             type: 'line',
             fill: true,
+            lineTension: 0,
             pointRadius: 5,
           },
         ],
