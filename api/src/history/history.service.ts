@@ -70,7 +70,6 @@ export class HistoryService {
       const initiativeWeek = actualInitiativeData.weeks.find(
         (w: any) => w.weekTxt === week.weekTxt,
       );
-      console.log(initiativeWeek);
       if (initiativeWeek !== undefined) {
         initiativeCompletion.list = initiativeWeek.list.map((i: any) => i.key);
         initiativeCompletion.issues.count = initiativeWeek.issues.count;
@@ -137,11 +136,8 @@ export class HistoryService {
               (i: any) => i.key === issueKey,
             );
             if (issueFound !== undefined) {
-              console.log('Issue found');
               points = issueFound.points;
             }
-          } else {
-            console.log('Not found');
           }
           return acc + points;
         },
@@ -173,80 +169,6 @@ export class HistoryService {
         nonInitiativesCompletion: nonInitiativesCompletion,
       });
     }
-    /*
-    const teamWeeks = teamVelocityData.weeks.map((week: any) => {
-      let initiativeCompletion = JSON.parse(JSON.stringify(emptyCompletion));
-
-      const initiativeWeek = actualInitiativeData.weeks.find(
-        (w: any) => w.weekTxt === week.weekTxt,
-      );
-      if (initiativeWeek !== undefined) {
-        initiativeCompletion.list = initiativeWeek.list.map((i: any) => i.key);
-        initiativeCompletion.issues.count = initiativeWeek.issues.count;
-        initiativeCompletion.points.count = initiativeWeek.points.count;
-        if (initiativeWeek.issues.count > 0) {
-          initiativeCompletion.issues.focus = Math.round(
-            (initiativeWeek.issues.count * 100) / week.completion.issues.count,
-          );
-        }
-        if (initiativeWeek.points.count > 0) {
-          initiativeCompletion.points.focus = Math.round(
-            (initiativeWeek.points.count * 100) / week.completion.points.count,
-          );
-        }
-      }
-
-      if (week.weekTxt === '2019.23') {
-        console.log(initiativeCompletion);
-        console.log();
-      }
-
-      // With other initiatives, we record the effort spent by the same team on other initiatives
-      let otherInitiativesCompletion = { ...emptyCompletion };
-      for (const otherInitiative of otherInitiatives) {
-        const otherInitiativeWeek = otherInitiative.weeks.find(
-          (w: any) => w.weekTxt === week.weekTxt,
-        );
-        if (otherInitiativeWeek !== undefined) {
-          otherInitiativesCompletion.list = [
-            ...otherInitiativesCompletion.list,
-            ...otherInitiativeWeek.list.map((i: any) => i.key),
-          ];
-          otherInitiativesCompletion.issues.count =
-            otherInitiativesCompletion.issues.count +
-            otherInitiativeWeek.issues.count;
-          otherInitiativesCompletion.points.count =
-            otherInitiativesCompletion.points.count +
-            otherInitiativeWeek.points.count;
-        }
-      }
-      if (otherInitiativesCompletion.issues.count > 0) {
-        otherInitiativesCompletion.issues.focus = Math.round(
-          (otherInitiativesCompletion.issues.count * 100) /
-            week.completion.issues.count,
-        );
-      }
-      if (otherInitiativesCompletion.points.count > 0) {
-        otherInitiativesCompletion.points.focus = Math.round(
-          (otherInitiativesCompletion.points.count * 100) /
-            week.completion.points.count,
-        );
-      }
-      return {
-        weekStart: week.weekStart,
-        weekEnd: addDays(week.weekStart, 6).toISOString(),
-        weekNb: week.weekNb,
-        weekTxt: week.weekTxt,
-        weekJira: week.weekJira,
-        teamCompletion: week.completion,
-        initiativeCompletion: initiativeCompletion,
-        otherInitiativesCompletion: otherInitiativesCompletion,
-        nonInitiativesCompletion: {},
-      };
-    });
-*/
-
-    //--------------
 
     /* Bruteforce => Remove empty weeks at the beginning of the array  */
     const removeLeadingWeeks = [];
@@ -283,8 +205,6 @@ export class HistoryService {
       }
     }
 
-    //----------------
-
     // From there, we decorate the week with historical data
     const historyFiles = fs
       .readdirSync(cacheDir)
@@ -293,9 +213,8 @@ export class HistoryService {
 
     const fullTeamWeeks = cleanedTeamWeeks.map((week: any) => {
       let history = null;
-      //      console.log(week.weekEnd);
       const historyWeekFile = historyFiles.find((archiveFile: string) =>
-        archiveFile.includes(week.weekEnd.slice(0, 10)),
+        archiveFile.includes(week.weekEnd),
       );
       if (historyWeekFile !== undefined) {
         const historyInitiativesData: any = loadJsonFile.sync(
@@ -304,108 +223,27 @@ export class HistoryService {
         const historyInitiative = historyInitiativesData.initiatives.find(
           i => i.key === initiativeKey,
         );
-        //console.log(historyInitiative);
         history = { metrics: historyInitiative.metrics };
+
+        const forecastInitiative = historyInitiativesData.futureCompletion.find(
+          i => i.key === initiativeKey,
+        );
+        if (
+          forecastInitiative !== undefined &&
+          forecastInitiative.weeks.length > 0
+        ) {
+          history = {
+            ...history,
+            forecast:
+              forecastInitiative.weeks[forecastInitiative.weeks.length - 1],
+          };
+        }
       }
       return {
         ...week,
         history,
       };
     });
-
-    /*
-    // Get initiatives files
-
-    const historyData = historyFiles.map((file: string) => {
-      const initiativesData: any = loadJsonFile.sync(cacheDir + file);
-      const currentDate = new Date(initiativesData.updatedAt);
-      if (currentDate.getDay() === 0) {
-        const initiative = initiativesData.initiatives.find(
-          i => i.key === initiativeKey,
-        );
-        //console.log(initiative);
-        const currentWeekTxt =
-          getYear(currentDate) + '.' + getWeek(currentDate);
-        const teamWeeksData = teamVelocityData.weeks.find(
-          (week: any) => week.weekTxt === currentWeekTxt,
-        );
-        //console.log(teamWeeksData);
-        const etaWeeks = {
-          issues:
-            Math.round(
-              (initiative.metrics.issues.completed /
-                teamWeeksData.completion.issues.velocity) *
-                100,
-            ) / 100,
-          points:
-            Math.round(
-              (initiative.metrics.points.completed /
-                teamWeeksData.completion.points.velocity) *
-                100,
-            ) / 100,
-        };
-        const currentWeekData = actualInitiativeData.weeks.find(
-          (week: any) => week.weekTxt === currentWeekTxt,
-        );
-        return {
-          date: initiativesData.updatedAt,
-          key: initiative.key,
-          weekTxt: currentWeekTxt,
-          overall: initiative.metrics,
-          completed: {
-            issues: {
-              overall: teamWeeksData.completion.issues.count,
-              initiative: currentWeekData.issues.count,
-              prct: Math.round(
-                (currentWeekData.issues.count * 100) /
-                  teamWeeksData.completion.issues.count,
-              ),
-            },
-            points: {
-              overall: teamWeeksData.completion.points.count,
-              initiative: currentWeekData.points.count,
-              prct: Math.round(
-                (currentWeekData.points.count * 100) /
-                  teamWeeksData.completion.points.count,
-              ),
-            },
-          },
-          eta: {
-            weeks: etaWeeks,
-            date: {
-              issues: {
-                weekNb: parseInt(
-                  getYear(
-                    addDays(initiativesData.updatedAt, etaWeeks.points * 7),
-                  ).toString() +
-                    getWeekNb(
-                      getWeek(
-                        addDays(initiativesData.updatedAt, etaWeeks.points * 7),
-                      ),
-                    ),
-                ),
-                date: addDays(initiativesData.updatedAt, etaWeeks.issues * 7),
-              },
-              points: {
-                weekNb: parseInt(
-                  getYear(
-                    addDays(initiativesData.updatedAt, etaWeeks.points * 7),
-                  ).toString() +
-                    getWeekNb(
-                      getWeek(
-                        addDays(initiativesData.updatedAt, etaWeeks.points * 7),
-                      ),
-                    ),
-                ),
-                date: addDays(initiativesData.updatedAt, etaWeeks.points * 7),
-              },
-            },
-          },
-        };
-      }
-      return null;
-	});
-	*/
     return fullTeamWeeks;
   }
 }

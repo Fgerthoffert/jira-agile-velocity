@@ -37,7 +37,8 @@ const initCalendar = (fromDate: string, toDate?: string | undefined) => {
   const currentDate = formatDate(fromDate);
   while (currentDate < toDay) {
     currentDate.setDate(currentDate.getDate() + 1);
-    const weekTxt = getYear(currentDate) + '.' + getWeek(currentDate);
+    const weekTxt =
+      getYear(endOfWeek(currentDate)) + '.' + getWeek(currentDate);
     const weekStart = formatISO(startOfWeek(currentDate), {
       representation: 'date',
     });

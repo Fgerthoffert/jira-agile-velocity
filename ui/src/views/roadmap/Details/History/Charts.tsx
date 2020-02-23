@@ -44,20 +44,27 @@ const Charts: FC<connectedProps> = ({
   if (!defaultPoints) {
     metric = 'Issues Count';
   }
+
+  const historicalData = initiativeHistory.filter(
+    (w: any) => w.history !== null && w.history.forecast !== undefined,
+  );
+
   return (
     <React.Fragment>
       <Grid container spacing={3} direction="column">
-        <Grid item xs={12}>
-          <Paper>
-            <Typography variant="subtitle1">
-              Evolution of the initiative complexity ({metric})
-            </Typography>
-            <HistoryCompletionChart
-              dataset={initiativeHistory}
-              defaultPoints={defaultPoints}
-            />
-          </Paper>
-        </Grid>
+        {historicalData.length > 0 && (
+          <Grid item xs={12}>
+            <Paper>
+              <Typography variant="subtitle1">
+                Evolution of the initiative complexity ({metric})
+              </Typography>
+              <HistoryCompletionChart
+                dataset={initiativeHistory}
+                defaultPoints={defaultPoints}
+              />
+            </Paper>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Paper>
             <Typography variant="subtitle1">
@@ -68,19 +75,24 @@ const Charts: FC<connectedProps> = ({
               defaultPoints={defaultPoints}
               jiraHost={roadmap.host}
             />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper>
-            <Typography variant="subtitle1">
-              Evolution of the naive forecast({metric})
+            <Typography variant="caption" display="block" gutterBottom>
+              Note: External contributors can bring team effort to over 100%
             </Typography>
-            {/* <HistoryForecastChart
-              dataset={initiativeHistory}
-              defaultPoints={defaultPoints}
-            /> */}
           </Paper>
         </Grid>
+        {historicalData.length > 0 && (
+          <Grid item xs={12}>
+            <Paper>
+              <Typography variant="subtitle1">
+                Evolution of the naive forecast ({metric})
+              </Typography>
+              <HistoryForecastChart
+                dataset={historicalData}
+                defaultPoints={defaultPoints}
+              />
+            </Paper>
+          </Grid>
+        )}
       </Grid>
     </React.Fragment>
   );

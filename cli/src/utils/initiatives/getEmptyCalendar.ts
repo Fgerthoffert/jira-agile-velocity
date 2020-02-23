@@ -15,7 +15,11 @@ const getEmptyCalendar = (issues: Array<IJiraIssue>, userConfig: IConfig) => {
   const emptyWeeks: any = [];
   const currentDate = formatDate(issues[0].closedAt);
   while (currentDate < formatDate(issues[issues.length - 1].closedAt)) {
-    const weekTxt = getYear(currentDate) + '.' + getWeek(currentDate);
+    const weekEnd = formatISO(endOfWeek(currentDate), {
+      representation: 'date',
+    });
+    const weekTxt =
+      getYear(endOfWeek(currentDate)) + '.' + getWeek(currentDate);
     if (
       emptyWeeks.find((week: any) => week.weekTxt === weekTxt) === undefined
     ) {
@@ -26,7 +30,7 @@ const getEmptyCalendar = (issues: Array<IJiraIssue>, userConfig: IConfig) => {
         weekStart: formatISO(startOfWeek(currentDate), {
           representation: 'date',
         }),
-        weekEnd: formatISO(endOfWeek(currentDate), { representation: 'date' }),
+        weekEnd: weekEnd,
         weekTxt,
       });
     }

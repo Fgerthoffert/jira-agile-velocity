@@ -1,8 +1,5 @@
 // tslint:disable-next-line: file-name-casing
-/*
-    
-*/
-import { getWeek, getYear } from 'date-fns';
+import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 import { formatDate } from '../misc/dateUtils';
 
 const getEmptyRoadmap = (lastCalendarWeek: any, futureWeeks: number) => {
@@ -11,25 +8,22 @@ const getEmptyRoadmap = (lastCalendarWeek: any, futureWeeks: number) => {
   let cptDays = 0;
   const currentDate = formatDate(lastCalendarWeek.weekStart);
   while (cptDays < futureWeeks * 7) {
-    let currentMonthDay = currentDate.getDate();
-    if (currentDate.getDay() !== 0) {
-      currentMonthDay = currentMonthDay - currentDate.getDay();
-    }
-    const currentWeekYear: any = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentMonthDay,
-    );
+    const weekEnd = formatISO(endOfWeek(currentDate), {
+      representation: 'date',
+    });
+    const weekTxt =
+      getYear(endOfWeek(currentDate)) + '.' + getWeek(currentDate);
     if (
-      emptyWeeks.find(
-        (week: any) => week.weekStart === currentWeekYear.toJSON(),
-      ) === undefined
+      emptyWeeks.find((week: any) => week.weekTxt === weekTxt) === undefined
     ) {
       emptyWeeks.push({
         issues: { count: 0 },
         points: { count: 0 },
-        weekStart: currentWeekYear.toJSON(),
-        weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
+        weekStart: formatISO(startOfWeek(currentDate), {
+          representation: 'date',
+        }),
+        weekEnd: weekEnd,
+        weekTxt: weekTxt,
       });
     }
     currentDate.setDate(currentDate.getDate() + 1);

@@ -81,7 +81,6 @@ export default class Roadmap extends Command {
         ),
       ];
     }
-    console.log(closedIssues.find(i => i.key === 'BACKLOG-11386'));
 
     this.log('Number of issues closed in the period: ' + closedIssues.length);
 
@@ -177,6 +176,7 @@ export default class Roadmap extends Command {
         ? userConfig.roadmap.forecastWeeks
         : 26,
     );
+
     const futureCompletion = crunchRoadmap(
       emptyRoadmap,
       velocityTeamCache,
