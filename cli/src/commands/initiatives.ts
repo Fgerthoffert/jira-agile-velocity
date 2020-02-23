@@ -170,7 +170,6 @@ export default class Roadmap extends Command {
     cli.action.start('Forecasting future completion');
     const emptyRoadmap = getEmptyRoadmap(
       emptyCalendar[emptyCalendar.length - 1],
-      // tslint:disable-next-line: strict-type-predicates
       userConfig.roadmap.forecastWeeks === undefined
         ? 26
         : userConfig.roadmap.forecastWeeks,

@@ -17,15 +17,15 @@ tbc
 */
 export const getCellDataInitiatives = (
   initiative: string,
-  weekTxt: string,
+  weekEnd: string,
   roadmap: any,
 ) => {
   if (initiative !== getNonInitiativeTitle()) {
     return roadmap.initiatives
       .find((i: any) => getInitiativeTitle(i) === initiative)
-      .weeks.find((w: any) => w.weekTxt === weekTxt).list;
+      .weeks.find((w: any) => w.weekEnd === weekEnd).list;
   } else {
-    return roadmap.orphanIssues.find((w: any) => w.weekTxt === weekTxt).list;
+    return roadmap.orphanIssues.find((w: any) => w.weekEnd === weekEnd).list;
   }
 };
 
