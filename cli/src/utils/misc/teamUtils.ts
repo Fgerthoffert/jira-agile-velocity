@@ -11,12 +11,12 @@ export const getTeamId = (teamName: string) => {
 export const getTeamFromAssignee = (issue: any, teams: Array<string>) => {
   if (issue.fields.assignee === null) {
     return null;
-  } else {
+  } 
     for (const team of teams) {
       if (getTeamId(issue.fields.assignee.name) === getTeamId(team)) {
         return team;
       }
     }
-  }
+  
   return null;
 };

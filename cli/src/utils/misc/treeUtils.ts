@@ -1,4 +1,4 @@
-// tslint:disable-next-line: file-name-casing
+
 
 /*
     Export the tree in a nest object

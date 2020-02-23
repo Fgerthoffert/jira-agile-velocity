@@ -17,7 +17,7 @@ const simplifyIssue = (issue: any) => {
     key: issue.key,
     summary: issue.fields.summary,
     closedAt: issue.closedAt,
-    weekStart: issue.weekStart !== undefined ? issue.weekStart : null,
+    weekStart: issue.weekStart === undefined ? null : issue.weekStart,
     status: {
       name: issue.fields.status.name,
       category: issue.fields.status.statusCategory.name,
@@ -27,7 +27,7 @@ const simplifyIssue = (issue: any) => {
       iconUrl: issue.fields.issuetype.iconUrl,
     },
     points: issue.points,
-    metrics: issue.metrics !== undefined ? issue.metrics : null,
+    metrics: issue.metrics === undefined ? null : issue.metrics,
     assignee: simplifyAssignee(issue),
   };
 };

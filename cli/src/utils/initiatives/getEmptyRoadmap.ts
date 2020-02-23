@@ -1,4 +1,4 @@
-// tslint:disable-next-line: file-name-casing
+
 import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 import { formatDate } from '../misc/dateUtils';
 

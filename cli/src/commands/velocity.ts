@@ -42,8 +42,7 @@ export default class Velocity extends Command {
     const { flags } = this.parse(Velocity);
     const userConfig = this.userConfig;
 
-    // eslint-disable-next-line
-    let { type, dryrun } = flags;
+    const { type, dryrun } = flags;
     for (const team of userConfig.teams) {
       const closedIssues = await fetchCompleted(
         userConfig,
@@ -86,33 +85,33 @@ export default class Velocity extends Command {
         days: calendarWithHealth.days.map((d: any) => {
           if (d.completion.list !== undefined) {
             d.completion.list = d.completion.list.map((i: any) => i.key);
-            //delete d.completion.list;
+            // delete d.completion.list;
           }
           if (d.scopeChangeCompletion.list !== undefined) {
             d.scopeChangeCompletion.list = d.scopeChangeCompletion.list.map(
               (i: any) => i.key,
             );
-            //delete d.scopeChangeCompletion.list;
+            // delete d.scopeChangeCompletion.list;
           }
           return d;
         }),
         weeks: calendarWithHealth.weeks.map((w: any) => {
           if (w.completion.list !== undefined) {
             w.completion.list = w.completion.list.map((i: any) => i.key);
-            //delete w.completion.list;
+            // delete w.completion.list;
           }
           if (w.scopeChangeCompletion.list !== undefined) {
             w.scopeChangeCompletion.list = w.scopeChangeCompletion.list.map(
               (i: any) => i.key,
             );
-            //delete w.scopeChangeCompletion.list;
+            // delete w.scopeChangeCompletion.list;
           }
           return w;
         }),
         open: (o: any) => {
           if (o.list !== undefined) {
             o.list = o.list.map((i: any) => i.key);
-            //delete o.list;
+            // delete o.list;
           }
           return o;
         },

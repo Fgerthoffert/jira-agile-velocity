@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 
 /*
@@ -7,10 +6,11 @@ import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
   const days: Array<any> = [];
   const currentDate = startDate;
+  // eslint-disable-next-line no-unmodified-loop-condition
   while (currentDate < endDate) {
     let currentMonthDay = currentDate.getDate();
     if (currentDate.getDay() !== 0) {
-      currentMonthDay = currentMonthDay - currentDate.getDay();
+      currentMonthDay -= currentDate.getDay();
     }
     const currentWeekYear: any = new Date(
       currentDate.getFullYear(),

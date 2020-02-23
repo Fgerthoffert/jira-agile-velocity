@@ -1,5 +1,3 @@
-// tslint:disable-next-line: file-name-casing
-
 import { IConfig, IJiraIssue } from '../../global';
 import { startOfWeek, formatISO } from 'date-fns';
 
@@ -30,7 +28,7 @@ const teamClosedByWeek = (
       weeksTeam.weeks[firstDayWeekKey].issues.count =
         weeksTeam.weeks[firstDayWeekKey].list.length;
 
-      // TODO-Need to remove any issues that might be a duplicate due to the filtering applied
+      // Need to remove any issues that might be a duplicate due to the filtering applied
       if (
         !allTeams.weeks[firstDayWeekKey].list.some(
           (i: IJiraIssue) => i.key === issue.key,

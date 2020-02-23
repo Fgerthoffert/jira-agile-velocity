@@ -1,4 +1,4 @@
-// tslint:disable-next-line: file-name-casing
+
 /*
     This function calculates and insert a forecast to completion
 */
@@ -19,8 +19,8 @@ const insertForecast = (calendar: any) => {
             (updatedCalendar.open.issues.count /
               lastWeek.completion.issues.velocity) *
               5 *
-              100
-          ) / 100
+              100,
+          ) / 100,
       },
       points: {
         openCount: updatedCalendar.open.points.count,
@@ -30,10 +30,10 @@ const insertForecast = (calendar: any) => {
             (updatedCalendar.open.points.count /
               lastWeek.completion.points.velocity) *
               5 *
-              100
-          ) / 100
-      }
-    }
+              100,
+          ) / 100,
+      },
+    },
   };
   //  console.log(updatedCalendar.forecast);
   return updatedCalendar;

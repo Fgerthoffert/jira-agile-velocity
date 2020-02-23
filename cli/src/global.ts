@@ -47,7 +47,6 @@ interface PayloadWeek {
   };
 }
 
-// eslint-disable-next-line
 interface ICompletion {
   issues: {
     count: number;
@@ -59,7 +58,6 @@ interface ICompletion {
   };
   list: Array<IJiraIssue>;
 }
-// eslint-disable-next-line
 export interface IJiraIssue {
   closedAt: string;
   expand: string;
@@ -71,7 +69,6 @@ export interface IJiraIssue {
   jql: string; // JQL Query used to fetch the issue
 }
 
-// eslint-disable-next-line
 export interface IDays {
   date: string;
   weekDay: number;
@@ -83,12 +80,10 @@ export interface IDays {
   scopeChangeCompletion: ICompletion;
 }
 
-// eslint-disable-next-line
 interface IDaysObj {
   [key: string]: IDays;
 }
 
-// eslint-disable-next-line
 export interface IWeeks {
   date: string;
   weekStart: string;
@@ -100,19 +95,16 @@ export interface IWeeks {
   scopeChangeCompletion: ICompletion;
 }
 
-// eslint-disable-next-line
 interface IWeeksObj {
   [key: string]: IWeeks;
 }
 
-// eslint-disable-next-line
 interface IOpen {
   issues: { count: number };
   points: { count: number };
   list: Array<IJiraIssue>;
 }
 
-// eslint-disable-next-line
 interface IForecastCompletion {
   issues: {
     openCount: number;
@@ -126,19 +118,17 @@ interface IForecastCompletion {
   };
 }
 
-// eslint-disable-next-line
 interface IForecast {
   range: string;
   completion: IForecastCompletion;
 }
 
-// eslint-disable-next-line
 interface IHealthVelocityTrend {
   trend: string;
   previous: number;
   current: number;
 }
-// eslint-disable-next-line
+
 interface IHealthCompletion {
   msgTxt: string;
   msgJira: string;
@@ -158,7 +148,6 @@ interface IHealthCompletion {
   };
 }
 
-// eslint-disable-next-line
 interface IHealth {
   days: {
     velocity: {
@@ -176,7 +165,6 @@ interface IHealth {
   };
 }
 
-// eslint-disable-next-line
 export interface ICalendar {
   days: IDaysObj;
   weeks: IWeeksObj;
@@ -185,7 +173,6 @@ export interface ICalendar {
   health: IHealth | object;
 }
 
-// eslint-disable-next-line
 export interface ICalendarFinal {
   days: Array<IDays>;
   weeks: Array<IWeeks>;
@@ -194,14 +181,12 @@ export interface ICalendarFinal {
   health: IHealth | object;
 }
 
-// eslint-disable-next-line
 export interface IConfig {
   jira: IConfigJira;
   teams: Array<IConfigTeam>;
   roadmap: IConfigRoadmap;
 }
 
-// eslint-disable-next-line
 export interface IConfigTeam {
   name: string;
   jqlCompletion: string;
@@ -215,7 +200,6 @@ export interface IConfigTeam {
   };
 }
 
-// eslint-disable-next-line
 export interface IConfigJira {
   username: string;
   password: string;
@@ -229,7 +213,6 @@ export interface IConfigJira {
   excludeDays: Array<string>;
 }
 
-// eslint-disable-next-line
 export interface IConfigRoadmap {
   jqlInitiatives: string;
   teams: Array<string>;

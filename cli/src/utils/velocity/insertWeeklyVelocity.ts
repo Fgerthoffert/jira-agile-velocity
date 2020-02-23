@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 import { ICalendar, IWeeks } from '../../global';
 
 import calculateAverageVelocity from './calculateAverageVelocity';
@@ -35,26 +34,26 @@ const insertWeeklyVelocity = (calendar: ICalendar) => {
       ticketsPerWeek[idx].completion.issues.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'completion',
-        'issues'
+        'issues',
       );
       ticketsPerWeek[idx].completion.points.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'completion',
-        'points'
+        'points',
       );
       ticketsPerWeek[
         idx
       ].scopeChangeCompletion.issues.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'scopeChangeCompletion',
-        'issues'
+        'issues',
       );
       ticketsPerWeek[
         idx
       ].scopeChangeCompletion.points.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'scopeChangeCompletion',
-        'points'
+        'points',
       );
     }
   }

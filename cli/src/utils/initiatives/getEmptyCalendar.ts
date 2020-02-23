@@ -1,13 +1,12 @@
-// tslint:disable-next-line: file-name-casing
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
 import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 
-import { IConfig, IJiraIssue } from '../../global';
+import { IJiraIssue } from '../../global';
 import { formatDate } from '../misc/dateUtils';
 
-const getEmptyCalendar = (issues: Array<IJiraIssue>, userConfig: IConfig) => {
+const getEmptyCalendar = (issues: Array<IJiraIssue>) => {
   // Sort the array by closedAt
   issues.sort((a, b) =>
     a.closedAt > b.closedAt ? 1 : b.closedAt > a.closedAt ? -1 : 0,

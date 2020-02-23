@@ -1,10 +1,10 @@
-// tslint:disable-next-line: file-name-casing
+
 const calculateAverageVelocity = (
   array: any,
   category: any,
-  indexValue: any
+  indexValue: any,
 ) => {
-  //avgValue defaults to 2 decimals max
+  // avgValue defaults to 2 decimals max
   const avgValue =
     Math.round(
       array
@@ -14,16 +14,16 @@ const calculateAverageVelocity = (
             accumulator: number,
             currentValue: number,
             currentIndex: number,
-            array: [any]
+            array: [any],
           ) => {
             accumulator += currentValue;
             if (currentIndex === array.length - 1) {
               return accumulator / array.length;
-            } else {
+            } 
               return accumulator;
-            }
-          }
-        ) * 100
+            
+          },
+        ) * 100,
     ) / 100;
   /*
   console.log(

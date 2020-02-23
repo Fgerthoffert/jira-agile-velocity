@@ -1,4 +1,3 @@
-// tslint:disable-next-line: file-name-casing
 import { ICalendar, IJiraIssue } from '../../global';
 
 /*
@@ -7,8 +6,7 @@ import { ICalendar, IJiraIssue } from '../../global';
 const insertOpen = (
   calendar: ICalendar,
   issues: Array<IJiraIssue>,
-  // eslint-disable-next-line
-  jira_points: string
+  jira_points: string,
 ) => {
   const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
 
@@ -20,7 +18,7 @@ const insertOpen = (
   updatedCalendar.open = {
     issues: { count: issues.length },
     points: { count: remainingPoints },
-    list: issues
+    list: issues,
   };
 
   return updatedCalendar;

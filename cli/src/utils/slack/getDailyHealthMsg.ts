@@ -4,7 +4,7 @@ const getDailyHealthMsg = (
   calendar: any,
   type: string,
   userConfig: IConfig,
-  teamName: string
+  teamName: string,
 ) => {
   const teamConfig = userConfig.teams.find(t => t.name === teamName);
   if (teamConfig !== undefined) {

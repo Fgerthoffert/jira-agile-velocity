@@ -1,4 +1,4 @@
-// tslint:disable-next-line: file-name-casing
+
 /*
     This function calculates and insert a health-related data to the object
 */
@@ -13,13 +13,13 @@ const insertHealth = (calendar: any) => {
         issues: {
           trend: 'DOWN',
           previous: 0,
-          current: 0
+          current: 0,
         },
         points: {
           trend: 'DOWN',
           previous: 0,
-          current: 0
-        }
+          current: 0,
+        },
       },
       completion: {
         msgTxt: null,
@@ -29,29 +29,29 @@ const insertHealth = (calendar: any) => {
           count: 0,
           min: 0,
           max: 0,
-          avg: 0
+          avg: 0,
         },
         points: {
           list: [],
           count: 0,
           min: 0,
           max: 0,
-          avg: 0
-        }
-      }
+          avg: 0,
+        },
+      },
     },
     weeks: {
       velocity: {
         issues: {
           trend: 'DOWN',
           previous: 0,
-          current: 0
+          current: 0,
         },
         points: {
           trend: 'DOWN',
           previous: 0,
-          current: 0
-        }
+          current: 0,
+        },
       },
       completion: {
         msgTxt: null,
@@ -61,17 +61,17 @@ const insertHealth = (calendar: any) => {
           count: 0,
           min: 0,
           max: 0,
-          avg: 0
+          avg: 0,
         },
         points: {
           list: [],
           count: 0,
           min: 0,
           max: 0,
-          avg: 0
-        }
-      }
-    }
+          avg: 0,
+        },
+      },
+    },
   };
   for (let i = updatedCalendar.days.length - 1; i >= 0; i--) {
     // We don't look for Saturday or Sunday in those metrics, as it is less relevant to report on work those days
@@ -107,30 +107,30 @@ const insertHealth = (calendar: any) => {
     }
     if (referenceDay === updatedCalendar.days[i].weekDay) {
       health.days.completion.points.list.push(
-        updatedCalendar.days[i].completion.points.count
+        updatedCalendar.days[i].completion.points.count,
       );
       health.days.completion.issues.list.push(
-        updatedCalendar.days[i].completion.issues.count
+        updatedCalendar.days[i].completion.issues.count,
       );
     }
   }
 
-  //Once done going through the loop, generate min/max/avg
+  // Once done going through the loop, generate min/max/avg
   for (const type of ['issues', 'points']) {
     health.days.completion[type].min = Math.min(
-      ...health.days.completion[type].list
+      ...health.days.completion[type].list,
     );
     health.days.completion[type].max = Math.max(
-      ...health.days.completion[type].list
+      ...health.days.completion[type].list,
     );
     health.days.completion[type].avg =
       Math.round(
         (health.days.completion[type].list.reduce(
           (a: number, b: number) => a + b,
-          0
+          0,
         ) /
           health.days.completion[type].list.length) *
-          100
+          100,
       ) / 100;
   }
 
@@ -161,29 +161,29 @@ const insertHealth = (calendar: any) => {
       lastWeek = true;
     }
     health.weeks.completion.points.list.push(
-      updatedCalendar.weeks[i].completion.points.count
+      updatedCalendar.weeks[i].completion.points.count,
     );
     health.weeks.completion.issues.list.push(
-      updatedCalendar.weeks[i].completion.issues.count
+      updatedCalendar.weeks[i].completion.issues.count,
     );
   }
 
-  //Once done going through the loop, generate min/max/avg
+  // Once done going through the loop, generate min/max/avg
   for (const type of ['issues', 'points']) {
     health.weeks.completion[type].min = Math.min(
-      ...health.weeks.completion[type].list
+      ...health.weeks.completion[type].list,
     );
     health.weeks.completion[type].max = Math.max(
-      ...health.weeks.completion[type].list
+      ...health.weeks.completion[type].list,
     );
     health.weeks.completion[type].avg =
       Math.round(
         (health.weeks.completion[type].list.reduce(
           (a: number, b: number) => a + b,
-          0
+          0,
         ) /
           health.weeks.completion[type].list.length) *
-          100
+          100,
       ) / 100;
   }
   updatedCalendar.health = health;

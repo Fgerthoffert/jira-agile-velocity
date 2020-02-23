@@ -1,4 +1,4 @@
-// tslint:disable-next-line: file-name-casing
+
 import { ICalendar, IDays } from '../../global';
 
 import calculateAverageVelocity from './calculateAverageVelocity';
@@ -12,7 +12,7 @@ const insertDailyVelocity = (calendar: ICalendar) => {
 
   let startIdx = 0;
   for (let idx = 0; idx < ticketsPerDay.length; idx++) {
-    //ticketsPerDay.map((value: any, idx: number) => {
+    // ticketsPerDay.map((value: any, idx: number) => {
     // Rolling averages are calculates over a window of 20 days
     if (idx <= 20) {
       startIdx = 0;
@@ -36,26 +36,26 @@ const insertDailyVelocity = (calendar: ICalendar) => {
       ticketsPerDay[idx].completion.issues.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'completion',
-        'issues'
+        'issues',
       );
       ticketsPerDay[idx].completion.points.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'completion',
-        'points'
+        'points',
       );
       ticketsPerDay[
         idx
       ].scopeChangeCompletion.issues.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'scopeChangeCompletion',
-        'issues'
+        'issues',
       );
       ticketsPerDay[
         idx
       ].scopeChangeCompletion.points.velocity = calculateAverageVelocity(
         currentWindowIssues,
         'scopeChangeCompletion',
-        'points'
+        'points',
       );
     }
   }
