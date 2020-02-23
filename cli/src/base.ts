@@ -1,4 +1,4 @@
-import Command, { flags } from '@oclif/command';
+import Command from '@oclif/command';
 import * as fs from 'fs';
 import * as fse from 'fs-extra';
 import * as jsYaml from 'js-yaml';
