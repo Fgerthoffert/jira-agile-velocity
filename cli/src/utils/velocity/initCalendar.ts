@@ -2,18 +2,18 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
-import { getWeek, getYear } from 'date-fns';
+import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 
 import { ICalendar } from '../../global';
 import { formatDate } from '../misc/dateUtils';
 
-const initCalendar = (fromDate: string) => {
+const initCalendar = (fromDate: string, toDate?: string | undefined) => {
   const initObject: ICalendar = {
     days: {},
     weeks: {},
     open: {},
     forecast: {},
-    health: {}
+    health: {},
   };
   const days = [
     'Sunday',
@@ -22,48 +22,51 @@ const initCalendar = (fromDate: string) => {
     'Wednesday',
     'Thursday',
     'Friday',
-    'Saturday'
+    'Saturday',
   ];
   const emptyCompletion = {
     issues: { count: 0, velocity: 0 },
     points: { count: 0, velocity: 0 },
-    list: []
+    list: [],
   };
-  const toDay = new Date();
+  let toDay = new Date();
   toDay.setDate(toDay.getDate() - 1); // We don't process current day, only fetching closed issues on past days
+  if (toDate !== undefined) {
+    toDay = new Date(toDate);
+  }
   const currentDate = formatDate(fromDate);
   while (currentDate < toDay) {
     currentDate.setDate(currentDate.getDate() + 1);
-    initObject.days[currentDate.toJSON().slice(0, 10)] = {
-      date: currentDate.toJSON(),
+    const weekTxt =
+      getYear(endOfWeek(currentDate)) + '.' + getWeek(currentDate);
+    const weekStart = formatISO(startOfWeek(currentDate), {
+      representation: 'date',
+    });
+    const currentDayKey = formatISO(currentDate, {
+      representation: 'date',
+    });
+    initObject.days[currentDayKey] = {
+      date: formatISO(currentDate, { representation: 'date' }),
       weekDay: currentDate.getDay(),
-      weekDayJira: currentDate.toJSON().slice(0, 10),
+      weekDayJira: formatISO(currentDate, { representation: 'date' }),
       weekDayTxt: days[currentDate.getDay()],
       weekNb: getWeek(currentDate),
-      weekTxt: getYear(currentDate) + '.' + getWeek(currentDate),
+      weekTxt: weekTxt,
       completion: { ...emptyCompletion },
-      scopeChangeCompletion: { ...emptyCompletion }
+      scopeChangeCompletion: { ...emptyCompletion },
     };
-    let currentMonthDay = currentDate.getDate();
-    if (currentDate.getDay() !== 0) {
-      currentMonthDay = currentMonthDay - currentDate.getDay();
-    }
-    const currentWeekYear = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentMonthDay
-    );
 
     // tslint:disable-next-line: strict-type-predicates
-    if (initObject.weeks[currentWeekYear.toJSON().slice(0, 10)] === undefined) {
-      initObject.weeks[currentWeekYear.toJSON().slice(0, 10)] = {
-        weekStart: currentWeekYear.toJSON(),
-        date: currentWeekYear.toJSON(),
-        weekNb: getWeek(currentWeekYear),
-        weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
-        weekJira: currentWeekYear.toJSON().slice(0, 10),
+    if (initObject.weeks[weekStart] === undefined) {
+      initObject.weeks[weekStart] = {
+        weekStart,
+        weekEnd: formatISO(endOfWeek(currentDate), { representation: 'date' }),
+        date: weekStart,
+        weekNb: getWeek(currentDate),
+        weekTxt: weekTxt,
+        weekJira: weekStart,
         completion: { ...emptyCompletion },
-        scopeChangeCompletion: { ...emptyCompletion }
+        scopeChangeCompletion: { ...emptyCompletion },
       };
     }
   }

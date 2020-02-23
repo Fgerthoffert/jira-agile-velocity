@@ -29,13 +29,13 @@ export default class Velocity extends Command {
       char: 't',
       description: 'Send slack update using issues or points',
       options: ['issues', 'points'],
-      default: 'points'
+      default: 'points',
     }),
     dryrun: flags.boolean({
       char: 'd',
       default: false,
-      description: 'Dry-Run, do not send slack message'
-    })
+      description: 'Dry-Run, do not send slack message',
+    }),
   };
 
   async run() {
@@ -48,7 +48,7 @@ export default class Velocity extends Command {
       const closedIssues = await fetchCompleted(
         userConfig,
         this.config.configDir + '/cache/',
-        team.name
+        team.name,
       );
       console.log('Fetched ' + closedIssues.length + ' completed issues');
 
@@ -56,20 +56,20 @@ export default class Velocity extends Command {
       const calendarWithClosed = await insertClosed(
         emptyCalendar,
         userConfig.jira.fields.points,
-        closedIssues
+        closedIssues,
       );
 
       const openIssues = await this.fetchOpenIssues(userConfig, team.name);
       const calendarWithOpen = insertOpen(
         calendarWithClosed,
         openIssues,
-        userConfig.jira.fields.points
+        userConfig.jira.fields.points,
       );
 
       const calendarVelocity: ICalendarFinal = {
         ...calendarWithOpen,
         days: insertDailyVelocity(calendarWithOpen),
-        weeks: insertWeeklyVelocity(calendarWithOpen)
+        weeks: insertWeeklyVelocity(calendarWithOpen),
       };
 
       const calendarWithForecast = insertForecast(calendarVelocity);
@@ -77,7 +77,7 @@ export default class Velocity extends Command {
         ...insertHealth(calendarWithForecast),
         updatedAt: new Date().toJSON(), // Adding updated date to the payload
         host: userConfig.jira.host, // Adding Jira host config
-        jqlCompletion: team.jqlCompletion // Adding JQL completion query
+        jqlCompletion: team.jqlCompletion, // Adding JQL completion query
       };
 
       // Prune issues list from the object
@@ -85,35 +85,44 @@ export default class Velocity extends Command {
         ...calendarWithHealth,
         days: calendarWithHealth.days.map((d: any) => {
           if (d.completion.list !== undefined) {
-            delete d.completion.list;
+            d.completion.list = d.completion.list.map((i: any) => i.key);
+            //delete d.completion.list;
           }
           if (d.scopeChangeCompletion.list !== undefined) {
-            delete d.scopeChangeCompletion.list;
+            d.scopeChangeCompletion.list = d.scopeChangeCompletion.list.map(
+              (i: any) => i.key,
+            );
+            //delete d.scopeChangeCompletion.list;
           }
           return d;
         }),
         weeks: calendarWithHealth.weeks.map((w: any) => {
           if (w.completion.list !== undefined) {
-            delete w.completion.list;
+            w.completion.list = w.completion.list.map((i: any) => i.key);
+            //delete w.completion.list;
           }
           if (w.scopeChangeCompletion.list !== undefined) {
-            delete w.scopeChangeCompletion.list;
+            w.scopeChangeCompletion.list = w.scopeChangeCompletion.list.map(
+              (i: any) => i.key,
+            );
+            //delete w.scopeChangeCompletion.list;
           }
           return w;
         }),
         open: (o: any) => {
           if (o.list !== undefined) {
-            delete o.list;
+            o.list = o.list.map((i: any) => i.key);
+            //delete o.list;
           }
           return o;
-        }
+        },
       };
 
       const slackMsg = getDailyHealthMsg(
         trimmedPayload,
         type,
         userConfig,
-        team.name
+        team.name,
       );
       this.log(slackMsg);
 
@@ -127,9 +136,9 @@ export default class Velocity extends Command {
       const issueFileStream = fs.createWriteStream(
         path.join(
           cacheDir,
-          'velocity-artifacts-' + getTeamId(team.name) + '.json'
+          'velocity-artifacts-' + getTeamId(team.name) + '.json',
         ),
-        { flags: 'w' }
+        { flags: 'w' },
       );
       issueFileStream.write(JSON.stringify(trimmedPayload));
       issueFileStream.end();
@@ -148,12 +157,12 @@ export default class Velocity extends Command {
           teamName +
           ' using JQL: ' +
           teamConfig.jqlRemaining +
-          ' '
+          ' ',
       );
       const issuesJira = await jiraSearchIssues(
         userConfig.jira,
         teamConfig.jqlRemaining,
-        'labels,' + userConfig.jira.fields.points
+        'labels,' + userConfig.jira.fields.points,
       );
       for (const issue of issuesJira) {
         openIssues.push(cleanIssue(issue));

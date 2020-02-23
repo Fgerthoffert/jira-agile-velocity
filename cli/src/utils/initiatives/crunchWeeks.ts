@@ -13,6 +13,10 @@ const crunchWeeks = (
     const issueExist = closedIssues.find(i => i.key === item.key);
     return acc.map((week: any) => {
       if (issueExist !== undefined && week.weekStart === issueExist.weekStart) {
+        // if (issueExist.key === 'BACKLOG-11527') {
+        //   console.log(week.weekTxt);
+        //   console.log(issueExist);
+        // }
         const issuesWeeks = [...week.list, issueExist];
         let weeklyPoints = week.points.count;
         // If current issue contains points, re-calculate weekly totals

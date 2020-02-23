@@ -34,6 +34,8 @@ export const roadmap = createModel({
     graphPathEnd: {},
     showDeleteModal: false,
     deleteModalCacheDays: [],
+
+    initiativeHistory: false,
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -90,6 +92,9 @@ export const roadmap = createModel({
     setDeleteModalCacheDays(state: any, payload: any) {
       return { ...state, deleteModalCacheDays: payload };
     },
+    setInitiativeHistory(state: any, payload: any) {
+      return { ...state, initiativeHistory: payload };
+    },
   },
   effects: {
     async initView() {
@@ -105,7 +110,7 @@ export const roadmap = createModel({
       this.loadData();
     },
 
-    async loadDataFromCache(roadmap, rootState) {
+    async loadDataFromCache() {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
       const cacheRoadmap = reactLocalStorage.getObject('cache-roadmap');
@@ -147,6 +152,7 @@ export const roadmap = createModel({
             setLoading(false);
           })
           .catch(error => {
+            console.log(error);
             setRoadmap({});
             setLoading(false);
           });
@@ -188,6 +194,7 @@ export const roadmap = createModel({
             setLoading(false);
           })
           .catch(error => {
+            console.log(error);
             setLoading(false);
             deleteModalRefreshCacheDays();
           });
@@ -227,6 +234,7 @@ export const roadmap = createModel({
             setLoading(false);
           })
           .catch(error => {
+            console.log(error);
             setDeleteModalCacheDays([]);
             setLoading(false);
           });
@@ -344,6 +352,56 @@ export const roadmap = createModel({
         }
       }
       this.setIssuesGraph(graphData);
+    },
+    async initHistory(initiativeKey) {
+      const logger = log.noConflict();
+      if (process.env.NODE_ENV !== 'production') {
+        logger.enableAll();
+      } else {
+        logger.disableAll();
+      }
+      logger.info('Roadmap Logger initialized');
+      this.setLog(logger);
+      this.loadHistoryData(initiativeKey);
+    },
+    async loadHistoryData(initiativeKey, rootState) {
+      // Fetch data
+      const setInitiativeHistory = this.setInitiativeHistory;
+      const setLoading = this.setLoading;
+
+      if (
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
+      ) {
+        setLoading(true);
+        const host =
+          window._env_.API_URL !== undefined
+            ? window._env_.API_URL
+            : 'http://127.0.0.1:3001';
+        const headers =
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
+        axios({
+          method: 'get',
+          url: host + '/history/' + initiativeKey,
+          headers,
+        })
+          .then(response => {
+            setInitiativeHistory(response.data);
+            setLoading(false);
+          })
+          .catch(error => {
+            console.log(error);
+            setInitiativeHistory(false);
+            setLoading(false);
+          });
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not present',
+        );
+      }
     },
   },
 });

@@ -2,7 +2,7 @@
 /*
     This function creates an empty object containing all of the expected days and weeks between the passed dats with zeroed values
 */
-import { getWeek, getYear } from 'date-fns';
+import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 
 import { IConfig, IJiraIssue } from '../../global';
 import { formatDate } from '../misc/dateUtils';
@@ -15,26 +15,22 @@ const getEmptyCalendar = (issues: Array<IJiraIssue>, userConfig: IConfig) => {
   const emptyWeeks: any = [];
   const currentDate = formatDate(issues[0].closedAt);
   while (currentDate < formatDate(issues[issues.length - 1].closedAt)) {
-    let currentMonthDay = currentDate.getDate();
-    if (currentDate.getDay() !== 0) {
-      currentMonthDay = currentMonthDay - currentDate.getDay();
-    }
-    const currentWeekYear: any = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentMonthDay,
-    );
-    const weekTxt = getYear(currentWeekYear) + '.' + getWeek(currentWeekYear);
+    const weekEnd = formatISO(endOfWeek(currentDate), {
+      representation: 'date',
+    });
+    const weekTxt =
+      getYear(endOfWeek(currentDate)) + '.' + getWeek(currentDate);
     if (
-      emptyWeeks.find(
-        (week: any) => week.weekStart === currentWeekYear.toJSON(),
-      ) === undefined
+      emptyWeeks.find((week: any) => week.weekTxt === weekTxt) === undefined
     ) {
       emptyWeeks.push({
         list: [],
         issues: { count: 0 },
         points: { count: 0 },
-        weekStart: currentWeekYear.toJSON(),
+        weekStart: formatISO(startOfWeek(currentDate), {
+          representation: 'date',
+        }),
+        weekEnd: weekEnd,
         weekTxt,
       });
     }

@@ -7,101 +7,93 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
 
-import NodesGraph from './NodesGraph';
-import ResetGraph from './ResetGraph';
-import RedrawGraph from './RedrawGraph';
+import Epcis from './Epics';
+import History from './History';
+import Graph from './Graph';
 import { connect } from 'react-redux';
-
-import ChildrenTable from './ChildrenTable';
 
 import { iRootState } from '../../../store';
 
 const mapState = (state: iRootState) => ({
-	openGraph: state.roadmap.openGraph,
-	roadmap: state.roadmap.roadmap,
-	graphInitiative: state.roadmap.graphInitiative
+  openGraph: state.roadmap.openGraph,
+  roadmap: state.roadmap.roadmap,
+  graphInitiative: state.roadmap.graphInitiative,
 });
 
 const mapDispatch = (dispatch: any) => ({
-	setOpenGraph: dispatch.roadmap.setOpenGraph
+  setOpenGraph: dispatch.roadmap.setOpenGraph,
+  setInitiativeHistory: dispatch.roadmap.setInitiativeHistory,
 });
 
-type connectedProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
+type connectedProps = ReturnType<typeof mapState> &
+  ReturnType<typeof mapDispatch>;
 
-const Details: FC<connectedProps> = ({ openGraph, roadmap, setOpenGraph, graphInitiative }) => {
-	const closeGraph = () => {
-		setOpenGraph(false);
-	};
-	if (openGraph === false) {
-		return null;
-	}
-	return (
-		<Dialog
-			fullWidth={true}
-			maxWidth={'xl'}
-			open={openGraph}
-			onClose={closeGraph}
-			aria-labelledby='max-width-dialog-title'
-		>
-			<DialogTitle id='max-width-dialog-title'>
-				{graphInitiative.summary + '(' + graphInitiative.key + ')'}
-			</DialogTitle>
-			<DialogContent>
-				<Grid container direction='row' justify='flex-start' spacing={3}>
-					<Grid item xs={9}>
-						<NodesGraph />
-					</Grid>
-					<Grid item xs={3}>
-						<Grid container direction='column' justify='flex-start' alignItems='flex-start' spacing={1}>
-							<Grid item>
-								<Grid container direction='row' justify='space-evenly' alignItems='center'>
-									<Grid item>
-										<ResetGraph />
-									</Grid>
-									<Grid item>
-										<RedrawGraph />
-									</Grid>
-								</Grid>
-							</Grid>
-							<Grid item>
-								<span>
-									<b>Shapes:</b>
-									<br />
-									Diamond: Initiative <br />
-									Square: Epic <br />
-									Round: Story <br />
-								</span>
-							</Grid>
-							<Grid item>
-								<b>Colors:</b>
-								<br />
-								Blue: Open <br />
-								Yellow: In Progress <br />
-								Green: Closed <br />
-							</Grid>
-							<Grid item>
-								<b>Number:</b> points <br />
-								<i>Click on node to open in Jira</i>
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
-				<Typography variant='h6' gutterBottom>
-					Functional User Stories (Epics)
-				</Typography>
-				<ChildrenTable
-					children={graphInitiative.children.filter((c: any) => c.type.name === 'Epic')}
-					jiraHost={roadmap.host}
-				/>
-			</DialogContent>
-			<DialogActions>
-				<Button onClick={closeGraph} color='primary'>
-					Close
-				</Button>
-			</DialogActions>
-		</Dialog>
-	);
+const Details: FC<connectedProps> = ({
+  openGraph,
+  roadmap,
+  setOpenGraph,
+  graphInitiative,
+  setInitiativeHistory,
+}) => {
+  const [tabValue, setTabValue] = React.useState('epics');
+
+  const handleTabChange = (value: string) => {
+    setTabValue(value);
+  };
+
+  const closeGraph = () => {
+    setOpenGraph(false);
+    setInitiativeHistory(false);
+  };
+
+  if (openGraph === false) {
+    return null;
+  }
+  return (
+    <Dialog
+      fullWidth={true}
+      maxWidth={'xl'}
+      open={openGraph}
+      onClose={closeGraph}
+      aria-labelledby="max-width-dialog-title"
+    >
+      <DialogTitle id="max-width-dialog-title">
+        {graphInitiative.summary + '(' + graphInitiative.key + ')'}
+      </DialogTitle>
+      <DialogContent>
+        <Grid container direction="row" justify="flex-start" spacing={3}>
+          <Grid item xs={8}>
+            <Grid container direction="column" justify="flex-start" spacing={3}>
+              <Grid item>
+                <Graph />
+              </Grid>
+              <Grid item>
+                <Epcis
+                  children={graphInitiative.children.filter(
+                    (c: any) => c.type.name === 'Epic',
+                  )}
+                  jiraHost={roadmap.host}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <History initiativeKey={graphInitiative.key} />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={closeGraph} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 };
 
-export default connect(mapState, mapDispatch)(Details);
+export default connect(
+  mapState,
+  mapDispatch,
+)(Details);

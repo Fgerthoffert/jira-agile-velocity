@@ -8,6 +8,7 @@ import { IConfig, IJiraIssue } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
 import { getTeamId } from '../misc/teamUtils';
+import { formatISO } from 'date-fns';
 
 const returnTicketsPoints = (issue: any, config: IConfig) => {
   if (
@@ -32,6 +33,7 @@ const fetchCompleted = async (
   config: IConfig,
   cacheDir: string,
   teamName: string,
+  toDate?: string | undefined,
 ) => {
   let issues: Array<IJiraIssue> = [];
   console.log('Fetching data for team: ' + teamName);
@@ -41,8 +43,12 @@ const fetchCompleted = async (
       teamConfig.excludeDays !== undefined
         ? [...config.jira.excludeDays, ...teamConfig.excludeDays]
         : config.jira.excludeDays;
-    const toDay = new Date();
+    let toDay = new Date();
     toDay.setDate(toDay.getDate() - 1);
+    if (toDate !== undefined) {
+      toDay = new Date(toDate);
+    }
+
     const dates = getDaysBetweenDates(formatDate(teamConfig.jqlHistory), toDay);
     for (const scanDay of dates) {
       if (
@@ -96,13 +102,19 @@ const fetchCompleted = async (
               const updatedIssue = {
                 ...issue,
                 closedAt: scanDay.date.toJSON().slice(0, 10),
-                weekStart: scanDay.weekStart.toJSON(),
+                weekStart: scanDay.weekStart,
+                weekEnd: scanDay.weekEnd,
                 weekTxt: scanDay.weekTxt,
                 team: teamName,
                 //              host: config.jira.host,
                 points: returnTicketsPoints(issue, config),
                 //              jql: jqlQuery
               };
+
+              // In some occurences, an issue might already be present (if it was re-open for example)
+              // We filter out any occurence of this issue already be present
+              // This way we only keep the most recent time a ticket is closed and we avoid duplicates.
+              issues = issues.filter((i: any) => i.key !== updatedIssue.key);
 
               issues.push(updatedIssue);
               issueFileStream.write(JSON.stringify(updatedIssue) + '\n');
@@ -111,7 +123,14 @@ const fetchCompleted = async (
           issueFileStream.end();
           cli.action.stop(' done');
         } else {
-          issues = [...issues, ...fsNdjson.readFileSync(issuesDayFilepath)];
+          const cachedIssues = fsNdjson.readFileSync(issuesDayFilepath);
+          for (const issue of cachedIssues) {
+            // In some occurences, an issue might already be present (if it was re-open for example)
+            // We filter out any occurence of this issue already be present
+            // This way we only keep the most recent time a ticket is closed and we avoid duplicates.
+            issues = issues.filter((i: any) => i.key !== issue.key);
+            issues.push(issue);
+          }
         }
       } else {
         cli.log(

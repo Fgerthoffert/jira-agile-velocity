@@ -32,6 +32,7 @@ const fetchInitiatives = async (
   userConfig: IConfig,
   cacheDir: string,
   useCache: boolean,
+  toDate?: string | undefined,
 ) => {
   cli.action.start(
     'Fetching roadmap initiatives using: ' +
@@ -40,7 +41,10 @@ const fetchInitiatives = async (
   );
   let issues: any = [];
   // If cache is enabled we don't fetch initiatives twice on the same day
-  const today = new Date();
+  let today = new Date();
+  if (toDate !== undefined) {
+    today = new Date(toDate);
+  }
   const initiativesCache = path.join(
     cacheDir,
     'roadmap-initiatives-' + today.toJSON().slice(0, 10) + '.ndjson',
@@ -48,6 +52,8 @@ const fetchInitiatives = async (
 
   if (useCache && fs.existsSync(initiativesCache)) {
     issues = fsNdjson.readFileSync(initiativesCache);
+  } else if (toDate !== undefined) {
+    issues = [];
   } else {
     const issuesJira = await jiraSearchIssues(
       userConfig.jira,

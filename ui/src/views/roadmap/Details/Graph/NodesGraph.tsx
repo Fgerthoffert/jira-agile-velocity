@@ -12,7 +12,7 @@ import 'tippy.js/themes/light-border.css';
 import ReactDOMServer from 'react-dom/server';
 
 import CytoscapeComponent from 'react-cytoscapejs';
-import { iRootState } from '../../../store';
+import { iRootState } from '../../../../store';
 
 Cytoscape.use(COSEBilkent);
 Cytoscape.use(popper);

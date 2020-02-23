@@ -1,7 +1,7 @@
 // tslint:disable-next-line: file-name-casing
 
 import { IConfig, IJiraIssue } from '../../global';
-import { startOfWeek } from '../misc/dateUtils';
+import { startOfWeek, formatISO } from 'date-fns';
 
 const teamClosedByWeek = (
   issues: Array<IJiraIssue>,
@@ -23,8 +23,9 @@ const teamClosedByWeek = (
       velocity: teamVelocity.find(v => v.team === team).velocity,
     };
     for (const issue of issues.filter(i => i.team === team)) {
-      const firstDayWeekDate = startOfWeek(new Date(issue.closedAt));
-      const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
+      const firstDayWeekKey = formatISO(startOfWeek(new Date(issue.closedAt)), {
+        representation: 'date',
+      });
       weeksTeam.weeks[firstDayWeekKey].list.push(issue);
       weeksTeam.weeks[firstDayWeekKey].issues.count =
         weeksTeam.weeks[firstDayWeekKey].list.length;

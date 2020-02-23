@@ -1,5 +1,5 @@
 // tslint:disable-next-line: file-name-casing
-import { getWeek, getYear } from 'date-fns';
+import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
 
 /*
     Returns an array of all days between two dates
@@ -17,40 +17,22 @@ export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
       currentDate.getMonth(),
       currentMonthDay,
     );
+    currentWeekYear.setUTCHours(0);
+    const actualDate = new Date(currentDate);
+    actualDate.setUTCHours(0);
     days.push({
-      date: new Date(currentDate),
-      weekStart: currentWeekYear,
-      weekTxt: getYear(currentWeekYear) + '.' + getWeek(currentWeekYear),
+      date: actualDate,
+      weekStart: formatISO(startOfWeek(actualDate), {
+        representation: 'date',
+      }),
+      weekEnd: formatISO(endOfWeek(actualDate), {
+        representation: 'date',
+      }),
+      weekTxt: getYear(actualDate) + '.' + getWeek(actualDate),
     });
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return days;
-};
-
-/*
-    Returns an array of all weeks between two dates
-*/
-export const getWeeksBetweenDates = (startDate: Date, endDate: Date) => {
-  const weeks: Array<string> = [];
-  const currentDate = startDate;
-  while (currentDate < endDate) {
-    let currentMonthDay = currentDate.getDate();
-    if (currentDate.getDay() !== 0) {
-      currentMonthDay = currentMonthDay - currentDate.getDay();
-    }
-    const currentWeekYear = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentMonthDay,
-    );
-    if (
-      weeks.find(w => w === currentWeekYear.toJSON().slice(0, 10)) === undefined
-    ) {
-      weeks.push(currentWeekYear.toJSON().slice(0, 10));
-    }
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return weeks;
 };
 
 /*
@@ -62,18 +44,4 @@ export const formatDate = (dateString: string) => {
   day.setUTCMinutes(0);
   day.setUTCSeconds(0);
   return day;
-};
-
-/* Takes a date and returns the first day of the week */
-export const startOfWeek = (date: Date) => {
-  let currentMonthDay = date.getDate();
-  if (date.getDay() !== 0) {
-    currentMonthDay = currentMonthDay - date.getDay();
-  }
-  const currentWeekYear: any = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    currentMonthDay,
-  );
-  return currentWeekYear;
 };
