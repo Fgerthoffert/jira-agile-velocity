@@ -1,12 +1,18 @@
-
 import { getWeek, getYear, startOfWeek, endOfWeek, formatISO } from 'date-fns';
-import { formatDate } from '../misc/dateUtils';
 
 const getEmptyRoadmap = (lastCalendarWeek: any, futureWeeks: number) => {
   // Sort the array by closedAt
   const emptyWeeks: any = [];
   let cptDays = 0;
-  const currentDate = formatDate(lastCalendarWeek.weekStart);
+  // We need to verify if the previous week is actually complete,
+  // if yes, we need to set the first date as the first day of of the current week.
+  const currentStartWeek = formatISO(startOfWeek(new Date()), {
+    representation: 'date',
+  });
+  const currentDate =
+    currentStartWeek === lastCalendarWeek.weekStart
+      ? new Date(lastCalendarWeek.weekStart)
+      : startOfWeek(new Date());
   while (cptDays < futureWeeks * 7) {
     const weekEnd = formatISO(endOfWeek(currentDate), {
       representation: 'date',
