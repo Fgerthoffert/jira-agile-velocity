@@ -158,9 +158,6 @@ jobs:
           name: Update the oclif readme
           command: cd cli && oclif-dev readme
       - run:
-          name: Purge oclif.manifest.json
-          command: cd cli && rm -f oclif.manifest.json
-      - run:
           name: Ls cli content
           command: ls -lah cli/
       - run:

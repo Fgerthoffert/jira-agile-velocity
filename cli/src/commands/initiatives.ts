@@ -14,7 +14,7 @@ import getEmptyCalendar from '../utils/initiatives/getEmptyCalendar';
 import getEmptyRoadmap from '../utils/initiatives/getEmptyRoadmap';
 import prepareInitiativesData from '../utils/initiatives/prepareInitiativesData';
 import prepareOrphanIssues from '../utils/initiatives/prepareOrphanIssues';
-import teamVelocityFromCache from '../utils/roadmap/teamVelocityFromCache';
+import teamVelocityFromCache from '../utils/initiatives/teamVelocityFromCache';
 import { exportTree } from '../utils/misc/treeUtils';
 import optimizePayload from '../utils/initiatives/optimizePayload';
 
