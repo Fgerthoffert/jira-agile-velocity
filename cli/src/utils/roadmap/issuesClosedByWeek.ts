@@ -4,18 +4,19 @@
 */
 
 import { IConfig, IJiraIssue } from '../../global';
-import { startOfWeek } from '../misc/dateUtils';
+import { startOfWeek, formatISO } from 'date-fns';
 
 const issuesClosedByWeek = (
   issues: Array<IJiraIssue>,
   userConfig: IConfig,
-  emptyCalendar: any
+  emptyCalendar: any,
 ) => {
   const weeks = JSON.parse(JSON.stringify(emptyCalendar));
 
   for (const issue of issues) {
-    const firstDayWeekDate = startOfWeek(new Date(issue.closedAt));
-    const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
+    const firstDayWeekKey = formatISO(startOfWeek(new Date(issue.closedAt)), {
+      representation: 'date',
+    });
     weeks[firstDayWeekKey].list.push(issue);
     weeks[firstDayWeekKey].issues.count = weeks[firstDayWeekKey].list.length;
 
@@ -27,7 +28,7 @@ const issuesClosedByWeek = (
         .filter(
           (issue: IJiraIssue) =>
             issue.fields[userConfig.jira.fields.points] !== undefined &&
-            issue.fields[userConfig.jira.fields.points] !== null
+            issue.fields[userConfig.jira.fields.points] !== null,
         )
         .map((issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points])
         .reduce((acc: number, points: number) => acc + points, 0);

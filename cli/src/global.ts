@@ -92,6 +92,7 @@ interface IDaysObj {
 export interface IWeeks {
   date: string;
   weekStart: string;
+  weekEnd: string;
   weekNb: number;
   weekTxt: string;
   weekJira: string;

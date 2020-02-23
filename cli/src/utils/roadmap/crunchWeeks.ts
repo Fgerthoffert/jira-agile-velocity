@@ -1,21 +1,24 @@
 // tslint:disable-next-line: file-name-casing
 
 import { IConfig, IJiraIssue } from '../../global';
-import { startOfWeek } from '../misc/dateUtils';
+import { startOfWeek, formatISO } from 'date-fns';
 
 const crunchWeeks = (
   issuesTree: any,
   node: any,
   closedIssues: Array<any>,
   emptyCalendar: any,
-  userConfig: IConfig
+  userConfig: IConfig,
 ) => {
   return issuesTree.treeToArray(node).reduce((acc: any, item: any) => {
     const issueExist = closedIssues.find(i => i.key === item.key);
-
     if (issueExist !== undefined) {
-      const firstDayWeekDate = startOfWeek(new Date(issueExist.closedAt));
-      const firstDayWeekKey = firstDayWeekDate.toJSON().slice(0, 10);
+      const firstDayWeekKey = formatISO(
+        startOfWeek(new Date(issueExist.closedAt)),
+        {
+          representation: 'date',
+        },
+      );
       acc[firstDayWeekKey].list.push(issueExist);
       acc[firstDayWeekKey].issues.count = acc[firstDayWeekKey].list.length;
       if (
@@ -29,7 +32,7 @@ const crunchWeeks = (
                 issue.fields[userConfig.jira.fields.points] !== null) ||
               (issue.fields[userConfig.jira.fields.originalPoints] !==
                 undefined &&
-                issue.fields[userConfig.jira.fields.originalPoints] !== null)
+                issue.fields[userConfig.jira.fields.originalPoints] !== null),
           )
           .map((issue: IJiraIssue) => {
             if (
