@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as loadJsonFile from 'load-json-file';
-import { getWeek, getYear } from 'date-fns';
 
 import { ConfigService } from '../config.service';
 
@@ -10,19 +9,6 @@ export const getTeamId = (teamName: string) => {
     .replace('team-', '') // If team is prefixed by team-, we simply remove it from the string
     .replace(/[^a-z0-9+]+/gi, '')
     .toLowerCase();
-};
-
-const addDays = (date: string, days: number) => {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + days);
-  return newDate;
-};
-
-const getWeekNb = (week: number) => {
-  if (week < 10) {
-    return '0' + week;
-  }
-  return week;
 };
 
 @Injectable()
@@ -66,7 +52,7 @@ export class HistoryService {
     /* Populate the array with rough data coming from the team velocity and the initiative */
     for (const week of teamVelocityData.weeks) {
       //      console.log(week);
-      let initiativeCompletion = JSON.parse(JSON.stringify(emptyCompletion));
+      const initiativeCompletion = JSON.parse(JSON.stringify(emptyCompletion));
       const initiativeWeek = actualInitiativeData.weeks.find(
         (w: any) => w.weekTxt === week.weekTxt,
       );
@@ -87,7 +73,7 @@ export class HistoryService {
       }
 
       // With other initiatives, we record the effort spent by the same team on other initiatives
-      let otherInitiativesCompletion = JSON.parse(
+      const otherInitiativesCompletion = JSON.parse(
         JSON.stringify(emptyCompletion),
       );
       for (const otherInitiative of otherInitiatives) {
@@ -109,7 +95,7 @@ export class HistoryService {
       }
 
       /* Fill in non-initiatives completion */
-      let nonInitiativesCompletion = JSON.parse(
+      const nonInitiativesCompletion = JSON.parse(
         JSON.stringify(emptyCompletion),
       );
       // Populate an array containing all issues in team completion but not in initiatives nor nonInitiatives

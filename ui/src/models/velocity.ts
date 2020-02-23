@@ -54,11 +54,11 @@ export const velocity = createModel({
         );
       }
     },
-    async updateSelectedTeam(teamId, rootState) {
+    async updateSelectedTeam(teamId) {
       this.setSelectedTeam(teamId);
       this.fetchTeamData(teamId);
     },
-    async loadTeamsFromCache(currentTab, rootState) {
+    async loadTeamsFromCache(currentTab) {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
       const cacheVelocityTeams = reactLocalStorage.getObject(
@@ -80,7 +80,7 @@ export const velocity = createModel({
       }
     },
 
-    async loadVelocityFromCache(teamId, rootState) {
+    async loadVelocityFromCache(teamId) {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
       const cacheVelocity = reactLocalStorage.getObject('cache-velocity');
@@ -123,6 +123,7 @@ export const velocity = createModel({
             setLoading(false);
           })
           .catch(error => {
+            console.log(error);
             setTeams([]);
             updateSelectedTeam(null);
             setLoading(false);
@@ -168,6 +169,7 @@ export const velocity = createModel({
               setLoading(false);
             })
             .catch(error => {
+              console.log(error);
               setLoading(false);
             });
         }
