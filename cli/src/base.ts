@@ -7,16 +7,7 @@ import * as path from 'path';
 
 import { IConfig } from './global';
 
-export default abstract class Base extends Command {
-  static flags = {
-    env_user_config: flags.string({
-      required: false,
-      env: 'USER_CONFIG',
-      description:
-        'User Configuration passed as an environment variable, takes precedence over config file',
-    }),
-  };
-
+export default abstract class extends Command {
   userConfig = {
     jira: {
       username: 'username',
@@ -72,9 +63,6 @@ export default abstract class Base extends Command {
   }
 
   async init() {
-    const { flags } = this.parse(Base);
-    const { env_user_config } = flags;
-
     if (process.env.CONFIG_DIR !== undefined) {
       this.config.configDir = process.env.CONFIG_DIR;
     }
@@ -83,10 +71,7 @@ export default abstract class Base extends Command {
     fse.ensureDirSync(this.config.configDir + '/cache/');
 
     // eslint-disable-next-line no-negated-condition
-    if (env_user_config !== undefined) {
-      this.setUserConfig(JSON.parse(env_user_config));
-      // eslint-disable-next-line no-negated-condition
-    } else if (!fs.existsSync(path.join(this.config.configDir, 'config.yml'))) {
+    if (!fs.existsSync(path.join(this.config.configDir, 'config.yml'))) {
       fs.writeFileSync(
         path.join(this.config.configDir, 'config.yml'),
         jsYaml.safeDump(this.userConfig),
