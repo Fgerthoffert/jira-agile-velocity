@@ -10,9 +10,9 @@ const getEmptyRoadmap = (lastCalendarWeek: any, futureWeeks: number) => {
     representation: 'date',
   });
   const currentDate =
-    currentStartWeek !== lastCalendarWeek.weekStart
-      ? startOfWeek(new Date())
-      : new Date(lastCalendarWeek.weekStart);
+    currentStartWeek === lastCalendarWeek.weekStart
+      ? new Date(lastCalendarWeek.weekStart)
+      : startOfWeek(new Date());
   while (cptDays < futureWeeks * 7) {
     const weekEnd = formatISO(endOfWeek(currentDate), {
       representation: 'date',
