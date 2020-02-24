@@ -6,23 +6,7 @@ import * as fsNdjson from 'fs-ndjson';
 import { IConfig } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { getTeamFromAssignee } from '../misc/teamUtils';
-import { cleanIssue } from '../misc/jiraUtils';
-
-const returnTicketsPoints = (issue: any, config: IConfig) => {
-  if (
-    issue.fields[config.jira.fields.points] !== undefined &&
-    issue.fields[config.jira.fields.points] !== null
-  ) {
-    return issue.fields[config.jira.fields.points];
-  }
-  if (
-    issue.fields[config.jira.fields.originalPoints] !== undefined &&
-    issue.fields[config.jira.fields.originalPoints] !== null
-  ) {
-    return issue.fields[config.jira.fields.originalPoints];
-  }
-  return 0;
-};
+import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 
 /*
     Fetches all initiatives

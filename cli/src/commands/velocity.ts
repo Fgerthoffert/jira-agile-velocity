@@ -18,6 +18,7 @@ import insertHealth from '../utils/velocity/insertHealth';
 import insertOpen from '../utils/velocity/insertOpen';
 import insertWeeklyVelocity from '../utils/velocity/insertWeeklyVelocity';
 import { cleanIssue } from '../utils/misc/jiraUtils';
+import { returnTicketsPoints } from '../utils/misc/jiraUtils';
 
 export default class Velocity extends Command {
   static description = 'Builds velocity stats by day and week';
@@ -54,16 +55,11 @@ export default class Velocity extends Command {
       const emptyCalendar: ICalendar = initCalendar(team.jqlHistory);
       const calendarWithClosed = await insertClosed(
         emptyCalendar,
-        userConfig.jira.fields.points,
         closedIssues,
       );
 
       const openIssues = await this.fetchOpenIssues(userConfig, team.name);
-      const calendarWithOpen = insertOpen(
-        calendarWithClosed,
-        openIssues,
-        userConfig.jira.fields.points,
-      );
+      const calendarWithOpen = insertOpen(calendarWithClosed, openIssues);
 
       const calendarVelocity: ICalendarFinal = {
         ...calendarWithOpen,
@@ -163,7 +159,8 @@ export default class Velocity extends Command {
         teamConfig.jqlRemaining,
         'labels,' + userConfig.jira.fields.points,
       );
-      for (const issue of issuesJira) {
+      for (let issue of issuesJira) {
+        issue = { ...issue, points: returnTicketsPoints(issue, userConfig) };
         openIssues.push(cleanIssue(issue));
       }
       cli.action.stop(' done');

@@ -79,7 +79,6 @@ export default class Roadmap extends Command {
       );
       const calendarWithClosed = await insertClosed(
         emptyCalendar,
-        userConfig.jira.fields.points,
         closedIssues,
       );
       const calendarVelocity: any = {

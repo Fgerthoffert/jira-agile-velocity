@@ -11,7 +11,6 @@ const stringClean = (labelName: string) => {
 */
 const insertClosed = async (
   calendar: ICalendar,
-  jiraPointsField: string,
   closedIssues: Array<IJiraIssue>,
 ) => {
   const updatedCalendar: ICalendar = JSON.parse(JSON.stringify(calendar));
@@ -19,16 +18,9 @@ const insertClosed = async (
     if (updatedCalendar.days[issue.closedAt] !== undefined) {
       updatedCalendar.days[issue.closedAt].completion.issues.count++;
       updatedCalendar.days[issue.closedAt].completion.list.push(issue);
-      if (
-        issue.fields[jiraPointsField] !== undefined &&
-        issue.fields[jiraPointsField] !== null
-      ) {
-        updatedCalendar.days[
-          issue.closedAt
-        ].completion.points.count += parseInt(
-          issue.fields[jiraPointsField],
-          10,
-        );
+      if (issue.points !== undefined && issue.points !== null) {
+        updatedCalendar.days[issue.closedAt].completion.points.count +=
+          issue.points;
       }
       if (
         issue.fields.labels.filter(
@@ -40,16 +32,10 @@ const insertClosed = async (
         updatedCalendar.days[issue.closedAt].scopeChangeCompletion.list.push(
           issue,
         );
-        if (
-          issue.fields[jiraPointsField] !== undefined &&
-          issue.fields[jiraPointsField] !== null
-        ) {
+        if (issue.points !== undefined && issue.points !== null) {
           updatedCalendar.days[
             issue.closedAt
-          ].scopeChangeCompletion.points.count += parseInt(
-            issue.fields[jiraPointsField],
-            10,
-          );
+          ].scopeChangeCompletion.points.count += issue.points;
         }
       }
     }
@@ -69,16 +55,9 @@ const insertClosed = async (
     if (updatedCalendar.weeks[closedWeekKey] !== undefined) {
       updatedCalendar.weeks[closedWeekKey].completion.issues.count++;
       updatedCalendar.weeks[closedWeekKey].completion.list.push(issue);
-      if (
-        issue.fields[jiraPointsField] !== undefined &&
-        issue.fields[jiraPointsField] !== null
-      ) {
-        updatedCalendar.weeks[
-          closedWeekKey
-        ].completion.points.count += parseInt(
-          issue.fields[jiraPointsField],
-          10,
-        );
+      if (issue.points !== undefined && issue.points !== null) {
+        updatedCalendar.weeks[closedWeekKey].completion.points.count +=
+          issue.points;
       }
       if (
         issue.fields.labels.filter(
@@ -90,16 +69,10 @@ const insertClosed = async (
         updatedCalendar.weeks[closedWeekKey].scopeChangeCompletion.list.push(
           issue,
         );
-        if (
-          issue.fields[jiraPointsField] !== undefined &&
-          issue.fields[jiraPointsField] !== null
-        ) {
+        if (issue.points !== undefined && issue.points !== null) {
           updatedCalendar.weeks[
             closedWeekKey
-          ].scopeChangeCompletion.points.count += parseInt(
-            issue.fields[jiraPointsField],
-            10,
-          );
+          ].scopeChangeCompletion.points.count += issue.points;
         }
       }
     }

@@ -10,22 +10,7 @@ import { IConfig, IJiraIssue } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
 import { getTeamId } from '../misc/teamUtils';
-
-const returnTicketsPoints = (issue: any, config: IConfig) => {
-  if (
-    issue.fields[config.jira.fields.points] !== undefined &&
-    issue.fields[config.jira.fields.points] !== null
-  ) {
-    return issue.fields[config.jira.fields.points];
-  }
-  if (
-    issue.fields[config.jira.fields.originalPoints] !== undefined &&
-    issue.fields[config.jira.fields.originalPoints] !== null
-  ) {
-    return issue.fields[config.jira.fields.originalPoints];
-  }
-  return 0;
-};
+import { returnTicketsPoints } from '../misc/jiraUtils';
 
 /*
     Fetches all completed issues, per day from a team
