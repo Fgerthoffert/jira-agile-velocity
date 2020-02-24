@@ -66,6 +66,7 @@ export interface IJiraIssue {
   key: string;
   team: string;
   fields: any;
+  points: number;
   jql: string; // JQL Query used to fetch the issue
 }
 

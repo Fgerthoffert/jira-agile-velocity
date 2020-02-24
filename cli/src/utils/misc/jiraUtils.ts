@@ -1,4 +1,4 @@
-
+import { IConfig } from '../../global';
 
 /*
     Delete un-necessary fields from the issue object
@@ -33,4 +33,20 @@ export const cleanIssue = (issue: any) => {
     delete issue.fields.status.statusCategory.colorName;
   }
   return issue;
+};
+
+export const returnTicketsPoints = (issue: any, config: IConfig) => {
+  if (
+    issue.fields[config.jira.fields.points] !== undefined &&
+    issue.fields[config.jira.fields.points] !== null
+  ) {
+    return issue.fields[config.jira.fields.points];
+  }
+  if (
+    issue.fields[config.jira.fields.originalPoints] !== undefined &&
+    issue.fields[config.jira.fields.originalPoints] !== null
+  ) {
+    return issue.fields[config.jira.fields.originalPoints];
+  }
+  return 0;
 };

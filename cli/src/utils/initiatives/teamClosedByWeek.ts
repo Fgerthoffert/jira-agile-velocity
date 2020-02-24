@@ -38,33 +38,24 @@ const teamClosedByWeek = (
       }
       allTeams.weeks[firstDayWeekKey].issues.count =
         allTeams.weeks[firstDayWeekKey].list.length;
-      if (
-        issue.fields[userConfig.jira.fields.points] !== undefined &&
-        issue.fields[userConfig.jira.fields.points] !== null
-      ) {
+      if (issue.points !== undefined && issue.points !== null) {
         weeksTeam.weeks[firstDayWeekKey].points.count = weeksTeam.weeks[
           firstDayWeekKey
         ].list
           .filter(
             (issue: IJiraIssue) =>
-              issue.fields[userConfig.jira.fields.points] !== undefined &&
-              issue.fields[userConfig.jira.fields.points] !== null,
+              issue.points !== undefined && issue.points !== null,
           )
-          .map(
-            (issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points],
-          )
+          .map((issue: IJiraIssue) => issue.points)
           .reduce((acc: number, points: number) => acc + points, 0);
         allTeams.weeks[firstDayWeekKey].points.count = allTeams.weeks[
           firstDayWeekKey
         ].list
           .filter(
             (issue: IJiraIssue) =>
-              issue.fields[userConfig.jira.fields.points] !== undefined &&
-              issue.fields[userConfig.jira.fields.points] !== null,
+              issue.points !== undefined && issue.points !== null,
           )
-          .map(
-            (issue: IJiraIssue) => issue.fields[userConfig.jira.fields.points],
-          )
+          .map((issue: IJiraIssue) => issue.points)
           .reduce((acc: number, points: number) => acc + points, 0);
       }
     }

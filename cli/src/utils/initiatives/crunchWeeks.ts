@@ -1,4 +1,4 @@
-import { IConfig, IJiraIssue } from '../../global';
+import { IJiraIssue } from '../../global';
 
 /* eslint max-params: ["error", 6] */
 /* eslint-env es6 */
@@ -7,7 +7,6 @@ const crunchWeeks = (
   node: any,
   closedIssues: Array<any>,
   emptyCalendar: any,
-  userConfig: IConfig,
 ) => {
   return issuesTree.treeToArray(node).reduce((acc: any, item: any) => {
     const issueExist = closedIssues.find(i => i.key === item.key);
@@ -20,28 +19,13 @@ const crunchWeeks = (
         const issuesWeeks = [...week.list, issueExist];
         let weeklyPoints = week.points.count;
         // If current issue contains points, re-calculate weekly totals
-        if (
-          issueExist.fields[userConfig.jira.fields.points] !== undefined &&
-          issueExist.fields[userConfig.jira.fields.points] !== null
-        ) {
+        if (issueExist.points !== undefined && issueExist.points !== null) {
           weeklyPoints = issuesWeeks
             .filter(
               (issue: IJiraIssue) =>
-                (issue.fields[userConfig.jira.fields.points] !== undefined &&
-                  issue.fields[userConfig.jira.fields.points] !== null) ||
-                (issue.fields[userConfig.jira.fields.originalPoints] !==
-                  undefined &&
-                  issue.fields[userConfig.jira.fields.originalPoints] !== null),
+                issue.points !== undefined && issue.points !== null,
             )
-            .map((issue: IJiraIssue) => {
-              if (
-                issue.fields[userConfig.jira.fields.points] !== undefined &&
-                issue.fields[userConfig.jira.fields.points] !== null
-              ) {
-                return issue.fields[userConfig.jira.fields.points];
-              }
-              return issue.fields[userConfig.jira.fields.originalPoints];
-            })
+            .map((issue: IJiraIssue) => issue.points)
             .reduce((acc: number, points: number) => acc + points, 0);
         }
         return {

@@ -5,23 +5,7 @@ import * as fsNdjson from 'fs-ndjson';
 
 import { IConfig } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
-import { cleanIssue } from '../misc/jiraUtils';
-
-const getPoints = (issue: any, config: IConfig) => {
-  if (
-    issue.fields[config.jira.fields.points] !== undefined &&
-    issue.fields[config.jira.fields.points] !== null
-  ) {
-    return issue.fields[config.jira.fields.points];
-  }
-  if (
-    issue.fields[config.jira.fields.originalPoints] !== undefined &&
-    issue.fields[config.jira.fields.originalPoints] !== null
-  ) {
-    return issue.fields[config.jira.fields.originalPoints];
-  }
-  return 0;
-};
+import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 
 /*
     Fetches all initiatives
@@ -77,7 +61,7 @@ const fetchChildren = async (
         ...issue,
         host: userConfig.jira.host,
         // jql: 'issuekey in childIssuesOf(' + issueKey + ')',
-        points: getPoints(issue, userConfig),
+        points: returnTicketsPoints(issue, userConfig),
       };
       issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
       issues.push(cleanIssue(updatedIssue));
