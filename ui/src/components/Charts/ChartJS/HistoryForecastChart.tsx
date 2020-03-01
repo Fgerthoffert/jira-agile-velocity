@@ -1,6 +1,7 @@
 import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import Chart from 'chart.js';
+import moment from 'moment';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -8,6 +9,11 @@ const styles = (theme: Theme) =>
       // height: 400
     },
   });
+
+  const getDayWeek = (sourceDate: string) => {
+    const date = moment(sourceDate);
+    return date.format('MMM Do');
+  };
 
 class HistoryForecastChart extends Component<any, any> {
   chartRef: any = React.createRef();
@@ -29,10 +35,6 @@ class HistoryForecastChart extends Component<any, any> {
   buildChart = () => {
     const { dataset, defaultPoints } = this.props;
     const myChartRef = this.chartRef.current.getContext('2d');
-    let metric = 'points';
-    if (!defaultPoints) {
-      metric = 'issues';
-    }
 
     if (this.chart.destroy !== undefined) {
       this.chart.destroy();
@@ -53,16 +55,15 @@ class HistoryForecastChart extends Component<any, any> {
             fill: false,
           },
         ],
-        labels: dataset.map((w: any) => w.weekEnd),
+        labels: dataset.map((w: any) =>  getDayWeek(w.weekEnd)),
       },
       options: {
         scales: {
           yAxes: [
             {
               ticks: {
-                stepSize: 1,
-                callback: function(value: any, index: any, values: any) {
-                  return new Date(value).toISOString().slice(0, 10);
+                callback: function(value: any) {
+                  return getDayWeek(value)
                 },
               },
             },
@@ -72,6 +73,14 @@ class HistoryForecastChart extends Component<any, any> {
           position: 'nearest',
           mode: 'index',
           intersect: false,
+          callbacks: {
+            title: (tooltipItems: any) => {
+              return 'Forecast on: ' + tooltipItems[0].xLabel
+            },         
+            label: (tooltipItem: any) => {
+              return 'Naive completion: ' + new Date(parseInt(tooltipItem.value)).toISOString().slice(0, 10)
+            },   
+          }       
         },
         plugins: {
           datalabels: {
