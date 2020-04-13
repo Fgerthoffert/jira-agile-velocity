@@ -9,7 +9,7 @@ export interface WeeklyChartsProps {
 export default function WeeklyChart(props: WeeklyChartsProps) {
   const { velocity, defaultPoints } = props;
 
-  const itemsToDisplay = 16;
+  const itemsToDisplay = 32;
   const startPos =
     itemsToDisplay > velocity.weeks.length
       ? 0
