@@ -87,7 +87,7 @@ class RoadmapFutureChart extends Component<any, any> {
         initiative: getInitiativeTitle(initiative),
       };
       for (const week of initiative.weeks) {
-        initiativeData[week.weekEnd] = week[metric].count.toFixed(2);
+        initiativeData[week.weekEnd] = week[metric].count === 0 ? week[metric].count : week[metric].count.toFixed(2);
       }
       dataset.push(initiativeData);
     }
