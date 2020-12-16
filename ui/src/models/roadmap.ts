@@ -3,6 +3,7 @@ import * as log from 'loglevel';
 import { createModel } from '@rematch/core';
 import axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage';
+import * as lzstring from 'lz-string';
 
 import { fetchGraphIssues } from '../utils/graph';
 
@@ -113,12 +114,16 @@ export const roadmap = createModel({
     async loadDataFromCache() {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
-      const cacheRoadmap = reactLocalStorage.getObject('cache-roadmap');
-      if (Object.keys(cacheRoadmap).length > 0) {
-        log.info(
-          'Loading Roadmap data from cache while call to the backend is happening',
-        );
-        this.setRoadmap(reactLocalStorage.getObject('cache-roadmap'));
+      const cacheRoadmapLz = reactLocalStorage.getObject('cache-roadmap');
+      if (cacheRoadmapLz !== null && Object.keys(cacheRoadmapLz).length > 0) {
+        const cacheRoadmapStr: any = lzstring.decompress(cacheRoadmapLz)
+        const cacheRoadmap: any = JSON.parse(cacheRoadmapStr);
+        if (Object.keys(cacheRoadmap).length > 0) {
+          log.info(
+            'Loading Roadmap data from cache while call to the backend is happening',
+          );
+          this.setRoadmap(cacheRoadmap);
+        }        
       }
     },
 
@@ -279,7 +284,7 @@ export const roadmap = createModel({
           };
         }),
       };
-      reactLocalStorage.setObject('cache-roadmap', augmentedRoadmap);
+      reactLocalStorage.setObject('cache-roadmap', lzstring.compress(JSON.stringify(augmentedRoadmap)));
       this.setRoadmap(augmentedRoadmap);
     },
 
