@@ -209,7 +209,20 @@ export class HistoryService {
         const historyInitiative = historyInitiativesData.initiatives.find(
           i => i.key === initiativeKey,
         );
-        history = { metrics: historyInitiative === undefined ? [] : historyInitiative.metrics };
+        const emptyMetrics = {
+          issues: {
+            completed: 0,
+            remaining: 0,
+            total: 0
+          },
+          points: {
+            completed: 0,
+            remaining: 0,
+            missing: 0,
+            total: 0
+          }
+        };
+        history = { metrics: historyInitiative === undefined ? emptyMetrics : historyInitiative.metrics };
 
         const forecastInitiative = historyInitiativesData.futureCompletion.find(
           i => i.key === initiativeKey,
