@@ -2,6 +2,7 @@ import { ICalendar, IJiraIssue } from '../../global';
 
 const stringClean = (labelName: string) => {
   return String(labelName)
+    .replace(' ', '')
     .replace(/[^a-z0-9+]+/gi, '')
     .toLowerCase();
 };
