@@ -42,7 +42,7 @@
     "eslint-plugin-react-hooks": "^2.2.0",
     "font-color-contrast": "^1.0.3",
     "install": "^0.13.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "loglevel": "^1.6.3",
     "lz-string": "^1.4.4",
     "material-color-hash": "^0.1.6",
