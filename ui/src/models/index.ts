@@ -1,4 +1,5 @@
 import { global } from './global';
 import { roadmap } from './roadmap';
 import { velocity } from './velocity';
-export { global, velocity, roadmap };
+import { control } from './control';
+export { global, velocity, roadmap, control };

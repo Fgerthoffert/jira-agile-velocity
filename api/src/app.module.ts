@@ -3,6 +3,7 @@ import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { VelocityModule } from './velocity/velocity.module';
+import { ControlModule } from './control/control.module';
 import { HistoryModule } from './history/history.module';
 import { InitiativesModule } from './initiatives/initiatives.module';
 import { CachedaysModule } from './cachedays/cachedays.module';
@@ -13,7 +14,7 @@ import { ConfigService } from './config.service';
 import { AuthenticationMiddleware } from './auth/authentication.middleware';
 
 @Module({
-	imports: [ VelocityModule, HistoryModule, InitiativesModule, CachedaysModule, TeamsModule, ConfigModule ],
+	imports: [ VelocityModule, ControlModule, HistoryModule, InitiativesModule, CachedaysModule, TeamsModule, ConfigModule ],
 	controllers: [ AppController ],
 	providers: [ AppService ]
 })
@@ -30,6 +31,7 @@ export class AppModule {
 				.apply(AuthenticationMiddleware)
 				.forRoutes(
 					{ path: '/velocity', method: RequestMethod.GET },
+					{ path: '/control', method: RequestMethod.GET },
 					{ path: '/history', method: RequestMethod.GET },
 					{ path: '/initiatives', method: RequestMethod.GET },
 					{ path: '/teams', method: RequestMethod.GET },

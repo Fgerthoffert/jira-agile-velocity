@@ -47,7 +47,7 @@ interface PayloadWeek {
   };
 }
 
-interface ICompletion {
+export interface ICompletion {
   issues: {
     count: number;
     velocity: number;
@@ -68,6 +68,7 @@ export interface IJiraIssue {
   fields: any;
   points: number;
   jql: string; // JQL Query used to fetch the issue
+  openedForBusinessDays: number;
 }
 
 export interface IDays {
@@ -93,7 +94,21 @@ export interface IWeeks {
   weekTxt: string;
   weekJira: string;
   completion: ICompletion;
+  control?: any;
   scopeChangeCompletion: ICompletion;
+}
+
+export interface IWeeksControl {
+  date: string;
+  weekStart: string;
+  weekEnd: string;
+  weekNb: number;
+  weekTxt: string;
+  weekJira: string;
+  current: any;
+  openedForAvg: number;
+  openedForRolling: number;
+  controlValues: Array<number>;
 }
 
 interface IWeeksObj {
@@ -180,6 +195,7 @@ export interface ICalendarFinal {
   open: IOpen | object;
   forecast: IForecast | object;
   health: IHealth | object;
+  control?: Array<any>;
 }
 
 export interface IConfig {
@@ -218,4 +234,11 @@ export interface IConfigRoadmap {
   jqlInitiatives: string;
   teams: Array<string>;
   forecastWeeks: number;
+}
+
+export interface IControlBucket {
+  key: string;
+  value: string;
+  color: string;
+  isInBucket: Function;
 }

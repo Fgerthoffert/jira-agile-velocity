@@ -9,6 +9,7 @@ import * as fsNdjson from 'fs-ndjson';
 import { IConfig, IJiraIssue } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
+import { differenceInBusinessDays } from 'date-fns'
 import { getTeamId } from '../misc/teamUtils';
 import { returnTicketsPoints } from '../misc/jiraUtils';
 
@@ -73,7 +74,7 @@ const fetchCompleted = async (
           const issuesJira = await jiraSearchIssues(
             config.jira,
             jqlQuery,
-            'labels,summary,status,issuetype,assignee,' +
+            'labels,created,summary,status,issuetype,assignee,' +
               config.jira.fields.points +
               ',' +
               config.jira.fields.originalPoints,
@@ -86,9 +87,12 @@ const fetchCompleted = async (
             for (const issue of issuesJira) {
               // Adding a closedAt object to record the date at which the issue was actually closed
               // Attaching points directly to the issues object to avoid having to bring jira-field config specific elements to the UI
+
+              const openedForDays = differenceInBusinessDays(new Date(scanDay.date), new Date(issue.fields.created))
               const updatedIssue = {
                 ...issue,
                 closedAt: scanDay.date.toJSON().slice(0, 10),
+                openedForBusinessDays: openedForDays < 0 ? 0 : openedForDays,
                 weekStart: scanDay.weekStart,
                 weekEnd: scanDay.weekEnd,
                 weekTxt: scanDay.weekTxt,

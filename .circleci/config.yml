@@ -135,10 +135,10 @@ jobs:
           command: cd cli && npm install
       - run:
           name: Install Typescript
-          command: npm -g install typescript
+          command: npm -g install typescript@4.4.4
       - run:
           name: Install oclif-dev
-          command: npm -g install @oclif/dev-cli
+          command: npm -g install @oclif/dev-cli @oclif/help
       - run:
           name: Authenticate with NPM registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > cli/.npmrc
@@ -154,9 +154,6 @@ jobs:
       - run:
           name: Generate the oclif manifest
           command: cd cli && oclif-dev manifest
-      - run:
-          name: Update the oclif readme
-          command: cd cli && oclif-dev readme
       - run:
           name: Ls cli content
           command: ls -lah cli/

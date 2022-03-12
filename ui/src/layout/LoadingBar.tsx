@@ -21,7 +21,7 @@ const mapState = (state: iRootState) => ({
   roadmapLoading: state.roadmap.loading,
 });
 
-type connectedProps = ReturnType<typeof mapState>;
+type connectedProps = ReturnType<typeof mapState> & any;
 const LoadingBar: FC<connectedProps> = ({
   globalLoading,
   velocityLoading,

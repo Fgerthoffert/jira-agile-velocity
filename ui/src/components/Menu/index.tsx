@@ -73,6 +73,11 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu }) => {
       text: 'Velocity',
     },
     {
+      path: '/control',
+      icon: <BarChartIcon />,
+      text: 'Control Chart',
+    },    
+    {
       path: '/initiatives',
       icon: <FormatListNumberedIcon />,
       text: 'Initiatives',

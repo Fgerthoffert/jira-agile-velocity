@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-export const velocity = createModel({
+export const control = createModel({
   state: {
     teams: [],
     selectedTeam: null,
@@ -33,10 +33,10 @@ export const velocity = createModel({
   effects: {
     async initView(currentTab, rootState) {
       const log = rootState.global.log;
-      log.info('Initialized Velocity view');
+      log.info('Initialized Control view');
 
       // We stop initializing if there are teams present
-      if (rootState.velocity.teams.length > 0) {
+      if (rootState.control.teams.length > 0) {
         return true;
       }
 
@@ -62,13 +62,13 @@ export const velocity = createModel({
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
       const cacheVelocityTeams = reactLocalStorage.getObject(
-        'cache-velocityTeams',
+        'cache-controlTeams',
       );
       if (Object.keys(cacheVelocityTeams).length > 0) {
         log.info(
           'Loading Teams data from cache while call to the backend is happening',
         );
-        this.setTeams(reactLocalStorage.getObject('cache-velocityTeams'));
+        this.setTeams(reactLocalStorage.getObject('cache-controlTeams'));
         const selectedTeam = cacheVelocityTeams.find(
           (t: any) => t.id === currentTab,
         );
@@ -83,17 +83,17 @@ export const velocity = createModel({
     async loadVelocityFromCache(teamId) {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
-      const cacheVelocity = reactLocalStorage.getObject('cache-velocity');
+      const cacheVelocity = reactLocalStorage.getObject('cache-control');
       if (Object.keys(cacheVelocity).length > 0 && cacheVelocity.find((t: any) => t.id === teamId) !== undefined) {
         log.info(
           'Loading Velocity data from cache while call to the backend is happening',
         );
-        this.setVelocity(reactLocalStorage.getObject('cache-velocity'));
+        this.setVelocity(reactLocalStorage.getObject('cache-control'));
       }
     },
 
     async refreshTeams(currentTab, rootState) {
-      if (rootState.velocity.loading === false) {
+      if (rootState.control.loading === false) {
         const setTeams = this.setTeams;
         const setLoading = this.setLoading;
         const updateSelectedTeam = this.updateSelectedTeam;
@@ -113,7 +113,7 @@ export const velocity = createModel({
         })
           .then(response => {
             setTeams(response.data);
-            reactLocalStorage.setObject('cache-velocityTeams', response.data);
+            reactLocalStorage.setObject('cache-controlTeams', response.data);
             // Set value to
             const selectedTeam =
               response.data.find((t: any) => t.id === currentTab) === undefined
@@ -133,11 +133,11 @@ export const velocity = createModel({
 
     async fetchTeamData(teamId, rootState) {
       this.loadVelocityFromCache(teamId);
-      if (rootState.velocity.loading === false) {
+      if (rootState.control.loading === false) {
         const setVelocity = this.setVelocity;
         const setLoading = this.setLoading;
         if (
-          rootState.velocity.teams.find((t: any) => t.id === teamId) !==
+          rootState.control.teams.find((t: any) => t.id === teamId) !==
           undefined
         ) {
           const log = rootState.global.log;
@@ -154,18 +154,18 @@ export const velocity = createModel({
               : {};
           axios({
             method: 'get',
-            url: host + '/velocity/' + teamId,
+            url: host + '/control/' + teamId,
             headers,
           })
             .then(response => {
               const updatedVelocity = [
-                ...rootState.velocity.velocity.filter(
+                ...rootState.control.velocity.filter(
                   (t: any) => t.id !== teamId,
                 ),
                 response.data,
               ];
               setVelocity(updatedVelocity);
-              reactLocalStorage.setObject('cache-velocity', updatedVelocity);
+              reactLocalStorage.setObject('cache-control', updatedVelocity);
               setLoading(false);
             })
             .catch(error => {

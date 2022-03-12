@@ -136,7 +136,7 @@ export default class Velocity extends Command {
         { flags: 'w' },
       );
       issueFileStream.write(JSON.stringify(trimmedPayload));
-      issueFileStream.end();
+      issueFileStream.end();   
     }
   }
 
