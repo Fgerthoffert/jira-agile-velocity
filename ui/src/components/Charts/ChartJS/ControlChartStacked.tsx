@@ -1,7 +1,6 @@
 import React, { Component } from 'react'; // let's also import Component
 import { Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import Chart from 'chart.js';
-import toMaterialStyle from 'material-color-hash';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -144,43 +143,13 @@ class VelocityChartStacked extends Component<any, any> {
       if (this.allowClick === true) {
         this.allowClick = false;
         const clickedWeek = dataset[idx];
-        let jqlString = '';
-        const activeWeeks = clickedWeek.weekDays.filter(
-          (d: any) => d.completion.issues.count > 0
-        );
-        for (const [widx, day] of activeWeeks.entries()) {
-          jqlString =
-            jqlString +
-            ' (' +
-            jqlCompletion +
-            ' ON(' +
-            day.weekDayJira +
-            '))';
-          if (widx < activeWeeks.length - 1) {
-            jqlString = jqlString + ' OR';
-          }
-        }
+        let jqlString = `key in (${clickedWeek.completion.list.join(',')})`
         const url = jiraHost + '/issues/?jql=' + jqlString;
         window.open(url, '_blank');
         setTimeout(() => {
           this.resetAllowClick();
         }, 1000);
       }
-      //      const issues = dataset[idx].completion.list;
-      //      console.log(issues);
-      /*
-      if (issues.length > 0 && this.allowClick === true) {
-        this.allowClick = false;
-        const keys = issues.map((i: any) => i.key);
-        //const url =
-        //  issues[0].host + '/issues/?jql=key in (' + keys.toString() + ')';
-        const url = issues[0].host + '/issues/?jql=' + issues[0].jql;
-        window.open(url, '_blank');
-        setTimeout(() => {
-          this.resetAllowClick();
-        }, 1000);
-      }
-      */
     }
   };
 

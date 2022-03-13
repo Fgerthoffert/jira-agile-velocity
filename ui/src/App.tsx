@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Roadmap from './views/roadmap';
 import Velocity from './views/velocity';
+import Assignees from './views/assignees';
 import Control from './views/control';
 import Default from './views/default';
 
@@ -25,8 +26,10 @@ const App: FC<connectedProps> = ({ initApp }) => {
           <Route exact name='index' path='/' component={Default} />
           <Route exact path='/velocity' component={Velocity} />
           <Route exact path='/velocity/:tab' component={Velocity} />
+          <Route exact path='/assignees' component={Assignees} />
+          <Route exact path='/assignees/:tab' component={Assignees} />
           <Route exact path='/control' component={Control} />
-          <Route exact path='/control/:tab' component={Control} />          
+          <Route exact path='/control/:tab' component={Control} />
           <Route exact path='/initiatives' component={Roadmap} />
         </Switch>
       </Router>

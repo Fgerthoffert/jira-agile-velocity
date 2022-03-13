@@ -10,7 +10,7 @@ const stringClean = (labelName: string) => {
 /*
     Receives an empty calendar and populates it with issues by reading files from cache
 */
-const insertClosed = async (
+const insertClosed = (
   calendar: ICalendar,
   closedIssues: Array<IJiraIssue>,
 ) => {
