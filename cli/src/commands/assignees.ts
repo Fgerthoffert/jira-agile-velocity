@@ -23,7 +23,6 @@ export default class Velocity extends Command {
   };
 
   async run() {
-    const { flags } = this.parse(Velocity);
     const userConfig = this.userConfig;
 
     for (const team of userConfig.teams) {
@@ -87,11 +86,6 @@ export default class Velocity extends Command {
           weeks: trimmedWeeks,
         }
       })
-
-      const calendarWithClosed = await insertClosed(
-        emptyCalendar,
-        closedIssues,
-      );
 
       const calendarVelocity: any = {
         assignees,
