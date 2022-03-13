@@ -41,10 +41,10 @@ jobs:
           root: .
           paths: .
 
-  cli-node-10:
+  cli-node-12:
     <<: *cli-test
     docker:
-      - image: node:10
+      - image: node:12
   cli-cache:
     <<: *cli-test
     steps:
@@ -301,7 +301,7 @@ workflows:
   lint-and-test:
     jobs:
       - cli-node-latest
-      - cli-node-10
+      - cli-node-12
       - cli-cache:
           filters:
             tags:
