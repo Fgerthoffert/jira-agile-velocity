@@ -133,9 +133,9 @@ const crunchRoadmap = (
         team,
         weeks: fillWeek(
           emptyRoadmap,
-          team.velocity.issues.current,
+          (team.velocity.issues.current * team.initiativeEffortPrct / 100),
           initiative.metrics.issues.remaining,
-          team.velocity.points.current,
+          (team.velocity.points.current * team.initiativeEffortPrct / 100),
           initiative.metrics.points.remaining,
           initiativesRoadmap.filter(
             i => getTeamId(i.team.team) === getTeamId(team.team),

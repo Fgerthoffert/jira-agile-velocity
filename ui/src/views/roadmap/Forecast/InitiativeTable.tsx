@@ -92,8 +92,22 @@ const InitiativeTable: FC<any> = ({
           cellStyle: { ...dedaultStyle, width: 200 },
         },
         {
-          title: 'Velocity /week',
+          title: 'Full Vel. /week',
           field: 'velocity',
+          type: 'numeric',
+          headerStyle: { ...dedaultStyle, width: 60 },
+          cellStyle: { ...dedaultStyle, width: 60 },
+        },
+        {
+          title: 'Initiative effort (%)',
+          field: 'initiativeEffort',
+          type: 'numeric',
+          headerStyle: { ...dedaultStyle, width: 60 },
+          cellStyle: { ...dedaultStyle, width: 60 },
+        },
+        {
+          title: 'Initiatives Vel. /week',
+          field: 'initiativeVelocity',
           type: 'numeric',
           headerStyle: { ...dedaultStyle, width: 60 },
           cellStyle: { ...dedaultStyle, width: 60 },
@@ -169,6 +183,11 @@ const InitiativeTable: FC<any> = ({
         },
       ]}
       data={initiatives.map((initiative: any) => {
+        const velocity = initiative.team === null || initiative.team === undefined ? 'n/a' : initiative.team.velocity[metric].current
+        let initiativeVelocity = 'n/a'
+        if (initiative.team.initiativeEffortPrct !== undefined && velocity !== 'n/a') {
+          initiativeVelocity = `${velocity * initiative.team.initiativeEffortPrct / 100}`
+        }
         return {
           key: initiative.key,
           team:
@@ -177,10 +196,9 @@ const InitiativeTable: FC<any> = ({
               : initiative.assignee.displayName,
           title: initiative.summary,
           url: jiraHost + '/browse/' + initiative.key,
-          velocity:
-            initiative.team === null || initiative.team === undefined
-              ? 'n/a'
-              : initiative.team.velocity[metric].current,
+          velocity: velocity,
+          initiativeEffort: initiative.team.initiativeEffortPrct === undefined ? 'n/a' : `${initiative.team.initiativeEffortPrct}%`,
+          initiativeVelocity: initiativeVelocity,
           remaining: initiative.metrics[metric].remaining,
           state: initiative.status.name,
           progressPoints: getProgress(initiative, 'points'),

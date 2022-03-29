@@ -17,6 +17,7 @@ const teamVelocityFromCache = async (userConfig: IConfig, cacheDir: string) => {
       const teamVelocity: any = loadJsonFile.sync(teamCacheFile);
       teamsVelocity.push({
         team: team,
+        initiativeEffortPrct: teamVelocity.initiativeEffortPrct === undefined ? 100 : teamVelocity.initiativeEffortPrct,
         velocity: teamVelocity.health.weeks.velocity,
       });
     }

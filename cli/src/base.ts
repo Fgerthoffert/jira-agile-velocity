@@ -30,6 +30,7 @@ export default abstract class extends Command {
           'Insert a JQL query to collect a list of tickets to be completed',
         jqlHistory: '2019-07-01',
         excludeDays: ['1900-01-01'],
+        initiativeEffortPrct: 60,
         slack: {
           token: '',
           channel: '',
@@ -44,6 +45,7 @@ export default abstract class extends Command {
           'Insert a JQL query to collect a list of tickets to be completed',
         jqlHistory: '2019-07-01',
         excludeDays: ['1900-01-01'],
+        initiativeEffortPrct: 40,
         slack: {
           token: '',
           channel: '',

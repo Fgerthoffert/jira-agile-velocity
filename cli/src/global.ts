@@ -210,6 +210,7 @@ export interface IConfigTeam {
   jqlRemaining: string;
   jqlHistory: string;
   excludeDays: Array<string>;
+  initiativeEffortPrct: number;
   slack: {
     token: string;
     channel: string;

@@ -73,6 +73,7 @@ export default class Velocity extends Command {
         updatedAt: new Date().toJSON(), // Adding updated date to the payload
         host: userConfig.jira.host, // Adding Jira host config
         jqlCompletion: team.jqlCompletion, // Adding JQL completion query
+        initiativeEffortPrct: team.initiativeEffortPrct === undefined ? 100 : team.initiativeEffortPrct,
       };
 
       // Prune issues list from the object
