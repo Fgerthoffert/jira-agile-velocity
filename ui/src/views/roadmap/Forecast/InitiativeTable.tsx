@@ -183,10 +183,15 @@ const InitiativeTable: FC<any> = ({
         },
       ]}
       data={initiatives.map((initiative: any) => {
-        const velocity = initiative.team === null || initiative.team === undefined ? 'n/a' : initiative.team.velocity[metric].current
+        let velocity = 'n/a';
         let initiativeVelocity = 'n/a'
-        if (initiative.team.initiativeEffortPrct !== undefined && velocity !== 'n/a') {
-          initiativeVelocity = `${velocity * initiative.team.initiativeEffortPrct / 100}`
+        let initiativeEffort = 'n/a'
+        if (initiative.team !== undefined && initiative.team !== null) {
+          velocity = initiative.team.velocity[metric].current
+          if (initiative.team.initiativeEffortPrct !== undefined && velocity !== 'n/a') {
+            initiativeVelocity = `${Number(velocity) * initiative.team.initiativeEffortPrct / 100}`
+            initiativeEffort = `${initiative.team.initiativeEffortPrct}%`
+          }
         }
         return {
           key: initiative.key,
@@ -197,7 +202,7 @@ const InitiativeTable: FC<any> = ({
           title: initiative.summary,
           url: jiraHost + '/browse/' + initiative.key,
           velocity: velocity,
-          initiativeEffort: initiative.team.initiativeEffortPrct === undefined ? 'n/a' : `${initiative.team.initiativeEffortPrct}%`,
+          initiativeEffort: initiativeEffort,
           initiativeVelocity: initiativeVelocity,
           remaining: initiative.metrics[metric].remaining,
           state: initiative.status.name,
