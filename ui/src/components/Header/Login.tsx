@@ -1,27 +1,27 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 
-import { makeStyles, createStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import Avatar from '@material-ui/core/Avatar';
+import { createStyles, makeStyles } from '@mui/styles';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
 
 import { iRootState } from '../../store';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    avatar: {}
-  })
+    avatar: {},
+  }),
 );
 
 const mapState = (state: iRootState) => ({
-  authUser: state.global.authUser
+  authUser: state.global.authUser,
 });
 
 const mapDispatch = (dispatch: any) => ({
   initApp: dispatch.global.initApp,
-  doLogOut: dispatch.global.doLogOut
+  doLogOut: dispatch.global.doLogOut,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -47,17 +47,19 @@ const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
     doLogOut();
   };
 
-  if (authUser === null) {
+  if (Object.keys(authUser).length === 0) {
     return null;
   }
+
   return (
     <React.Fragment>
       <IconButton
-        aria-label='account of current user'
-        aria-controls='menu-appbar'
-        aria-haspopup='true'
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
         onClick={handleProfileMenuOpen}
-        color='inherit'
+        color="inherit"
+        size="large"
       >
         <Avatar
           alt={authUser.name}
@@ -66,16 +68,16 @@ const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
         />
       </IconButton>
       <Menu
-        id='menu-appbar'
+        id="menu-appbar"
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         anchorEl={anchorEl}
         keepMounted
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         open={isMenuOpen}
         onClose={handleMenuClose}
@@ -86,7 +88,4 @@ const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch
-)(Login);
+export default connect(mapState, mapDispatch)(Login);

@@ -562,13 +562,13 @@
         "affectsGlobalScope": false
       },
       "./src/global.ts": {
-        "version": "dde75ce0ad7afa1c4c2488a310457134be1f736a2ba78bfc4f5f52300e72b292",
-        "signature": "91439e47391e3075aec0176a5cdd489e0f892373791d375f4d895ea2e9bcafa4",
+        "version": "9a2777428a6828f0bb579d5eb465b9a2e231e88d190b5314ed047993385785a1",
+        "signature": "08ad00f4e2e8ce0ecc4b63aa0c716ed8503163ed1976e9beef79b85cd576be77",
         "affectsGlobalScope": false
       },
       "./src/base.ts": {
-        "version": "ce2c92bfe0802d6482f43e899cb8bf6e3d41fedd346dfaac13eda1f9793c7df6",
-        "signature": "c9c1fb488856bb4993438aac4daa3fe1afb62ccc6a9091c7981e337f0d7a2dda",
+        "version": "97346eb662c0388a733080c85412ab6fb0b2171d2c023df78724e7cd84c13383",
+        "signature": "c14f8c30975df27791ca9cc08d44aeecce8cbab7994ad31b6ce27d492ddc8a53",
         "affectsGlobalScope": false
       },
       "./src/fs-ndjson.d.ts": {
@@ -707,8 +707,23 @@
         "affectsGlobalScope": false
       },
       "./src/utils/velocity/insertclosed.ts": {
-        "version": "5d16a60c8b195e6eb16887d6d5cd1eb5815583e1f4189f86440af6d7ea2358fb",
-        "signature": "6a30bdaefb00b8e61f0b224bf4228e62cc740d6fb19b2b4c981749fba9e09910",
+        "version": "16b14a8b1731c0eb0321e0a269f0b7eb9d37abc74f744a7b19b7882f82f939bf",
+        "signature": "fa4e132166e9b5642679ee6909dc23b725401a5259b3cfdc8801341de2e729a7",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/velocity/calculateaveragevelocity.ts": {
+        "version": "c62a98165edd77757f6c65175f167f93f4e38fbab87bf094809f2fd6408fa551",
+        "signature": "8a4327056227acaf5ad688504014b679c0f321bd4ad908aa0eaa108302f8d9b8",
+        "affectsGlobalScope": false
+      },
+      "./src/utils/velocity/insertweeklyvelocity.ts": {
+        "version": "6559dfb84d8ae20597df0f86551bd11536171ea476a11b1a9a6e95de079aab6a",
+        "signature": "b3f0c885154968daf830c3c83b544ae44032abb9b8853e0febb0949b556f4740",
+        "affectsGlobalScope": false
+      },
+      "./src/commands/assignees.ts": {
+        "version": "802a93bc1e7beac8d5ee65daef714d31154fd112b96ad28605483f5577088e84",
+        "signature": "a3e8f3f53168c9016b97346b64ffa350978841891c0213dd1e57498564cb83c9",
         "affectsGlobalScope": false
       },
       "./src/utils/velocity/insertcontroldata.ts": {
@@ -726,19 +741,9 @@
         "signature": "95bb48a3d9706a1d4c5c9f7d010b472e4d4a727fb3f4a3175b8923c426d44b76",
         "affectsGlobalScope": false
       },
-      "./src/utils/velocity/calculateaveragevelocity.ts": {
-        "version": "c62a98165edd77757f6c65175f167f93f4e38fbab87bf094809f2fd6408fa551",
-        "signature": "8a4327056227acaf5ad688504014b679c0f321bd4ad908aa0eaa108302f8d9b8",
-        "affectsGlobalScope": false
-      },
       "./src/utils/velocity/insertdailyvelocity.ts": {
         "version": "302c4aeaf80b7a1bdb75ddd0944c381911c2fc52fa3fc62dbf42a6b6e3605d35",
         "signature": "6bb0ab10e3c684e82182754d4cbfdac3d8d47816a924ca810f3188d41a41be23",
-        "affectsGlobalScope": false
-      },
-      "./src/utils/velocity/insertweeklyvelocity.ts": {
-        "version": "6559dfb84d8ae20597df0f86551bd11536171ea476a11b1a9a6e95de079aab6a",
-        "signature": "b3f0c885154968daf830c3c83b544ae44032abb9b8853e0febb0949b556f4740",
         "affectsGlobalScope": false
       },
       "./src/utils/data/fetchchildren.ts": {
@@ -752,7 +757,7 @@
         "affectsGlobalScope": false
       },
       "./src/utils/initiatives/crunchroadmap.ts": {
-        "version": "147be24520631c6b3f7cc4dfaca0c6babaf207687e6da0dae313991835dd855e",
+        "version": "d8af24dfa096fc540072b0492df8a5da20b97eb13a2959ef5c1ff641a5c60b0e",
         "signature": "160222c7cbaadca31e40de7108034274c0657d22c1140b0201a1cab762e8b82f",
         "affectsGlobalScope": false
       },
@@ -867,8 +872,8 @@
         "affectsGlobalScope": false
       },
       "./src/utils/initiatives/teamvelocityfromcache.ts": {
-        "version": "62d268ccef8959f05f5fd6114433dd0cdfa4c5e6325fe372670f3f3b9b75a6df",
-        "signature": "6fb53b80cd28098ea86edf1518418a244d177ba1c8f8d88c15771a91f35aa48d",
+        "version": "53adb8d8e15a9b2024a82c0e7472c7c0e5fb159e231692fa00bf1f6e534a87b9",
+        "signature": "6096d460c46cb71d2921d0a4d52dbb6757dc5048bd76a56505c0692793da618a",
         "affectsGlobalScope": false
       },
       "./src/commands/initiatives.ts": {
@@ -907,7 +912,7 @@
         "affectsGlobalScope": false
       },
       "./src/commands/velocity.ts": {
-        "version": "555a4089bf1410ad0a73d0ad70dbee3d51afaab24995f5a218cf1722701eb612",
+        "version": "77cd403f40968409b929dd0ea0ec371ed77b2762e181cfc8923ac647b8577aca",
         "signature": "e27725ae544b949a74749108c61a696da6507866953db9a9018642c4c9b4802f",
         "affectsGlobalScope": false
       },
@@ -2221,6 +2226,24 @@
         "./node_modules/date-fns/typings.d.ts",
         "./src/global.ts",
         "./types/load-yaml-file.d.ts"
+      ],
+      "./src/commands/assignees.ts": [
+        "./node_modules/@oclif/command/lib/index.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/path.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/cli-ux/lib/index.d.ts",
+        "./node_modules/date-fns/typings.d.ts",
+        "./src/base.ts",
+        "./src/global.ts",
+        "./src/utils/data/fetchcompleted.ts",
+        "./src/utils/jira/searchissues.ts",
+        "./src/utils/misc/jirautils.ts",
+        "./src/utils/misc/teamutils.ts",
+        "./src/utils/velocity/initcalendar.ts",
+        "./src/utils/velocity/insertclosed.ts",
+        "./src/utils/velocity/insertweeklyvelocity.ts"
       ],
       "./src/commands/control.ts": [
         "./node_modules/@oclif/command/lib/index.d.ts",
@@ -3706,6 +3729,11 @@
         "./node_modules/@oclif/command/lib/index.d.ts",
         "./src/global.ts"
       ],
+      "./src/commands/assignees.ts": [
+        "./node_modules/@oclif/parser/lib/flags.d.ts",
+        "./src/base.ts",
+        "./src/global.ts"
+      ],
       "./src/commands/control.ts": [
         "./node_modules/@oclif/parser/lib/flags.d.ts",
         "./src/base.ts"
@@ -3964,6 +3992,7 @@
       "./node_modules/type-fest/source/readonly-deep.d.ts",
       "./node_modules/type-fest/source/require-at-least-one.d.ts",
       "./src/base.ts",
+      "./src/commands/assignees.ts",
       "./src/commands/control.ts",
       "./src/commands/history.ts",
       "./src/commands/init.ts",

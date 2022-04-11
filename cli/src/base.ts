@@ -21,38 +21,38 @@ export default abstract class extends Command {
       },
       excludeDays: ['1900-01-01'],
     },
-    teams: [
-      {
-        name: 'Team 1',
-        jqlCompletion:
-          'Insert a JQL query to be used to record past completion',
-        jqlRemaining:
-          'Insert a JQL query to collect a list of tickets to be completed',
-        jqlHistory: '2019-07-01',
-        excludeDays: ['1900-01-01'],
-        initiativeEffortPrct: 60,
-        slack: {
-          token: '',
-          channel: '',
-          explanation: '',
-        },
+    teams: [{
+      name: 'Team 1',
+      jqlHistory: '2019-07-01',
+      excludeDays: ['1900-01-01'],
+      completion: {
+        all: 'Insert a JQL query to be used to record the overall completion of a team',
+        categories: [{
+          name: 'Bugs',
+          jql: 'Insert a JQL query to be used to capture the completion of a category'
+        }, {
+          name: 'Tech Debt',
+          jql: 'Insert a JQL query to be used to capture the completion of a category'
+        }]
       },
-      {
-        name: 'Team 2',
-        jqlCompletion:
-          'Insert a JQL query to be used to record past completion',
-        jqlRemaining:
-          'Insert a JQL query to collect a list of tickets to be completed',
-        jqlHistory: '2019-07-01',
-        excludeDays: ['1900-01-01'],
-        initiativeEffortPrct: 40,
-        slack: {
-          token: '',
-          channel: '',
-          explanation: '',
-        },
-      },
-    ],
+      forecast: {
+        categories: [{
+          name: 'Initiatives',
+          jql: 'Insert a JQL query to be used to capture the completion of a category',
+          // If set to true, all stories fetched in the JQL query, 
+          // will be queried again to fetch all of their children
+          fetchChild: true,
+          // Exclude stories that might have been fetched from the following 
+          // other forecast queries
+          exclude: []
+        }, {
+          name: 'Tech Debt',
+          jql: 'Insert a JQL query to be used to capture the completion of a category',
+          fetchChild: false,
+          exclude: ['Initiatives']
+        }]
+      }
+    }],
     roadmap: {
       jqlInitiatives: 'type = initiative',
       forecastWeeks: 26,

@@ -206,10 +206,18 @@ export interface IConfig {
 
 export interface IConfigTeam {
   name: string;
+  from: string;
+  completion: {
+    all: string;
+    categories: Array<{
+      name: string;
+      jql: string;
+    }>
+  }
+  excludeDays: Array<string>;
   jqlCompletion: string;
   jqlRemaining: string;
   jqlHistory: string;
-  excludeDays: Array<string>;
   initiativeEffortPrct: number;
   slack: {
     token: string;

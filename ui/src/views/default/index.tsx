@@ -7,11 +7,11 @@ import Layout from '../../layout';
 import { iRootState } from '../../store';
 
 const mapDispatch = (dispatch: any) => ({
-  setAuthMessage: dispatch.global.setAuthMessage
+  setAuthMessage: dispatch.global.setAuthMessage,
 });
 
 const mapState = (state: iRootState) => ({
-  loggedIn: state.global.loggedIn
+  loggedIn: state.global.loggedIn,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -19,7 +19,7 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const Default: FC<connectedProps> = ({ loggedIn }) => {
   if (loggedIn) {
-    return <Redirect to='/velocity' />;
+    return <Redirect to="/velocity" />;
   }
 
   return (
@@ -29,7 +29,4 @@ const Default: FC<connectedProps> = ({ loggedIn }) => {
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch
-)(Default);
+export default connect(mapState, mapDispatch)(Default);

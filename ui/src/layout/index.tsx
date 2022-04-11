@@ -1,7 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { Theme } from '@mui/material/styles';
+import { createStyles, makeStyles } from '@mui/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import Header from '../components/Header';
 import Menu from '../components/Menu';

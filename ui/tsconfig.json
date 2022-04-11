@@ -1,14 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "es5",
-      "es2015.collection",
-      "es2015.iterable",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -16,16 +9,14 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
-    "downlevelIteration": true,
-    "importHelpers": true
+    "jsx": "react"
+    // "noImplicitAny": false,
+    // "noImplicitThis": true,
+    // "strictNullChecks": true
   },
-  "include": ["src", "env-config.js"],
-  "rules": {
-    "file-name-casing": [true, { ".tsx": "pascal-case", ".ts": "camel-case" }]
-  }
+  "include": ["src"]
 }

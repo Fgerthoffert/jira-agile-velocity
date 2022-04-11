@@ -2,6 +2,8 @@
 import * as log from 'loglevel';
 import { createModel } from '@rematch/core';
 import createAuth0Client from '@auth0/auth0-spa-js';
+import axios from 'axios';
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 declare global {
   interface Window {
@@ -26,7 +28,13 @@ const setAuth0Config = async () => {
   return window.Auth0;
 };
 
-export const global = createModel({
+interface Global {
+  state: any;
+  reducers: any;
+  effects: any;
+}
+
+export const global: Global = {
   state: {
     log: {},
     loading: false,
@@ -37,13 +45,15 @@ export const global = createModel({
     // Authentication module
     loggedIn: false, // Is the user logged in
     auth0Initialized: false,
-    authUser: null,
+    authUser: {},
     authMessage: '',
     username: true,
     password: '',
     accessToken: '',
 
     loginMenuOpen: false,
+
+    teams: [],
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -94,9 +104,12 @@ export const global = createModel({
         auth0Initialized: payload.auth0Initialized,
       };
     },
+    setTeams(state: any, payload: any) {
+      return { ...state, teams: payload };
+    },
   },
   effects: {
-    async initApp() {
+    async initApp(payload: any, rootState: any) {
       const logger = log.noConflict();
       if (process.env.NODE_ENV !== 'production') {
         logger.enableAll();
@@ -105,6 +118,19 @@ export const global = createModel({
       }
       logger.info('Logger initialized');
       this.setLog(logger);
+
+      if (
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
+      ) {
+        log.info('Loading data');
+        this.refreshTeams();
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not (yet) present',
+        );
+      }
     },
 
     async doLogOut() {
@@ -145,7 +171,7 @@ export const global = createModel({
       }
     },
 
-    async loginCallback(payload, rootState) {
+    async loginCallback(payload: any, rootState: any) {
       // tslint:disable-next-line:no-shadowed-variable
       const log = rootState.global.log;
       this.setLoading(true);
@@ -174,5 +200,41 @@ export const global = createModel({
       }
       this.setLoading(false);
     },
+
+    async refreshTeams(currentTab: any, rootState: any) {
+      if (rootState.teams.loading === false) {
+        const setTeams = this.setTeams;
+        const setLoading = this.setLoading;
+        setLoading(true);
+        const host =
+          window._env_.API_URL !== undefined
+            ? window._env_.API_URL
+            : 'http://127.0.0.1:3001';
+        const headers =
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
+        axios({
+          method: 'get',
+          url: host + '/teams',
+          headers,
+        })
+          .then((response) => {
+            setTeams(response.data);
+            reactLocalStorage.setObject('cache-velocityTeams', response.data);
+            // Set value to
+            const selectedTeam =
+              response.data.find((t: any) => t.id === currentTab) === undefined
+                ? response.data[0].id
+                : response.data.find((t: any) => t.id === currentTab).id;
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            setTeams([]);
+            setLoading(false);
+          });
+      }
+    },
   },
-});
+};

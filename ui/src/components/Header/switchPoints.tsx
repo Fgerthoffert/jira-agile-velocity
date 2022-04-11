@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 
 import { iRootState } from '../../store';
 
 const mapState = (state: iRootState) => ({
-  defaultPoints: state.global.defaultPoints
+  defaultPoints: state.global.defaultPoints,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints
+  setDefaultPoints: dispatch.global.setDefaultPoints,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -17,7 +17,7 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const SwitchPoints: FC<connectedProps> = ({
   defaultPoints,
-  setDefaultPoints
+  setDefaultPoints,
 }) => {
   const handleChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setDefaultPoints(event.target.checked);
@@ -31,7 +31,4 @@ const SwitchPoints: FC<connectedProps> = ({
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch
-)(SwitchPoints);
+export default connect(mapState, mapDispatch)(SwitchPoints);

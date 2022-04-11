@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { Theme } from '@mui/material/styles';
+import { createStyles, makeStyles } from '@mui/styles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import SwitchPoints from './switchPoints';
 import Login from './Login';
@@ -78,6 +79,7 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
           onClick={handleDrawerOpen}
           edge="start"
           className={clsx(classes.menuButton, showMenu && classes.hide)}
+          size="large"
         >
           <MenuIcon />
         </IconButton>
@@ -91,7 +93,4 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(Header);
+export default connect(mapState, mapDispatch)(Header);
