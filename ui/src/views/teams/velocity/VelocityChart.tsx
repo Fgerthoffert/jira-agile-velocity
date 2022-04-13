@@ -11,14 +11,9 @@ import {
   Legend,
   Tooltip,
 } from 'chart.js';
-import {
-  Chart,
-  getDatasetAtEvent,
-  getElementAtEvent,
-  getElementsAtEvent,
-} from 'react-chartjs-2';
+import { Chart, getDatasetAtEvent, getElementAtEvent } from 'react-chartjs-2';
 
-import randomColor from 'randomcolor';
+import toMaterialStyle from 'material-color-hash';
 
 ChartJS.register(
   LinearScale,
@@ -79,11 +74,10 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
           }
           return w.completion[metric].count;
         }),
-      backgroundColor: randomColor({
-        luminosity: 'bright',
-        format: 'rgb',
-        seed: d.name === undefined ? '_Other_' : d.name,
-      }),
+      backgroundColor: toMaterialStyle(
+        d.name === undefined ? '_Other_' : d.name,
+        200,
+      ).backgroundColor,
       stack: 'Stack 0',
     };
   });
@@ -99,11 +93,7 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
         data: allCompletion[chartRange]
           .slice(Math.max(allCompletion[chartRange].length - displayRecords, 0))
           .map((w: any) => w.completion[metric].count),
-        backgroundColor: randomColor({
-          luminosity: 'dark',
-          format: 'rgb',
-          seed: 'All',
-        }),
+        backgroundColor: toMaterialStyle('All', 200).backgroundColor,
         stack: 'Stack 1',
       },
       {

@@ -1,195 +1,321 @@
 import React, { FC } from 'react';
-import { endOfWeek, startOfWeek } from 'date-fns';
+import {
+  endOfWeek,
+  startOfWeek,
+  differenceInDays,
+  add,
+  getYear,
+  getWeek,
+  format,
+} from 'date-fns';
+
+import toMaterialStyle from 'material-color-hash';
 
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 
-const buildCalendar = (weeklyVelocity: number, remaining: number) => {
-  const nbWeeks = remaining / weeklyVelocity;
-  const perDay = weeklyVelocity / 7; // No particular logic for business days
+import { Stream, StreamWeek, StreamItem } from '../../../global';
 
-  const currentDay = new Date();
-  console.log('Current Day: ' + currentDay);
-  console.log('Last Day of current week: ' + endOfWeek(currentDay));
-  console.log('First Day of current week: ' + startOfWeek(currentDay));
+interface DatasetObj {
+  [key: string]: any;
+}
 
-  const weeks = [];
+const buildWeekData = (
+  firstDay: Date,
+  lastDay: Date,
+  dailyVelocity: number,
+  remainingAtWeekdStart: number,
+  remainingAtWeekEnd: number,
+) => {
+  return {
+    firstWeekDay: firstDay,
+    lastWeekDay: lastDay,
+    startOfWeek: startOfWeek(firstDay),
+    endOfWeek: endOfWeek(firstDay),
+    weekTxt: endOfWeek(firstDay).toISOString(),
+    // weekTxt: format(endOfWeek(firstDay), 'LLL do'),
+    // weekTxt: format(endOfWeek(firstDay), 'II do'),
+    // weekTxt:
+    //   getYear(startOfWeek(firstDay)) + '.' + getWeek(startOfWeek(firstDay)),
+    completed: Math.round(
+      differenceInDays(endOfWeek(firstDay), firstDay) * dailyVelocity,
+    ),
+    remaining: {
+      atWeekStart: Math.round(remainingAtWeekdStart),
+      atWeekEnd: Math.round(remainingAtWeekEnd),
+    },
+  };
+};
+
+// Builds a future calendar based on the weeks necessary to complete the initiative
+const buildCalendar = (
+  weeklyVelocity: number,
+  remaining: number,
+  firstDay: Date,
+) => {
+  const perDayVelocity = weeklyVelocity / 7; // No particular logic for business days
+  const weeks: Array<StreamWeek> = [];
+
+  let currentRemaining =
+    remaining -
+    differenceInDays(endOfWeek(firstDay), firstDay) * perDayVelocity;
 
   // The first week is always calculated by day
-  weeks.push({
-    firstWeekDay: startOfWeek(currentDay),
-    lastWeekDay: endOfWeek(currentDay),
-  });
+  weeks.push(
+    buildWeekData(
+      firstDay,
+      endOfWeek(firstDay),
+      perDayVelocity,
+      remaining,
+      currentRemaining,
+    ),
+  );
+
+  let weekStartCursor = startOfWeek(firstDay);
+  while (currentRemaining > 0) {
+    weekStartCursor = add(weekStartCursor, { days: 7 });
+    let completed = weeklyVelocity;
+    let atWeekEnd = currentRemaining - weeklyVelocity;
+    let lastWeekDay = endOfWeek(weekStartCursor);
+    // If weekly velocity is greater than remaining, it means
+    // completion is going to be in the middle of the week
+    if (weeklyVelocity > currentRemaining) {
+      const effortDays = currentRemaining / perDayVelocity;
+      lastWeekDay = add(weekStartCursor, { days: effortDays });
+    }
+    if (atWeekEnd <= 0) {
+      completed = atWeekEnd + completed;
+      atWeekEnd = 0;
+    }
+    weeks.push(
+      buildWeekData(
+        weekStartCursor,
+        lastWeekDay,
+        perDayVelocity,
+        currentRemaining,
+        atWeekEnd,
+      ),
+    );
+    currentRemaining = currentRemaining - weeklyVelocity;
+  }
 
   return weeks;
 };
 
-const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
-  streams = [
-    {
-      key: 'initiatives',
-      name: 'Initiatives',
-      remaining: 40,
-      effortPct: 50,
-      items: [
-        {
-          name: 'Feature 1',
-          remaining: 45,
-        },
-        {
-          name: 'Feature 1',
-          remaining: 125,
-        },
-      ],
-    },
-    {
-      key: 'bugs',
-      name: 'Bugs',
-      remaining: 70,
-      effortPct: 20,
-    },
-    {
-      key: 'others',
-      name: 'Others',
-      remaining: 25,
-      effortPct: 30,
-    },
-  ];
-
-  console.log(streams);
-
-  // Build an empty calendar
-  const withWeeks = streams.map((s: any) => {
+const addWeeksToStreams = (streams: Array<Stream>, weeklyVelocity: number) => {
+  return streams.map((s) => {
+    const items = [];
+    const streamVelocity = (weeklyVelocity * s.effortPct) / 100;
+    if (s.items !== undefined) {
+      let startDay = new Date();
+      for (const i of s.items) {
+        const weeks: Array<StreamWeek> = buildCalendar(
+          streamVelocity,
+          i.remaining,
+          startDay,
+        );
+        items.push({
+          ...i,
+          stream: s.name,
+          name: `${s.name}: ${i.name}`,
+          weeks,
+        });
+        startDay = weeks.slice(-1)[0].lastWeekDay;
+      }
+    }
     return {
       ...s,
-      weeks: buildCalendar(s.remaining, weeklyVelocity),
+      items,
+      weeks: buildCalendar(streamVelocity, s.remaining, new Date()),
     };
   });
+};
 
-  console.log(withWeeks);
-  // We need to represent the streams in weekly arrays
+const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
+  // Build a weekly completion forecast calendar
+  const streamWithWeeks: Array<Stream> = addWeeksToStreams(
+    streams,
+    weeklyVelocity,
+  );
 
-  const chartHeight = 50 + streams.length * 25;
-  return <span>abcdefgh</span>;
+  // Flatten the list of items and build full array of weeks
+  const items: Array<StreamItem> = [];
+  const weeks: Array<string> = [];
+  for (const s of streamWithWeeks) {
+    if (s.items.length === 0) {
+      items.push(s);
+      if (s.weeks === undefined) {
+        return null;
+      }
+      for (const w of s.weeks) {
+        if (!weeks.includes(w.weekTxt)) {
+          weeks.push(w.weekTxt);
+        }
+      }
+    } else {
+      for (const i of s.items) {
+        items.push(i);
+        if (i.weeks === undefined) {
+          return null;
+        }
+        for (const w of i.weeks) {
+          if (!weeks.includes(w.weekTxt)) {
+            weeks.push(w.weekTxt);
+          }
+        }
+      }
+    }
+  }
 
-  // return (
-  //   <div style={{ height: chartHeight }}>
-  //     <ResponsiveHeatMap
-  //       data={this.buildDataset(initiatives)}
-  //       keys={initiatives[0].weeks.map((w: any) => w.weekEnd)}
-  //       indexBy="initiative"
-  //       margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
-  //       forceSquare={false}
-  //       axisTop={null}
-  //       axisRight={null}
-  //       cellBorderWidth={1}
-  //       axisBottom={{
-  //         orient: 'top',
-  //         tickSize: 5,
-  //         tickPadding: 5,
-  //         tickRotation: -90,
-  //         legend: '',
-  //         legendOffset: 36,
-  //         format: (weekEnd: string) => this.formatWeekEnd(weekEnd),
-  //       }}
-  //       axisLeft={{
-  //         orient: 'middle',
-  //         tickSize: 5,
-  //         tickPadding: 5,
-  //         tickRotation: 0,
-  //         legend: '',
-  //         legendPosition: 'middle',
-  //         legendOffset: -40,
-  //         onClick: (event: any, key: string) => {
-  //           this.clickLegend(key);
-  //         },
-  //       }}
-  //       cellOpacity={1}
-  //       cellBorderColor={'#a4a3a5'}
-  //       labelTextColor={{ from: 'color', modifiers: [['darker', 1.8]] }}
-  //       cellShape={({
-  //         data,
-  //         value,
-  //         x,
-  //         y,
-  //         width,
-  //         height,
-  //         color,
-  //         opacity,
-  //         borderWidth,
-  //         borderColor,
-  //         enableLabel,
-  //         textColor,
-  //         onHover,
-  //         onLeave,
-  //         onClick,
-  //         theme,
-  //       }: any) => {
-  //         if (value === 0) {
-  //           return (
-  //             <g
-  //               transform={`translate(${x}, ${y})`}
-  //               style={{ cursor: 'pointer' }}
-  //             >
-  //               <rect
-  //                 x={width * -0.5}
-  //                 y={height * -0.5}
-  //                 width={width}
-  //                 height={height}
-  //                 fill={''}
-  //                 fillOpacity={0}
-  //                 strokeWidth={borderWidth}
-  //                 stroke={borderColor}
-  //                 strokeOpacity={opacity}
-  //               />
-  //             </g>
-  //           );
-  //         }
-  //         return (
-  //           <g
-  //             transform={`translate(${x}, ${y})`}
-  //             onMouseEnter={onHover}
-  //             onMouseMove={onHover}
-  //             onMouseLeave={onLeave}
-  //             onClick={(e) => {
-  //               this.cellClick(data.yKey, data.xKey);
-  //             }}
-  //             style={{ cursor: 'pointer' }}
-  //           >
-  //             <rect
-  //               x={width * -0.5}
-  //               y={height * -0.5}
-  //               width={width}
-  //               height={height}
-  //               fill={this.getCompletionColor(data, value)}
-  //               fillOpacity={opacity}
-  //               strokeWidth={borderWidth}
-  //               stroke={borderColor}
-  //               strokeOpacity={opacity}
-  //             />
-  //             {enableLabel && (
-  //               <text
-  //                 dominantBaseline="central"
-  //                 textAnchor="middle"
-  //                 style={{
-  //                   ...theme.labels.text,
-  //                   fill: textColor,
-  //                 }}
-  //                 fillOpacity={opacity}
-  //               >
-  //                 {value}
-  //               </text>
-  //             )}
-  //           </g>
-  //         );
-  //       }}
-  //       animate={false}
-  //       motionStiffness={80}
-  //       motionDamping={9}
-  //       hoverTarget="row"
-  //       cellHoverOthersOpacity={0.1}
-  //     />
-  //   </div>
-  // );
+  console.log(items);
+  console.log(weeks.sort());
+
+  const formattedItems: DatasetObj[] = [];
+  for (const i of items) {
+    const initiativeData: DatasetObj = {
+      item: i.name,
+    };
+    if (i.weeks === undefined) {
+      return null;
+    }
+    for (const week of i.weeks) {
+      initiativeData[week.weekTxt] = week.completed;
+    }
+    formattedItems.push(initiativeData);
+  }
+
+  const chartHeight = 50 + items.length * 25;
+  console.log(formattedItems);
+
+  const getCompletionColor = (data: any, value: any) => {
+    if (value === undefined) {
+      return 'rgb(255, 255, 255)';
+    }
+    const item = items.find((i: StreamItem) => i.name === data.yKey);
+    if (item !== undefined) {
+      return toMaterialStyle(
+        item.stream === undefined ? item.name : item.stream,
+        200,
+      ).backgroundColor;
+    }
+    return toMaterialStyle(data.yKey, 200).backgroundColor;
+  };
+
+  return (
+    <div style={{ height: chartHeight }}>
+      <ResponsiveHeatMap
+        data={formattedItems}
+        keys={weeks.sort()}
+        indexBy="item"
+        margin={{ top: 0, right: 30, bottom: 60, left: 300 }}
+        forceSquare={false}
+        axisTop={null}
+        axisRight={null}
+        cellBorderWidth={1}
+        axisBottom={{
+          orient: 'top',
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: -90,
+          legend: '',
+          legendOffset: 36,
+          format: (weekTxt: string) => format(new Date(weekTxt), 'LLL do'),
+        }}
+        axisLeft={{
+          orient: 'middle',
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: '',
+          legendPosition: 'middle',
+          legendOffset: -40,
+        }}
+        cellOpacity={1}
+        cellBorderColor={'#a4a3a5'}
+        labelTextColor={{ from: 'color', modifiers: [['darker', 1.8]] }}
+        cellShape={({
+          data,
+          value,
+          x,
+          y,
+          width,
+          height,
+          color,
+          opacity,
+          borderWidth,
+          borderColor,
+          enableLabel,
+          textColor,
+          onHover,
+          onLeave,
+          onClick,
+          theme,
+        }: any) => {
+          if (value === 0) {
+            return (
+              <g
+                transform={`translate(${x}, ${y})`}
+                style={{ cursor: 'pointer' }}
+              >
+                <rect
+                  x={width * -0.5}
+                  y={height * -0.5}
+                  width={width}
+                  height={height}
+                  fill={''}
+                  fillOpacity={0}
+                  strokeWidth={borderWidth}
+                  stroke={borderColor}
+                  strokeOpacity={opacity}
+                />
+              </g>
+            );
+          }
+          return (
+            <g
+              transform={`translate(${x}, ${y})`}
+              onMouseEnter={onHover}
+              onMouseMove={onHover}
+              onMouseLeave={onLeave}
+              onClick={(e) => {
+                console.log('Cell Click ABC');
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <rect
+                x={width * -0.5}
+                y={height * -0.5}
+                width={width}
+                height={height}
+                fill={getCompletionColor(data, value)}
+                fillOpacity={opacity}
+                strokeWidth={borderWidth}
+                stroke={borderColor}
+                strokeOpacity={opacity}
+              />
+              {enableLabel && (
+                <text
+                  dominantBaseline="central"
+                  textAnchor="middle"
+                  style={{
+                    ...theme.labels.text,
+                    fill: textColor,
+                  }}
+                  fillOpacity={opacity}
+                >
+                  {value}
+                </text>
+              )}
+            </g>
+          );
+        }}
+        animate={false}
+        motionStiffness={80}
+        motionDamping={9}
+        hoverTarget="row"
+        cellHoverOthersOpacity={0.1}
+      />
+    </div>
+  );
 };
 
 export default RoadmapChart;
