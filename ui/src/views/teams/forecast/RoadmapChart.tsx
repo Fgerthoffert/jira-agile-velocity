@@ -106,10 +106,16 @@ const buildCalendar = (
   return weeks;
 };
 
-const addWeeksToStreams = (streams: Array<Stream>, weeklyVelocity: number) => {
+const addWeeksToStreams = (streams: Array<any>, metric: string) => {
   return streams.map((s) => {
+    if (s.metrics[metric].velocity === 0) {
+      return {
+        ...s,
+        weeks: [],
+      };
+    }
     const items = [];
-    const streamVelocity = (weeklyVelocity * s.effortPct) / 100;
+    const streamVelocity = s.metrics[metric].velocity;
     if (s.items !== undefined) {
       let startDay = new Date();
       for (const i of s.items) {
@@ -135,13 +141,9 @@ const addWeeksToStreams = (streams: Array<Stream>, weeklyVelocity: number) => {
   });
 };
 
-const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
+const RoadmapChart: FC<any> = ({ streams, metric }) => {
   // Build a weekly completion forecast calendar
-  const streamWithWeeks: Array<Stream> = addWeeksToStreams(
-    streams,
-    weeklyVelocity,
-  );
-
+  const streamWithWeeks: Array<Stream> = addWeeksToStreams(streams, metric);
   // Flatten the list of items and build full array of weeks
   const items: Array<StreamItem> = [];
   const weeks: Array<string> = [];
@@ -149,7 +151,7 @@ const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
     if (s.items.length === 0) {
       items.push(s);
       if (s.weeks === undefined) {
-        return null;
+        break;
       }
       for (const w of s.weeks) {
         if (!weeks.includes(w.weekTxt)) {
@@ -160,7 +162,7 @@ const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
       for (const i of s.items) {
         items.push(i);
         if (i.weeks === undefined) {
-          return null;
+          break;
         }
         for (const w of i.weeks) {
           if (!weeks.includes(w.weekTxt)) {

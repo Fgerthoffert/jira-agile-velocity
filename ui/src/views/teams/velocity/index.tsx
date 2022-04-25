@@ -25,7 +25,7 @@ const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
   completionData: state.teams.completionData,
   forecastData: state.teams.forecastData,
-  streams: state.teams.streams,
+  forecastStreams: state.teams.forecastStreams,
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -40,7 +40,7 @@ const Velocity: FC<connectedProps> = ({
   defaultPoints,
   completionData,
   forecastData,
-  streams,
+  forecastStreams,
 }) => {
   const teamVelocity = 23;
   // console.log(streams);
@@ -98,7 +98,7 @@ const Velocity: FC<connectedProps> = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {streams.map((s: any) => {
+                {forecastStreams.map((s: any) => {
                   return (
                     <TableRow key={s.key}>
                       <TableCell>{s.name}</TableCell>
@@ -145,23 +145,23 @@ const Velocity: FC<connectedProps> = ({
                 <TableRow>
                   <TableCell align="right">TOTAL</TableCell>
                   <TableCell align="right">
-                    {streams
+                    {forecastStreams
                       .map((s: any) => s.remainingCount)
                       .reduce((acc: number, value: number) => acc + value, 0)}
                   </TableCell>
                   <TableCell align="right">
-                    {streams
+                    {forecastStreams
                       .map((s: any) => s.remaining)
                       .reduce((acc: number, value: number) => acc + value, 0)}
                   </TableCell>
                   <TableCell align="right">
-                    {streams
+                    {forecastStreams
                       .map((s: any) => s.effortPct)
                       .reduce((acc: number, value: number) => acc + value, 0)}
                     %
                   </TableCell>
                   <TableCell align="right">
-                    {streams
+                    {forecastStreams
                       .map((s: any) => s.velocity)
                       .reduce(
                         (acc: number, value: number) => acc + value,
@@ -171,13 +171,13 @@ const Velocity: FC<connectedProps> = ({
                   </TableCell>
                   <TableCell align="right">
                     {Math.round(
-                      (streams
+                      (forecastStreams
                         .map((s: any) => s.remaining)
                         .reduce(
                           (acc: number, value: number) => acc + value,
                           0,
                         ) /
-                        streams
+                        forecastStreams
                           .map((s: any) => s.velocity)
                           .reduce(
                             (acc: number, value: number) => acc + value,

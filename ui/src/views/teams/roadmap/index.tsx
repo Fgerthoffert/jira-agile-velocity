@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
-  forecastData: state.teams.forecastData,
+  forecastStreams: state.teams.forecastStreams,
+  jiraHost: state.teams.jiraHost,
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -45,7 +46,8 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const Roadmap: FC<connectedProps> = ({
   defaultPoints,
-  forecastData,
+  forecastStreams,
+  jiraHost,
   fetchTeamData,
   setGraphInitiative,
   updateGraph,
@@ -59,39 +61,39 @@ const Roadmap: FC<connectedProps> = ({
   if (!defaultPoints) {
     metric = 'issues';
   }
-  if (forecastData !== null) {
-    return forecastData.forecast.categories.map((c: any) => {
+  if (forecastStreams.length > 0) {
+    return forecastStreams.map((stream: any) => {
       return (
-        <Grid item key={c.name}>
+        <Grid item key={stream.key}>
           <Paper>
             <Typography variant="h5" component="h5">
-              {c.name}
+              {stream.name}
             </Typography>
-            {c.fetchChild ? (
+            {stream.fetchChild ? (
               <RoadmapTable
                 defaultPoints={defaultPoints}
-                issues={c.issues}
-                jiraHost={forecastData.jiraHost}
+                issues={stream.issues}
+                jiraHost={jiraHost}
               />
             ) : (
               <TicketsTable
                 defaultPoints={defaultPoints}
-                issues={c.issues}
-                jiraHost={forecastData.jiraHost}
+                issues={stream.issues}
+                jiraHost={jiraHost}
               />
             )}
             <Typography variant="subtitle2" component="div">
               Query:{' '}
               <a
                 href={
-                  forecastData.jiraHost +
+                  jiraHost +
                   '/issues/?jql=' +
-                  encodeURIComponent(c.jql.trim())
+                  encodeURIComponent(stream.jql.trim())
                 }
                 rel="noreferrer"
                 target="_blank"
               >
-                {c.jql}
+                {stream.jql}
               </a>
               , tickets matching queries above have been excluded.
             </Typography>

@@ -37,6 +37,8 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
         (w: any) => Math.round(w.metrics[metric].distribution * 10) / 10,
       ),
       backgroundColor: toMaterialStyle(s.name, 200).backgroundColor,
+      barPercentage: 1,
+      categoryPercentage: 1,
       stack: 'Stack 0',
     };
   });

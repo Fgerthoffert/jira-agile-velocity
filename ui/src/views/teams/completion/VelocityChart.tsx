@@ -35,6 +35,7 @@ const VelocityChart: FC<any> = ({ completionStreams, metric }) => {
       label: s.name,
       data: s.weeks.map((w: any) => w.metrics[metric].velocity),
       backgroundColor: toMaterialStyle(s.name, 200).backgroundColor,
+      borderColor: toMaterialStyle(s.name, 200).backgroundColor,
       // stack: 'abc',
     };
   });

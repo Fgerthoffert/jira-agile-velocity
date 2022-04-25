@@ -15,6 +15,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import IconButton from '@mui/material/IconButton';
 import toMaterialStyle from 'material-color-hash';
+import TextField from '@mui/material/TextField';
 
 import { format } from 'date-fns';
 
@@ -23,17 +24,20 @@ import { iRootState } from '../../../store';
 import { getId } from '../utils';
 
 import { CompletionStream } from '../../../global';
+import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
   completionStreams: state.teams.completionStreams,
-  forecastStreams: state.teams.streams,
+  forecastStreams: state.teams.forecastStreams,
+  simulatedStreams: state.teams.simulatedStreams,
   jiraHost: state.teams.jiraHost,
 });
 
 const mapDispatch = (dispatch: any) => ({
   setDefaultPoints: dispatch.global.setDefaultPoints,
   fetchTeamData: dispatch.teams.fetchTeamData,
+  setSimulatedStreams: dispatch.teams.setSimulatedStreams,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -43,6 +47,8 @@ const Review: FC<connectedProps> = ({
   defaultPoints,
   completionStreams,
   forecastStreams,
+  simulatedStreams,
+  setSimulatedStreams,
 }) => {
   let metric = 'points';
   if (!defaultPoints) {
@@ -75,25 +81,43 @@ const Review: FC<connectedProps> = ({
                     align="center"
                     style={{ backgroundColor: '#FBE9E7' }}
                   >
-                    Measured metrics
+                    Current metrics
                   </TableCell>
                   <TableCell
-                    colSpan={5}
+                    align="center"
+                    style={{ backgroundColor: '#F1F8E9' }}
+                  >
+                    Remaining
+                  </TableCell>
+                  <TableCell
+                    colSpan={3}
                     align="center"
                     style={{ backgroundColor: '#E1F5FE' }}
                   >
-                    Forecasting completion
+                    Forecast using current metrics
+                  </TableCell>
+                  <TableCell
+                    colSpan={4}
+                    align="center"
+                    style={{ backgroundColor: '#FFFDE7' }}
+                  >
+                    Simulate by adjusting distribution
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell></TableCell>
                   <TableCell>On</TableCell>
-                  <TableCell>Velocity</TableCell>
-                  <TableCell>Effort %</TableCell>
-                  <TableCell>Remaining Points</TableCell>
-                  <TableCell>Effort</TableCell>
-                  <TableCell>Velocity</TableCell>
-                  <TableCell>Time to completion</TableCell>
+                  <TableCell align="right">Velocity</TableCell>
+                  <TableCell align="right">Distribution</TableCell>
+                  <TableCell align="right">
+                    {metric.charAt(0).toUpperCase() + metric.slice(1)}
+                  </TableCell>
+                  <TableCell align="right">Distribution</TableCell>
+                  <TableCell align="right">Velocity</TableCell>
+                  <TableCell align="right">Effort</TableCell>
+                  <TableCell align="right">Distribution</TableCell>
+                  <TableCell align="right">Velocity</TableCell>
+                  <TableCell align="right">Effort</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -103,7 +127,11 @@ const Review: FC<connectedProps> = ({
                   const fs = forecastStreams.find(
                     (fs: any) => fs.key === s.key,
                   );
-                  // console.log(fs);
+                  // Get corresponding key from simulated streams
+                  const ss = simulatedStreams.find(
+                    (ss: any) => ss.key === s.key,
+                  );
+                  console.log(ss);
                   return (
                     <TableRow key={s.key}>
                       <TableCell>{s.name}</TableCell>
@@ -126,45 +154,108 @@ const Review: FC<connectedProps> = ({
                         %
                       </TableCell>
                       <TableCell align="right">
-                        {fs === undefined ? '-' : fs.remaining}
+                        {fs === undefined ? '-' : fs.metrics[metric].remaining}
                       </TableCell>
                       <TableCell align="right">
-                        <IconButton
-                          aria-label="open-external"
-                          size="small"
-                          onClick={() => {
-                            console.log('+');
-                            // setGraphInitiative(
-                            //   issues.find((is: any) => is.key === i.key),
-                            // );
-                            // updateGraph();
-                            // setOpenGraph(true);
-                          }}
-                        >
-                          <IndeterminateCheckBoxIcon fontSize="small" />
-                        </IconButton>
-                        {fs === undefined ? '-' : fs.effortPct}%
-                        <IconButton
-                          aria-label="open-external"
-                          size="small"
-                          onClick={() => {
-                            console.log('+');
-                            // setGraphInitiative(
-                            //   issues.find((is: any) => is.key === i.key),
-                            // );
-                            // updateGraph();
-                            // setOpenGraph(true);
-                          }}
-                        >
-                          <AddBoxIcon fontSize="small" />
-                        </IconButton>
+                        {fs === undefined
+                          ? '-'
+                          : Math.round(fs.metrics[metric].distribution)}
+                        %
                       </TableCell>
                       <TableCell align="right">
-                        {fs === undefined ? '-' : fs.velocity}{' '}
+                        {fs === undefined
+                          ? '-'
+                          : Math.round(lastWeek.metrics[metric].velocity * 10) /
+                            10}{' '}
                         {metric === 'points' ? 'p/w' : 'i/w'}
                       </TableCell>
                       <TableCell align="right">
-                        {fs === undefined ? '-' : fs.timeToCompletion} w
+                        {fs === undefined
+                          ? '-'
+                          : Math.round(
+                              (fs.metrics[metric].remaining /
+                                fs.metrics[metric].velocity) *
+                                10,
+                            ) / 10}{' '}
+                        w
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextField
+                          id="standard-number"
+                          label=""
+                          inputProps={{
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*',
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant="standard"
+                          size="small"
+                          margin="dense"
+                          value={
+                            ss === undefined
+                              ? '-'
+                              : Math.round(ss.metrics[metric].distribution)
+                          }
+                          style={{ width: 50 }}
+                          onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>,
+                          ) => {
+                            const updatedStreams = simulatedStreams.map(
+                              (us: any) => {
+                                if (us.key === s.key) {
+                                  console.log(us);
+                                  return {
+                                    ...us,
+                                    metrics: {
+                                      issues: {
+                                        ...us.metrics.issues,
+                                        distribution: Number(
+                                          event.target.value,
+                                        ),
+                                        velocity:
+                                          (us.metrics.issues.totalStreams /
+                                            100) *
+                                          Number(event.target.value),
+                                      },
+                                      points: {
+                                        ...us.metrics.points,
+                                        distribution: Number(
+                                          event.target.value,
+                                        ),
+                                        velocity:
+                                          (us.metrics.points.totalStreams /
+                                            100) *
+                                          Number(event.target.value),
+                                      },
+                                    },
+                                  };
+                                }
+                                return { ...us };
+                              },
+                            );
+                            console.log(updatedStreams);
+                            setSimulatedStreams(updatedStreams);
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        {ss === undefined
+                          ? '-'
+                          : Math.round(ss.metrics[metric].velocity * 10) /
+                            10}{' '}
+                        {metric === 'points' ? 'p/w' : 'i/w'}
+                      </TableCell>
+                      <TableCell align="right">
+                        {ss === undefined
+                          ? '-'
+                          : Math.round(
+                              (ss.metrics[metric].remaining /
+                                ss.metrics[metric].velocity) *
+                                10,
+                            ) / 10}{' '}
+                        w
                       </TableCell>
                     </TableRow>
                   );
@@ -174,47 +265,55 @@ const Review: FC<connectedProps> = ({
                     TOTAL
                   </TableCell>
                   <TableCell align="right">
-                    {Math.round(totalStreamsVelocity * 10) / 10}
+                    {Math.round(totalStreamsVelocity * 10) / 10}{' '}
+                    {metric === 'points' ? 'p/w' : 'i/w'}
                   </TableCell>
                   <TableCell align="right">100%</TableCell>
                   <TableCell align="right">
                     {forecastStreams
-                      .map((s: any) => s.remaining)
+                      .map((s: any) => s.metrics[metric].remaining)
                       .reduce((acc: number, value: number) => acc + value, 0)}
-                  </TableCell>
-                  <TableCell align="right">
-                    {forecastStreams
-                      .map((s: any) => s.effortPct)
-                      .reduce((acc: number, value: number) => acc + value, 0)}
-                    %
-                  </TableCell>
-                  <TableCell align="right">
-                    {forecastStreams
-                      .map((s: any) => s.velocity)
-                      .reduce(
-                        (acc: number, value: number) => acc + value,
-                        0,
-                      )}{' '}
-                    p/w
                   </TableCell>
                   <TableCell align="right">
                     {Math.round(
-                      (forecastStreams
-                        .map((s: any) => s.remaining)
+                      forecastStreams
+                        .map((s: any) => s.metrics[metric].distribution)
+                        .reduce((acc: number, value: number) => acc + value, 0),
+                    )}
+                    %
+                  </TableCell>
+                  <TableCell align="right">
+                    {Math.round(
+                      forecastStreams
+                        .map((s: any) => s.metrics[metric].velocity)
                         .reduce(
                           (acc: number, value: number) => acc + value,
                           0,
-                        ) /
-                        forecastStreams
-                          .map((s: any) => s.velocity)
-                          .reduce(
-                            (acc: number, value: number) => acc + value,
-                            0,
-                          )) *
-                        10,
+                        ) * 10,
                     ) / 10}{' '}
-                    w
+                    {metric === 'points' ? 'p/w' : 'i/w'}
                   </TableCell>
+                  <TableCell align="right">-</TableCell>
+                  <TableCell align="right">
+                    {Math.round(
+                      simulatedStreams
+                        .map((s: any) => s.metrics[metric].distribution)
+                        .reduce((acc: number, value: number) => acc + value, 0),
+                    )}
+                    %
+                  </TableCell>
+                  <TableCell align="right">
+                    {Math.round(
+                      simulatedStreams
+                        .map((s: any) => s.metrics[metric].velocity)
+                        .reduce(
+                          (acc: number, value: number) => acc + value,
+                          0,
+                        ) * 10,
+                    ) / 10}{' '}
+                    {metric === 'points' ? 'p/w' : 'i/w'}
+                  </TableCell>
+                  <TableCell align="right">-</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

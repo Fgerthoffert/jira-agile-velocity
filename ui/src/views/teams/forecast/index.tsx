@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
-  forecastData: state.teams.forecastData,
+  simulatedStreams: state.teams.simulatedStreams,
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints,
+  setSimulatedStreams: dispatch.global.setSimulatedStreams,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -93,25 +93,16 @@ export const getId = (inputstring: string) => {
     .toLowerCase();
 };
 
-const formatStreams = (forecastData: any, metric: string) => {
-  return forecastData.forecast.categories.map((c: any) => {
+const formatStreams = (streams: any, metric: string) => {
+  console.log(streams);
+  return streams.map((stream: any) => {
     return {
-      key: getId(c.name),
-      name: c.name,
-      remaining: c.issues
-        .map((i: any) => {
-          if (i.metrics[metric].missing > 0) {
-            return c.emptyPoints;
-          } else {
-            return i.metrics[metric].remaining;
-          }
-        })
-        .reduce((acc: number, value: number) => acc + value, 0),
-      effortPct: c.effortPct,
+      ...stream,
+      remaining: stream.metrics[metric].remaining,
       items:
-        c.fetchChild === false
+        stream.fetchChild === false
           ? []
-          : c.issues
+          : stream.issues
               .map((i: any) => {
                 return {
                   name: i.summary,
@@ -123,8 +114,8 @@ const formatStreams = (forecastData: any, metric: string) => {
   });
 };
 
-const Forecast: FC<connectedProps> = ({ defaultPoints, forecastData }) => {
-  if (forecastData === null) {
+const Forecast: FC<connectedProps> = ({ defaultPoints, simulatedStreams }) => {
+  if (simulatedStreams.length === 0) {
     return null;
   }
   let metric = 'points';
@@ -132,13 +123,9 @@ const Forecast: FC<connectedProps> = ({ defaultPoints, forecastData }) => {
     metric = 'issues';
   }
 
-  const [currentStreams, setCurrentStreams] = React.useState<Array<Stream>>(
-    formatStreams(forecastData, metric),
-  );
+  const currentStreams = formatStreams(simulatedStreams, metric);
 
   const classes = useStyles();
-
-  const teamVelocity = 23;
 
   return (
     <Paper>
@@ -146,19 +133,15 @@ const Forecast: FC<connectedProps> = ({ defaultPoints, forecastData }) => {
         Forecast
       </Typography>
       <Typography component="p">
-        Remaining work calculated using total velocity of {teamVelocity}{' '}
-        {metric} / week
+        Remaining work calculated using {metric}
       </Typography>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <RoadmapChart
-            streams={currentStreams}
-            weeklyVelocity={teamVelocity}
-          />
+          <RoadmapChart streams={currentStreams} metric={metric} />
           <Typography component="p" className={classes.smallText}>
             <i>
               Displays remaining effort based on the provided JQL queries and
-              current team velocity.
+              current stream velocity.
             </i>
           </Typography>
         </Grid>
