@@ -82,6 +82,27 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
     };
   });
 
+  const rollingVelocity = completionData
+    .filter((d: any) => d.key !== 'all')
+    .map((d: any) => {
+      return {
+        type: 'line' as const,
+        label: d.name === undefined ? 'Other' : d.name,
+        data: d[chartRange]
+          .slice(Math.max(allCompletion[chartRange].length - displayRecords, 0))
+          .map((w: any) => w.completion[metric].count),
+        backgroundColor: toMaterialStyle(
+          d.name === undefined ? '_Other_' : d.name,
+          200,
+        ).backgroundColor,
+        borderColor: toMaterialStyle(
+          d.name === undefined ? '_Other_' : d.name,
+          200,
+        ).backgroundColor,
+        stack: 'Stack X',
+      };
+    });
+
   const data = {
     labels,
     datasets: [
@@ -108,6 +129,7 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
           .map((w: any) => w.completion[metric].velocity),
       },
       ...datasets,
+      ...rollingVelocity,
     ],
   };
 

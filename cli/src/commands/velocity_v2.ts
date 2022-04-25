@@ -38,20 +38,22 @@ export default class Velocity extends Command {
         userConfig.jira,
         this.config.configDir + '/cache/',
       );
-      console.log(`Team: ${team.name} Fetched ${completionQueries.map(q => q.issues.length).reduce((sum, x) => sum + x)} completed issues`);
+      console.log(
+        `Team: ${team.name} Fetched ${completionQueries
+          .map(q => q.issues.length)
+          .reduce((sum, x) => sum + x)} completed issues`,
+      );
 
       const teamData = {
         ...team,
         completion: [],
         updatedAt: new Date().toJSON(),
-      }
+      };
 
       const emptyCalendar: ICalendar = initCalendar(team.from);
+
       for (const q of completionQueries) {
-        const calendarWithClosed = await insertClosed(
-          emptyCalendar,
-          q.issues,
-        );
+        const calendarWithClosed = await insertClosed(emptyCalendar, q.issues);
 
         const calendarVelocity: ICalendarFinal = {
           ...q,
@@ -92,7 +94,7 @@ export default class Velocity extends Command {
           }),
           issues: calendarVelocity.issues.map((i: any) => i.key),
         };
-        teamData.completion.push(trimmedPayload)
+        teamData.completion.push(trimmedPayload);
       }
 
       const cacheDir = this.config.configDir + '/cache/';
@@ -104,8 +106,8 @@ export default class Velocity extends Command {
         { flags: 'w' },
       );
       issueFileStream.write(JSON.stringify(teamData));
-      issueFileStream.end();   
-      console.log('-----')
+      issueFileStream.end();
+      console.log('-----');
     }
   }
 }

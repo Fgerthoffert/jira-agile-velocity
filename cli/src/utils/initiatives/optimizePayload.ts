@@ -48,14 +48,17 @@ const optimizePayload = (payload: any) => {
     return {
       ...simplifyIssue(initiative),
       metrics: initiative.metrics,
-      weeks: initiative.weeks
-        .filter((w: any) => w.list.length > 0)
-        .map((week: any) => {
-          return {
-            ...week,
-            list: week.list.map((i: any) => simplifyIssue(i)),
-          };
-        }),
+      weeks:
+        initiative.weeks === undefined
+          ? []
+          : initiative.weeks
+              .filter((w: any) => w.list.length > 0)
+              .map((week: any) => {
+                return {
+                  ...week,
+                  list: week.list.map((i: any) => simplifyIssue(i)),
+                };
+              }),
       children: initiative.children.map((c: any) => simplifyChildren(c)),
     };
   });
@@ -69,14 +72,17 @@ const optimizePayload = (payload: any) => {
       ...simplifyIssue(initiative),
       team: initiative.team,
       metrics: initiative.metrics,
-      weeks: initiative.weeks
-        .filter((w: any) => w.issues.count > 0 || w.points.count > 0)
-        .map((week: any) => {
-          return {
-            ...week,
-            list: week.list.map((i: any) => simplifyIssue(i)),
-          };
-        }),
+      weeks:
+        initiative.weeks === undefined
+          ? []
+          : initiative.weeks
+              .filter((w: any) => w.issues.count > 0 || w.points.count > 0)
+              .map((week: any) => {
+                return {
+                  ...week,
+                  list: week.list.map((i: any) => simplifyIssue(i)),
+                };
+              }),
     };
   });
 

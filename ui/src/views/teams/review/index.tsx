@@ -14,18 +14,21 @@ import TableRow from '@mui/material/TableRow';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import IconButton from '@mui/material/IconButton';
+import toMaterialStyle from 'material-color-hash';
+
+import { format } from 'date-fns';
 
 import { iRootState } from '../../../store';
 
 import { getId } from '../utils';
 
-import VelocityChart from './VelocityChart';
+import { CompletionStream } from '../../../global';
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
-  completionData: state.teams.completionData,
-  forecastData: state.teams.forecastData,
-  streams: state.teams.streams,
+  completionStreams: state.teams.completionStreams,
+  forecastStreams: state.teams.streams,
+  jiraHost: state.teams.jiraHost,
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -36,40 +39,29 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
-const Velocity: FC<connectedProps> = ({
+const Review: FC<connectedProps> = ({
   defaultPoints,
-  completionData,
-  forecastData,
-  streams,
+  completionStreams,
+  forecastStreams,
 }) => {
-  const teamVelocity = 23;
-  // console.log(streams);
   let metric = 'points';
   if (!defaultPoints) {
     metric = 'issues';
   }
-  if (completionData !== null) {
+  if (completionStreams.length > 0) {
+    const lastStreamWeeks = completionStreams.map(
+      (w: CompletionStream) => w.weeks.slice(-1)[0],
+    );
+    const totalStreamsVelocity = lastStreamWeeks
+      .map((s: any) => s.metrics[metric].velocity)
+      .reduce((acc: number, value: number) => acc + value, 0);
+
     return (
       <Grid container spacing={1}>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Paper>
             <Typography variant="h5" component="h3">
-              Weekly Velocity
-            </Typography>
-            <Typography component="p">
-              Calculated using {metric}, and 4 weeks rolling average
-            </Typography>
-            <VelocityChart
-              completionData={completionData.completion}
-              chartRange="weeks"
-              metric={metric}
-            />
-          </Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper>
-            <Typography variant="h5" component="h3">
-              Roadmap
+              Review and Plan
             </Typography>
             <Typography component="p">
               Current and planned initiatives and other tickets
@@ -77,33 +69,65 @@ const Velocity: FC<connectedProps> = ({
             <Table size="small" aria-label="Roadmap">
               <TableHead>
                 <TableRow>
-                  <TableCell rowSpan={2}>Categories</TableCell>
-                  <TableCell align="center" colSpan={2}>
-                    Remaining
+                  <TableCell></TableCell>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    style={{ backgroundColor: '#FBE9E7' }}
+                  >
+                    Measured metrics
                   </TableCell>
-                  <TableCell align="right" rowSpan={2}>
-                    Effort
-                  </TableCell>
-                  <TableCell align="right" rowSpan={2}>
-                    Velocity
-                  </TableCell>
-                  <TableCell align="right" rowSpan={2}>
-                    Time to <br />
-                    completion
+                  <TableCell
+                    colSpan={5}
+                    align="center"
+                    style={{ backgroundColor: '#E1F5FE' }}
+                  >
+                    Forecasting completion
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align="right">Count</TableCell>
-                  <TableCell align="right">Points</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>On</TableCell>
+                  <TableCell>Velocity</TableCell>
+                  <TableCell>Effort %</TableCell>
+                  <TableCell>Remaining Points</TableCell>
+                  <TableCell>Effort</TableCell>
+                  <TableCell>Velocity</TableCell>
+                  <TableCell>Time to completion</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {streams.map((s: any) => {
+                {completionStreams.map((s: any) => {
+                  const lastWeek = s.weeks.slice(-1)[0];
+                  // Get corresponding key from forecast streams
+                  const fs = forecastStreams.find(
+                    (fs: any) => fs.key === s.key,
+                  );
+                  // console.log(fs);
                   return (
                     <TableRow key={s.key}>
                       <TableCell>{s.name}</TableCell>
-                      <TableCell align="right">{s.remainingCount}</TableCell>
-                      <TableCell align="right">{s.remaining}</TableCell>
+                      <TableCell>
+                        {format(lastWeek.firstDay, 'LLL do')}
+                      </TableCell>
+                      <TableCell align="right">
+                        {Math.round(lastWeek.metrics[metric].velocity * 10) /
+                          10}{' '}
+                        {metric === 'points' ? 'p/w' : 'i/w'}
+                      </TableCell>
+                      <TableCell align="right">
+                        {lastWeek.metrics[metric].velocity > 0
+                          ? Math.round(
+                              (lastWeek.metrics[metric].velocity /
+                                totalStreamsVelocity) *
+                                100,
+                            )
+                          : 0}
+                        %
+                      </TableCell>
+                      <TableCell align="right">
+                        {fs === undefined ? '-' : fs.remaining}
+                      </TableCell>
                       <TableCell align="right">
                         <IconButton
                           aria-label="open-external"
@@ -119,7 +143,7 @@ const Velocity: FC<connectedProps> = ({
                         >
                           <IndeterminateCheckBoxIcon fontSize="small" />
                         </IconButton>
-                        {s.effortPct}%
+                        {fs === undefined ? '-' : fs.effortPct}%
                         <IconButton
                           aria-label="open-external"
                           size="small"
@@ -135,33 +159,37 @@ const Velocity: FC<connectedProps> = ({
                           <AddBoxIcon fontSize="small" />
                         </IconButton>
                       </TableCell>
-                      <TableCell align="right">{s.velocity} p/w</TableCell>
                       <TableCell align="right">
-                        {s.timeToCompletion} w
+                        {fs === undefined ? '-' : fs.velocity}{' '}
+                        {metric === 'points' ? 'p/w' : 'i/w'}
+                      </TableCell>
+                      <TableCell align="right">
+                        {fs === undefined ? '-' : fs.timeToCompletion} w
                       </TableCell>
                     </TableRow>
                   );
                 })}
                 <TableRow>
-                  <TableCell align="right">TOTAL</TableCell>
-                  <TableCell align="right">
-                    {streams
-                      .map((s: any) => s.remainingCount)
-                      .reduce((acc: number, value: number) => acc + value, 0)}
+                  <TableCell align="right" colSpan={2}>
+                    TOTAL
                   </TableCell>
                   <TableCell align="right">
-                    {streams
+                    {Math.round(totalStreamsVelocity * 10) / 10}
+                  </TableCell>
+                  <TableCell align="right">100%</TableCell>
+                  <TableCell align="right">
+                    {forecastStreams
                       .map((s: any) => s.remaining)
                       .reduce((acc: number, value: number) => acc + value, 0)}
                   </TableCell>
                   <TableCell align="right">
-                    {streams
+                    {forecastStreams
                       .map((s: any) => s.effortPct)
                       .reduce((acc: number, value: number) => acc + value, 0)}
                     %
                   </TableCell>
                   <TableCell align="right">
-                    {streams
+                    {forecastStreams
                       .map((s: any) => s.velocity)
                       .reduce(
                         (acc: number, value: number) => acc + value,
@@ -171,13 +199,13 @@ const Velocity: FC<connectedProps> = ({
                   </TableCell>
                   <TableCell align="right">
                     {Math.round(
-                      (streams
+                      (forecastStreams
                         .map((s: any) => s.remaining)
                         .reduce(
                           (acc: number, value: number) => acc + value,
                           0,
                         ) /
-                        streams
+                        forecastStreams
                           .map((s: any) => s.velocity)
                           .reduce(
                             (acc: number, value: number) => acc + value,
@@ -202,4 +230,4 @@ const Velocity: FC<connectedProps> = ({
   return null;
 };
 
-export default connect(mapState, mapDispatch)(Velocity);
+export default connect(mapState, mapDispatch)(Review);

@@ -212,8 +212,8 @@ export interface IConfigTeam {
     categories: Array<{
       name: string;
       jql: string;
-    }>
-  }
+    }>;
+  };
   excludeDays: Array<string>;
   jqlCompletion: string;
   jqlRemaining: string;
@@ -235,6 +235,7 @@ export interface IConfigJira {
     originalPoints: string;
     parentInitiative: string;
     parentEpic: string;
+    sprints: string;
   };
   excludeDays: Array<string>;
 }

@@ -9,7 +9,7 @@ import * as fsNdjson from 'fs-ndjson';
 import { IConfig, IJiraIssue, IConfigTeam, IConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
-import { differenceInBusinessDays } from 'date-fns'
+import { differenceInBusinessDays, startOfDay } from 'date-fns';
 import { getTeamId } from '../misc/teamUtils';
 import { getId } from '../misc/id';
 import { returnTicketsPoints } from '../misc/jiraUtils';
@@ -23,6 +23,7 @@ const fetchCompleted = async (
   jiraConfig: IConfigJira,
   cacheDir: string,
   toDate?: string | undefined,
+  onlyIssues: Array<string> = [], // Only account for issues with key present in this array
 ) => {
   const completion: Array<any> = [];
   console.log('Fetching data for team: ' + team.name);
@@ -37,42 +38,53 @@ const fetchCompleted = async (
     toDay = new Date(toDate);
   }
 
-  cli.log(`Not fetching daily completion for days: ${JSON.stringify(excludeDays)} as per configuration`);
+  cli.log(
+    `Not fetching daily completion for days: ${JSON.stringify(
+      excludeDays,
+    )} as per configuration`,
+  );
 
   const dates = getDaysBetweenDates(formatDate(team.from), toDay);
 
-  const jqlQueries = [
-    { key: 'all', jql: team.completion.all },
-    ...team.completion.categories.map((c) => {
-      return {
-        ...c,
-        key: getId(c.name),
-      }
-    })
-  ]
+  const jqlQueries = team.completion.categories.map(c => {
+    return {
+      ...c,
+      key: getId(c.name),
+    };
+  });
 
-  cli.log(`The following JQL queries will be fetched:`)
-  for (const q  of jqlQueries) {
-    cli.log(`Key: ${q.key}, JQL: ${q.jql}`)
+  cli.log(`The following JQL queries will be fetched:`);
+  for (const q of jqlQueries) {
+    cli.log(`Key: ${q.key}, JQL: ${q.jql}`);
   }
 
+  // Array keep a record of completed issues keys since we do not want an issue to be
+  // present in multiple completion queries
+  const fetchedIssues: Array<string> = [];
+
   for (const q of jqlQueries) {
-    let issues: Array<IJiraIssue> = [];
-    for (const scanDay of dates.filter((d: any) => !excludeDays.includes(d.date.toJSON().slice(0, 10)))) {
+    const queryIssues: any = [];
+    for (const scanDay of dates.filter(
+      (d: any) => !excludeDays.includes(d.date.toJSON().slice(0, 10)),
+    )) {
+      let issues: Array<IJiraIssue> = [];
+
       const issuesDayFilepath = path.join(
         cacheDir,
         getTeamId(team.name),
-        `completed-${q.key}-${scanDay.date.toJSON().slice(0, 10)}.ndjson`
-      )
+        `completed-${q.key}-${scanDay.date.toJSON().slice(0, 10)}.ndjson`,
+      );
 
       // Create folder to be used to store the team's cache
-      fs.mkdirSync(path.join(cacheDir, getTeamId(team.name)), { recursive: true })
+      fs.mkdirSync(path.join(cacheDir, getTeamId(team.name)), {
+        recursive: true,
+      });
 
       // If a file is marked clear, it gets deleted
       // .clear file are simply used by the UI to know how many files are pending data refresh
       // And therefore avoid having a very large number of deletion requests triggered at once from the UI
       if (fs.existsSync(issuesDayFilepath + '.clear')) {
-        fs.unlinkSync(issuesDayFilepath + '.clear')
+        fs.unlinkSync(issuesDayFilepath + '.clear');
       }
       // eslint-disable-next-line no-negated-condition
       if (!fs.existsSync(issuesDayFilepath)) {
@@ -81,32 +93,48 @@ const fetchCompleted = async (
             scanDay.date.toJSON().slice(0, 10) +
             ' to file: ' +
             issuesDayFilepath,
-        )
+        );
         const issuesJira = await jiraSearchIssues(
           jiraConfig,
-          q.jql.replace('##TRANSITION_DATE##', scanDay.date.toJSON().slice(0, 10)),
+          q.jql.replace(
+            '##TRANSITION_DATE##',
+            scanDay.date.toJSON().slice(0, 10),
+          ),
           'labels,created,summary,status,issuetype,assignee,' +
             jiraConfig.fields.points +
             ',' +
             jiraConfig.fields.originalPoints,
         );
+
+        const uniqueIssuesJira = [];
+        for (const i of issuesJira) {
+          if (!fetchedIssues.includes(i.key)) {
+            if (onlyIssues.length > 0 && onlyIssues.includes(i.key)) {
+              fetchedIssues.push(i.key);
+              uniqueIssuesJira.push(i);
+            } else if (onlyIssues.length === 0) {
+              fetchedIssues.push(i.key);
+              uniqueIssuesJira.push(i);
+            }
+          }
+        }
+
         // Note: We'd still write an empty file to cache to record the fact that no issues were completed that day
         const issueFileStream = fs.createWriteStream(issuesDayFilepath, {
           flags: 'a',
         });
-        if (issuesJira.length > 0) {
-          for (const issue of issuesJira) {
+        if (uniqueIssuesJira.length > 0) {
+          for (const issue of uniqueIssuesJira) {
             // Adding a closedAt object to record the date at which the issue was actually closed
             // Attaching points directly to the issues object to avoid having to bring jira-field config specific elements to the UI
-            const openedForDays = differenceInBusinessDays(new Date(scanDay.date), new Date(issue.fields.created))
+            const openedForDays = differenceInBusinessDays(
+              new Date(scanDay.date),
+              new Date(issue.fields.created),
+            );
             const updatedIssue = {
               ...issue,
-              closedAt: scanDay.date.toJSON().slice(0, 10),
+              closedAt: new Date(scanDay.date).toISOString(),
               openedForBusinessDays: openedForDays < 0 ? 0 : openedForDays,
-              weekStart: scanDay.weekStart,
-              weekEnd: scanDay.weekEnd,
-              weekTxt: scanDay.weekTxt,
-              team: team.name,
               points: returnTicketsPoints(issue, jiraConfig),
             };
 
@@ -131,10 +159,17 @@ const fetchCompleted = async (
           issues.push(issue);
         }
       }
+
+      queryIssues.push({
+        day: startOfDay(new Date(scanDay.date)).toISOString(),
+        issues: issues,
+      });
     }
     // Done with processing all days for that particular query
-    cli.log(`Team: ${team.name}, Query: ${q.key}, Number of issues: ${issues.length}`)
-    completion.push({...q, issues: issues})
+    cli.log(
+      `Team: ${team.name}, Query: ${q.key}, Number of days: ${queryIssues.length}`,
+    );
+    completion.push({ ...q, days: queryIssues });
   }
 
   return completion;

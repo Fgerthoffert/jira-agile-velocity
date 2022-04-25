@@ -3,6 +3,8 @@ import {
   endOfWeek,
   startOfWeek,
   differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
   add,
   getYear,
   getWeek,
@@ -19,6 +21,11 @@ interface DatasetObj {
   [key: string]: any;
 }
 
+// Note:
+// differenceInDays only return full days which means the the differenceInDays
+// between first and last day of the week is going to be 6. We can instead use
+// differenceInMinutes / 1440 which gives a number close enough
+
 const buildWeekData = (
   firstDay: Date,
   lastDay: Date,
@@ -32,16 +39,15 @@ const buildWeekData = (
     startOfWeek: startOfWeek(firstDay),
     endOfWeek: endOfWeek(firstDay),
     weekTxt: endOfWeek(firstDay).toISOString(),
-    // weekTxt: format(endOfWeek(firstDay), 'LLL do'),
-    // weekTxt: format(endOfWeek(firstDay), 'II do'),
-    // weekTxt:
-    //   getYear(startOfWeek(firstDay)) + '.' + getWeek(startOfWeek(firstDay)),
-    completed: Math.round(
-      differenceInDays(endOfWeek(firstDay), firstDay) * dailyVelocity,
-    ),
+    completed:
+      Math.round(
+        (differenceInMinutes(endOfWeek(firstDay), firstDay) / 1440) *
+          dailyVelocity *
+          10,
+      ) / 10,
     remaining: {
-      atWeekStart: Math.round(remainingAtWeekdStart),
-      atWeekEnd: Math.round(remainingAtWeekEnd),
+      atWeekStart: Math.round(remainingAtWeekdStart * 10) / 10,
+      atWeekEnd: Math.round(remainingAtWeekEnd * 10) / 10,
     },
   };
 };
@@ -97,7 +103,6 @@ const buildCalendar = (
     );
     currentRemaining = currentRemaining - weeklyVelocity;
   }
-
   return weeks;
 };
 
@@ -166,9 +171,6 @@ const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
     }
   }
 
-  console.log(items);
-  console.log(weeks.sort());
-
   const formattedItems: DatasetObj[] = [];
   for (const i of items) {
     const initiativeData: DatasetObj = {
@@ -184,7 +186,6 @@ const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
   }
 
   const chartHeight = 50 + items.length * 25;
-  console.log(formattedItems);
 
   const getCompletionColor = (data: any, value: any) => {
     if (value === undefined) {
@@ -277,7 +278,7 @@ const RoadmapChart: FC<any> = ({ streams, weeklyVelocity }) => {
               onMouseMove={onHover}
               onMouseLeave={onLeave}
               onClick={(e) => {
-                console.log('Cell Click ABC');
+                console.log('Cell Click');
               }}
               style={{ cursor: 'pointer' }}
             >

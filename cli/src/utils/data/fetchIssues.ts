@@ -3,64 +3,61 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { IConfigJira } from '../../global';
+import { IConfig, IConfigJira, IConfigTeam } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
+import { getTeamFromAssignee } from '../misc/teamUtils';
 import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
+import { getId } from '../../utils/misc/id';
 
 /*
-    Fetches all initiatives
+    Fetches all issues and potentially their children
 */
-/* eslint max-params: ["error", 5] */
-/* eslint-env es6 */
-const fetchChildren = async (
+const fetchInitiatives = async (
+  jql: string,
+  teamName: string,
+  categoryName: string,
   jiraConfig: IConfigJira,
-  issueKey: string,
   cacheDir: string,
   useCache: boolean,
   toDate?: string | undefined,
 ) => {
-  cli.action.start('Fetching children of: ' + issueKey);
+  cli.action.start(`Fetching issues using JQL query: ${jql}`);
   let issues: any = [];
   // If cache is enabled we don't fetch initiatives twice on the same day
   let today = new Date();
   if (toDate !== undefined) {
     today = new Date(toDate);
   }
-  const childrenCache = path.join(
+  const initiativesCache = path.join(
     cacheDir,
-    'roadmap-childcache-' +
-      issueKey +
-      '-' +
-      today.toJSON().slice(0, 10) +
-      '.ndjson',
+    `forecast-${getId(teamName)}-${getId(
+      categoryName,
+    )}-' + today.toJSON().slice(0, 10) + '.ndjson`,
   );
 
-  if (useCache && fs.existsSync(childrenCache)) {
-    issues = fsNdjson.readFileSync(childrenCache);
+  if (useCache && fs.existsSync(initiativesCache)) {
+    issues = fsNdjson.readFileSync(initiativesCache);
     // eslint-disable-next-line no-negated-condition
   } else if (toDate !== undefined) {
     issues = [];
   } else {
     const issuesJira = await jiraSearchIssues(
       jiraConfig,
-      'issuekey in childIssuesOf(' + issueKey + ')',
-      'summary,status,assignee,' +
+      jql,
+      'summary,status,' +
         jiraConfig.fields.points +
         ',' +
         jiraConfig.fields.originalPoints +
-        ',issuetype,' +
-        jiraConfig.fields.parentInitiative +
-        ',' +
-        jiraConfig.fields.parentEpic,
+        ',issuetype,assignee',
     );
-    const issueFileStream = fs.createWriteStream(childrenCache, {
+    const issueFileStream = fs.createWriteStream(initiativesCache, {
       flags: 'w',
     });
     for (const issue of issuesJira) {
       const updatedIssue = {
         ...issue,
         host: jiraConfig.host,
-        // jql: 'issuekey in childIssuesOf(' + issueKey + ')',
+        jql: jql,
         points: returnTicketsPoints(issue, jiraConfig),
       };
       issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
@@ -73,4 +70,4 @@ const fetchChildren = async (
   return issues;
 };
 
-export default fetchChildren;
+export default fetchInitiatives;

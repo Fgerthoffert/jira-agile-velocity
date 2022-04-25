@@ -4,8 +4,11 @@ import { withRouter } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 
 import Layout from '../../layout';
+import Completion from './completion';
 import Velocity from './velocity';
+import Forecast from './forecast';
 import Roadmap from './roadmap';
+import Review from './review';
 // import TeamsTabs from './teamtabs';
 
 import { iRootState } from '../../store';
@@ -72,11 +75,16 @@ const Teams: FC<any> = ({
           <DataStatus />
         </Grid>
         <Grid item>
-          <Velocity />
+          <Completion />
         </Grid>
         <Grid item>
-          <Roadmap />
+          <Review />
         </Grid>
+        <Grid item>
+          <Forecast />
+        </Grid>
+        <Roadmap />
+
         {/* <TeamsTabs changeTab={changeTab} />
       <DataStatus />
       <br />
