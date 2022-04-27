@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const mapState = (state: iRootState) => ({
   selectedTeamId: state.teams.selectedTeamId,
-  completionData: state.teams.completionData,
+  updatedAt: state.teams.updatedAt,
 });
 
 const mapDispatch = (dispatch: any) => ({
@@ -39,12 +39,12 @@ type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
 const DataStatus: FC<connectedProps> = ({
-  completionData,
   selectedTeamId,
   fetchTeamData,
+  updatedAt,
 }) => {
   const classes = useStyles();
-  if (completionData !== null) {
+  if (updatedAt !== null) {
     return (
       <Grid
         container
@@ -55,11 +55,7 @@ const DataStatus: FC<connectedProps> = ({
       >
         <Grid item>
           <span className={classes.updatedAt}>
-            Last updated:{' '}
-            {format(
-              new Date(completionData.updatedAt),
-              'E yyyy/MM/dd, hh:mm a',
-            )}{' '}
+            Last updated: {format(new Date(updatedAt), 'E yyyy/MM/dd, hh:mm a')}{' '}
           </span>
         </Grid>
         <Grid item xs={12} sm container></Grid>
@@ -68,7 +64,7 @@ const DataStatus: FC<connectedProps> = ({
             aria-label="delete"
             size="small"
             onClick={() => {
-              fetchTeamData(selectedTeamId.id);
+              fetchTeamData(selectedTeamId);
             }}
           >
             <RefreshIcon fontSize="small" />

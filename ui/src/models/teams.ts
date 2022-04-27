@@ -1,8 +1,6 @@
 import * as log from 'loglevel';
-import { createModel } from '@rematch/core';
 import axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage';
-import { fetchGraphIssues } from '../utils/graph';
 
 import {
   CompletionData,
@@ -11,13 +9,7 @@ import {
   JiraIssue,
 } from '../global';
 
-import {
-  startOfWeek,
-  add,
-  isEqual,
-  differenceInDays,
-  differenceInWeeks,
-} from 'date-fns';
+import { startOfWeek, add, isEqual, differenceInWeeks } from 'date-fns';
 
 declare global {
   interface Window {
@@ -29,11 +21,6 @@ interface Teams {
   state: any;
   reducers: any;
   effects: any;
-}
-
-interface TeamVelocity {
-  points: number;
-  issues: number;
 }
 
 interface CompletionWeek {
@@ -85,14 +72,20 @@ export const getCompletionStreams = (completionData: CompletionData) => {
   return completionData.completion.map((s: CompletionStream) => {
     return {
       ...s,
+      days: s.days.map((d) => {
+        return { ...d, day: new Date(d.day) };
+      }),
       weeks: emptyCalendar.map((w: CompletionWeek) => {
         // Filter by days completed during that week
         const completedDays = s.days.filter((d: CompletionDay) =>
           isEqual(startOfWeek(new Date(d.day)), w.firstDay),
         );
-        const completedIssues = completedDays.reduce((acc: any, day: any) => {
-          return [...acc, ...day.issues];
-        }, []);
+        const completedIssues = completedDays.reduce(
+          (acc: Array<JiraIssue>, day: CompletionDay) => {
+            return [...acc, ...day.issues];
+          },
+          [],
+        );
 
         // Gather data for velocity window
         const velocityDays = s.days.filter(
@@ -101,9 +94,12 @@ export const getCompletionStreams = (completionData: CompletionData) => {
             differenceInWeeks(w.firstDay, startOfWeek(new Date(d.day))) <=
               velocityWeeks,
         );
-        const velocityIssues = velocityDays.reduce((acc: any, day: any) => {
-          return [...acc, ...day.issues];
-        }, []);
+        const velocityIssues = velocityDays.reduce(
+          (acc: Array<JiraIssue>, day: CompletionDay) => {
+            return [...acc, ...day.issues];
+          },
+          [],
+        );
         return {
           ...w,
           completed: {
@@ -145,7 +141,9 @@ const getStreamsDistribution = (streams: Array<any>) => {
         // Issues Count
         const totalIssuesVelocity = streams
           .map((ts: any) => {
-            const week = ts.weeks.find((tw: any) => tw.firstDay === w.firstDay);
+            const week = ts.weeks.find(
+              (tw: CompletionWeek) => tw.firstDay === w.firstDay,
+            );
             if (week === undefined) {
               return 0;
             }
@@ -199,10 +197,8 @@ const formatForecastStreams = (
   defaultPoints: boolean,
   completionStreams: any,
 ) => {
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
+  const metric = !defaultPoints ? 'issues' : 'points';
+
   return forecastData.map((c: any) => {
     const streamVelocity = completionStreams.find((s: any) => s.key === c.key);
     let currentMetrics: any = {
@@ -246,6 +242,36 @@ const formatForecastStreams = (
   });
 };
 
+export const processRestPayload = (
+  payload: any,
+  defaultPoints: boolean,
+  callback: any,
+) => {
+  // Formats the streams
+  let completionStreams = getCompletionStreams(payload.completion);
+  // Adds distribution
+  completionStreams = getStreamsDistribution(completionStreams);
+
+  console.log(completionStreams);
+
+  const forecastStreams = formatForecastStreams(
+    payload.completion.forecast,
+    defaultPoints,
+    completionStreams,
+  );
+
+  const coreData = {
+    updatedAt: payload.completion.updatedAt,
+    completionData: payload.completion,
+    jiraHost: payload.completion.jiraHost,
+    completionStreams: completionStreams,
+    forecastStreams: forecastStreams,
+    simulatedStreams: forecastStreams,
+    selectedTeamId: payload.id,
+  };
+  callback(coreData);
+};
+
 export const teams: Teams = {
   state: {
     selectedTeam: null,
@@ -254,6 +280,7 @@ export const teams: Teams = {
     loadingForecast: false,
     jiraHost: null,
     completionData: null,
+    updatedAt: null,
     completionStreams: [],
     forecastStreams: [],
     simulatedStreams: [],
@@ -264,6 +291,18 @@ export const teams: Teams = {
   reducers: {
     setTeams(state: any, payload: any) {
       return { ...state, teams: payload };
+    },
+    setCoreData(state: any, payload: any) {
+      return {
+        ...state,
+        completionData: payload.jiraHost,
+        updatedAt: payload.updatedAt,
+        jiraHost: payload.jiraHost,
+        completionStreams: payload.completionStreams,
+        forecastStreams: payload.forecastStreams,
+        simulatedStreams: payload.simulatedStreams,
+        selectedTeamId: payload.selectedTeamId,
+      };
     },
     setCompletionData(state: any, payload: any) {
       return { ...state, completionData: payload };
@@ -301,7 +340,6 @@ export const teams: Teams = {
   },
   effects: {
     async initView(teamObj: any, rootState: any) {
-      console.log(teamObj);
       const { selectedTeamId, selectedTab } = teamObj;
       const log = rootState.global.log;
       log.info(`Initialized Team view (tean: ${selectedTeamId})`);
@@ -321,21 +359,20 @@ export const teams: Teams = {
       }
     },
 
-    async loadCompletionFromCache(teamId: any) {
+    async loadCompletionFromCache(teamId: any, rootState: any) {
       // If previous data was loaded and saved in localstorage
       // it will first display the cache, while the call to the backend is happening
-      const cacheVelocity = reactLocalStorage.getObject(
-        `cache-velocity-${teamId}`,
+      const cacheCompletion = reactLocalStorage.getObject(
+        `cache-completion-${teamId}`,
       );
-      if (
-        Object.keys(cacheVelocity).length > 0 &&
-        cacheVelocity.find((t: any) => t.id === teamId) !== undefined
-      ) {
+      if (Object.keys(cacheCompletion).length > 0) {
         log.info(
           'Loading Velocity data from cache while call to the backend is happening',
         );
-        this.setCompletionData(
+        processRestPayload(
           reactLocalStorage.getObject(`cache-completion-${teamId}`),
+          rootState.global.defaultPoints,
+          this.setCoreData,
         );
       }
     },
@@ -343,14 +380,9 @@ export const teams: Teams = {
     async fetchTeamData(teamId: any, rootState: any) {
       this.loadCompletionFromCache(teamId);
       if (rootState.teams.loading === false) {
-        const setCompletionData = this.setCompletionData;
-        const setCompletionStreams = this.setCompletionStreams;
-        const setForecastStreams = this.setForecastStreams;
-        const setSimulatedStreams = this.setSimulatedStreams;
-
+        const setCoreData = this.setCoreData;
         const setLoading = this.setLoading;
-        const setSelectedTeam = this.setSelectedTeam;
-        const setJiraHost = this.setJiraHost;
+
         if (teamId !== null) {
           const log = rootState.global.log;
           log.info('Fetching completion data for team: ' + teamId);
@@ -370,31 +402,16 @@ export const teams: Teams = {
             headers,
           })
             .then((response) => {
-              setCompletionData(response.data.completion);
-              setJiraHost(response.data.completion.jiraHost);
+              log.info('Data received from backend for team: ' + teamId);
 
-              // Formats the streams
-              let completionStreams = getCompletionStreams(
-                response.data.completion,
-              );
-              // Adds distribution
-              completionStreams = getStreamsDistribution(completionStreams);
-              setCompletionStreams(completionStreams);
-
-              console.log(completionStreams);
-              console.log(response.data);
-              const forecastStreams = formatForecastStreams(
-                response.data.completion.forecast,
+              processRestPayload(
+                response.data,
                 rootState.global.defaultPoints,
-                completionStreams,
+                setCoreData,
               );
-              console.log(forecastStreams);
-              setForecastStreams(forecastStreams);
-              setSimulatedStreams(forecastStreams);
-              setSelectedTeam(response.data.completion.name);
               reactLocalStorage.setObject(
-                `cache-completion-${rootState.teams.setSelectedTeamId}`,
-                response.data.completion,
+                `cache-completion-${teamId}`,
+                response.data,
               );
               setLoading(false);
             })

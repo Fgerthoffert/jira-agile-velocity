@@ -19,7 +19,7 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const Default: FC<connectedProps> = ({ loggedIn }) => {
   if (loggedIn) {
-    return <Redirect to="/velocity" />;
+    return <Redirect to="/teams" />;
   }
 
   return (

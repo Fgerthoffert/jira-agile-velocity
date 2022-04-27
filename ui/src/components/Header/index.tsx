@@ -66,19 +66,13 @@ const Header: FC<connectedProps> = ({ setShowMenu, showMenu, pageTitle }) => {
   const classes = useStyles();
 
   return (
-    <AppBar
-      position="fixed"
-      className={clsx(classes.appBar, {
-        [classes.appBarShift]: showMenu,
-      })}
-    >
+    <AppBar position="fixed">
       <Toolbar>
         <IconButton
           color="inherit"
           aria-label="open drawer"
           onClick={handleDrawerOpen}
           edge="start"
-          className={clsx(classes.menuButton, showMenu && classes.hide)}
           size="large"
         >
           <MenuIcon />

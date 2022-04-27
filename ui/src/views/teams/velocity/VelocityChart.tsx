@@ -25,8 +25,8 @@ ChartJS.register(
   Tooltip,
 );
 
-const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
-  const allCompletion = completionData.find((c: any) => c.key === 'all');
+const VelocityChart: FC<any> = ({ completionStreams, metric, chartRange }) => {
+  const allCompletion = completionStreams.find((c: any) => c.key === 'all');
 
   if (allCompletion === undefined) {
     return null;
@@ -43,7 +43,7 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
     .slice(Math.max(allCompletion[chartRange].length - displayRecords, 0))
     .map((w: any) => w[displayKey]);
 
-  const datasets = completionData.map((d: any) => {
+  const datasets = completionStreams.map((d: any) => {
     return {
       label: d.name === undefined ? 'Other' : d.name,
       data: d[chartRange]
@@ -53,7 +53,7 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
           // the sum of all other values in categories for the same week
           if (d.key === 'all') {
             let currentCount = w.completion[metric].count;
-            for (const dset of completionData.filter(
+            for (const dset of completionStreams.filter(
               (d: any) => d.key !== 'all',
             )) {
               for (const week of dset[chartRange]
@@ -82,7 +82,7 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
     };
   });
 
-  const rollingVelocity = completionData
+  const rollingVelocity = completionStreams
     .filter((d: any) => d.key !== 'all')
     .map((d: any) => {
       return {
@@ -166,7 +166,7 @@ const VelocityChart: FC<any> = ({ completionData, metric, chartRange }) => {
     const datasetIndex = fullDataset[0].datasetIndex;
     const datasetName = data.datasets[datasetIndex].label;
     let clickedDataset: any = allCompletion;
-    for (const dts of completionData) {
+    for (const dts of completionStreams) {
       if (dts.name === datasetName) {
         clickedDataset = dts;
       }

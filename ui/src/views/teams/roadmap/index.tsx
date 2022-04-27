@@ -57,10 +57,8 @@ const Roadmap: FC<connectedProps> = ({
 
   const teamVelocity = 20;
 
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
+  const metric = !defaultPoints ? 'issues' : 'points';
+
   if (forecastStreams.length > 0) {
     return forecastStreams.map((stream: any) => {
       return (

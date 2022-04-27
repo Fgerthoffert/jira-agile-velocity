@@ -25,7 +25,6 @@ ChartJS.register(
 );
 
 const VelocityChart: FC<any> = ({ completionStreams, metric }) => {
-  // console.log(completionStreams);
   const labels = completionStreams[0].weeks.map((w: any) =>
     format(w.firstDay, 'LLL do'),
   );

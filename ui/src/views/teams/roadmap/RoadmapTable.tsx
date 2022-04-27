@@ -1,4 +1,6 @@
 import React, { FC } from 'react';
+import { connect } from 'react-redux';
+
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import IconButton from '@mui/material/IconButton';
@@ -10,14 +12,27 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
+import { iRootState } from '../../../store';
+
 import { getProgress, getBarVariant, getEstimateState } from '../utils';
 
-const RoadmapTable: FC<any> = ({ defaultPoints, issues, jiraHost }) => {
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
+const mapState = (state: iRootState) => ({});
 
+const mapDispatch = (dispatch: any) => ({
+  setGraphInitiative: dispatch.initiatives.setGraphInitiative,
+  updateGraph: dispatch.initiatives.updateGraph,
+  setOpenGraph: dispatch.initiatives.setOpenGraph,
+});
+
+const RoadmapTable: FC<any> = ({
+  defaultPoints,
+  issues,
+  jiraHost,
+  setGraphInitiative,
+  updateGraph,
+  setOpenGraph,
+}) => {
+  const metric = !defaultPoints ? 'issues' : 'points';
   return (
     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
       <TableHead>
@@ -61,11 +76,11 @@ const RoadmapTable: FC<any> = ({ defaultPoints, issues, jiraHost }) => {
                   size="small"
                   onClick={() => {
                     console.log('Click');
-                    // setGraphInitiative(
-                    //   issues.find((is: any) => is.key === i.key),
-                    // );
-                    // updateGraph();
-                    // setOpenGraph(true);
+                    setGraphInitiative(
+                      issues.find((is: any) => is.key === i.key),
+                    );
+                    updateGraph();
+                    setOpenGraph(true);
                   }}
                 >
                   <BubbleChartIcon fontSize="small" />
@@ -117,5 +132,4 @@ const RoadmapTable: FC<any> = ({ defaultPoints, issues, jiraHost }) => {
     </Table>
   );
 };
-
-export default RoadmapTable;
+export default connect(mapState, mapDispatch)(RoadmapTable);

@@ -9,16 +9,10 @@ import {
 } from '@mui/material/styles';
 import '@mui/styles';
 
-import { createStyles, makeStyles } from '@mui/styles';
-
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import './App.css';
-// import Roadmap from './views/roadmap';
-// import Velocity from './views/velocity';
 import Teams from './views/teams';
-// import Assignees from './views/assignees';
-// import Control from './views/control';
 import Default from './views/default';
 
 declare module '@mui/styles' {

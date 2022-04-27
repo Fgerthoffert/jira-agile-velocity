@@ -55,6 +55,13 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
       title: {
         display: true,
       },
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            return `${context.dataset.label}: ${context.parsed.y} %`;
+          },
+        },
+      },
     },
     responsive: true,
     scales: {
@@ -101,7 +108,7 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
     const url =
       jiraHost +
       '/issues/?jql=key in (' +
-      clickedPoint.completed.issues.map((i: JiraIssue) => i.key).join() +
+      clickedPoint.velocity.issues.map((i: JiraIssue) => i.key).join() +
       ')';
 
     window.open(url, '_blank');

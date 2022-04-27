@@ -50,10 +50,8 @@ const Review: FC<connectedProps> = ({
   simulatedStreams,
   setSimulatedStreams,
 }) => {
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
+  const metric = !defaultPoints ? 'issues' : 'points';
+
   if (completionStreams.length > 0) {
     const lastStreamWeeks = completionStreams.map(
       (w: CompletionStream) => w.weeks.slice(-1)[0],
@@ -101,7 +99,7 @@ const Review: FC<connectedProps> = ({
                     align="center"
                     style={{ backgroundColor: '#FFFDE7' }}
                   >
-                    Simulate by adjusting distribution
+                    Custom projections
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -131,7 +129,7 @@ const Review: FC<connectedProps> = ({
                   const ss = simulatedStreams.find(
                     (ss: any) => ss.key === s.key,
                   );
-                  console.log(ss);
+                  // console.log(fs);
                   return (
                     <TableRow key={s.key}>
                       <TableCell>{s.name}</TableCell>
@@ -182,7 +180,9 @@ const Review: FC<connectedProps> = ({
                       <TableCell align="right">
                         <TextField
                           id="standard-number"
-                          label=""
+                          label={`Goal: ${Math.round(
+                            fs.metrics[metric].distributionTarget,
+                          )}%`}
                           inputProps={{
                             inputMode: 'numeric',
                             pattern: '[0-9]*',
@@ -198,14 +198,14 @@ const Review: FC<connectedProps> = ({
                               ? '-'
                               : Math.round(ss.metrics[metric].distribution)
                           }
-                          style={{ width: 50 }}
+                          style={{ width: 80 }}
                           onChange={(
                             event: React.ChangeEvent<HTMLInputElement>,
                           ) => {
                             const updatedStreams = simulatedStreams.map(
                               (us: any) => {
                                 if (us.key === s.key) {
-                                  console.log(us);
+                                  // console.log(us);
                                   return {
                                     ...us,
                                     metrics: {
@@ -235,7 +235,7 @@ const Review: FC<connectedProps> = ({
                                 return { ...us };
                               },
                             );
-                            console.log(updatedStreams);
+                            // console.log(updatedStreams);
                             setSimulatedStreams(updatedStreams);
                           }}
                         />

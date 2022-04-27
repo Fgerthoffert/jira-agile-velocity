@@ -5,11 +5,10 @@ import Grid from '@mui/material/Grid';
 
 import Layout from '../../layout';
 import Completion from './completion';
-import Velocity from './velocity';
 import Forecast from './forecast';
 import Roadmap from './roadmap';
 import Review from './review';
-// import TeamsTabs from './teamtabs';
+import GraphModal from './graphModal';
 
 import { iRootState } from '../../store';
 import DataStatus from './DataStatus';
@@ -27,21 +26,16 @@ const mapDispatch = (dispatch: any) => ({
   setShowMenu: dispatch.global.setShowMenu,
 });
 
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
 const Teams: FC<any> = ({
   setPageTitle,
   initView,
   match,
-  history,
   selectedTeam,
   setShowMenu,
   loggedIn,
-  teams,
   selectedTeamId,
 }) => {
-  setPageTitle(selectedTeam);
+  setPageTitle(`Team metrics: ${match.params.teamId}`);
   useEffect(() => {
     setShowMenu(false);
     if (
@@ -50,20 +44,11 @@ const Teams: FC<any> = ({
     ) {
       initView({ selectedTeamId: match.params.teamId, tab: match.params.tab });
     }
-    // if (match.params.team === undefined && selectedTeam !== null) {
-    //   changeTab(selectedTeam);
-    // }
   });
-
-  // Receive request to change tab, update URL accordingly
-  const changeTab = (newTab: string) => {
-    history.push({
-      pathname: '/teams/' + newTab,
-    });
-  };
 
   return (
     <Layout>
+      <GraphModal />
       <Grid
         container
         direction="column"
@@ -84,15 +69,9 @@ const Teams: FC<any> = ({
           <Forecast />
         </Grid>
         <Roadmap />
-
-        {/* <TeamsTabs changeTab={changeTab} />
-      <DataStatus />
-      <br />
-      <Dashboard /> */}
       </Grid>
     </Layout>
   );
 };
-//       <Dashboard />
 
 export default connect(mapState, mapDispatch)(withRouter(Teams));

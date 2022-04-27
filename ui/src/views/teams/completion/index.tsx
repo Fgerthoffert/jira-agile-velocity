@@ -26,10 +26,8 @@ const Completion: FC<connectedProps> = ({
   completionStreams,
   jiraHost,
 }) => {
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
+  const metric = !defaultPoints ? 'issues' : 'points';
+
   if (completionStreams.length > 0) {
     return (
       <Grid container spacing={1}>

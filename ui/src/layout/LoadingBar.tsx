@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { Theme } from '@mui/material/styles';
 
 import { createStyles, makeStyles } from '@mui/styles';
 
@@ -8,7 +7,7 @@ import { connect } from 'react-redux';
 import { iRootState } from '../store';
 import LinearProgress from '@mui/material/LinearProgress';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       flexGrow: 1,

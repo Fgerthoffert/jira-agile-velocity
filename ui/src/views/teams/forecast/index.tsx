@@ -94,7 +94,7 @@ export const getId = (inputstring: string) => {
 };
 
 const formatStreams = (streams: any, metric: string) => {
-  console.log(streams);
+  // console.log(streams);
   return streams.map((stream: any) => {
     return {
       ...stream,
@@ -118,10 +118,7 @@ const Forecast: FC<connectedProps> = ({ defaultPoints, simulatedStreams }) => {
   if (simulatedStreams.length === 0) {
     return null;
   }
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
+  const metric = !defaultPoints ? 'issues' : 'points';
 
   const currentStreams = formatStreams(simulatedStreams, metric);
 
@@ -130,7 +127,7 @@ const Forecast: FC<connectedProps> = ({ defaultPoints, simulatedStreams }) => {
   return (
     <Paper>
       <Typography variant="h5" component="h3">
-        Forecast
+        Naive Forecast
       </Typography>
       <Typography component="p">
         Remaining work calculated using {metric}

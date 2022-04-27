@@ -23,7 +23,7 @@ import VelocityChart from './VelocityChart';
 
 const mapState = (state: iRootState) => ({
   defaultPoints: state.global.defaultPoints,
-  completionData: state.teams.completionData,
+  completionStreams: state.teams.completionStreams,
   forecastData: state.teams.forecastData,
   forecastStreams: state.teams.forecastStreams,
 });
@@ -38,17 +38,13 @@ type connectedProps = ReturnType<typeof mapState> &
 
 const Velocity: FC<connectedProps> = ({
   defaultPoints,
-  completionData,
+  completionStreams,
   forecastData,
   forecastStreams,
 }) => {
-  const teamVelocity = 23;
-  // console.log(streams);
-  let metric = 'points';
-  if (!defaultPoints) {
-    metric = 'issues';
-  }
-  if (completionData !== null) {
+  const metric = !defaultPoints ? 'issues' : 'points';
+
+  if (completionStreams.length > 0) {
     return (
       <Grid container spacing={1}>
         <Grid item xs={6}>
@@ -60,7 +56,7 @@ const Velocity: FC<connectedProps> = ({
               Calculated using {metric}, and 4 weeks rolling average
             </Typography>
             <VelocityChart
-              completionData={completionData.completion}
+              completionStreams={completionStreams}
               chartRange="weeks"
               metric={metric}
             />

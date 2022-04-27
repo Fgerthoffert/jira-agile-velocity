@@ -12,9 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Link, LinkProps } from 'react-router-dom';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import PeopleIcon from '@mui/icons-material/People';
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { iRootState } from '../../store';
 
 const drawerWidth = 240;
@@ -73,21 +71,6 @@ const Menu: FC<connectedProps> = ({ setShowMenu, showMenu, teams }) => {
         text: t.name,
       };
     }),
-    {
-      path: '/velocity',
-      icon: <BarChartIcon />,
-      text: 'Velocity',
-    },
-    {
-      path: '/control',
-      icon: <BarChartIcon />,
-      text: 'Control Chart',
-    },
-    {
-      path: '/initiatives',
-      icon: <FormatListNumberedIcon />,
-      text: 'Initiatives',
-    },
   ];
 
   return (

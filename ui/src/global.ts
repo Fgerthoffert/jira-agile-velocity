@@ -6,24 +6,6 @@ export interface JiraIssue {
   fiels: any; // Other Jira issue fields, using "any" for the time being
 }
 
-export interface CompletionDay {
-  day: string; // new Date().toISOString() representation of the date
-  issues: Array<JiraIssue>;
-}
-
-export interface CompletionWeek {
-  firstDay: string; // First day of the week
-  issues: Array<JiraIssue>;
-}
-
-export interface CompletionStream {
-  name: string; // Name of the completion stream
-  key: string; // Key of the stream, automatically generated from the name
-  jql: string; // JQL query used to fetch the completion data
-  days: Array<CompletionDay>;
-  weeks: Array<CompletionWeek>;
-}
-
 export interface CompletionData {
   name: string; // Team Name
   from: string; // Date from which data collection started
@@ -58,4 +40,49 @@ export interface Stream {
   effortPct: number;
   items: Array<StreamItem>;
   weeks?: Array<StreamWeek>;
+}
+
+export interface CompletionDay {
+  day: Date; // new Date().toISOString() representation of the date
+  issues: Array<JiraIssue>;
+}
+
+export interface CompletionWeek {
+  firstDay: Date; // First day of the week
+  issues: Array<JiraIssue>;
+  completed: {
+    // Actual completion for the week
+    days: Array<CompletionDay>;
+    issues: Array<JiraIssue>;
+  };
+  velocity: {
+    // Window of days & issues used for calculating the velocity
+    days: Array<CompletionDay>;
+    issues: Array<JiraIssue>;
+  };
+  metrics: {
+    issues: {
+      count: number;
+      velocity: number;
+      totalStreams: number;
+      distribution: number;
+    };
+    points: {
+      count: number;
+      velocity: number;
+      totalStreams: number;
+      distribution: number;
+    };
+  };
+}
+
+// A completion stream contains data and metrics about elements in the past
+export interface CompletionStream {
+  name: string; // Name of the completion stream
+  key: string; // Key of the stream, automatically generated from the name
+  jql: string; // JQL query used to fetch the completion data
+  childIssues: Array<string>;
+  days: Array<CompletionDay>;
+  childOf: string;
+  weeks: Array<CompletionWeek>;
 }
