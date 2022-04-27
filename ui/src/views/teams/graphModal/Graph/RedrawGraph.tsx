@@ -29,7 +29,7 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setOpenGraph: dispatch.roadmap.setOpenGraph,
+  setOpenGraph: dispatch.initiatives.setOpenGraph,
 });
 
 type connectedProps = ReturnType<typeof mapState> &

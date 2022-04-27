@@ -17,6 +17,8 @@ interface Initiatives {
 export const initiatives: Initiatives = {
   state: {
     log: {},
+    loading: false,
+    jiraHost: null,
 
     openGraph: false,
     graphInitiative: {},
@@ -38,7 +40,12 @@ export const initiatives: Initiatives = {
     setLog(state: any, payload: any) {
       return { ...state, log: payload };
     },
-
+    setLoading(state: any, payload: any) {
+      return { ...state, loading: payload };
+    },
+    setJiraHost(state: any, payload: any) {
+      return { ...state, jiraHost: payload };
+    },
     setOpenGraph(state: any, payload: any) {
       return { ...state, openGraph: payload };
     },

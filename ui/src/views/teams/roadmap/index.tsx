@@ -33,13 +33,7 @@ const mapState = (state: iRootState) => ({
   jiraHost: state.teams.jiraHost,
 });
 
-const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints,
-  fetchTeamData: dispatch.teams.fetchTeamData,
-  setGraphInitiative: dispatch.teams.setGraphInitiative,
-  updateGraph: dispatch.teams.updateGraph,
-  setOpenGraph: dispatch.teams.setOpenGraph,
-});
+const mapDispatch = (dispatch: any) => ({});
 
 type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
@@ -48,17 +42,7 @@ const Roadmap: FC<connectedProps> = ({
   defaultPoints,
   forecastStreams,
   jiraHost,
-  fetchTeamData,
-  setGraphInitiative,
-  updateGraph,
-  setOpenGraph,
 }) => {
-  const classes = useStyles();
-
-  const teamVelocity = 20;
-
-  const metric = !defaultPoints ? 'issues' : 'points';
-
   if (forecastStreams.length > 0) {
     return forecastStreams.map((stream: any) => {
       return (

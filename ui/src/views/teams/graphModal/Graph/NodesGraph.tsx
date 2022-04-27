@@ -23,7 +23,7 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = (dispatch: any) => ({
-  setGraphNode: dispatch.roadmap.setGraphNode,
+  setGraphNode: dispatch.initiatives.setGraphNode,
 });
 
 type connectedProps = ReturnType<typeof mapState | any> &
@@ -33,7 +33,7 @@ class NodesGraph extends Component<connectedProps> {
   chartRef: any = React.createRef();
   tippyInstances: any = {};
   selectedTippies: any = {};
-  clickedLink: boolean = false;
+  clickedLink = false;
 
   componentDidMount() {
     const { setGraphNode } = this.props;

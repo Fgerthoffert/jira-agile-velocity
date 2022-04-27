@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Charts from './Charts';
 
 const mapDispatch = (dispatch: any) => ({
-  initHistory: dispatch.roadmap.initHistory,
+  initHistory: dispatch.initiatives.initHistory,
 });
 
 type connectedProps = ReturnType<typeof mapDispatch | any>;
@@ -14,7 +14,7 @@ const History: FC<connectedProps> = ({ initiativeKey, initHistory }) => {
     initHistory(initiativeKey);
   });
   return null;
-  return <Charts />;
+  //   return <Charts />;
 };
 
 export default connect(null, mapDispatch)(History);

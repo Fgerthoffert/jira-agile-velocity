@@ -25,7 +25,7 @@ const mapState = (state: iRootState) => ({
 });
 
 const mapDispatch = (dispatch: any) => ({
-  initHistory: dispatch.roadmap.initHistory,
+  initHistory: dispatch.initiatives.initHistory,
 });
 
 type connectedProps = ReturnType<typeof mapState | any> &
@@ -44,6 +44,7 @@ const Charts: FC<connectedProps> = ({
   if (!defaultPoints) {
     metric = 'Issues Count';
   }
+  console.log(initiativeHistory);
 
   const historicalData = initiativeHistory.filter(
     (w: any) => w.history !== null && w.history.forecast !== undefined,

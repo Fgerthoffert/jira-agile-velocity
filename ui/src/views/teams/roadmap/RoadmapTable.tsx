@@ -22,6 +22,7 @@ const mapDispatch = (dispatch: any) => ({
   setGraphInitiative: dispatch.initiatives.setGraphInitiative,
   updateGraph: dispatch.initiatives.updateGraph,
   setOpenGraph: dispatch.initiatives.setOpenGraph,
+  setJiraHost: dispatch.initiatives.setJiraHost,
 });
 
 const RoadmapTable: FC<any> = ({
@@ -31,6 +32,7 @@ const RoadmapTable: FC<any> = ({
   setGraphInitiative,
   updateGraph,
   setOpenGraph,
+  setJiraHost,
 }) => {
   const metric = !defaultPoints ? 'issues' : 'points';
   return (
@@ -76,6 +78,7 @@ const RoadmapTable: FC<any> = ({
                   size="small"
                   onClick={() => {
                     console.log('Click');
+                    setJiraHost(jiraHost);
                     setGraphInitiative(
                       issues.find((is: any) => is.key === i.key),
                     );

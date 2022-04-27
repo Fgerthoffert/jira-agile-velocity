@@ -32,9 +32,9 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-const Epics: FC<any> = ({ children, jiraHost }) => {
+const Epics: FC<any> = ({ epics, jiraHost }) => {
   const dedaultStyle = { padding: '4px 5px 4px 5px' };
-  const dataset = children.map((child: any) => {
+  const dataset = epics.map((child: any) => {
     return {
       key: child.key,
       title: child.summary,
@@ -54,7 +54,6 @@ const Epics: FC<any> = ({ children, jiraHost }) => {
             <TableRow>
               <TableCell>Key</TableCell>
               <TableCell>Title</TableCell>
-              <TableCell>Team</TableCell>
               <TableCell>Points</TableCell>
               <TableCell>Estimated</TableCell>
               <TableCell>Issues</TableCell>
@@ -78,9 +77,6 @@ const Epics: FC<any> = ({ children, jiraHost }) => {
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {row.title}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.team}
                 </TableCell>
                 <TableCell>
                   <ProgressBar

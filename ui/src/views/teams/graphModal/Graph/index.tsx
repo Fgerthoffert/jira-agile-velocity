@@ -16,12 +16,12 @@ import RedrawGraph from './RedrawGraph';
 const Graph: FC<any> = () => {
   return (
     <Paper>
-      <Grid container direction="row" justify="flex-start" spacing={3}>
+      <Grid container direction="row" justifyContent="flex-start" spacing={3}>
         <Grid item xs={2}>
           <Grid
             container
             direction="column"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="flex-start"
             spacing={1}
           >
@@ -29,7 +29,7 @@ const Graph: FC<any> = () => {
               <Grid
                 container
                 direction="column"
-                justify="space-evenly"
+                justifyContent="space-evenly"
                 alignItems="flex-start"
               >
                 <Grid item>
