@@ -13,8 +13,7 @@ const History: FC<connectedProps> = ({ initiativeKey, initHistory }) => {
   useEffect(() => {
     initHistory(initiativeKey);
   });
-  return null;
-  //   return <Charts />;
+  return <Charts />;
 };
 
 export default connect(null, mapDispatch)(History);

@@ -9,6 +9,7 @@ import Forecast from './forecast';
 import Roadmap from './roadmap';
 import Review from './review';
 import GraphModal from './graphModal';
+import DeleteModal from './deleteModal';
 
 import { iRootState } from '../../store';
 import DataStatus from './DataStatus';
@@ -49,6 +50,7 @@ const Teams: FC<any> = ({
   return (
     <Layout>
       <GraphModal />
+      <DeleteModal />
       <Grid
         container
         direction="column"

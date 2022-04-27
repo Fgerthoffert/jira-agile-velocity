@@ -1,26 +1,17 @@
-import React, { FC, useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import React, { FC } from 'react';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { connect } from 'react-redux';
 
 import { iRootState } from '../../../../store';
 
-// import HistoryCompletionChart from '../../../../components/Charts/ChartJS/HistoryCompletionChart';
-// import HistoryForecastChart from '../../../../components/Charts/ChartJS/HistoryForecastChart';
-// import HistoryFocusChart from '../../../../components/Charts/ChartJS/HistoryFocusChart';
+import HistoryEffort from './HistoryEffort';
 
 const mapState = (state: iRootState) => ({
-  roadmap: state.initiatives.roadmap,
   initiativeHistory: state.initiatives.initiativeHistory,
-  initiativeHistoryKey: state.initiatives.initiativeHistoryKey,
   defaultPoints: state.global.defaultPoints,
 });
 
@@ -31,69 +22,29 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapState | any> &
   ReturnType<typeof mapDispatch>;
 
-const Charts: FC<connectedProps> = ({
-  initiativeHistoryKey,
-  initiativeHistory,
-  defaultPoints,
-  roadmap,
-}) => {
-  if (initiativeHistory === false) {
+const Charts: FC<connectedProps> = ({ initiativeHistory, defaultPoints }) => {
+  const metric = !defaultPoints ? 'issues' : 'points';
+
+  if (initiativeHistory.length === 0) {
     return null;
   }
-  let metric = 'Story Points';
-  if (!defaultPoints) {
-    metric = 'Issues Count';
-  }
-  console.log(initiativeHistory);
 
-  const historicalData = initiativeHistory.filter(
-    (w: any) => w.history !== null && w.history.forecast !== undefined,
+  const historyMetrics = initiativeHistory.sort(
+    (a: any, b: any) =>
+      new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
   );
 
   return (
     <React.Fragment>
       <Grid container spacing={3} direction="column">
-        {historicalData.length > 0 && (
-          <Grid item xs={12}>
-            <Paper>
-              <Typography variant="subtitle1">
-                Evolution of the initiative complexity ({metric})
-              </Typography>
-              {/* <HistoryCompletionChart
-                dataset={initiativeHistory}
-                defaultPoints={defaultPoints}
-              /> */}
-            </Paper>
-          </Grid>
-        )}
         <Grid item xs={12}>
           <Paper>
             <Typography variant="subtitle1">
-              Evolution of the team focus (%) on the initiative ({metric})
+              Evolution of the initiative complexity ({metric})
             </Typography>
-            {/* <HistoryFocusChart
-              dataset={initiativeHistory}
-              defaultPoints={defaultPoints}
-              jiraHost={roadmap.host}
-            /> */}
-            <Typography variant="caption" display="block" gutterBottom>
-              Note: External contributors can bring team effort to over 100%
-            </Typography>
+            <HistoryEffort historyMetrics={historyMetrics} metric={metric} />
           </Paper>
         </Grid>
-        {historicalData.length > 0 && (
-          <Grid item xs={12}>
-            <Paper>
-              <Typography variant="subtitle1">
-                Evolution of the naive forecast ({metric})
-              </Typography>
-              {/* <HistoryForecastChart
-                dataset={historicalData}
-                defaultPoints={defaultPoints}
-              /> */}
-            </Paper>
-          </Grid>
-        )}
       </Grid>
     </React.Fragment>
   );

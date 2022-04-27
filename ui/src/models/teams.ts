@@ -287,6 +287,9 @@ export const teams: Teams = {
 
     forecastData: null,
     teamVelocity: { points: 20, issues: 5 },
+
+    showDeleteModal: false,
+    deleteModalCacheDays: [],
   },
   reducers: {
     setTeams(state: any, payload: any) {
@@ -336,6 +339,12 @@ export const teams: Teams = {
     },
     setJiraHost(state: any, payload: any) {
       return { ...state, jiraHost: payload };
+    },
+    setShowDeleteModal(state: any, payload: any) {
+      return { ...state, showDeleteModal: payload };
+    },
+    setDeleteModalCacheDays(state: any, payload: any) {
+      return { ...state, deleteModalCacheDays: payload };
     },
   },
   effects: {
@@ -420,6 +429,87 @@ export const teams: Teams = {
               setLoading(false);
             });
         }
+      }
+    },
+    async clearCacheDay(cacheDay: any, rootState: any) {
+      // Fetch data
+      const setDeleteModalCacheDays = this.setDeleteModalCacheDays;
+      const deleteModalRefreshCacheDays = this.deleteModalRefreshCacheDays;
+      const setLoading = this.setLoading;
+      console.log(cacheDay);
+
+      if (
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
+      ) {
+        setLoading(true);
+        const host =
+          window._env_.API_URL !== undefined
+            ? window._env_.API_URL
+            : 'http://127.0.0.1:3001';
+        const headers =
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
+        axios({
+          method: 'delete',
+          url: `${host}/cachedays/${rootState.teams.selectedTeamId}/${cacheDay}`,
+          headers,
+        })
+          .then((response) => {
+            setDeleteModalCacheDays(response.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            setLoading(false);
+            deleteModalRefreshCacheDays();
+          });
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not present',
+        );
+      }
+    },
+
+    async deleteModalRefreshCacheDays(roadmap: any, rootState: any) {
+      // Fetch data
+      const setDeleteModalCacheDays = this.setDeleteModalCacheDays;
+      const setLoading = this.setLoading;
+
+      if (
+        JSON.parse(window._env_.AUTH0_DISABLED) === true ||
+        (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
+          rootState.global.accessToken !== '')
+      ) {
+        setLoading(true);
+        const host =
+          window._env_.API_URL !== undefined
+            ? window._env_.API_URL
+            : 'http://127.0.0.1:3001';
+        const headers =
+          JSON.parse(window._env_.AUTH0_DISABLED) !== true
+            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+            : {};
+        axios({
+          method: 'get',
+          url: `${host}/cachedays/${rootState.teams.selectedTeamId}`,
+          headers,
+        })
+          .then((response) => {
+            setDeleteModalCacheDays(response.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            setDeleteModalCacheDays([]);
+            setLoading(false);
+          });
+      } else {
+        log.info(
+          'Not loading data, either there is already some data in cache or user token not present',
+        );
       }
     },
   },

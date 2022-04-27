@@ -35,6 +35,7 @@ export const initiatives: Initiatives = {
     graphPathEnd: {},
     showDeleteModal: false,
     deleteModalCacheDays: [],
+    initiativeHistory: [],
   },
   reducers: {
     setLog(state: any, payload: any) {
@@ -257,7 +258,7 @@ export const initiatives: Initiatives = {
       } else {
         logger.disableAll();
       }
-      logger.info('Roadmap Logger initialized');
+      logger.info('Initiative Logger initialized for key: ' + initiativeKey);
       this.setLog(logger);
       this.loadHistoryData(initiativeKey);
     },
@@ -283,7 +284,7 @@ export const initiatives: Initiatives = {
             : {};
         axios({
           method: 'get',
-          url: host + '/history/' + initiativeKey,
+          url: `${host}/history/${rootState.teams.selectedTeamId}/${initiativeKey}`,
           headers,
         })
           .then((response) => {

@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import format from 'date-fns/format';
 import IconButton from '@mui/material/IconButton';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { connect } from 'react-redux';
 
@@ -33,6 +34,8 @@ const mapState = (state: iRootState) => ({
 
 const mapDispatch = (dispatch: any) => ({
   fetchTeamData: dispatch.teams.fetchTeamData,
+  setShowDeleteModal: dispatch.teams.setShowDeleteModal,
+  deleteModalRefreshCacheDays: dispatch.teams.deleteModalRefreshCacheDays,
 });
 
 type connectedProps = ReturnType<typeof mapState> &
@@ -42,6 +45,8 @@ const DataStatus: FC<connectedProps> = ({
   selectedTeamId,
   fetchTeamData,
   updatedAt,
+  setShowDeleteModal,
+  deleteModalRefreshCacheDays,
 }) => {
   const classes = useStyles();
   if (updatedAt !== null) {
@@ -62,6 +67,18 @@ const DataStatus: FC<connectedProps> = ({
         <Grid item>
           <IconButton
             aria-label="delete"
+            size="small"
+            onClick={() => {
+              setShowDeleteModal(true);
+              deleteModalRefreshCacheDays();
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="refresh"
             size="small"
             onClick={() => {
               fetchTeamData(selectedTeamId);
