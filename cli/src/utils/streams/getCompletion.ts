@@ -6,7 +6,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { IConfig, IJiraIssue, IConfigTeam, IConfigJira } from '../../global';
+import {
+  UserConfig,
+  IJiraIssue,
+  UserConfigTeam,
+  UserConfigJira,
+} from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
 import { differenceInBusinessDays, startOfDay } from 'date-fns';
@@ -19,8 +24,8 @@ import { cy } from 'date-fns/locale';
     Fetches all completed issues, per day from a team
 */
 const getCompletion = async (
-  team: IConfigTeam,
-  jiraConfig: IConfigJira,
+  team: UserConfigTeam,
+  jiraConfig: UserConfigJira,
   stream: any,
   cacheDir: string,
   fetchedIssues: Array<string> = [], // Array of issues that were already fetched by previous streams

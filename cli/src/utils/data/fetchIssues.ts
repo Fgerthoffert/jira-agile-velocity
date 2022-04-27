@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { IConfig, IConfigJira, IConfigTeam } from '../../global';
+import { UserConfig, UserConfigJira, UserConfigTeam } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { getTeamFromAssignee } from '../misc/teamUtils';
 import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
@@ -12,11 +12,11 @@ import { getId } from '../../utils/misc/id';
 /*
     Fetches all issues and potentially their children
 */
-const fetchInitiatives = async (
+const fetchIssues = async (
   jql: string,
   teamName: string,
   categoryName: string,
-  jiraConfig: IConfigJira,
+  jiraConfig: UserConfigJira,
   cacheDir: string,
   useCache: boolean,
   toDate?: string | undefined,
@@ -70,4 +70,4 @@ const fetchInitiatives = async (
   return issues;
 };
 
-export default fetchInitiatives;
+export default fetchIssues;

@@ -1,10 +1,9 @@
-
 import axios from 'axios';
 
-import { IConfigJira } from '../../global';
+import { UserConfigJira } from '../../global';
 
 const jiraSearchIssues = async (
-  jiraConfig: IConfigJira,
+  jiraConfig: UserConfigJira,
   jqlQuery: string,
   field: string,
 ) => {

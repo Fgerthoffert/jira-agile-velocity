@@ -198,35 +198,32 @@ export interface ICalendarFinal {
   control?: Array<any>;
 }
 
-export interface IConfig {
-  jira: IConfigJira;
-  teams: Array<IConfigTeam>;
-  roadmap: IConfigRoadmap;
+export interface UserConfig {
+  jira: UserConfigJira;
+  teams: Array<UserConfigTeam>;
 }
 
-export interface IConfigTeam {
+export interface UserConfigTeam {
   name: string;
   from: string;
-  completion: {
-    all: string;
-    categories: Array<{
-      name: string;
-      jql: string;
-    }>;
-  };
   excludeDays: Array<string>;
-  jqlCompletion: string;
-  jqlRemaining: string;
-  jqlHistory: string;
-  initiativeEffortPrct: number;
-  slack: {
-    token: string;
-    channel: string;
-    explanation: string;
+  streams: Array<UserConfigStream>;
+}
+
+export interface UserConfigStream {
+  name: string;
+  completion: {
+    jql: string;
+    childOf: string;
+  };
+  forecast: {
+    jql: string;
+    fetchChild: boolean;
+    effortPct: number;
   };
 }
 
-export interface IConfigJira {
+export interface UserConfigJira {
   username: string;
   password: string;
   host: string;
@@ -235,12 +232,11 @@ export interface IConfigJira {
     originalPoints: string;
     parentInitiative: string;
     parentEpic: string;
-    sprints: string;
   };
   excludeDays: Array<string>;
 }
 
-export interface IConfigRoadmap {
+export interface UserConfigRoadmap {
   jqlInitiatives: string;
   teams: Array<string>;
   forecastWeeks: number;
@@ -251,4 +247,26 @@ export interface IControlBucket {
   value: string;
   color: string;
   isInBucket: Function;
+}
+
+export interface CompletedDay {
+  issues: Array<IJiraIssue>;
+}
+
+export interface CompletedStream {
+  key: string;
+  name: string;
+  jql: string;
+  childOf: string;
+  days: Array<CompletedDay>;
+  childIssues: Array<string>;
+}
+
+export interface ForecastStream {
+  key: string;
+  name: string;
+  jql: string;
+  fetchChild?: boolean;
+  effortPct: number;
+  issues: Array<IJiraIssue>;
 }

@@ -1,4 +1,4 @@
-import { IConfig } from '../../global';
+import { UserConfig } from '../../global';
 
 import crunchMetrics from './crunchMetrics';
 
@@ -8,7 +8,7 @@ const prepareIssuesData = (
   issuesTree: any,
   node: any,
   level: number,
-  userConfig: IConfig,
+  userConfig: UserConfig,
 ) => {
   if (node.key !== undefined) {
     node.level = level;

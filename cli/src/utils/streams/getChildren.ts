@@ -2,7 +2,7 @@ import { cli } from 'cli-ux';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { IConfigJira } from '../../global';
+import { UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { getId } from '../misc/id';
 
@@ -17,7 +17,7 @@ interface JiraIssue {
 // this will return all issue key matching this query and
 // all children of tickets in this query
 export const getChildrenKey = async (
-  jiraConfig: IConfigJira,
+  jiraConfig: UserConfigJira,
   jql: string,
   cacheDir: string,
   useCache: boolean = false,

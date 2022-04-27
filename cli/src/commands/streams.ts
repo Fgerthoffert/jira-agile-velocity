@@ -3,11 +3,11 @@ import cli from 'cli-ux';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as SymbolTree from 'symbol-tree';
+import { format } from 'date-fns';
 
 import Command from '../base';
 import getCompletion from '../utils/streams/getCompletion';
 import { getTeamId } from '../utils/misc/teamUtils';
-import jiraSearchIssues from '../utils/jira/searchIssues';
 import fetchIssues from '../utils/data/fetchIssues';
 import fetchChildren from '../utils/data/fetchChildren';
 import prepareIssuesData from '../utils/forecast/prepareIssuesData';
@@ -17,7 +17,9 @@ import { exportTree } from '../utils/misc/treeUtils';
 import { getChildrenKey } from '../utils/streams/getChildren';
 import { getId } from '../utils/misc/id';
 
-const trimIssue = (issue: any) => {
+import { IJiraIssue, CompletedStream, ForecastStream } from '../global';
+
+const trimIssue = (issue: IJiraIssue) => {
   return {
     key: issue.key,
     closedAt: issue.closedAt,
@@ -47,20 +49,14 @@ export default class Streams extends Command {
     const { flags } = this.parse(Streams);
     const userConfig = this.userConfig;
     const cacheDir = path.join(this.config.configDir, 'cache');
-    /*
-    Implementation Specs:
-    - Streams content are exclusive in the order of definition in the config file. 
-    A tickets already accounted for completion in stream A, will not be counted towards stream B
-
-    */
 
     for (const team of userConfig.teams) {
       this.log(`Fetching queries for team: ${team.name}`);
 
       const fetchedIssues: Array<string> = [];
-      const completedStreams: Array<any> = [];
+      const completedStreams: Array<CompletedStream> = [];
       const allForecastIssuesKeys: Array<string> = [];
-      const forecastStreams: Array<any> = [];
+      const forecastStreams: Array<ForecastStream> = [];
       for (const stream of team.streams) {
         this.log(
           `${team.name}/${stream.name}: Processing completion data for stream: ${stream.name}`,
@@ -103,12 +99,12 @@ export default class Streams extends Command {
           jql: stream.completion.jql,
           childOf:
             stream.completion.childOf === undefined
-              ? null
+              ? ''
               : stream.completion.childOf,
           days: completionDays.map((d: any) => {
             return {
               ...d,
-              issues: d.issues.map((i: any) => trimIssue(i)),
+              issues: d.issues.map((i: IJiraIssue) => trimIssue(i)),
             };
           }),
           childIssues,
@@ -209,17 +205,27 @@ export default class Streams extends Command {
         updatedAt: new Date().toJSON(),
       };
 
-      const issueFileStream = fs.createWriteStream(
+      const fileStream = fs.createWriteStream(
+        path.join(cacheDir, `stream-artifacts-${getTeamId(team.name)}.json`),
+        { flags: 'w' },
+      );
+      fileStream.write(JSON.stringify(teamData));
+      fileStream.end();
+      console.log('-----');
+
+      // Keep one file per week to keep track of history
+      const fileStreamWeek = fs.createWriteStream(
         path.join(
           cacheDir,
-          'completion-artifacts-' + getTeamId(team.name) + '.json',
+          `stream-artifacts-history-${getTeamId(team.name)}-${format(
+            new Date(),
+            'yyyy-ww',
+          )}.json`,
         ),
         { flags: 'w' },
       );
-      issueFileStream.write(JSON.stringify(teamData));
-      issueFileStream.end();
-      console.log('-----');
-
+      fileStreamWeek.write(JSON.stringify(teamData));
+      fileStreamWeek.end();
       this.log('------------');
     }
   }

@@ -5,7 +5,7 @@ import * as jsYaml from 'js-yaml';
 import * as loadYamlFile from 'load-yaml-file';
 import * as path from 'path';
 
-import { IConfig } from './global';
+import { UserConfig } from './global';
 
 export default abstract class extends Command {
   userConfig = {
@@ -21,46 +21,81 @@ export default abstract class extends Command {
       },
       excludeDays: ['1900-01-01'],
     },
-    teams: [{
-      name: 'Team 1',
-      jqlHistory: '2019-07-01',
-      excludeDays: ['1900-01-01'],
-      completion: {
-        all: 'Insert a JQL query to be used to record the overall completion of a team',
-        categories: [{
-          name: 'Bugs',
-          jql: 'Insert a JQL query to be used to capture the completion of a category'
-        }, {
-          name: 'Tech Debt',
-          jql: 'Insert a JQL query to be used to capture the completion of a category'
-        }]
+    teams: [
+      {
+        name: 'Team A',
+        from: '2019-07-01',
+        excludeDays: ['1900-01-01'],
+        streams: [
+          {
+            name: 'Initiatives',
+            completion: {
+              jql:
+                'sprint = Team-A and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: 'assignee = team-easy and type = initiative',
+            },
+            forecast: {
+              jql:
+                'assignee = team-easy and type = initiative and status != Closed',
+              fetchChild: true,
+              effortPct: 60,
+            },
+          },
+          {
+            name: 'Defects',
+            completion: {
+              jql:
+                'sprint = Team-A and type = Bug and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: '',
+            },
+            forecast: {
+              jql:
+                'type = Bug and sprint = Team-A and (sprint in futureSprints() or sprint in openSprints()) and status != Closed',
+              fetchChild: false,
+              effortPct: 40,
+            },
+          },
+        ],
       },
-      forecast: {
-        categories: [{
-          name: 'Initiatives',
-          jql: 'Insert a JQL query to be used to capture the completion of a category',
-          // If set to true, all stories fetched in the JQL query, 
-          // will be queried again to fetch all of their children
-          fetchChild: true,
-          // Exclude stories that might have been fetched from the following 
-          // other forecast queries
-          exclude: []
-        }, {
-          name: 'Tech Debt',
-          jql: 'Insert a JQL query to be used to capture the completion of a category',
-          fetchChild: false,
-          exclude: ['Initiatives']
-        }]
-      }
-    }],
-    roadmap: {
-      jqlInitiatives: 'type = initiative',
-      forecastWeeks: 26,
-      teams: ['Team 1, Team 2'],
-    },
+      {
+        name: 'Team B',
+        from: '2019-07-01',
+        excludeDays: ['1900-01-01'],
+        streams: [
+          {
+            name: 'Initiatives',
+            completion: {
+              jql:
+                'sprint = Team-B and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: 'assignee = team-easy and type = initiative',
+            },
+            forecast: {
+              jql:
+                'assignee = team-easy and type = initiative and status != Closed',
+              fetchChild: true,
+              effortPct: 60,
+            },
+          },
+          {
+            name: 'Defects',
+            completion: {
+              jql:
+                'sprint = Team-B and type = Bug and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: '',
+            },
+            forecast: {
+              jql:
+                'type = Bug and sprint = Team-B and (sprint in futureSprints() or sprint in openSprints()) and status != Closed',
+              fetchChild: false,
+              effortPct: 40,
+            },
+          },
+        ],
+      },
+    ],
   };
 
-  setUserConfig(userConfig: IConfig) {
+  setUserConfig(userConfig: UserConfig) {
     this.userConfig = userConfig;
   }
 

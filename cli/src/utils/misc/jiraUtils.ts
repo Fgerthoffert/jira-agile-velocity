@@ -1,4 +1,4 @@
-import { IConfigJira } from '../../global';
+import { UserConfigJira } from '../../global';
 
 /*
     Delete un-necessary fields from the issue object
@@ -35,7 +35,7 @@ export const cleanIssue = (issue: any) => {
   return issue;
 };
 
-export const returnTicketsPoints = (issue: any, jiraConfig: IConfigJira) => {
+export const returnTicketsPoints = (issue: any, jiraConfig: UserConfigJira) => {
   if (
     issue.fields[jiraConfig.fields.points] !== undefined &&
     issue.fields[jiraConfig.fields.points] !== null

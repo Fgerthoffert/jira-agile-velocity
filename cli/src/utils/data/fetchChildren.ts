@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { IConfigJira } from '../../global';
+import { UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 
@@ -13,7 +13,7 @@ import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 /* eslint max-params: ["error", 5] */
 /* eslint-env es6 */
 const fetchChildren = async (
-  jiraConfig: IConfigJira,
+  jiraConfig: UserConfigJira,
   issueKey: string,
   cacheDir: string,
   useCache: boolean,
