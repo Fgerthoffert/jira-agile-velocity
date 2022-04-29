@@ -5,16 +5,19 @@ import { CachedaysService } from './cachedays.service';
 export class CachedaysController {
   constructor(private cachedaysService: CachedaysService) {}
 
-  @Get()
-  async getCachedays() {
-    const cachedays = await this.cachedaysService.getCachedays();
+  @Get('/:teamId')
+  async getCachedays(@Param() params) {
+    const cachedays = await this.cachedaysService.getCachedays(params.teamId);
     return cachedays;
   }
 
-  @Delete(':deleteDay')
+  @Delete('/:teamId/:deleteDay')
   async deleteCachedays(@Param() params) {
-    await this.cachedaysService.deleteCachedays(params.deleteDay);
-    const cachedays = await this.cachedaysService.getCachedays();
+    await this.cachedaysService.deleteCachedays(
+      params.deleteDay,
+      params.teamId,
+    );
+    const cachedays = await this.cachedaysService.getCachedays(params.teamId);
     return cachedays;
   }
 }

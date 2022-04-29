@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { IConfig } from '../../global';
+import { UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 
@@ -13,7 +13,7 @@ import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 /* eslint max-params: ["error", 5] */
 /* eslint-env es6 */
 const fetchChildren = async (
-  userConfig: IConfig,
+  jiraConfig: UserConfigJira,
   issueKey: string,
   cacheDir: string,
   useCache: boolean,
@@ -42,16 +42,16 @@ const fetchChildren = async (
     issues = [];
   } else {
     const issuesJira = await jiraSearchIssues(
-      userConfig.jira,
+      jiraConfig,
       'issuekey in childIssuesOf(' + issueKey + ')',
       'summary,status,assignee,' +
-        userConfig.jira.fields.points +
+        jiraConfig.fields.points +
         ',' +
-        userConfig.jira.fields.originalPoints +
+        jiraConfig.fields.originalPoints +
         ',issuetype,' +
-        userConfig.jira.fields.parentInitiative +
+        jiraConfig.fields.parentInitiative +
         ',' +
-        userConfig.jira.fields.parentEpic,
+        jiraConfig.fields.parentEpic,
     );
     const issueFileStream = fs.createWriteStream(childrenCache, {
       flags: 'w',
@@ -59,9 +59,9 @@ const fetchChildren = async (
     for (const issue of issuesJira) {
       const updatedIssue = {
         ...issue,
-        host: userConfig.jira.host,
+        host: jiraConfig.host,
         // jql: 'issuekey in childIssuesOf(' + issueKey + ')',
-        points: returnTicketsPoints(issue, userConfig),
+        points: returnTicketsPoints(issue, jiraConfig),
       };
       issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
       issues.push(cleanIssue(updatedIssue));

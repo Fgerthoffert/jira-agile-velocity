@@ -1,43 +1,55 @@
 // tslint:disable-next-line: file-name-casing
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
+import {
+  ThemeProvider,
+  Theme,
+  StyledEngineProvider,
+  createTheme,
+} from '@mui/material/styles';
+import '@mui/styles';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import './App.css';
-import Roadmap from './views/roadmap';
-import Velocity from './views/velocity';
-import Assignees from './views/assignees';
-import Control from './views/control';
+import Teams from './views/teams';
 import Default from './views/default';
 
+declare module '@mui/styles' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 const mapDispatch = (dispatch: any) => ({
-  initApp: dispatch.global.initApp
+  initApp: dispatch.global.initApp,
 });
+
+const theme = createTheme();
 
 type connectedProps = ReturnType<typeof mapDispatch>;
 
 const App: FC<connectedProps> = ({ initApp }) => {
   initApp();
   return (
-    <div className='App'>
-      <Router>
-        <Switch>
-          <Route exact name='index' path='/' component={Default} />
-          <Route exact path='/velocity' component={Velocity} />
-          <Route exact path='/velocity/:tab' component={Velocity} />
-          <Route exact path='/assignees' component={Assignees} />
-          <Route exact path='/assignees/:tab' component={Assignees} />
-          <Route exact path='/control' component={Control} />
-          <Route exact path='/control/:tab' component={Control} />
-          <Route exact path='/initiatives' component={Roadmap} />
-        </Switch>
-      </Router>
+    <div className="App">
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <Router>
+            <Switch>
+              <Route exact path="/" render={() => <Default />} />
+              <Route exact path="/teams" render={() => <Teams />} />
+              <Route exact path="/teams/:teamId" render={() => <Teams />} />
+              <Route
+                exact
+                path="/teams/:teamId/:tab"
+                render={() => <Teams />}
+              />
+            </Switch>
+          </Router>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </div>
   );
 };
 
-export default connect(
-  null,
-  mapDispatch
-)(App);
+export default connect(null, mapDispatch)(App);

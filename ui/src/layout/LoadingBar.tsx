@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+
+import { createStyles, makeStyles } from '@mui/styles';
 
 import { connect } from 'react-redux';
 
 import { iRootState } from '../store';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       flexGrow: 1,
@@ -17,18 +18,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const mapState = (state: iRootState) => ({
   globalLoading: state.global.loading,
-  velocityLoading: state.velocity.loading,
-  roadmapLoading: state.roadmap.loading,
+  teamsLoading: state.teams.loading,
 });
 
 type connectedProps = ReturnType<typeof mapState> & any;
-const LoadingBar: FC<connectedProps> = ({
-  globalLoading,
-  velocityLoading,
-  roadmapLoading,
-}) => {
+const LoadingBar: FC<connectedProps> = ({ globalLoading, teamsLoading }) => {
   const classes = useStyles();
-  if (globalLoading || velocityLoading || roadmapLoading) {
+  if (globalLoading || teamsLoading) {
     return (
       <React.Fragment>
         <LinearProgress color="secondary" className={classes.root} />
@@ -38,7 +34,4 @@ const LoadingBar: FC<connectedProps> = ({
   return null;
 };
 
-export default connect(
-  mapState,
-  null,
-)(LoadingBar);
+export default connect(mapState, null)(LoadingBar);

@@ -1,6 +1,15 @@
 import { global } from './global';
-import { roadmap } from './roadmap';
-import { velocity } from './velocity';
-import { assignees } from './assignees';
-import { control } from './control';
-export { global, velocity, assignees, roadmap, control };
+import { teams } from './teams';
+import { initiatives } from './initiatives';
+
+export interface RootModel {
+  global: typeof global;
+  teams: typeof teams;
+  initiatives: typeof initiatives;
+}
+
+export const models: RootModel = {
+  global,
+  teams,
+  initiatives,
+};

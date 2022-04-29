@@ -5,7 +5,7 @@ import * as jsYaml from 'js-yaml';
 import * as loadYamlFile from 'load-yaml-file';
 import * as path from 'path';
 
-import { IConfig } from './global';
+import { UserConfig } from './global';
 
 export default abstract class extends Command {
   userConfig = {
@@ -23,44 +23,79 @@ export default abstract class extends Command {
     },
     teams: [
       {
-        name: 'Team 1',
-        jqlCompletion:
-          'Insert a JQL query to be used to record past completion',
-        jqlRemaining:
-          'Insert a JQL query to collect a list of tickets to be completed',
-        jqlHistory: '2019-07-01',
+        name: 'Team A',
+        from: '2019-07-01',
         excludeDays: ['1900-01-01'],
-        initiativeEffortPrct: 60,
-        slack: {
-          token: '',
-          channel: '',
-          explanation: '',
-        },
+        streams: [
+          {
+            name: 'Initiatives',
+            completion: {
+              jql:
+                'sprint = Team-A and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: 'assignee = team-easy and type = initiative',
+            },
+            forecast: {
+              jql:
+                'assignee = team-easy and type = initiative and status != Closed',
+              fetchChild: true,
+              effortPct: 60,
+            },
+          },
+          {
+            name: 'Defects',
+            completion: {
+              jql:
+                'sprint = Team-A and type = Bug and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: '',
+            },
+            forecast: {
+              jql:
+                'type = Bug and sprint = Team-A and (sprint in futureSprints() or sprint in openSprints()) and status != Closed',
+              fetchChild: false,
+              effortPct: 40,
+            },
+          },
+        ],
       },
       {
-        name: 'Team 2',
-        jqlCompletion:
-          'Insert a JQL query to be used to record past completion',
-        jqlRemaining:
-          'Insert a JQL query to collect a list of tickets to be completed',
-        jqlHistory: '2019-07-01',
+        name: 'Team B',
+        from: '2019-07-01',
         excludeDays: ['1900-01-01'],
-        initiativeEffortPrct: 40,
-        slack: {
-          token: '',
-          channel: '',
-          explanation: '',
-        },
+        streams: [
+          {
+            name: 'Initiatives',
+            completion: {
+              jql:
+                'sprint = Team-B and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: 'assignee = team-easy and type = initiative',
+            },
+            forecast: {
+              jql:
+                'assignee = team-easy and type = initiative and status != Closed',
+              fetchChild: true,
+              effortPct: 60,
+            },
+          },
+          {
+            name: 'Defects',
+            completion: {
+              jql:
+                'sprint = Team-B and type = Bug and status changed to Closed ON (##TRANSITION_DATE##)',
+              childOf: '',
+            },
+            forecast: {
+              jql:
+                'type = Bug and sprint = Team-B and (sprint in futureSprints() or sprint in openSprints()) and status != Closed',
+              fetchChild: false,
+              effortPct: 40,
+            },
+          },
+        ],
       },
     ],
-    roadmap: {
-      jqlInitiatives: 'type = initiative',
-      forecastWeeks: 26,
-      teams: ['Team 1, Team 2'],
-    },
   };
 
-  setUserConfig(userConfig: IConfig) {
+  setUserConfig(userConfig: UserConfig) {
     this.userConfig = userConfig;
   }
 
