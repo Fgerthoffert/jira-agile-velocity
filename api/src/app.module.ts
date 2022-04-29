@@ -2,13 +2,9 @@ import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { VelocityModule } from './velocity/velocity.module';
 import { AssigneesModule } from './assignees/assignees.module';
-import { ControlModule } from './control/control.module';
-import { ForecastModule } from './forecast/forecast.module';
 import { CompletionModule } from './completion/completion.module';
 import { HistoryModule } from './history/history.module';
-import { InitiativesModule } from './initiatives/initiatives.module';
 import { CachedaysModule } from './cachedays/cachedays.module';
 import { TeamsModule } from './teams/teams.module';
 import { ConfigModule } from './config.module';
@@ -18,13 +14,9 @@ import { AuthenticationMiddleware } from './auth/authentication.middleware';
 
 @Module({
   imports: [
-    VelocityModule,
     AssigneesModule,
-    ControlModule,
-    ForecastModule,
     CompletionModule,
     HistoryModule,
-    InitiativesModule,
     CachedaysModule,
     TeamsModule,
     ConfigModule,
@@ -44,13 +36,8 @@ export class AppModule {
       consumer
         .apply(AuthenticationMiddleware)
         .forRoutes(
-          { path: '/velocity', method: RequestMethod.GET },
-          { path: '/assignees', method: RequestMethod.GET },
-          { path: '/control', method: RequestMethod.GET },
-          { path: '/forecast', method: RequestMethod.GET },
           { path: '/completion', method: RequestMethod.GET },
           { path: '/history', method: RequestMethod.GET },
-          { path: '/initiatives', method: RequestMethod.GET },
           { path: '/teams', method: RequestMethod.GET },
           { path: '/cachedays', method: RequestMethod.DELETE },
         );

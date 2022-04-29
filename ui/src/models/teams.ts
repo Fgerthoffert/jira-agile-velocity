@@ -197,8 +197,6 @@ const formatForecastStreams = (
   defaultPoints: boolean,
   completionStreams: any,
 ) => {
-  const metric = !defaultPoints ? 'issues' : 'points';
-
   return forecastData.map((c: any) => {
     const streamVelocity = completionStreams.find((s: any) => s.key === c.key);
     let currentMetrics: any = {
@@ -251,8 +249,6 @@ export const processRestPayload = (
   let completionStreams = getCompletionStreams(payload.completion);
   // Adds distribution
   completionStreams = getStreamsDistribution(completionStreams);
-
-  console.log(completionStreams);
 
   const forecastStreams = formatForecastStreams(
     payload.completion.forecast,
@@ -349,7 +345,7 @@ export const teams: Teams = {
   },
   effects: {
     async initView(teamObj: any, rootState: any) {
-      const { selectedTeamId, selectedTab } = teamObj;
+      const { selectedTeamId } = teamObj;
       const log = rootState.global.log;
       log.info(`Initialized Team view (tean: ${selectedTeamId})`);
 

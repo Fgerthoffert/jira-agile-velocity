@@ -15,7 +15,7 @@ Builds various sets of Agile metrics and dashboards by fetching data from Jira R
 </p>
 
 <p align="center">
-  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Issues View" title="Issues view" src="./docs/jav-ui-velocity.png" width="640" /></a>
+  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Issues View" title="Issues view" src="./docs/jira-velocity-ui.png" width="640" /></a>
 </p>
 
 ## Table of Contents
@@ -30,7 +30,7 @@ Builds various sets of Agile metrics and dashboards by fetching data from Jira R
 
 # Introduction
 
-Jira's many, many features is a strength, but can also sometimes make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different (though simple) views into the data currently hosted within your Jira instance. It borrows concepts and code from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities.
+Jira's many, many features are a strength, but can also sometimes make it difficult to consume/visualize metrics. This (opinionated) tool was created to provide different (though simple) views of the data currently hosted within your Jira instance. It borrows concepts and code from [ZenCrepes](https://zencrepes.io) and applies it to Jira specificities.
 
 The tool focuses on two main areas:
 
@@ -49,53 +49,133 @@ Although much smaller than ZenCrepes, the Jira Agile Velocity tool shares one it
 
 An example? the Forecast feature provides a view over the coming weeks, but this view (on purpose) doesn't account for vacations or any other type of events that could impact the team's velocity, and it does not (and will not) provide features to include such events in its forecast. As a DM/PM/Scrum Master/Lead/... (pick one), you know your team and can, therefore, adjust estimates based on your experience.
 
+# Versions
+
+## v0.4.0
+
+Version 0.4.0 introduces significant changes to the codebase and is not backward compatible with previous versions. Altough the approach is similar, cache data will need to be refetched.
+
+This new version is team-centric and supports multiple work streams per team. A large portion of the logic/calculations (such as building completion per week) was moved from the backend to the frontend. This allow for a reduction of the payload.
+
+## Previous versions
+
+Please refer to the readme in the corresponding [Git Tags](https://github.com/Fgerthoffert/jira-agile-velocity/tags) for more details about previous versions.
+
 # Features
 
 This tool was built to provide a consolidated view over Jira issues and links back to Jira whenever possible. Most charts and elements are clickable, so you can easily open in Jira all issues closed by a team on a particular week, remaining issues in an initiative, ...
 
-## Velocity view
+## Configuration
 
-The velocity view provides daily and weekly completion metrics as well as velocity calculated using a rolling average (4 weeks or 20 days), giving you general trend about a team's evolution. It can also be used to assess if stories are granular enough, by quickly highlighting if there is a recurring pattern of weeks with higher completion rate (i.e. most stories closed the last week of a sprint).
+Metrics displayed in the tool are entirely based upon JQL queries used to identify completed work and fetch a backlog of upcoming activities.
+
+### Sample configuration
+
+```yaml
+- name: Easy
+  from: '2021-10-01' # How far back to fetch completion metrics (YYYY-MM-DD)
+  excludeDays: ['2021-10-26'] # Do not fetch data for these days ['YYYY-MM-DD', 'YYYY-MM-DD']
+  streams:
+    - name: Initiatives
+      completion:
+        jql: sprint = Team_A and status changed to Closed ON (##TRANSITION_DATE##)
+        childOf: assignee = Team_A and type = initiative
+      forecast:
+        jql: assignee = Team_A and type = initiative and status != Closed
+        fetchChild: true
+        effortPct: 50
+    - name: Tech Debt
+      completion:
+        jql: label = Tech and status changed to Closed ON (##TRANSITION_DATE##)
+      forecast:
+        jql: label = Tech and (sprint in futureSprints() or sprint in openSprints()) and status != Closed
+        fetchChild: false
+        emptyPoints: 3
+        effortPct: 10
+    - name: Unclassified
+      completion:
+        jql: status changed to Closed ON (##TRANSITION_DATE##)
+      forecast:
+        jql: (sprint in futureSprints() or sprint in openSprints()) and status != Closed
+        fetchChild: false
+        emptyPoints: 3
+        effortPct: 0
+```
+
+### Streams
+
+In the tool, a stream is a type of work carried out by a team, this can be used to identify effort spent on various type of tasks (for example developing new features vs addressing technical debt vs miscenaleous).
+
+Streams are mutually exclusive from top to bottom. In the example above, an issue accounted for in the `Initiatives` stream will not be counted in `Tech Debt` and `Unclassified` even if it is returned by their JQL queries. This ensure an issue is only counted once.
+
+### Defining completion
+
+Large features are typically organized in Epics, Streams, Initiatives. Which are usually complex to account for in Jira. For this reason two queries can be provided:
+
+- `jql`: Record completion for all issues matching this query.
+- `childOf`: When specified (optional), the tool will first get the list of tickets matching the `childOf` query, then for every ticket, it will perform a query such as `issuekey in childIssuesOf(ABC-123)`, to fetch all child issues. If will only account for issues returned by the `jql` query AND being a child of an issue available in `childOf`.
+
+For "simpler" issues (for example individual Defects), there is no need to provide a `childOf` query.
+
+### Defining forecast
+
+Forecast build based on a Stream's backlog. The following parameters are available:
+
+- `jql` the query to be used to collect pending issues
+- `fetchChild`: Boolean (taking `true` or `false`) indicating that you want to also fetch all children issues. The approach is similar to the `childOf` parameter, the tool will fetch children of all issues returned by the `jql` query and will consider that these children are part of the roadmap.
+- `emptyPoints`: Number of points to be attributed for the purpose of calculating the forecast to issues without points.
+- `effortPct`: Display a team goal for team projects. This is only indicative and does not impact metrics.
+
+## User Interface
+
+In general, streams are color-coded using the stream name via a library called [material-color-hash](https://belkalab.github.io/material-color-hash/).
+
+### Weekly Completion
 
 <p align="center">
-  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Issues View" title="Issues view" src="./docs/jav-ui-velocity.png" width="640" /></a>
+  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Weekly Completion" title="Weekly Completion" src="./docs/jira-team-weekly-completion.png" width="480" /></a>
 </p>
 
-The view will also take a total of open points and, using the current velocity, provide an estimate in terms of days to completion, using a very simple formula:
+This chart displays the number of points (or issues count) completed, each week per stream. Clicking on the chart opens the corresponding list of tickets in Jira.
 
-```
-Days to completion = Open points / current weekly velocity * 5 business days
-```
+In red, a line shows the weekly velocity calculated over a 4 weeks average.
 
-As mentioned earlier, these are just factual elements, interpretation whether this estimate is realistic or not, is up to you.
-
-Clicking on any of the bar-charts will open the corresponding issues in Jira.
-
-## Initiatives view
-
-The initiatives view is divided in two sections, one focused on past completion, the other one uses velocity to provide a naive forecast of a possible implementation schedule.
-
-### Completion
+### Weekly Velocity
 
 <p align="center">
-  <img alt="Initiatives Completion" title="Initiatives completion" src="./docs/initiatives-completion-view.png" width="640" />
+  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Weekly Velocity" title="Weekly Velocity" src="./docs/jira-team-weekly-velocity.png" width="480" /></a>
 </p>
 
-The initiatives completion view providers an overview over the past X weeks, of points (or issues count), completed per week for each initiatives by the teams. Displayed using a heatmap chart, a color scheme is used to highlight the proportion of the teams work (darker = higher proportion). The last line of the chart is an aggregate of all points (or count) completed but not related to an initiative.
+This charts displays for each of the streams the weekly velocity, calculated over a 4 weeks rolling average.
 
-The heatmap was designed to answer the following questions:
+### Distribution
 
-- Are the teams distracted from working on initiatives (last line with a high proportion of completed activities)?
-- Are the initiatives properly scoped and receiving the correct focus?
-- Are the initiatives prioritized properly?
-- Are the teams consistent in their delivery of an initiative?
+<p align="center">
+  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Weekly Distribution" title="Weekly Distribution" src="./docs/jira-team-weekly-distribution.png" width="480" /></a>
+</p>
 
-Hovering over the numbers displays the activities completed on that week for that initiative, clicking on it open those results in Jira.
+This charts displays for each of the streams the effort distribution (in %), calculated over a 4 weeks rolling average. Clicking on the chart opens the corresponding list of tickets in Jira for the 4 weeks used in the calculation.
 
-Below the heatmap, a table provides the exact completion status of each initiative, with metrics in both Points and Issue Count, this view can answer the following questions:
+### Review and Plan
+
+<p align="center">
+  <a href="https://github.com/fgerthoffert/jira-agile-velocity" target="_blank"><img alt="Review and Plan" title="Review and Plan" src="./docs/jira-team-review-plan.png" width="800" /></a>
+</p>
+
+This section is primariraly useful to get a sense of the volume of activities in a team's backlog.
+
+- **Current metrics**: Displays the current velocity and distribution
+- **Remaining**: Display the known remaining points (don't forget, there will be some unknowns).
+- **Forecast using current metrics**: Is a division of the remaining effort by the current velocity
+- **Custom projections**: Allows you to adjust the distribution and see how it impacts the forecast chart below.
+
+#### Naive forecast
+
+This is a visual representation of the elements present in the review and plan table. Mapping in a calendar view the remaining "known" effort.
+
+Below the naive forecast, a table provides the exact completion status of each initiative, with metrics in both Points and Issue Count, this view can answer the following questions:
 
 - What's the completion progress?
-- Who's working on those initiatives?
 - Is there a lot of uncertainties in delivering an initiative? (for example if 90% of the points are completed, but only 20% of the issues)
 
 The graph view provides a glance of all activities in an Initiative using a tree-like view. Numbers bubble-up for each generation of the tree. Hovering displays the corresponding ticket and clicking on it open it in Jira.
@@ -104,22 +184,9 @@ The graph view provides a glance of all activities in an Initiative using a tree
   <img alt="Initiatives Completion Graph" title="Initiatives completion graph" src="./docs/initiatives-graph-view.png" width="640" />
 </p>
 
-### Naive Forecast
-
-This view is centered around building a roadmap and was built to support the following use cases:
-
-- Identify the amount of work remaining, per team.
-- Provide a roadmap of the upcoming initiatives based on their effort and the team's velocity
-
-<p align="center">
-  <img alt="Initiatives Naive Forecast" title="Initiatives naive forecast" src="./docs/initiatives-forecast-view.png" width="640" />
-</p>
-
 # Jira
 
 The point of the tool is to provide a simple and data-centric view over your project management data, not to build an overly complex and highly customizable system. Trying to build a tool that could work on top of any workflows, without requiring the team to change any of its current Agile practices. But, for various reasons, it has not always been possible and there are occurrences where the tool is going slightly over what I would have hoped in terms of the need for Jira customization.
-
-The field **jqlHistory**, uses the format YYYY-MM-DD and defines how far back in history to fetch data from Jira. This might make the first execution slow (initial data fetch), but subsequent will only fetch new days, which will be much faster.
 
 ## Map Jira fields
 
@@ -182,14 +249,6 @@ Example of valid queries for the `jqlCompletion` field:
 - `assignee in membersOf("agile-team") AND status changed to Done`
 - `project = "My-tool" AND status changed to Closed`
 - `type = "Story" and status changed to Reviewed`
-
-## Remaining work
-
-Defining remaining work is pretty straight-forward, the following are valid queries to be used for `jqlRemaining`:
-
-- `assignee in membersOf("agile-team") AND sprint in openSprints()`
-- `project = "My-tool" AND status != Closed`
-- `type = "Story" and status != Reviewed`
 
 # Authentication
 

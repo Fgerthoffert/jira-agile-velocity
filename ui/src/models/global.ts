@@ -1,6 +1,5 @@
 // https://github.com/pimterry/loglevel
 import * as log from 'loglevel';
-import { createModel } from '@rematch/core';
 import createAuth0Client from '@auth0/auth0-spa-js';
 import axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage';
@@ -124,7 +123,7 @@ export const global: Global = {
         (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
           rootState.global.accessToken !== '')
       ) {
-        log.info('Loading data');
+        log.info('Loading list of teams');
         this.refreshTeams();
       } else {
         log.info(
@@ -222,11 +221,6 @@ export const global: Global = {
           .then((response) => {
             setTeams(response.data);
             reactLocalStorage.setObject('cache-velocityTeams', response.data);
-            // Set value to
-            const selectedTeam =
-              response.data.find((t: any) => t.id === currentTab) === undefined
-                ? response.data[0].id
-                : response.data.find((t: any) => t.id === currentTab).id;
             setLoading(false);
           })
           .catch((error) => {

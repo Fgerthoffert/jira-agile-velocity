@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotAcceptableException } from '@nestjs/common';
+import * as path from 'path';
 import * as fs from 'fs';
 import * as XRegExp from 'xregexp';
 
@@ -20,8 +21,8 @@ export class CachedaysService {
     this.configBasePath = config.get('CONFIG_DIR');
   }
 
-  async getCachedays(): Promise<any> {
-    const cacheDir = this.configBasePath + '/cache/';
+  async getCachedays(teamId: string): Promise<any> {
+    const cacheDir = path.join(this.configBasePath, 'cache', teamId);
     const datRegExp = XRegExp(
       '([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))',
     );
@@ -35,9 +36,11 @@ export class CachedaysService {
     return uniqueCacheDayFiles;
   }
 
-  async deleteCachedays(deleteDay: string): Promise<any> {
+  async deleteCachedays(deleteDay: string, teamId: string): Promise<any> {
+    const cacheDir = path.join(this.configBasePath, 'cache', teamId);
+
     // First, count how many days are already queued for deletion
-    const queuedDays: Array<string> = await this.getCachedays();
+    const queuedDays: Array<string> = await this.getCachedays(teamId);
     if (queuedDays.length >= 5) {
       throw new NotAcceptableException(
         'Only 5 days of cache can be deleted at once',
@@ -47,7 +50,6 @@ export class CachedaysService {
     const cleanedDay = deleteDay.replace(/[^0-9-+]+/gi, '');
     this.logger.log('Received request to delete: ' + cleanedDay);
 
-    const cacheDir = this.configBasePath + '/cache/';
     const cacheDayFiles = fs
       .readdirSync(cacheDir)
       .filter(
@@ -62,9 +64,12 @@ export class CachedaysService {
           // If there is a .clear file in the cache folder, the CLI will delete it
           // This allows the system to get a sense of how many files are pending cache refresh
           this.logger.log(
-            'Renaming cache file to: ' + cacheDir + file + '.clear',
+            'Renaming cache file to: ' + path.join(cacheDir, file + '.clear'),
           );
-          fs.renameSync(cacheDir + file, cacheDir + file + '.clear');
+          fs.renameSync(
+            path.join(cacheDir, file),
+            path.join(cacheDir, file + '.clear'),
+          );
         });
     }
   }

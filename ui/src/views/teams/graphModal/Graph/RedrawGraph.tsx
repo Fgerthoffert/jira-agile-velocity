@@ -1,9 +1,11 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material/styles';
+
 import React, { FC } from 'react';
 import clsx from 'clsx';
 
-import Button from '@material-ui/core/Button';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import Button from '@mui/material/Button';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { connect } from 'react-redux';
 

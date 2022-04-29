@@ -1,11 +1,11 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { FC } from 'react';
 import clsx from 'clsx';
-
-import Button from '@material-ui/core/Button';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-
 import { connect } from 'react-redux';
+
+import { createStyles, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 
 import { iRootState } from '../../../../store';
 
