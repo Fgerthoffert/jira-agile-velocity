@@ -45,7 +45,6 @@ const GraphModal: FC<connectedProps> = ({
   if (openGraph === false) {
     return null;
   }
-  console.log(graphInitiative);
   return (
     <Dialog
       fullWidth={true}

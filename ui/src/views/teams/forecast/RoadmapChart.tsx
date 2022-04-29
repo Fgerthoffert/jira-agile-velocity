@@ -13,7 +13,7 @@ import {
 
 import toMaterialStyle from 'material-color-hash';
 
-import { ResponsiveHeatMap } from '@nivo/heatmap';
+import { ResponsiveHeatMap, ComputedCell } from '@nivo/heatmap';
 
 import { Stream, StreamWeek, StreamItem } from '../../../global';
 

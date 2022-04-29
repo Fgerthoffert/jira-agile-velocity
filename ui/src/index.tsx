@@ -1,3 +1,4 @@
+import { createRoot } from 'react-dom/client';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
@@ -18,19 +19,20 @@ declare global {
 
 window.store = store;
 
-// const container = document.getElementById('root');
-// // const root = createRoot(container);
-// const root = ReactDOMClient.createRoot(container);
-// root.render(<Provider store={store}>
-//   <App />
-// </Provider>);
-
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('root'),
 );
+
+// ReactDOM.render(
+//   <Provider store={store}>
+//     <App />
+//   </Provider>,
+//   document.getElementById('root'),
+// );
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
