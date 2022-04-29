@@ -1,3 +1,4 @@
+/* eslint max-depth: ["error", 5] */
 import { flags } from '@oclif/command';
 import cli from 'cli-ux';
 import * as fs from 'fs';

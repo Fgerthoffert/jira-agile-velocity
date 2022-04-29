@@ -1,11 +1,13 @@
+/* eslint max-depth: ["error", 7] */
+/* eslint max-params: ["error", 7] */
+
 import cli from 'cli-ux';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { UserConfig, UserConfigJira, UserConfigTeam } from '../../global';
+import { UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
-import { getTeamFromAssignee } from '../misc/teamUtils';
 import { cleanIssue, returnTicketsPoints } from '../misc/jiraUtils';
 import { getId } from '../../utils/misc/id';
 
@@ -30,9 +32,9 @@ const fetchIssues = async (
   }
   const initiativesCache = path.join(
     cacheDir,
-    `forecast-${getId(teamName)}-${getId(
-      categoryName,
-    )}-' + today.toJSON().slice(0, 10) + '.ndjson`,
+    `forecast-${getId(teamName)}-${getId(categoryName)}-${today
+      .toJSON()
+      .slice(0, 10)}.ndjson`,
   );
 
   if (useCache && fs.existsSync(initiativesCache)) {

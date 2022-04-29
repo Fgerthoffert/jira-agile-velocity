@@ -20,7 +20,7 @@ export const getChildrenKey = async (
   jiraConfig: UserConfigJira,
   jql: string,
   cacheDir: string,
-  useCache: boolean = false,
+  useCache = false,
 ) => {
   const issueKeys: Array<string> = [];
   const cachePath = path.join(cacheDir, 'children');
