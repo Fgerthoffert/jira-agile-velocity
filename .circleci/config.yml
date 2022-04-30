@@ -178,7 +178,8 @@ jobs:
     executor: docker-publisher
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: Build API Docker Image
           command: cd api && docker build -t $IMAGE_NAME_API:latest .
@@ -258,7 +259,7 @@ jobs:
             docker push $IMAGE_NAME_CLI:latest
             echo "Pushed latest"
             docker push $IMAGE_NAME_CLI:$IMAGE_TAG
-            echo "Pushed tag"                     
+            echo "Pushed tag"
 
 workflows:
   version: 2
