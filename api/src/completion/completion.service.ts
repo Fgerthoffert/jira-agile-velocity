@@ -35,9 +35,10 @@ export class CompletionService {
       if (currentTeam !== undefined) {
         const teamCacheFile = path.join(
           this.configBasePath + '/cache/',
-          'completion-artifacts-' + getTeamId(currentTeam.name) + '.json',
+          'stream-artifacts-' + getTeamId(currentTeam.name) + '.json',
         );
         if (fs.existsSync(teamCacheFile)) {
+          this.logger.log(`Opening cache file ${teamCacheFile}`);
           return {
             id: getTeamId(currentTeam.name),
             completion: loadJsonFile.sync(teamCacheFile),
