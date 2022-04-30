@@ -1,25 +1,16 @@
-import React, { FC } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 import Layout from '../../layout';
 
-import { iRootState } from '../../store';
+import { RootState } from '../../store';
 
-const mapDispatch = (dispatch: any) => ({
-  setAuthMessage: dispatch.global.setAuthMessage,
-});
+const Default = () => {
+  const loggedIn = useSelector((state: RootState) => state.global.loggedIn);
 
-const mapState = (state: iRootState) => ({
-  loggedIn: state.global.loggedIn,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const Default: FC<connectedProps> = ({ loggedIn }) => {
   if (loggedIn) {
-    return <Redirect to="/teams" />;
+    return <Navigate to="/teams" />;
   }
 
   return (
@@ -29,4 +20,4 @@ const Default: FC<connectedProps> = ({ loggedIn }) => {
   );
 };
 
-export default connect(mapState, mapDispatch)(Default);
+export default Default;

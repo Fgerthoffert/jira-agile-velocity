@@ -1,35 +1,16 @@
-import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { createStyles, makeStyles } from '@mui/styles';
 import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
+import { MenuItem } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 
-import { iRootState } from '../../store';
+import { RootState, Dispatch } from '../../store';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    avatar: {},
-  }),
-);
-
-const mapState = (state: iRootState) => ({
-  authUser: state.global.authUser,
-});
-
-const mapDispatch = (dispatch: any) => ({
-  initApp: dispatch.global.initApp,
-  doLogOut: dispatch.global.doLogOut,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-// Ideally we shouldn't be using redux in components
-const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
-  const classes = useStyles();
+const Login = () => {
+  const dispatch = useDispatch<Dispatch>();
+  const authUser = useSelector((state: RootState) => state.global.authUser);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -44,7 +25,7 @@ const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
 
   const handleLogOut = () => {
     setAnchorEl(null);
-    doLogOut();
+    dispatch.global.doLogOut();
   };
 
   if (Object.keys(authUser).length === 0) {
@@ -61,11 +42,7 @@ const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
         color="inherit"
         size="large"
       >
-        <Avatar
-          alt={authUser.name}
-          src={authUser.picture}
-          className={classes.avatar}
-        />
+        <Avatar alt={authUser.name} src={authUser.picture} />
       </IconButton>
       <Menu
         id="menu-appbar"
@@ -88,4 +65,4 @@ const Login: FC<connectedProps> = ({ authUser, doLogOut }) => {
   );
 };
 
-export default connect(mapState, mapDispatch)(Login);
+export default Login;

@@ -38,7 +38,8 @@ export const getEstimateState = (initiative: any) => {
 export const getBarVariant = (progress: number, missingEffort: number) => {
   if (progress === 100) {
     return 'success';
-  } else if (progress === 100 && missingEffort > 0) {
+  }
+  if (missingEffort > 0) {
     return 'warning';
   }
   return undefined;

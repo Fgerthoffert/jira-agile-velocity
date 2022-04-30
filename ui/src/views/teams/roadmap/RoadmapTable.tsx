@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import IconButton from '@mui/material/IconButton';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+// import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,28 +12,23 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-import { iRootState } from '../../../store';
+import { RootState, Dispatch } from '../../../store';
 
 import { getProgress, getBarVariant, getEstimateState } from '../utils';
 
-const mapState = (state: iRootState) => ({});
+interface Props {
+  defaultPoints: boolean;
+  issues: Array<any>;
+  jiraHost: string;
+}
 
-const mapDispatch = (dispatch: any) => ({
-  setGraphInitiative: dispatch.initiatives.setGraphInitiative,
-  updateGraph: dispatch.initiatives.updateGraph,
-  setOpenGraph: dispatch.initiatives.setOpenGraph,
-  setJiraHost: dispatch.initiatives.setJiraHost,
-});
+const RoadmapTable: FC<Props> = ({ defaultPoints, issues, jiraHost }) => {
+  const dispatch = useDispatch<Dispatch>();
+  const setGraphInitiative = dispatch.initiatives.setGraphInitiative;
+  const updateGraph = dispatch.initiatives.updateGraph;
+  const setOpenGraph = dispatch.initiatives.setOpenGraph;
+  const setJiraHost = dispatch.initiatives.setJiraHost;
 
-const RoadmapTable: FC<any> = ({
-  defaultPoints,
-  issues,
-  jiraHost,
-  setGraphInitiative,
-  updateGraph,
-  setOpenGraph,
-  setJiraHost,
-}) => {
   const metric = !defaultPoints ? 'issues' : 'points';
   return (
     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -98,7 +93,7 @@ const RoadmapTable: FC<any> = ({
               </TableCell>
               <TableCell>{i.metrics[metric].remaining}</TableCell>
               <TableCell>
-                <ProgressBar
+                {/* <ProgressBar
                   variant={getBarVariant(progressPoints.progress, 0)}
                   now={progressPoints.progress}
                   label={
@@ -107,7 +102,7 @@ const RoadmapTable: FC<any> = ({
                       {progressPoints.total})
                     </span>
                   }
-                />
+                /> */}
               </TableCell>
               <TableCell>
                 <span style={{ color: '#000' }}>
@@ -116,7 +111,7 @@ const RoadmapTable: FC<any> = ({
                 </span>
               </TableCell>
               <TableCell>
-                <ProgressBar
+                {/* <ProgressBar
                   variant={getBarVariant(progressIssues.progress, 0)}
                   now={progressIssues.progress}
                   label={
@@ -125,7 +120,7 @@ const RoadmapTable: FC<any> = ({
                       {progressIssues.total})
                     </span>
                   }
-                />
+                /> */}
               </TableCell>
               <TableCell>{i.status.name}</TableCell>
             </TableRow>
@@ -135,4 +130,4 @@ const RoadmapTable: FC<any> = ({
     </Table>
   );
 };
-export default connect(mapState, mapDispatch)(RoadmapTable);
+export default RoadmapTable;

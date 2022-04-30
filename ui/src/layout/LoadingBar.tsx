@@ -1,37 +1,14 @@
-import React, { FC } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
-import { createStyles, makeStyles } from '@mui/styles';
-
-import { connect } from 'react-redux';
-
-import { iRootState } from '../store';
+import { RootState } from '../store';
 import LinearProgress from '@mui/material/LinearProgress';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      width: '100%',
-    },
-  }),
-);
+export default function LoadingBar() {
+  const globalLoading = useSelector((state: RootState) => state.global.loading);
 
-const mapState = (state: iRootState) => ({
-  globalLoading: state.global.loading,
-  teamsLoading: state.teams.loading,
-});
-
-type connectedProps = ReturnType<typeof mapState> & any;
-const LoadingBar: FC<connectedProps> = ({ globalLoading, teamsLoading }) => {
-  const classes = useStyles();
-  if (globalLoading || teamsLoading) {
-    return (
-      <React.Fragment>
-        <LinearProgress color="secondary" className={classes.root} />
-      </React.Fragment>
-    );
+  if (globalLoading) {
+    return <LinearProgress color="secondary" />;
   }
   return null;
-};
-
-export default connect(mapState, null)(LoadingBar);
+}

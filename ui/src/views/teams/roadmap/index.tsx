@@ -1,48 +1,23 @@
 import React, { FC } from 'react';
-import { connect } from 'react-redux';
-import { Theme } from '@mui/material/styles';
-import { createStyles, makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import { iRootState } from '../../../store';
+import { RootState } from '../../../store';
 
 import RoadmapTable from './RoadmapTable';
 import TicketsTable from './TicketsTable';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3, 2),
-    },
-    smallText: {
-      fontSize: '0.8em',
-    },
-    updatedAt: {
-      textAlign: 'left',
-      fontSize: '0.8em',
-      fontStyle: 'italic',
-    },
-  }),
-);
+const Roadmap = () => {
+  const defaultPoints = useSelector(
+    (state: RootState) => state.global.defaultPoints,
+  );
+  const forecastStreams = useSelector(
+    (state: RootState) => state.teams.forecastStreams,
+  );
+  const jiraHost = useSelector((state: RootState) => state.teams.jiraHost);
 
-const mapState = (state: iRootState) => ({
-  defaultPoints: state.global.defaultPoints,
-  forecastStreams: state.teams.forecastStreams,
-  jiraHost: state.teams.jiraHost,
-});
-
-const mapDispatch = (dispatch: any) => ({});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const Roadmap: FC<connectedProps> = ({
-  defaultPoints,
-  forecastStreams,
-  jiraHost,
-}) => {
   if (forecastStreams.length > 0) {
     return forecastStreams.map((stream: any) => {
       return (
@@ -87,4 +62,4 @@ const Roadmap: FC<connectedProps> = ({
   return null;
 };
 
-export default connect(mapState, mapDispatch)(Roadmap);
+export default Roadmap;

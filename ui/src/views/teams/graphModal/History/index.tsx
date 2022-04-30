@@ -1,5 +1,7 @@
 import React, { FC, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
+import { Dispatch } from '../../../../store';
 
 import Charts from './Charts';
 
@@ -10,10 +12,12 @@ const mapDispatch = (dispatch: any) => ({
 type connectedProps = ReturnType<typeof mapDispatch | any>;
 
 const History: FC<connectedProps> = ({ initiativeKey, initHistory }) => {
+  const dispatch = useDispatch<Dispatch>();
+
   useEffect(() => {
-    initHistory(initiativeKey);
+    dispatch.initiatives.initHistory(initiativeKey);
   });
   return <Charts />;
 };
 
-export default connect(null, mapDispatch)(History);
+export default History;

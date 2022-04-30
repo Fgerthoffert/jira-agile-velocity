@@ -1,6 +1,3 @@
-import { createStyles, makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material/styles';
-
 import React, { FC } from 'react';
 import clsx from 'clsx';
 
@@ -9,23 +6,9 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { connect } from 'react-redux';
 
-import { iRootState } from '../../../../store';
+import { RootState } from '../../../../store';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    button: {
-      margin: theme.spacing(1),
-    },
-    leftIcon: {
-      marginRight: theme.spacing(1),
-    },
-    iconSmall: {
-      fontSize: 20,
-    },
-  }),
-);
-
-const mapState = (state: iRootState) => ({
+const mapState = (state: RootState) => ({
   graphNode: state.initiatives.graphNode,
   graphInitiative: state.initiatives.graphInitiative,
 });
@@ -38,8 +21,6 @@ type connectedProps = ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
 const RedrawGraph: FC<connectedProps> = ({ graphNode }) => {
-  const classes = useStyles();
-
   const redrawView = () => {
     const layout = graphNode.layout({
       name: 'cose-bilkent',
@@ -56,10 +37,9 @@ const RedrawGraph: FC<connectedProps> = ({ graphNode }) => {
       variant="contained"
       size="small"
       color="primary"
-      className={classes.button}
       onClick={redrawView}
     >
-      <RefreshIcon className={clsx(classes.leftIcon, classes.iconSmall)} />
+      <RefreshIcon />
       Redraw
     </Button>
   );

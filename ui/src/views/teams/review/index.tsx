@@ -1,55 +1,36 @@
 import React, { FC } from 'react';
-import { connect } from 'react-redux';
-import { Theme } from '@mui/material/styles';
-import { createStyles, makeStyles } from '@mui/styles';
+import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
-import IconButton from '@mui/material/IconButton';
-import toMaterialStyle from 'material-color-hash';
 import TextField from '@mui/material/TextField';
 
 import { format } from 'date-fns';
 
-import { iRootState } from '../../../store';
-
-import { getId } from '../utils';
+import { RootState, Dispatch } from '../../../store';
 
 import { CompletionStream } from '../../../global';
-import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
 
-const mapState = (state: iRootState) => ({
-  defaultPoints: state.global.defaultPoints,
-  completionStreams: state.teams.completionStreams,
-  forecastStreams: state.teams.forecastStreams,
-  simulatedStreams: state.teams.simulatedStreams,
-  jiraHost: state.teams.jiraHost,
-});
-
-const mapDispatch = (dispatch: any) => ({
-  setDefaultPoints: dispatch.global.setDefaultPoints,
-  fetchTeamData: dispatch.teams.fetchTeamData,
-  setSimulatedStreams: dispatch.teams.setSimulatedStreams,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const Review: FC<connectedProps> = ({
-  defaultPoints,
-  completionStreams,
-  forecastStreams,
-  simulatedStreams,
-  setSimulatedStreams,
-}) => {
+const Review = () => {
+  const dispatch = useDispatch<Dispatch>();
+  const setSimulatedStreams = dispatch.teams.setSimulatedStreams;
+  const defaultPoints = useSelector(
+    (state: RootState) => state.global.defaultPoints,
+  );
+  const completionStreams = useSelector(
+    (state: RootState) => state.teams.completionStreams,
+  );
+  const forecastStreams = useSelector(
+    (state: RootState) => state.teams.forecastStreams,
+  );
+  const simulatedStreams = useSelector(
+    (state: RootState) => state.teams.simulatedStreams,
+  );
   const metric = !defaultPoints ? 'issues' : 'points';
 
   if (completionStreams.length > 0) {
@@ -329,4 +310,4 @@ const Review: FC<connectedProps> = ({
   return null;
 };
 
-export default connect(mapState, mapDispatch)(Review);
+export default Review;

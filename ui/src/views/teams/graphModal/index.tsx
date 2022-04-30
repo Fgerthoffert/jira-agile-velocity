@@ -10,33 +10,25 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Epcis from './Epics';
 import History from './History';
 import Graph from './Graph';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { iRootState } from '../../../store';
+import { RootState, Dispatch } from '../../../store';
 
-const mapState = (state: iRootState) => ({
-  openGraph: state.initiatives.openGraph,
-  roadmap: state.initiatives.roadmap,
-  graphInitiative: state.initiatives.graphInitiative,
-  jiraHost: state.initiatives.jiraHost,
-});
+const GraphModal = () => {
+  const openGraph = useSelector(
+    (state: RootState) => state.initiatives.openGraph,
+  );
+  const roadmap = useSelector((state: RootState) => state.initiatives.roadmap);
+  const graphInitiative = useSelector(
+    (state: RootState) => state.initiatives.graphInitiative,
+  );
+  const jiraHost = useSelector(
+    (state: RootState) => state.initiatives.jiraHost,
+  );
+  const dispatch = useDispatch<Dispatch>();
+  const setOpenGraph = dispatch.initiatives.setOpenGraph;
+  const setInitiativeHistory = dispatch.initiatives.setInitiativeHistory;
 
-const mapDispatch = (dispatch: any) => ({
-  setOpenGraph: dispatch.initiatives.setOpenGraph,
-  setInitiativeHistory: dispatch.initiatives.setInitiativeHistory,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const GraphModal: FC<connectedProps> = ({
-  openGraph,
-  roadmap,
-  setOpenGraph,
-  graphInitiative,
-  setInitiativeHistory,
-  jiraHost,
-}) => {
   const closeGraph = () => {
     setOpenGraph(false);
     setInitiativeHistory(false);
@@ -92,4 +84,4 @@ const GraphModal: FC<connectedProps> = ({
   );
 };
 
-export default connect(mapState, mapDispatch)(GraphModal);
+export default GraphModal;

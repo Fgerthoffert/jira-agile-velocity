@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -17,29 +18,20 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { format } from 'date-fns';
-import { connect } from 'react-redux';
 
-import { iRootState } from '../../../store';
+import { RootState, Dispatch } from '../../../store';
 
-const mapState = (state: iRootState) => ({
-  showDeleteModal: state.teams.showDeleteModal,
-  deleteModalCacheDays: state.teams.deleteModalCacheDays,
-});
+const DeleteModal = () => {
+  const dispatch = useDispatch<Dispatch>();
+  const setShowDeleteModal = dispatch.teams.setShowDeleteModal;
+  const clearCacheDay = dispatch.teams.clearCacheDay;
+  const showDeleteModal = useSelector(
+    (state: RootState) => state.teams.showDeleteModal,
+  );
+  const deleteModalCacheDays = useSelector(
+    (state: RootState) => state.teams.deleteModalCacheDays,
+  );
 
-const mapDispatch = (dispatch: any) => ({
-  setShowDeleteModal: dispatch.teams.setShowDeleteModal,
-  clearCacheDay: dispatch.teams.clearCacheDay,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const DeleteModal: FC<connectedProps> = ({
-  showDeleteModal,
-  setShowDeleteModal,
-  clearCacheDay,
-  deleteModalCacheDays,
-}) => {
   const closeModal = () => {
     setShowDeleteModal(false);
   };
@@ -157,4 +149,4 @@ const DeleteModal: FC<connectedProps> = ({
   );
 };
 
-export default connect(mapState, mapDispatch)(DeleteModal);
+export default DeleteModal;

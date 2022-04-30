@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as log from 'loglevel';
 import axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage';
@@ -345,9 +346,15 @@ export const teams: Teams = {
   },
   effects: {
     async initView(teamObj: any, rootState: any) {
+      const logger = log.noConflict();
+      if (process.env.NODE_ENV !== 'production') {
+        logger.enableAll();
+      } else {
+        logger.disableAll();
+      }
+
       const { selectedTeamId } = teamObj;
-      const log = rootState.global.log;
-      log.info(`Initialized Team view (tean: ${selectedTeamId})`);
+      logger.info(`Initialized Team view (tean: ${selectedTeamId})`);
 
       this.loadCompletionFromCache(selectedTeamId);
       if (
@@ -355,10 +362,10 @@ export const teams: Teams = {
         (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
           rootState.global.accessToken !== '')
       ) {
-        log.info('Loading data');
+        logger.info('Loading data');
         this.fetchTeamData(selectedTeamId);
       } else {
-        log.info(
+        logger.info(
           'Not loading data, either there is already some data in cache or user token not (yet) present',
         );
       }
@@ -371,7 +378,7 @@ export const teams: Teams = {
         `cache-completion-${teamId}`,
       );
       if (Object.keys(cacheCompletion).length > 0) {
-        log.info(
+        console.log(
           'Loading Velocity data from cache while call to the backend is happening',
         );
         processRestPayload(
@@ -389,8 +396,7 @@ export const teams: Teams = {
         const setLoading = this.setLoading;
 
         if (teamId !== null) {
-          const log = rootState.global.log;
-          log.info('Fetching completion data for team: ' + teamId);
+          console.log('Fetching completion data for team: ' + teamId);
 
           setLoading(true);
           const host =
@@ -400,14 +406,14 @@ export const teams: Teams = {
           const headers =
             JSON.parse(window._env_.AUTH0_DISABLED) !== true
               ? { Authorization: `Bearer ${rootState.global.accessToken}` }
-              : {};
+              : undefined;
           axios({
             method: 'get',
             url: host + '/completion/' + teamId,
             headers,
           })
             .then((response) => {
-              log.info('Data received from backend for team: ' + teamId);
+              console.log('Data received from backend for team: ' + teamId);
 
               processRestPayload(
                 response.data,
@@ -447,7 +453,7 @@ export const teams: Teams = {
         const headers =
           JSON.parse(window._env_.AUTH0_DISABLED) !== true
             ? { Authorization: `Bearer ${rootState.global.accessToken}` }
-            : {};
+            : undefined;
         axios({
           method: 'delete',
           url: `${host}/cachedays/${rootState.teams.selectedTeamId}/${cacheDay}`,
@@ -463,7 +469,7 @@ export const teams: Teams = {
             deleteModalRefreshCacheDays();
           });
       } else {
-        log.info(
+        console.log(
           'Not loading data, either there is already some data in cache or user token not present',
         );
       }
@@ -487,7 +493,7 @@ export const teams: Teams = {
         const headers =
           JSON.parse(window._env_.AUTH0_DISABLED) !== true
             ? { Authorization: `Bearer ${rootState.global.accessToken}` }
-            : {};
+            : undefined;
         axios({
           method: 'get',
           url: `${host}/cachedays/${rootState.teams.selectedTeamId}`,
@@ -503,7 +509,7 @@ export const teams: Teams = {
             setLoading(false);
           });
       } else {
-        log.info(
+        console.log(
           'Not loading data, either there is already some data in cache or user token not present',
         );
       }

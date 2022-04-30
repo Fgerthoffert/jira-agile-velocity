@@ -12,12 +12,12 @@ import 'tippy.js/themes/light-border.css';
 import ReactDOMServer from 'react-dom/server';
 
 import CytoscapeComponent from 'react-cytoscapejs';
-import { iRootState } from '../../../../store';
+import { RootState } from '../../../../store';
 
 Cytoscape.use(COSEBilkent);
 Cytoscape.use(popper);
 
-const mapState = (state: iRootState) => ({
+const mapState = (state: RootState) => ({
   issuesGraph: state.initiatives.issuesGraph,
   roadmap: state.initiatives.roadmap,
 });
@@ -71,7 +71,7 @@ class NodesGraph extends Component<connectedProps> {
       placement: 'bottom',
       // hideOnClick: true,
       interactive: true,
-      multiple: true,
+      // multiple: true,
       sticky: true,
     });
   };

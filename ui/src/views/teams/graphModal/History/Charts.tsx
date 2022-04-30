@@ -1,28 +1,22 @@
-import React, { FC } from 'react';
+import React from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
 import Paper from '@mui/material/Paper';
 
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { iRootState } from '../../../../store';
+import { RootState } from '../../../../store';
 
 import HistoryEffort from './HistoryEffort';
 
-const mapState = (state: iRootState) => ({
-  initiativeHistory: state.initiatives.initiativeHistory,
-  defaultPoints: state.global.defaultPoints,
-});
-
-const mapDispatch = (dispatch: any) => ({
-  initHistory: dispatch.initiatives.initHistory,
-});
-
-type connectedProps = ReturnType<typeof mapState | any> &
-  ReturnType<typeof mapDispatch>;
-
-const Charts: FC<connectedProps> = ({ initiativeHistory, defaultPoints }) => {
+const Charts = () => {
+  const initiativeHistory = useSelector(
+    (state: RootState) => state.initiatives.initiativeHistory,
+  );
+  const defaultPoints = useSelector(
+    (state: RootState) => state.global.defaultPoints,
+  );
   const metric = !defaultPoints ? 'issues' : 'points';
 
   if (initiativeHistory.length === 0) {
@@ -50,4 +44,4 @@ const Charts: FC<connectedProps> = ({ initiativeHistory, defaultPoints }) => {
   );
 };
 
-export default connect(mapState, mapDispatch)(Charts);
+export default Charts;

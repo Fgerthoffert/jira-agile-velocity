@@ -1,6 +1,6 @@
 # => Build container
 # https://www.freecodecamp.org/news/how-to-implement-runtime-environment-variables-with-create-react-app-docker-and-nginx-7f9d42a91d70/
-FROM node:14.8.0-alpine as builder
+FROM node:lts-alpine as builder
 WORKDIR /app
 COPY package.json .
 COPY package-lock.json .

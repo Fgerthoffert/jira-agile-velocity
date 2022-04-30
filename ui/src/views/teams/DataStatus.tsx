@@ -1,54 +1,25 @@
-import { Theme } from '@mui/material/styles';
-import { createStyles, makeStyles } from '@mui/styles';
-import React, { FC } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
 import Grid from '@mui/material/Grid';
 import format from 'date-fns/format';
 import IconButton from '@mui/material/IconButton';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { connect } from 'react-redux';
+import { RootState, Dispatch } from '../../store';
 
-import { iRootState } from '../../store';
+const DataStatus = () => {
+  const dispatch = useDispatch<Dispatch>();
+  const fetchTeamData = dispatch.teams.fetchTeamData;
+  const setShowDeleteModal = dispatch.teams.setShowDeleteModal;
+  const deleteModalRefreshCacheDays =
+    dispatch.teams.deleteModalRefreshCacheDays;
+  const selectedTeamId = useSelector(
+    (state: RootState) => state.teams.selectedTeamId,
+  );
+  const updatedAt = useSelector((state: RootState) => state.teams.updatedAt);
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3, 2),
-    },
-    smallText: {
-      fontSize: '0.8em',
-    },
-    updatedAt: {
-      textAlign: 'left',
-      fontSize: '0.8em',
-      fontStyle: 'italic',
-    },
-  }),
-);
-
-const mapState = (state: iRootState) => ({
-  selectedTeamId: state.teams.selectedTeamId,
-  updatedAt: state.teams.updatedAt,
-});
-
-const mapDispatch = (dispatch: any) => ({
-  fetchTeamData: dispatch.teams.fetchTeamData,
-  setShowDeleteModal: dispatch.teams.setShowDeleteModal,
-  deleteModalRefreshCacheDays: dispatch.teams.deleteModalRefreshCacheDays,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const DataStatus: FC<connectedProps> = ({
-  selectedTeamId,
-  fetchTeamData,
-  updatedAt,
-  setShowDeleteModal,
-  deleteModalRefreshCacheDays,
-}) => {
-  const classes = useStyles();
   if (updatedAt !== null) {
     return (
       <Grid
@@ -59,7 +30,7 @@ const DataStatus: FC<connectedProps> = ({
         spacing={1}
       >
         <Grid item>
-          <span className={classes.updatedAt}>
+          <span>
             Last updated: {format(new Date(updatedAt), 'E yyyy/MM/dd, hh:mm a')}{' '}
           </span>
         </Grid>
@@ -94,4 +65,4 @@ const DataStatus: FC<connectedProps> = ({
   }
 };
 
-export default connect(mapState, mapDispatch)(DataStatus);
+export default DataStatus;

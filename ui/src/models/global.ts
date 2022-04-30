@@ -1,4 +1,4 @@
-// https://github.com/pimterry/loglevel
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as log from 'loglevel';
 import createAuth0Client from '@auth0/auth0-spa-js';
 import axios from 'axios';
@@ -115,7 +115,7 @@ export const global: Global = {
       } else {
         logger.disableAll();
       }
-      logger.info('Logger initialized');
+      logger.info('[Global] Logger initialized');
       this.setLog(logger);
 
       if (
@@ -123,10 +123,10 @@ export const global: Global = {
         (JSON.parse(window._env_.AUTH0_DISABLED) !== true &&
           rootState.global.accessToken !== '')
       ) {
-        log.info('Loading list of teams');
+        logger.info('Loading list of teams');
         this.refreshTeams();
       } else {
-        log.info(
+        logger.info(
           'Not loading data, either there is already some data in cache or user token not (yet) present',
         );
       }
@@ -147,7 +147,7 @@ export const global: Global = {
 
     async initAuth() {
       if (JSON.parse(window._env_.AUTH0_DISABLED) !== true) {
-        log.info('User not logged in, initializing authentication');
+        console.log('User not logged in, initializing authentication');
         if (window.Auth0 !== undefined) {
           this.setAuth0Initialized(true);
         } else {
@@ -165,16 +165,15 @@ export const global: Global = {
               authUser: user,
             });
           }
-          log.info('Authentication initialized');
+          console.log('Authentication initialized');
         }
       }
     },
 
     async loginCallback(payload: any, rootState: any) {
       // tslint:disable-next-line:no-shadowed-variable
-      const log = rootState.global.log;
       this.setLoading(true);
-      log.info('Received callback, finalizing logging');
+      console.log('Received callback, finalizing logging');
       const auth0 =
         window.Auth0 === undefined ? await setAuth0Config() : window.Auth0;
       if (window.Auth0 !== undefined && rootState.global.loggedIn === false) {
@@ -201,34 +200,33 @@ export const global: Global = {
     },
 
     async refreshTeams(currentTab: any, rootState: any) {
-      if (rootState.teams.loading === false) {
-        const setTeams = this.setTeams;
-        const setLoading = this.setLoading;
-        setLoading(true);
-        const host =
-          window._env_.API_URL !== undefined
-            ? window._env_.API_URL
-            : 'http://127.0.0.1:3001';
-        const headers =
-          JSON.parse(window._env_.AUTH0_DISABLED) !== true
-            ? { Authorization: `Bearer ${rootState.global.accessToken}` }
-            : {};
-        axios({
-          method: 'get',
-          url: host + '/teams',
-          headers,
+      const setTeams = this.setTeams;
+      const setLoading = this.setLoading;
+      setLoading(true);
+      const host =
+        window._env_.API_URL !== undefined
+          ? window._env_.API_URL
+          : 'http://127.0.0.1:3001';
+      const headers =
+        JSON.parse(window._env_.AUTH0_DISABLED) !== true
+          ? { Authorization: `Bearer ${rootState.global.accessToken}` }
+          : undefined;
+      axios({
+        method: 'get',
+        url: host + '/teams',
+        headers,
+      })
+        .then((response) => {
+          console.log('[Global] setting teams fo: ', response.data);
+          setTeams(response.data);
+          reactLocalStorage.setObject('cache-velocityTeams', response.data);
+          setLoading(false);
         })
-          .then((response) => {
-            setTeams(response.data);
-            reactLocalStorage.setObject('cache-velocityTeams', response.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log(error);
-            setTeams([]);
-            setLoading(false);
-          });
-      }
+        .catch((error) => {
+          console.log(error);
+          setTeams([]);
+          setLoading(false);
+        });
     },
   },
 };

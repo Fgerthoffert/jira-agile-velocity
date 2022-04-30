@@ -1,55 +1,52 @@
-// tslint:disable-next-line: file-name-casing
-import React, { FC } from 'react';
-import { connect } from 'react-redux';
-import {
-  ThemeProvider,
-  Theme,
-  StyledEngineProvider,
-  createTheme,
-} from '@mui/material/styles';
-import '@mui/styles';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './App.css';
+import { Dispatch } from './store';
+
 import Teams from './views/teams';
 import Default from './views/default';
+import Layout from './layout';
 
-declare module '@mui/styles' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
+declare module '@mui/material/styles' {
+  interface Theme {
+    status: {
+      danger: string;
+    };
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    status?: {
+      danger?: string;
+    };
+  }
 }
-
-const mapDispatch = (dispatch: any) => ({
-  initApp: dispatch.global.initApp,
-});
 
 const theme = createTheme();
 
-type connectedProps = ReturnType<typeof mapDispatch>;
+const App = () => {
+  const dispatch = useDispatch<Dispatch>();
+  useEffect(() => {
+    dispatch.global.initApp();
+  }, []);
 
-const App: FC<connectedProps> = ({ initApp }) => {
-  initApp();
   return (
     <div className="App">
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <Router>
-            <Switch>
-              <Route exact path="/" render={() => <Default />} />
-              <Route exact path="/teams" render={() => <Teams />} />
-              <Route exact path="/teams/:teamId" render={() => <Teams />} />
-              <Route
-                exact
-                path="/teams/:teamId/:tab"
-                render={() => <Teams />}
-              />
-            </Switch>
-          </Router>
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <ThemeProvider theme={theme}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="teams/:teamId" element={<Teams />} />
+            {/* <Route path=":teamId" element={<Teams />} />
+            </Route> */}
+            <Route path="*" element={<Default />} />
+          </Route>
+        </Routes>
+      </ThemeProvider>
     </div>
   );
 };
 
-export default connect(null, mapDispatch)(App);
+export default App;

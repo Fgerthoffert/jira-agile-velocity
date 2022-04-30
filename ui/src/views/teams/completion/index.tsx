@@ -1,31 +1,25 @@
 import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import { iRootState } from '../../../store';
+import { RootState } from '../../../store';
 
 import CompletionChart from './CompletionChart';
 import VelocityChart from './VelocityChart';
 import DistributionChart from './DistributionChart';
 
-const mapState = (state: iRootState) => ({
-  defaultPoints: state.global.defaultPoints,
-  completionStreams: state.teams.completionStreams,
-  jiraHost: state.teams.jiraHost,
-});
+const Completion = () => {
+  const defaultPoints = useSelector(
+    (state: RootState) => state.global.defaultPoints,
+  );
+  const completionStreams = useSelector(
+    (state: RootState) => state.teams.completionStreams,
+  );
+  const jiraHost = useSelector((state: RootState) => state.teams.jiraHost);
 
-const mapDispatch = () => ({});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const Completion: FC<connectedProps> = ({
-  defaultPoints,
-  completionStreams,
-  jiraHost,
-}) => {
   const metric = !defaultPoints ? 'issues' : 'points';
 
   if (completionStreams.length > 0) {
@@ -81,4 +75,4 @@ const Completion: FC<connectedProps> = ({
   return null;
 };
 
-export default connect(mapState, mapDispatch)(Completion);
+export default Completion;

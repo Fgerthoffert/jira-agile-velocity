@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as log from 'loglevel';
 import axios from 'axios';
 import { fetchGraphIssues } from '../utils/graph';
@@ -199,7 +200,7 @@ export const initiatives: Initiatives = {
         const headers =
           JSON.parse(window._env_.AUTH0_DISABLED) !== true
             ? { Authorization: `Bearer ${rootState.global.accessToken}` }
-            : {};
+            : undefined;
         axios({
           method: 'get',
           url: `${host}/history/${rootState.teams.selectedTeamId}/${initiativeKey}`,
@@ -215,7 +216,7 @@ export const initiatives: Initiatives = {
             setLoading(false);
           });
       } else {
-        log.info(
+        console.log(
           'Not loading data, either there is already some data in cache or user token not present',
         );
       }

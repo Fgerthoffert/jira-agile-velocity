@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -8,42 +8,25 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-import { iRootState } from '../../store';
+import { RootState, Dispatch } from '../store';
 
-const mapState = (state: iRootState) => ({
-  loggedIn: state.global.loggedIn,
-  authMessage: state.global.authMessage,
-  username: state.global.username,
-  password: state.global.password,
-  loading: state.global.loading,
-  auth0Initialized: state.global.auth0Initialized,
-});
+const LoginDialog = () => {
+  const dispatch = useDispatch<Dispatch>();
+  const loading = useSelector((state: RootState) => state.global.loading);
+  const auth0Initialized = useSelector(
+    (state: RootState) => state.global.auth0Initialized,
+  );
+  const loggedIn = useSelector((state: RootState) => state.global.loggedIn);
+  const authMessage = useSelector(
+    (state: RootState) => state.global.authMessage,
+  );
 
-const mapDispatch = (dispatch: any) => ({
-  setUsername: dispatch.global.setUsername,
-  setPassword: dispatch.global.setPassword,
-  initAuth: dispatch.global.initAuth,
-  setAuthMessage: dispatch.global.setAuthMessage,
-  loginCallback: dispatch.global.loginCallback,
-});
-
-type connectedProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
-
-const LoginDialog: FC<connectedProps> = ({
-  loggedIn,
-  auth0Initialized,
-  authMessage,
-  initAuth,
-  setAuthMessage,
-  loginCallback,
-  loading,
-}) => {
   if (loading) {
     return null;
   }
+
   if (!auth0Initialized && !loading) {
-    initAuth();
+    dispatch.global.initAuth();
     return null;
   }
 
@@ -53,7 +36,7 @@ const LoginDialog: FC<connectedProps> = ({
       'error_description',
     );
     if (errorMsg !== authMessage) {
-      setAuthMessage(errorMsg);
+      dispatch.global.setAuthMessage(errorMsg);
     }
   }
   if (
@@ -62,7 +45,7 @@ const LoginDialog: FC<connectedProps> = ({
     loggedIn === false &&
     auth0Initialized === true
   ) {
-    loginCallback();
+    dispatch.global.loginCallback();
   }
 
   const openLogin = async () => {
@@ -102,4 +85,4 @@ const LoginDialog: FC<connectedProps> = ({
   );
 };
 
-export default connect(mapState, mapDispatch)(LoginDialog);
+export default LoginDialog;

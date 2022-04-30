@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import IconButton from '@mui/material/IconButton';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
