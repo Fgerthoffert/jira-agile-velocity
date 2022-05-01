@@ -19,7 +19,7 @@ const Charts = () => {
   );
   const metric = !defaultPoints ? 'issues' : 'points';
 
-  if (initiativeHistory.length === 0) {
+  if (initiativeHistory.length === 0 || initiativeHistory === false) {
     return null;
   }
 
