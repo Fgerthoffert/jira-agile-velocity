@@ -18,7 +18,6 @@ interface Props {
 
 const Menu: FC<Props> = ({ closeDrawer }) => {
   const teams = useSelector((state: RootState) => state.global.teams);
-  console.log('teams', teams);
 
   const routes = [
     ...teams.map((t: any) => {

@@ -24,7 +24,6 @@ const Teams = () => {
   const initView = dispatch.teams.initView;
   const setShowMenu = dispatch.global.setShowMenu;
 
-  console.log('Render teams');
   const params = useParams();
 
   useEffect(() => {

@@ -379,7 +379,7 @@ export const teams: Teams = {
       );
       if (Object.keys(cacheCompletion).length > 0) {
         console.log(
-          'Loading Velocity data from cache while call to the backend is happening',
+          '[Teams] Loading Velocity data from cache while call to the backend is happening',
         );
         processRestPayload(
           reactLocalStorage.getObject(`cache-completion-${teamId}`),
@@ -396,7 +396,7 @@ export const teams: Teams = {
         const setLoading = this.setLoading;
 
         if (teamId !== null) {
-          console.log('Fetching completion data for team: ' + teamId);
+          console.log('[Teams] Fetching completion data for team: ' + teamId);
 
           setLoading(true);
           const host =
@@ -413,7 +413,9 @@ export const teams: Teams = {
             headers,
           })
             .then((response) => {
-              console.log('Data received from backend for team: ' + teamId);
+              console.log(
+                '[Teams] Data received from backend for team: ' + teamId,
+              );
 
               processRestPayload(
                 response.data,
@@ -438,7 +440,6 @@ export const teams: Teams = {
       const setDeleteModalCacheDays = this.setDeleteModalCacheDays;
       const deleteModalRefreshCacheDays = this.deleteModalRefreshCacheDays;
       const setLoading = this.setLoading;
-      console.log(cacheDay);
 
       if (
         JSON.parse(window._env_.AUTH0_DISABLED) === true ||
@@ -470,7 +471,7 @@ export const teams: Teams = {
           });
       } else {
         console.log(
-          'Not loading data, either there is already some data in cache or user token not present',
+          '[Teams] Not loading data, either there is already some data in cache or user token not present',
         );
       }
     },
@@ -510,7 +511,7 @@ export const teams: Teams = {
           });
       } else {
         console.log(
-          'Not loading data, either there is already some data in cache or user token not present',
+          '[Teams] Not loading data, either there is already some data in cache or user token not present',
         );
       }
     },

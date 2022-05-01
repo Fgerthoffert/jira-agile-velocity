@@ -10,7 +10,7 @@ const RoadmapChart: FC<any> = ({
   setOpenGraph,
   setJiraHost,
 }) => {
-  return null;
+  return <span>IMPLEMENTATION PENDING</span>;
 };
 export default RoadmapChart;
 

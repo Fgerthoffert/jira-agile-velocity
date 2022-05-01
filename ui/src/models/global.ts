@@ -147,7 +147,7 @@ export const global: Global = {
 
     async initAuth() {
       if (JSON.parse(window._env_.AUTH0_DISABLED) !== true) {
-        console.log('Initializing authentication');
+        console.log('[Global] Initializing authentication');
         if (window.Auth0 !== undefined) {
           this.setAuth0Initialized(true);
         } else {
@@ -166,7 +166,7 @@ export const global: Global = {
             });
             this.refreshTeams();
           }
-          console.log('Authentication initialized');
+          console.log('[Global] Authentication initialized');
         }
       }
     },
@@ -174,7 +174,7 @@ export const global: Global = {
     async loginCallback(payload: any, rootState: any) {
       // tslint:disable-next-line:no-shadowed-variable
       this.setLoading(true);
-      console.log('Received callback, finalizing logging');
+      console.log('[Global] Received callback, finalizing logging');
       const auth0 =
         window.Auth0 === undefined ? await setAuth0Config() : window.Auth0;
       if (window.Auth0 !== undefined && rootState.global.loggedIn === false) {

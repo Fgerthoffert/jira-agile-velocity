@@ -128,7 +128,9 @@ export const initiatives: Initiatives = {
       const t1 = performance.now();
 
       this.setGraphUpdating(false);
-      console.log('updateGraph - took ' + (t1 - t0) + ' milliseconds.');
+      console.log(
+        '[Initiatives] updateGraph - took ' + (t1 - t0) + ' milliseconds.',
+      );
     },
 
     async initGraphData(graphIssues: any, rootState: any) {
@@ -217,7 +219,7 @@ export const initiatives: Initiatives = {
           });
       } else {
         console.log(
-          'Not loading data, either there is already some data in cache or user token not present',
+          '[Initiatives] Not loading data, either there is already some data in cache or user token not present',
         );
       }
     },

@@ -4,6 +4,11 @@ import { useDispatch } from 'react-redux';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import LinearProgress, {
+  linearProgressClasses,
+} from '@mui/material/LinearProgress';
+
 // import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import Table from '@mui/material/Table';
@@ -21,6 +26,19 @@ interface Props {
   issues: Array<any>;
   jiraHost: string;
 }
+
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 10,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor:
+      theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
+  },
+}));
 
 const RoadmapTable: FC<Props> = ({ defaultPoints, issues, jiraHost }) => {
   const dispatch = useDispatch<Dispatch>();
@@ -93,16 +111,14 @@ const RoadmapTable: FC<Props> = ({ defaultPoints, issues, jiraHost }) => {
               </TableCell>
               <TableCell>{i.metrics[metric].remaining}</TableCell>
               <TableCell>
-                {/* <ProgressBar
-                  variant={getBarVariant(progressPoints.progress, 0)}
-                  now={progressPoints.progress}
-                  label={
-                    <span style={{ color: '#000' }}>
-                      {progressPoints.progress}% ({progressPoints.completed}/
-                      {progressPoints.total})
-                    </span>
-                  }
-                /> */}
+                <BorderLinearProgress
+                  variant="determinate"
+                  value={progressPoints.progress}
+                />
+                <span style={{ color: '#000' }}>
+                  {progressPoints.progress}% ({progressPoints.completed}/
+                  {progressPoints.total})
+                </span>
               </TableCell>
               <TableCell>
                 <span style={{ color: '#000' }}>
@@ -111,16 +127,14 @@ const RoadmapTable: FC<Props> = ({ defaultPoints, issues, jiraHost }) => {
                 </span>
               </TableCell>
               <TableCell>
-                {/* <ProgressBar
-                  variant={getBarVariant(progressIssues.progress, 0)}
-                  now={progressIssues.progress}
-                  label={
-                    <span style={{ color: '#000' }}>
-                      {progressIssues.progress}% ({progressIssues.completed}/
-                      {progressIssues.total})
-                    </span>
-                  }
-                /> */}
+                <BorderLinearProgress
+                  variant="determinate"
+                  value={progressIssues.progress}
+                />
+                <span style={{ color: '#000' }}>
+                  {progressIssues.progress}% ({progressIssues.completed}/
+                  {progressIssues.total})
+                </span>
               </TableCell>
               <TableCell>{i.status.name}</TableCell>
             </TableRow>
