@@ -1,5 +1,6 @@
 import React, { FC, MouseEvent, useRef } from 'react';
 
+import 'chart.js/auto';
 import {
   Chart as ChartJS,
   LinearScale,
