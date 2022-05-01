@@ -147,7 +147,7 @@ export const global: Global = {
 
     async initAuth() {
       if (JSON.parse(window._env_.AUTH0_DISABLED) !== true) {
-        console.log('User not logged in, initializing authentication');
+        console.log('Initializing authentication');
         if (window.Auth0 !== undefined) {
           this.setAuth0Initialized(true);
         } else {
@@ -164,6 +164,7 @@ export const global: Global = {
               accessToken,
               authUser: user,
             });
+            this.refreshTeams();
           }
           console.log('Authentication initialized');
         }

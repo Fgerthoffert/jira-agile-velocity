@@ -28,6 +28,9 @@ export class TeamsService {
       this.logger.log('Opening configuration file: ' + configFilePath);
       const userConfig = await loadYamlFile(configFilePath);
       for (const team of userConfig.teams) {
+        this.logger.log(
+          'Found the following teams: ' + JSON.stringify(teamsTeam),
+        );
         teamsTeam.push({
           id: getTeamId(team.name),
           name: team.name,
