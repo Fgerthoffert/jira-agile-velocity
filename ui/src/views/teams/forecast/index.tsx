@@ -57,7 +57,9 @@ const Forecast = () => {
         Naive Forecast
       </Typography>
       <Typography component="p">
-        Remaining work calculated using {metric}
+        Remaining work calculated using {metric}. ==={' '}
+        <a href="https://github.com/airbnb/visx/issues/1473">TEMPORARY VIZ</a>{' '}
+        ===
       </Typography>
       <Grid container spacing={1}>
         <Grid item xs={12}>
