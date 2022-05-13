@@ -124,7 +124,6 @@ export default class Streams extends Command {
                   summary: issue.parent.summary,
                   issues: [issue.key],
                 });
-                return acc;
               } else if (
                 issue.parent.key !== '' &&
                 acc.find(i => i.key === issue.parent.key) !== undefined
