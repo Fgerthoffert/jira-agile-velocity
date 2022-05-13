@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getProgress = (issue: any, metric: string) => {
   let progressPrct = 0;
   if (issue.metrics[metric].total > 0) {

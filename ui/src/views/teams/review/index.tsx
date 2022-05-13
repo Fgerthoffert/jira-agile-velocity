@@ -94,7 +94,7 @@ const Review = () => {
                   <TableCell align="right">Distribution</TableCell>
                   <TableCell align="right">Velocity</TableCell>
                   <TableCell align="right">Effort</TableCell>
-                  <TableCell align="right">Distribution</TableCell>
+                  <TableCell align="right">Distribution (%)</TableCell>
                   <TableCell align="right">Velocity</TableCell>
                   <TableCell align="right">Effort</TableCell>
                 </TableRow>
@@ -161,9 +161,6 @@ const Review = () => {
                       <TableCell align="right">
                         <TextField
                           id="standard-number"
-                          label={`Goal: ${Math.round(
-                            fs.metrics[metric].distributionTarget,
-                          )}%`}
                           inputProps={{
                             inputMode: 'numeric',
                             pattern: '[0-9]*',

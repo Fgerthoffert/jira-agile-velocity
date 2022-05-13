@@ -33,7 +33,6 @@ import toMaterialStyle from 'material-color-hash';
 // import { ResponsiveHeatMap, ComputedCell } from '@nivo/heatmap';
 
 import { Stream, StreamWeek, StreamItem } from '../../../global';
-import { SpaOutlined } from '@mui/icons-material';
 
 interface DatasetObj {
   [key: string]: any;
@@ -44,188 +43,28 @@ interface MonthTable {
   colSpan: number;
 }
 
-// Note:
-// differenceInDays only return full days which means the the differenceInDays
-// between first and last day of the week is going to be 6. We can instead use
-// differenceInMinutes / 1440 which gives a number close enough
-
-const buildWeekData = (
-  firstDay: Date,
-  lastDay: Date,
-  dailyVelocity: number,
-  remainingAtWeekdStart: number,
-  remainingAtWeekEnd: number,
-) => {
-  return {
-    firstWeekDay: firstDay,
-    lastWeekDay: lastDay,
-    startOfWeek: startOfWeek(firstDay),
-    endOfWeek: endOfWeek(firstDay),
-    weekTxt: startOfWeek(firstDay).toISOString(),
-    completed:
-      Math.round(
-        (differenceInMinutes(endOfWeek(firstDay), firstDay) / 1440) *
-          dailyVelocity *
-          10,
-      ) / 10,
-    remaining: {
-      atWeekStart: Math.round(remainingAtWeekdStart * 10) / 10,
-      atWeekEnd: Math.round(remainingAtWeekEnd * 10) / 10,
-    },
-  };
-};
-
-// Builds a future calendar based on the weeks necessary to complete the initiative
-const buildCalendar = (
-  weeklyVelocity: number,
-  remaining: number,
-  firstDay: Date,
-) => {
-  const perDayVelocity = weeklyVelocity / 7; // No particular logic for business days
-  const weeks: Array<StreamWeek> = [];
-
-  let currentRemaining =
-    remaining -
-    differenceInDays(endOfWeek(firstDay), firstDay) * perDayVelocity;
-
-  // The first week is always calculated by day
-  weeks.push(
-    buildWeekData(
-      firstDay,
-      endOfWeek(firstDay),
-      perDayVelocity,
-      remaining,
-      currentRemaining,
-    ),
-  );
-
-  let weekStartCursor = startOfWeek(firstDay);
-  while (currentRemaining > 0) {
-    weekStartCursor = add(weekStartCursor, { days: 7 });
-    let completed = weeklyVelocity;
-    let atWeekEnd = currentRemaining - weeklyVelocity;
-    let lastWeekDay = endOfWeek(weekStartCursor);
-    // If weekly velocity is greater than remaining, it means
-    // completion is going to be in the middle of the week
-    if (weeklyVelocity > currentRemaining) {
-      const effortDays = currentRemaining / perDayVelocity;
-      lastWeekDay = add(weekStartCursor, { days: effortDays });
-    }
-    if (atWeekEnd <= 0) {
-      completed = atWeekEnd + completed;
-      atWeekEnd = 0;
-    }
-    weeks.push(
-      buildWeekData(
-        weekStartCursor,
-        lastWeekDay,
-        perDayVelocity,
-        currentRemaining,
-        atWeekEnd,
-      ),
-    );
-    currentRemaining = currentRemaining - weeklyVelocity;
-  }
-  return weeks;
-};
-
-const addWeeksToStreams = (streams: Array<any>, metric: string) => {
-  return streams.map((s) => {
-    if (s.metrics[metric].velocity === 0) {
-      return {
-        ...s,
-        weeks: [],
-      };
-    }
-    const items = [];
-    const streamVelocity = s.metrics[metric].velocity;
-    if (s.items !== undefined) {
-      let startDay = new Date();
-      for (const i of s.items) {
-        const weeks: Array<StreamWeek> = buildCalendar(
-          streamVelocity,
-          i.remaining,
-          startDay,
-        );
-        items.push({
-          ...i,
-          stream: s.name,
-          name: `${s.name}: ${i.name}`,
-          weeks,
-        });
-        startDay = weeks.slice(-1)[0].lastWeekDay;
-      }
-    }
-    return {
-      ...s,
-      items,
-      weeks: buildCalendar(streamVelocity, s.remaining, new Date()),
-    };
-  });
-};
-
 const RoadmapChart: FC<any> = ({ streams, metric }) => {
-  // Build a weekly completion forecast calendar
-  const streamWithWeeks: Array<Stream> = addWeeksToStreams(streams, metric);
+  // console.log(streams);
+  if (streams.length === null) {
+    return null;
+  }
 
   // Flatten the list of items and build full array of weeks
   const items: Array<StreamItem> = [];
   const weeks: Array<string> = [];
-  for (const s of streamWithWeeks) {
-    if (s.items.length === 0) {
-      items.push(s);
-      if (s.weeks === undefined) {
-        break;
-      }
-      for (const w of s.weeks) {
-        if (!weeks.includes(w.weekTxt)) {
-          weeks.push(w.weekTxt);
-        }
-      }
-    } else {
-      for (const i of s.items) {
-        items.push(i);
-        if (i.weeks === undefined) {
-          break;
-        }
-        for (const w of i.weeks) {
-          if (!weeks.includes(w.weekTxt)) {
-            weeks.push(w.weekTxt);
-          }
-        }
+  for (const s of streams) {
+    items.push(s);
+    if (s.weeks === undefined) {
+      break;
+    }
+    for (const w of s.weeks) {
+      if (!weeks.includes(w.firstDay.toISOString())) {
+        weeks.push(w.firstDay.toISOString());
       }
     }
-  }
-
-  const formattedItems: DatasetObj[] = [];
-  for (const i of items) {
-    const initiativeData: DatasetObj = {
-      item: i.name,
-    };
-    if (i.weeks === undefined) {
-      return null;
-    }
-    for (const week of i.weeks) {
-      initiativeData[week.weekTxt] = week.completed;
-    }
-    formattedItems.push(initiativeData);
   }
 
   const chartHeight = 50 + items.length * 25;
-
-  const getCompletionColor = (data: any, value: any) => {
-    if (value === undefined) {
-      return 'rgb(255, 255, 255)';
-    }
-    const item = items.find((i: StreamItem) => i.name === data.yKey);
-    if (item !== undefined) {
-      return toMaterialStyle(
-        item.stream === undefined ? item.name : item.stream,
-        200,
-      ).backgroundColor;
-    }
-    return toMaterialStyle(data.yKey, 200).backgroundColor;
-  };
 
   // Create an array of Months cased on the included weeks
   const months = weeks
@@ -254,7 +93,7 @@ const RoadmapChart: FC<any> = ({ streams, metric }) => {
       return acc;
     }, []);
 
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  const WeekCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.root}`]: {
       padding: 0,
       width: 30,
@@ -267,70 +106,52 @@ const RoadmapChart: FC<any> = ({ streams, metric }) => {
     },
   }));
 
-  const LastCell: FC<any> = ({ weeks, item }) => {
-    if (weeks.length <= 52) {
-      return null;
-    }
-    const weekStartTxt = weeks[52];
-    if (item[weekStartTxt] !== undefined && Number(item[weekStartTxt]) > 0) {
-      return <StyledTableCell align="center">...</StyledTableCell>;
-    }
-    return <StyledTableCell align="center"></StyledTableCell>;
-  };
-
   return (
     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
       <TableHead>
         <TableRow>
           <TableCell rowSpan={2}>Activities</TableCell>
-          {months
-            .sort()
-            .slice(0, 12)
-            .map((m: any) => (
-              <TableCell
-                key={m.startOfMonth}
-                colSpan={m.colSpan}
-                align="center"
-              >
-                {format(new Date(m.startOfMonth), 'LLL')}
-              </TableCell>
-            ))}
+          {months.sort().map((m: any) => (
+            <TableCell key={m.startOfMonth} colSpan={m.colSpan} align="center">
+              {format(new Date(m.startOfMonth), 'LLL')}
+            </TableCell>
+          ))}
         </TableRow>
         <TableRow>
-          {weeks
-            .sort()
-            .slice(0, 52)
-            .map((weekStartTxt) => (
-              <StyledTableCell key={weekStartTxt} align="center">
-                {format(new Date(weekStartTxt), 'do')}
-              </StyledTableCell>
-            ))}
+          {weeks.sort().map((weekStartTxt) => (
+            <WeekCell key={weekStartTxt} align="center">
+              {format(new Date(weekStartTxt), 'do')}
+            </WeekCell>
+          ))}
         </TableRow>
       </TableHead>
       <TableBody>
-        {formattedItems.map((i) => (
+        {items.map((i: any) => (
           <TableRow
-            key={i.item}
+            key={i.key}
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
           >
             <TableCell component="th" scope="row">
-              {i.item}
+              {i.name}
             </TableCell>
-            {weeks
-              .sort()
-              .slice(0, 52)
-              .map((weekStartTxt) => {
-                let value = '';
-                if (i[weekStartTxt] !== undefined) {
-                  value = i[weekStartTxt];
-                }
-                return (
-                  <StyledTableCell key={weekStartTxt} align="center">
-                    {value}
-                  </StyledTableCell>
-                );
-              })}
-            <LastCell weeks={weeks} item={i} />
+            {weeks.sort().map((weekStartTxt) => {
+              let value = '';
+              const currentWeek = i.weeks.find(
+                (w: any) =>
+                  startOfWeek(w.firstDay).toISOString() === weekStartTxt,
+              );
+              if (currentWeek !== undefined) {
+                value =
+                  currentWeek.metrics[metric].count === 0
+                    ? ''
+                    : currentWeek.metrics[metric].count;
+              }
+              return (
+                <WeekCell key={weekStartTxt} align="center">
+                  {value}
+                </WeekCell>
+              );
+            })}
           </TableRow>
         ))}
       </TableBody>

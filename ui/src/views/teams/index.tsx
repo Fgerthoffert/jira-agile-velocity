@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 
 import Completion from './completion';
+import CompletionDetails from './completionDetails';
 import Forecast from './forecast';
 import Roadmap from './roadmap';
 import Review from './review';
@@ -56,6 +57,9 @@ const Teams = () => {
         </Grid>
         <Grid item>
           <Review />
+        </Grid>
+        <Grid item>
+          <CompletionDetails />
         </Grid>
         <Grid item>
           <Forecast />

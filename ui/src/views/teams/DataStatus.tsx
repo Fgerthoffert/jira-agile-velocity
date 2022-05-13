@@ -20,49 +20,49 @@ const DataStatus = () => {
   );
   const updatedAt = useSelector((state: RootState) => state.teams.updatedAt);
 
-  if (updatedAt !== null) {
-    return (
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="center"
-        spacing={1}
-      >
-        <Grid item>
-          <span>
-            Last updated: {format(new Date(updatedAt), 'E yyyy/MM/dd, hh:mm a')}{' '}
-          </span>
-        </Grid>
-        <Grid item xs={12} sm container></Grid>
-        <Grid item>
-          <IconButton
-            aria-label="delete"
-            size="small"
-            onClick={() => {
-              setShowDeleteModal(true);
-              deleteModalRefreshCacheDays();
-            }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton
-            aria-label="refresh"
-            size="small"
-            onClick={() => {
-              fetchTeamData(selectedTeamId);
-            }}
-          >
-            <RefreshIcon fontSize="small" />
-          </IconButton>
-        </Grid>
-      </Grid>
-    );
-  } else {
+  if (updatedAt === null) {
     return null;
   }
+
+  return (
+    <Grid
+      container
+      direction="row"
+      justifyContent="flex-start"
+      alignItems="center"
+      spacing={1}
+    >
+      <Grid item>
+        <span>
+          Last updated: {format(new Date(updatedAt), 'E yyyy/MM/dd, hh:mm a')}{' '}
+        </span>
+      </Grid>
+      <Grid item xs={12} sm container></Grid>
+      <Grid item>
+        <IconButton
+          aria-label="delete"
+          size="small"
+          onClick={() => {
+            setShowDeleteModal(true);
+            deleteModalRefreshCacheDays();
+          }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          aria-label="refresh"
+          size="small"
+          onClick={() => {
+            fetchTeamData(selectedTeamId);
+          }}
+        >
+          <RefreshIcon fontSize="small" />
+        </IconButton>
+      </Grid>
+    </Grid>
+  );
 };
 
 export default DataStatus;

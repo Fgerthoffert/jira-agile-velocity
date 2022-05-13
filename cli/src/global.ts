@@ -259,7 +259,8 @@ export interface CompletedStream {
   jql: string;
   childOf: string;
   days: Array<CompletedDay>;
-  childIssues: Array<string>;
+  // childIssues: Array<IssueObjChild>;
+  issues: Array<IssueObjChild>;
 }
 
 export interface ForecastStream {
@@ -269,4 +270,12 @@ export interface ForecastStream {
   fetchChild?: boolean;
   effortPct: number;
   issues: Array<IJiraIssue>;
+}
+
+export interface IssueObjChild {
+  key: string;
+  parent: {
+    key: string;
+    summary: string;
+  };
 }

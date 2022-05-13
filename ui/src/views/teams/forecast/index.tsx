@@ -50,18 +50,24 @@ const Forecast = () => {
 
   const currentStreams = formatStreams(simulatedStreams, metric);
 
-  console.log(currentStreams);
   return (
     <Paper>
       <Typography variant="h5" component="h3">
         Naive Forecast
       </Typography>
       <Typography component="p">
-        Remaining work calculated using {metric}. ==={' '}
-        <a href="https://github.com/airbnb/visx/issues/1473">TEMPORARY VIZ</a>{' '}
-        ===
+        Remaining work calculated using {metric}.
       </Typography>
-      <Grid container spacing={1}>
+      <Typography component="p" variant="subtitle2">
+        === TEMPORARY VIEW ===
+      </Typography>{' '}
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        spacing={1}
+      >
         <Grid item xs={12}>
           <RoadmapChart streams={currentStreams} metric={metric} />
           <Typography component="p">

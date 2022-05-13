@@ -45,7 +45,7 @@ const HistoryEffort: FC<any> = ({ historyMetrics, metric }) => {
     },
     {
       label: 'Remaining',
-      data: historyMetrics.map((h: any) => h.metrics[metric].completed),
+      data: historyMetrics.map((h: any) => h.metrics[metric].remaining),
       backgroundColor: toMaterialStyle('Remaining', 200).backgroundColor,
       borderColor: toMaterialStyle('Remaining', 200).backgroundColor,
     },

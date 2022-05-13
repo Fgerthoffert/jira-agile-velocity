@@ -7,8 +7,8 @@ import COSEBilkent from 'cytoscape-cose-bilkent';
 
 import popper from 'cytoscape-popper';
 
-import Tippy from 'tippy.js';
-import 'tippy.js/themes/light-border.css';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 import ReactDOMServer from 'react-dom/server';
 
 import CytoscapeComponent from 'react-cytoscapejs';
@@ -20,17 +20,28 @@ Cytoscape.use(popper);
 const mapState = (state: RootState) => ({
   issuesGraph: state.initiatives.issuesGraph,
   roadmap: state.initiatives.roadmap,
+  graphInitiative: state.initiatives.graphInitiative,
+  jiraHost: state.initiatives.jiraHost,
 });
 
 const mapDispatch = (dispatch: any) => ({
   setGraphNode: dispatch.initiatives.setGraphNode,
 });
 
+interface Props {
+  chartRef: any;
+}
+
 type connectedProps = ReturnType<typeof mapState | any> &
-  ReturnType<typeof mapDispatch>;
+  ReturnType<typeof mapDispatch> &
+  Props;
 
 class NodesGraph extends Component<connectedProps> {
-  chartRef: any = React.createRef();
+  chartRef: any;
+  constructor(props: any) {
+    super(props);
+    this.chartRef = React.createRef();
+  }
   tippyInstances: any = {};
   selectedTippies: any = {};
   clickedLink = false;
@@ -47,10 +58,10 @@ class NodesGraph extends Component<connectedProps> {
   }
 
   clickIssue = (node: any) => {
-    const { roadmap } = this.props;
+    const { graphInitiative, jiraHost } = this.props;
     if (this.clickedLink === false) {
       this.clickedLink = true;
-      const url = roadmap.host + '/browse/' + node.data().key;
+      const url = jiraHost + '/browse/' + node.data().key;
       window.open(url, '_blank');
       setTimeout(async () => {
         this.clickedLink = false;
@@ -58,12 +69,17 @@ class NodesGraph extends Component<connectedProps> {
     }
   };
 
+  //https://github.com/cytoscape/cytoscape.js-popper/blob/master/demo-tippy.html
   makeTippy = (node: any, text: any) => {
-    return Tippy(node.popperRef(), {
-      content() {
+    console.log(node.popperRef().getBoundingClientRect());
+    const ref = node.popperRef();
+    const dummyDomEle = document.createElement('div');
+    return tippy(dummyDomEle, {
+      getReferenceClientRect: ref.getBoundingClientRect,
+      content: () => {
         const div = document.createElement('div');
         div.innerHTML = text;
-        return ReactDOMServer.renderToString(<span>{text}</span>);
+        return text;
       },
       trigger: 'manual',
       theme: 'light-border',
@@ -72,7 +88,8 @@ class NodesGraph extends Component<connectedProps> {
       // hideOnClick: true,
       interactive: true,
       // multiple: true,
-      sticky: true,
+      // sticky: true,
+      appendTo: document.body, // or append dummyDomEle to document.body
     });
   };
 

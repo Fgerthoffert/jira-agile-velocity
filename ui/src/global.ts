@@ -77,13 +77,26 @@ export interface CompletionWeek {
   };
 }
 
+export interface IssueObjChild {
+  key: string;
+  parentKey: string;
+}
+
+export interface CompletionIssues {
+  key: string;
+  issues: Array<string>;
+  children: Array<string>;
+  weeks: Array<CompletionWeek>;
+}
+
 // A completion stream contains data and metrics about elements in the past
 export interface CompletionStream {
   name: string; // Name of the completion stream
   key: string; // Key of the stream, automatically generated from the name
   jql: string; // JQL query used to fetch the completion data
-  childIssues: Array<string>;
+  childIssues: Array<IssueObjChild>;
   days: Array<CompletionDay>;
   childOf: string;
   weeks: Array<CompletionWeek>;
+  issues: Array<CompletionIssues>;
 }

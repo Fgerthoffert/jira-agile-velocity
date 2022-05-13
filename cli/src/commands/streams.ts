@@ -18,7 +18,12 @@ import { exportTree } from '../utils/misc/treeUtils';
 import { getChildrenKey } from '../utils/streams/getChildren';
 import { getId } from '../utils/misc/id';
 
-import { IJiraIssue, CompletedStream, ForecastStream } from '../global';
+import {
+  IJiraIssue,
+  CompletedStream,
+  ForecastStream,
+  IssueObjChild,
+} from '../global';
 
 const trimIssue = (issue: IJiraIssue) => {
   return {
@@ -63,7 +68,7 @@ export default class Streams extends Command {
           `${team.name}/${stream.name}: Processing completion data for stream: ${stream.name}`,
         );
 
-        let childIssues: Array<string> = [];
+        let childIssues: Array<IssueObjChild> = [];
         if (stream.completion.childOf !== undefined) {
           this.log(
             `${team.name}/${stream.name}: Collecting children using JQL: ${stream.completion.childOf}`,
@@ -83,7 +88,7 @@ export default class Streams extends Command {
           stream,
           cacheDir,
           fetchedIssues,
-          childIssues,
+          childIssues.map(i => i.key),
         );
 
         // This records issues that were already accounted for completion
@@ -108,7 +113,37 @@ export default class Streams extends Command {
               issues: d.issues.map((i: IJiraIssue) => trimIssue(i)),
             };
           }),
-          childIssues,
+          issues: childIssues.reduce(
+            (acc: Array<any>, issue: IssueObjChild) => {
+              if (
+                issue.parent.key !== '' &&
+                acc.find(i => i.key === issue.parent.key) === undefined
+              ) {
+                acc.push({
+                  key: issue.parent.key,
+                  summary: issue.parent.summary,
+                  issues: [issue.key],
+                });
+                return acc;
+              } else if (
+                issue.parent.key !== '' &&
+                acc.find(i => i.key === issue.parent.key) !== undefined
+              ) {
+                return acc.map(s => {
+                  if (s.key === issue.parent.key) {
+                    return {
+                      ...s,
+                      issues: [...s.issues, issue.key],
+                    };
+                  }
+                  return s;
+                });
+              }
+              return acc;
+            },
+            [],
+          ),
+          // childIssues,
         });
 
         this.log(
