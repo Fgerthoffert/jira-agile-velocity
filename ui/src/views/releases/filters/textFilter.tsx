@@ -13,6 +13,9 @@ const TextFilter: FC<Props> = ({ filterId, filterLabel, value, setValue }) => {
   const sourceValue = !value ? '' : value;
 
   const [filterValue, setFilterValue] = useState(sourceValue);
+  React.useEffect(() => {
+    setFilterValue(sourceValue);
+  }, [sourceValue]);
 
   return (
     <TextField
@@ -23,7 +26,9 @@ const TextFilter: FC<Props> = ({ filterId, filterLabel, value, setValue }) => {
       value={filterValue}
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         setFilterValue(event.target.value);
-        setValue(event.target.value);
+        setTimeout(() => {
+          setValue(event.target.value);
+        }, 2000);
       }}
     />
   );

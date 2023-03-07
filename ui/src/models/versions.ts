@@ -230,6 +230,10 @@ export const versions: Versions = {
               return acc;
             }, []);
 
+      logger.info(
+        '[Versions]: Versions resulting of the filters are: ',
+        labelFiltered,
+      );
       setVersions(labelFiltered);
     },
 
