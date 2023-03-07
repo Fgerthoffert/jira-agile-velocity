@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as log from 'loglevel';
 import axios from 'axios';
-import { reactLocalStorage } from 'reactjs-localstorage';
 
 // import { CompletionStream, CompletionDay, JiraIssue } from '../global';
 
@@ -270,7 +269,6 @@ export const versions: Versions = {
               );
 
               processRestPayload(response.data, setCoreData);
-              reactLocalStorage.setObject(`cache-version`, response.data);
               setLoading(false);
 
               setTimeout(() => {
