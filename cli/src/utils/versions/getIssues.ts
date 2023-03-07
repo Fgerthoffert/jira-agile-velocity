@@ -7,11 +7,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as fsNdjson from 'fs-ndjson';
 
-import { IJiraIssue, UserConfigTeam, UserConfigJira } from '../../global';
+import { IJiraIssue, UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
-import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
-import { differenceInBusinessDays, startOfDay, parse } from 'date-fns';
-import { getTeamId } from '../misc/teamUtils';
+import { differenceInBusinessDays } from 'date-fns';
 import { getId } from '../misc/id';
 import { returnTicketsPoints } from '../misc/jiraUtils';
 
@@ -25,7 +23,7 @@ const getIssues = async (
 ) => {
   cli.action.start(`${version.name}: Begin fetching issues for this version`);
 
-  let issues: Array<IJiraIssue> = [];
+  const issues: Array<IJiraIssue> = [];
 
   const versionsFolder = path.join(cacheDir, 'versions');
   // Create folder to be used to store the versions cache
@@ -63,15 +61,15 @@ const getIssues = async (
         console.log(version.name, ' - No release date present');
       }
       for (const issue of issuesJira) {
-        let daysToRelease,
-          weeksToRelease,
-          monthsToRelease = undefined;
-        let daysToReleaseIfToday,
-          weeksToReleaseIfToday,
-          monthsToReleaseIfToday = undefined;
-        let daysToResolution,
-          weeksToResolution,
-          monthsToResolution = undefined;
+        let daysToRelease;
+        let weeksToRelease;
+        let monthsToRelease;
+        let daysToReleaseIfToday;
+        let weeksToReleaseIfToday;
+        let monthsToReleaseIfToday;
+        let daysToResolution;
+        let weeksToResolution;
+        let monthsToResolution;
 
         // Verify the release date is present
         if (version.releaseDate !== undefined) {

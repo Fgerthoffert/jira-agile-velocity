@@ -25,21 +25,15 @@ const sortByNameDesc = (a: any, b: any) => {
   return comparison;
 };
 
-export default class Streams extends Command {
+export default class Versions extends Command {
   static description = 'Fetches details about completed versions';
 
   static flags = {
     ...Command.flags,
     help: flags.help({ char: 'h' }),
-    useCache: flags.boolean({
-      char: 'c',
-      default: false,
-      description: 'Use local cache instead of fetching the data from Jira',
-    }),
   };
 
   async run() {
-    const { flags } = this.parse(Streams);
     const userConfig = this.userConfig;
     const cacheDir = path.join(this.config.configDir, 'cache');
 
@@ -119,25 +113,25 @@ export default class Streams extends Command {
         monthsToChart: userConfig.versions.monthsToChart,
         defaultFilters: {
           name:
-            userConfig.versions.defaultFilters.name !== undefined
-              ? userConfig.versions.defaultFilters.name
-              : '',
+            userConfig.versions.defaultFilters.name === undefined
+              ? ''
+              : userConfig.versions.defaultFilters.name,
           projectKey:
-            userConfig.versions.defaultFilters.projectKey !== undefined
-              ? userConfig.versions.defaultFilters.projectKey
-              : '',
+            userConfig.versions.defaultFilters.projectKey === undefined
+              ? ''
+              : userConfig.versions.defaultFilters.projectKey,
           label:
-            userConfig.versions.defaultFilters.label !== undefined
-              ? userConfig.versions.defaultFilters.label
-              : '',
+            userConfig.versions.defaultFilters.label === undefined
+              ? ''
+              : userConfig.versions.defaultFilters.label,
           issueType:
-            userConfig.versions.defaultFilters.issueType !== undefined
-              ? userConfig.versions.defaultFilters.issueType
-              : '',
+            userConfig.versions.defaultFilters.issueType === undefined
+              ? ''
+              : userConfig.versions.defaultFilters.issueType,
           priority:
-            userConfig.versions.defaultFilters.priority !== undefined
-              ? userConfig.versions.defaultFilters.priority
-              : '',
+            userConfig.versions.defaultFilters.priority === undefined
+              ? ''
+              : userConfig.versions.defaultFilters.priority,
         },
       }),
     );
