@@ -69,6 +69,15 @@ export interface IJiraIssue {
   points: number;
   jql: string; // JQL Query used to fetch the issue
   openedForBusinessDays: number;
+  daysToRelease?: number;
+  weeksToRelease?: number;
+  monthsToRelease?: number;
+  daysToReleaseIfToday?: number;
+  weeksToReleaseIfToday?: number;
+  monthsToReleaseIfToday?: number;
+  daysToResolution?: number;
+  weeksToResolution?: number;
+  monthsToResolution?: number;
 }
 
 export interface IDays {
@@ -202,7 +211,7 @@ export interface UserConfig {
   jira: UserConfigJira;
   versions: {
     projectKeys: Array<string>;
-    monthsToChart: string;
+    monthsToChart: number;
     from: string;
     defaultFilters: {
       name: string;
