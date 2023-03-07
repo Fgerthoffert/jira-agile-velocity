@@ -21,6 +21,18 @@ export default abstract class extends Command {
       },
       excludeDays: ['1900-01-01'],
     },
+    versions: {
+      projectKeys: ['QA', 'BACKLOG'],
+      monthsToChart: 6,
+      from: '2019-01-01',
+      defaultFilters: {
+        name: '',
+        projectKey: '',
+        label: '',
+        issueType: '',
+        priority: '',
+      },
+    },
     teams: [
       {
         name: 'Team A',

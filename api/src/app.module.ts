@@ -7,6 +7,7 @@ import { CompletionModule } from './completion/completion.module';
 import { HistoryModule } from './history/history.module';
 import { CachedaysModule } from './cachedays/cachedays.module';
 import { TeamsModule } from './teams/teams.module';
+import { VersionsModule } from './versions/versions.module';
 import { ConfigModule } from './config.module';
 import { ConfigService } from './config.service';
 
@@ -19,6 +20,7 @@ import { AuthenticationMiddleware } from './auth/authentication.middleware';
     HistoryModule,
     CachedaysModule,
     TeamsModule,
+    VersionsModule,
     ConfigModule,
   ],
   controllers: [AppController],
@@ -39,6 +41,7 @@ export class AppModule {
           { path: '/completion', method: RequestMethod.GET },
           { path: '/history', method: RequestMethod.GET },
           { path: '/teams', method: RequestMethod.GET },
+          { path: '/versions', method: RequestMethod.GET },
           { path: '/cachedays', method: RequestMethod.DELETE },
         );
     }

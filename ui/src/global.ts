@@ -1,3 +1,43 @@
+export interface VIssue {
+  key: string;
+  summary: string;
+  labels: Array<string>;
+  created: string;
+  daysToRelease: number;
+  daysToReleaseIfToday: number;
+  daysToResolution: number;
+  monthsToRelease: number;
+  monthsToReleaseIfToday: number;
+  monthsToResolution: number;
+  weeksToRelease: number;
+  weeksToReleaseIfToday: number;
+  weeksToResolution: number;
+  points: number;
+  priority: string;
+  projectKey: string;
+  release: VRelease;
+  resolution: string;
+  resolutiondate: string;
+  status: string;
+  type: string;
+}
+
+export interface VRelease {
+  name: string;
+  archived: boolean;
+  released: boolean;
+  releaseDate: string;
+  userReleaseDate: string;
+  issues: Array<VIssue>;
+  projects: Array<VProject>;
+}
+
+export interface VProject {
+  projectId: number;
+  projectKey: string;
+  versionId: number;
+}
+
 export interface JiraIssue {
   key: string;
   closedAt: string; // new Date().toISOString() representation of the date the issue was closed

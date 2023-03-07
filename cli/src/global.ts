@@ -200,6 +200,18 @@ export interface ICalendarFinal {
 
 export interface UserConfig {
   jira: UserConfigJira;
+  versions: {
+    projectKeys: Array<string>;
+    monthsToChart: string;
+    from: string;
+    defaultFilters: {
+      name: string;
+      projectKey: string;
+      label: string;
+      issueType: string;
+      priority: string;
+    };
+  };
   teams: Array<UserConfigTeam>;
 }
 

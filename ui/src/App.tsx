@@ -8,6 +8,7 @@ import './App.css';
 import { Dispatch } from './store';
 
 import Teams from './views/teams';
+import Releases from './views/releases';
 import Default from './views/default';
 import Layout from './layout';
 
@@ -39,8 +40,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="teams/:teamId" element={<Teams />} />
-            {/* <Route path=":teamId" element={<Teams />} />
-            </Route> */}
+            <Route path="releases/" element={<Releases />} />
             <Route path="*" element={<Default />} />
           </Route>
         </Routes>

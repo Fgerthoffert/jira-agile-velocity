@@ -4,6 +4,7 @@ import { Link, LinkProps } from 'react-router-dom';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 import { RootState } from '../store';
 
@@ -27,6 +28,11 @@ const Menu: FC<Props> = ({ closeDrawer }) => {
         text: t.name,
       };
     }),
+    {
+      path: `/releases/`,
+      icon: <RocketLaunchIcon />,
+      text: 'Releases',      
+    }
   ];
 
   return (
