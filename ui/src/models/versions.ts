@@ -229,7 +229,7 @@ export const versions: Versions = {
               return acc;
             }, []);
 
-      logger.info(
+      console.log(
         '[Versions]: Versions resulting of the filters are: ',
         labelFiltered,
       );
