@@ -99,7 +99,7 @@ const Filters = () => {
       <Grid item>
         <TextFilter
           filterId="priority"
-          filterLabel="Priority"
+          filterLabel="Issue Priority"
           value={filterPriority}
           setValue={updateFilterPriority}
         />
@@ -115,7 +115,7 @@ const Filters = () => {
       <Grid item>
         <TextFilter
           filterId="label"
-          filterLabel="Label"
+          filterLabel="Issue Label"
           value={filterLabel}
           setValue={updateFilterLabel}
         />
