@@ -236,11 +236,15 @@ export const versions: Versions = {
               return acc;
             }, []);
 
+      const filterEmptyVersions = labelFiltered.filter(
+        (v: any) => v.issues.length > 0,
+      );
+
       console.log(
         '[Versions]: Versions resulting of the filters are: ',
         labelFiltered,
       );
-      setVersions(labelFiltered);
+      setVersions(filterEmptyVersions);
     },
 
     async fetchVersionData(versionId: any, rootState: any) {
