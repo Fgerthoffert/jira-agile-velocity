@@ -184,11 +184,18 @@ export const versions: Versions = {
       const priorityFiltered =
         rootState.versions.filterPriority === ''
           ? typeFiltered
-          : typeFiltered.filter((v: any) =>
-              getId(v.priority).includes(
-                getId(rootState.versions.filterPriority),
-              ),
-            );
+          : typeFiltered.reduce((acc: Array<any>, v: any) => {
+              const updatedVersion = {
+                ...v,
+                issues: v.issues.filter((i: any) =>
+                  getId(i.priority).includes(
+                    getId(rootState.versions.filterPriority),
+                  ),
+                ),
+              };
+              acc.push(updatedVersion);
+              return acc;
+            }, []);
 
       const projectFiltered =
         rootState.versions.filterProjectKey === ''
