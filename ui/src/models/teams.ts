@@ -330,6 +330,7 @@ export const processRestPayload = (
 
   const coreData = {
     updatedAt: payload.completion.updatedAt,
+    resolutions: payload.completion.resolutions,
     completionData: payload.completion,
     jiraHost: payload.completion.jiraHost,
     completionStreams: completionStreams,
@@ -349,6 +350,11 @@ export const teams: Teams = {
     jiraHost: null,
     completionData: null,
     updatedAt: null,
+    resolutions: {
+      positive: [],
+      negative: [],
+      ignore: [],
+    },
     completionStreams: [],
     forecastStreams: [],
     simulatedStreams: [],
@@ -368,6 +374,7 @@ export const teams: Teams = {
         ...state,
         completionData: payload.jiraHost,
         updatedAt: payload.updatedAt,
+        resolutions: payload.resolutions,
         jiraHost: payload.jiraHost,
         completionStreams: payload.completionStreams,
         forecastStreams: payload.forecastStreams,

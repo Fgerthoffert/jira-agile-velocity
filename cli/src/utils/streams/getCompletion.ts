@@ -86,7 +86,7 @@ const getCompletion = async (
           '##TRANSITION_DATE##',
           scanDay.date.toJSON().slice(0, 10),
         ),
-        'labels,created,summary,status,issuetype,assignee,' +
+        'labels,created,summary,status,issuetype,assignee,resolution,priority,' +
           jiraConfig.fields.points +
           ',' +
           jiraConfig.fields.originalPoints,

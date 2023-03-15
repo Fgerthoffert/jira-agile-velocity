@@ -255,6 +255,11 @@ export interface UserConfigJira {
     parentEpic: string;
   };
   excludeDays: Array<string>;
+  resolutions: {
+    positive: Array<string>;
+    negative: Array<string>;
+    ignore: Array<string>;
+  };
 }
 
 export interface UserConfigRoadmap {

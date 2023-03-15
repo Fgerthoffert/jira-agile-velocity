@@ -34,6 +34,16 @@ const trimIssue = (issue: IJiraIssue) => {
     fields: {
       summary: issue.fields.summary,
       created: issue.fields.created,
+      resolution:
+        issue?.fields?.resolution !== undefined &&
+        issue?.fields?.resolution !== null
+          ? issue.fields.resolution.name
+          : undefined,
+      priority:
+        issue?.fields?.priority !== undefined &&
+        issue?.fields?.priority !== null
+          ? issue.fields.priority.name
+          : undefined,
     },
   };
 };
@@ -235,6 +245,7 @@ export default class Streams extends Command {
         from: team.from,
         excludeDays: team.excludeDays,
         jiraHost: userConfig.jira.host,
+        resolutions: userConfig.jira.resolutions,
         completion: completedStreams,
         forecast: forecastStreams,
         updatedAt: new Date().toJSON(),
