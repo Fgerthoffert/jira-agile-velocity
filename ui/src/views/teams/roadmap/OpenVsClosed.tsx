@@ -181,7 +181,31 @@ const OpenVsClosed: FC<any> = ({
         pointRadius: 0,
       },
       {
-        label: 'Closed tickets',
+        type: 'line' as const,
+        label: 'Closed (count)',
+        barPercentage: 1,
+        categoryPercentage: 1,
+        yAxisID: 'y1',
+        data: dataset.map((m: any) => m.closed.issues.length),
+        backgroundColor: toMaterialStyle('closed count', 200).backgroundColor,
+        borderColor: toMaterialStyle('closed count', 200).backgroundColor,
+        pointRadius: 10,
+        borderWidth: 0,
+      },
+      {
+        type: 'line' as const,
+        label: 'New tickets (count)',
+        barPercentage: 1,
+        categoryPercentage: 1,
+        yAxisID: 'y1',
+        data: dataset.map((m: any) => m.opened.issues.length),
+        backgroundColor: toMaterialStyle('count new', 200).backgroundColor,
+        borderColor: toMaterialStyle('count new', 200).backgroundColor,
+        pointRadius: 10,
+        borderWidth: 0,
+      },
+      {
+        label: 'Ratio (Closed)',
         barPercentage: 1,
         categoryPercentage: 1,
         stack: 'Stack 0',
@@ -195,7 +219,7 @@ const OpenVsClosed: FC<any> = ({
         borderColor: toMaterialStyle('Closed', 200).backgroundColor,
       },
       {
-        label: 'New tickets',
+        label: 'Ratio (New tickets)',
         barPercentage: 1,
         categoryPercentage: 1,
         stack: 'Stack 0',
@@ -224,18 +248,18 @@ const OpenVsClosed: FC<any> = ({
     } as const,
     scales: {
       y: {
-        position: 'left' as const,
+        position: 'right' as const,
         max: 100,
         title: {
           display: true,
-          text: 'New vs. Closed',
+          text: 'Ratio',
         },
       },
       y1: {
-        position: 'right',
+        position: 'left',
         title: {
           display: true,
-          text: 'Backlog',
+          text: 'Ticket Count',
         },
         grid: {
           drawOnChartArea: false,

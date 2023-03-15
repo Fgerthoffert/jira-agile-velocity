@@ -89,7 +89,7 @@ const Roadmap = () => {
               <Grid item xs={4}>
                 <Paper>
                   <Typography variant="h5" component="h5">
-                    Ratio Open vs Closed (ratio) - Past 12 months
+                    Open vs Closed tickets - Past 12 months
                   </Typography>
                   <OpenVsClosed
                     streamKey={stream.key}
