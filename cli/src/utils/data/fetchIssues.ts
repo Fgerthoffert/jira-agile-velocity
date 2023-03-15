@@ -50,7 +50,7 @@ const fetchIssues = async (
         jiraConfig.fields.points +
         ',' +
         jiraConfig.fields.originalPoints +
-        ',issuetype,assignee,created',
+        ',issuetype,assignee,created,priority',
     );
     const issueFileStream = fs.createWriteStream(initiativesCache, {
       flags: 'w',

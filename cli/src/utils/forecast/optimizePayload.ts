@@ -17,7 +17,7 @@ const simplifyIssue = (issue: any) => {
     key: issue.key,
     summary: issue.fields.summary,
     priority:
-      issue.fields.priority != undefined && issue.fields.priority !== null
+      issue.fields.priority !== undefined && issue.fields.priority !== null
         ? issue.fields.priority.name
         : '',
     created: issue.fields.created,
