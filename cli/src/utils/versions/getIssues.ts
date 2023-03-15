@@ -9,7 +9,7 @@ import * as fsNdjson from 'fs-ndjson';
 
 import { IJiraIssue, UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
-import { differenceInBusinessDays } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { getId } from '../misc/id';
 import { returnTicketsPoints } from '../misc/jiraUtils';
 
@@ -73,13 +73,13 @@ const getIssues = async (
 
         // Verify the release date is present
         if (version.releaseDate !== undefined) {
-          daysToRelease = differenceInBusinessDays(
+          daysToRelease = differenceInDays(
             new Date(version.releaseDate),
             new Date(issue.fields.created),
           );
           if (daysToRelease > 0) {
-            weeksToRelease = Math.round(daysToRelease / 5);
-            monthsToRelease = Math.round(daysToRelease / 21.74);
+            weeksToRelease = Math.round(daysToRelease / 7);
+            monthsToRelease = Math.round(daysToRelease / 30.437);
           } else {
             daysToRelease = undefined;
           }
@@ -87,13 +87,13 @@ const getIssues = async (
           issue.fields.resolutiondate !== undefined &&
           issue.fields.resolutiondate !== null
         ) {
-          daysToReleaseIfToday = differenceInBusinessDays(
+          daysToReleaseIfToday = differenceInDays(
             new Date(),
             new Date(issue.fields.created),
           );
           if (daysToReleaseIfToday > 0) {
-            weeksToReleaseIfToday = Math.round(daysToReleaseIfToday / 5);
-            monthsToReleaseIfToday = Math.round(daysToReleaseIfToday / 21.74);
+            weeksToReleaseIfToday = Math.round(daysToReleaseIfToday / 7);
+            monthsToReleaseIfToday = Math.round(daysToReleaseIfToday / 30.437);
           } else {
             daysToReleaseIfToday = undefined;
           }
@@ -102,13 +102,13 @@ const getIssues = async (
           issue.fields.resolutiondate !== undefined &&
           issue.fields.resolutiondate !== null
         ) {
-          daysToResolution = differenceInBusinessDays(
+          daysToResolution = differenceInDays(
             new Date(issue.fields.resolutiondate),
             new Date(issue.fields.created),
           );
           if (daysToResolution > 0) {
-            weeksToResolution = Math.round(daysToResolution / 5);
-            monthsToResolution = Math.round(daysToResolution / 21.74);
+            weeksToResolution = Math.round(daysToResolution / 7);
+            monthsToResolution = Math.round(daysToResolution / 30.437);
           } else {
             daysToResolution = undefined;
           }

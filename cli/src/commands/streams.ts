@@ -30,7 +30,7 @@ const trimIssue = (issue: IJiraIssue) => {
     key: issue.key,
     closedAt: issue.closedAt,
     points: issue.points,
-    openedForBusinessDays: issue.openedForBusinessDays,
+    openedForDays: issue.openedForDays,
     fields: {
       summary: issue.fields.summary,
       created: issue.fields.created,

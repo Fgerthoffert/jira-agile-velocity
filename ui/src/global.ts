@@ -42,7 +42,7 @@ export interface JiraIssue {
   key: string;
   closedAt: string; // new Date().toISOString() representation of the date the issue was closed
   points: number; // Number of points associated with the issue
-  openedForBusinessDays: string; // Number of business days the issue was opened for
+  openedForDays: string; // Number of days the issue was opened for
   // eslint-disable-next-line
   fiels: any; // Other Jira issue fields, using "any" for the time being
 }

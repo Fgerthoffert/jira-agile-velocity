@@ -132,8 +132,8 @@ const Resolution: FC<any> = ({
             );
             return monthIssues.length;
           }),
-          backgroundColor: toMaterialStyle(r, 200).backgroundColor,
-          borderColor: toMaterialStyle(r, 200).backgroundColor,
+          backgroundColor: toMaterialStyle(`${r}_tre`, 200).backgroundColor,
+          borderColor: toMaterialStyle(`${r}_tre`, 200).backgroundColor,
         };
       }),
     ],

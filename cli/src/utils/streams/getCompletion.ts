@@ -10,7 +10,7 @@ import * as fsNdjson from 'fs-ndjson';
 import { IJiraIssue, UserConfigTeam, UserConfigJira } from '../../global';
 import jiraSearchIssues from '../jira/searchIssues';
 import { formatDate, getDaysBetweenDates } from '../misc/dateUtils';
-import { differenceInBusinessDays, startOfDay } from 'date-fns';
+import { differenceInDays, startOfDay } from 'date-fns';
 import { getTeamId } from '../misc/teamUtils';
 import { getId } from '../misc/id';
 import { returnTicketsPoints } from '../misc/jiraUtils';
@@ -116,14 +116,14 @@ const getCompletion = async (
         for (const issue of uniqueIssuesJira) {
           // Adding a closedAt object to record the date at which the issue was actually closed
           // Attaching points directly to the issues object to avoid having to bring jira-field config specific elements to the UI
-          const openedForDays = differenceInBusinessDays(
+          const openedForDays = differenceInDays(
             new Date(scanDay.date),
             new Date(issue.fields.created),
           );
           const updatedIssue = {
             ...issue,
             closedAt: new Date(scanDay.date).toISOString(),
-            openedForBusinessDays: openedForDays < 0 ? 0 : openedForDays,
+            openedForDays: openedForDays < 0 ? 0 : openedForDays,
             points: returnTicketsPoints(issue, jiraConfig),
           };
 

@@ -103,7 +103,7 @@ const MeanTimeToResolution: FC<any> = ({
             .filter((i: any) =>
               positiveResolutions.includes(i.fields.resolution),
             )
-            .map((i: any) => i.openedForBusinessDays);
+            .map((i: any) => i.openedForDays);
           return monthIssues.length === 0
             ? null
             : Math.round(mean(monthIssues));
@@ -120,7 +120,7 @@ const MeanTimeToResolution: FC<any> = ({
             .filter((i: any) =>
               negativeResolutions.includes(i.fields.resolution),
             )
-            .map((i: any) => i.openedForBusinessDays);
+            .map((i: any) => i.openedForDays);
           return monthIssues.length === 0
             ? null
             : Math.round(mean(monthIssues));
@@ -133,7 +133,7 @@ const MeanTimeToResolution: FC<any> = ({
         type: 'line' as const,
         label: 'Overall MMTR',
         data: monthsFilled.map((m: any) => {
-          const monthIssues = m.issues.map((i: any) => i.openedForBusinessDays);
+          const monthIssues = m.issues.map((i: any) => i.openedForDays);
           return monthIssues.length === 0
             ? null
             : Math.round(mean(monthIssues));
@@ -159,7 +159,7 @@ const MeanTimeToResolution: FC<any> = ({
       y: {
         title: {
           display: true,
-          text: 'Mean time to resolution (business days)',
+          text: 'Mean time to resolution (days)',
         },
       },
     },

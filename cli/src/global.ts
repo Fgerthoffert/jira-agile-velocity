@@ -68,7 +68,7 @@ export interface IJiraIssue {
   fields: any;
   points: number;
   jql: string; // JQL Query used to fetch the issue
-  openedForBusinessDays: number;
+  openedForDays: number;
   daysToRelease?: number;
   weeksToRelease?: number;
   monthsToRelease?: number;
