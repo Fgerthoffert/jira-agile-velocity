@@ -112,12 +112,7 @@ const OpenVsClosed: FC<any> = ({
         monthData.cumulative.opened =
           acc[idx - 1].cumulative.opened + openedIssues.length;
       }
-      console.log(idx);
-      console.log(monthData.monthStart);
-      console.log(monthData.cumulative.opened);
-      console.log(monthData.cumulative.closed);
-      console.log(monthData.cumulative.opened - monthData.cumulative.closed);
-      console.log('----');
+
       // if (idx > 0) {
       //   // We need to handle issues that were closed during the month
       //   // but that were not part of the backlog (older issues).
@@ -255,8 +250,6 @@ const OpenVsClosed: FC<any> = ({
       // },
     ],
   };
-
-  console.log(monthsFilled);
 
   const options = {
     plugins: {

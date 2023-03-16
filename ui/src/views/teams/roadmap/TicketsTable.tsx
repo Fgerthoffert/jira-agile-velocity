@@ -67,7 +67,6 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
       valueGetter: (params: GridValueGetterParams) => params.row.status.name,
     },
   ];
-  console.log(issues);
   return (
     <div style={{ height: 800, width: '100%' }}>
       <DataGrid
