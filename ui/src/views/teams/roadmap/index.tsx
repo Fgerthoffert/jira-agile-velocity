@@ -64,11 +64,17 @@ const Roadmap = () => {
                   />
                   <Typography component="p">
                     The lines represent an arbitrary evaluation of the outcome,
-                    either positive (using resolutions:{' '}
-                    {positiveResolutions.toString()}) or negative (using
-                    resolutions: {negativeResolutions.toString()}). Tickets with
-                    the following resolutions are ignored:{' '}
-                    {ignoreResolutions.toString()}
+                    either{' '}
+                    {positiveResolutions.length > 0
+                      ? `positive (using resolutions: ${positiveResolutions.toString()})`
+                      : ''}
+                    {negativeResolutions.length > 0
+                      ? `, negative (using resolutions: ${negativeResolutions.toString()})`
+                      : ''}
+                    {ignoreResolutions.length > 0
+                      ? `. Tickets with the
+                      following resolutions are ignored: ${ignoreResolutions.toString()}`
+                      : ''}
                   </Typography>
                 </Paper>
               </Grid>

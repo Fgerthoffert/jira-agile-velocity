@@ -92,43 +92,40 @@ const MeanTimeToResolution: FC<any> = ({
 
   const labels = monthsFilled.map((m: any) => format(m.monthStart, 'LLL yyyy'));
 
+  const datasets = [];
+  if (positiveResolutions.length > 0) {
+    datasets.push({
+      type: 'line' as const,
+      label: 'Positive Outcome',
+      data: monthsFilled.map((m: any) => {
+        const monthIssues = m.issues
+          .filter((i: any) => positiveResolutions.includes(i.fields.resolution))
+          .map((i: any) => i.openedForDays);
+        return monthIssues.length === 0 ? null : Math.round(mean(monthIssues));
+      }),
+      backgroundColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
+      borderColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
+    });
+  }
+  if (negativeResolutions.length > 0) {
+    datasets.push({
+      type: 'line' as const,
+      label: 'Negative Outcome',
+      data: monthsFilled.map((m: any) => {
+        const monthIssues = m.issues
+          .filter((i: any) => negativeResolutions.includes(i.fields.resolution))
+          .map((i: any) => i.openedForDays);
+        return monthIssues.length === 0 ? null : Math.round(mean(monthIssues));
+      }),
+      backgroundColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
+      borderColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
+    });
+  }
+
   const chartData = {
     labels,
     datasets: [
-      {
-        type: 'line' as const,
-        label: 'Positive Outcome',
-        data: monthsFilled.map((m: any) => {
-          const monthIssues = m.issues
-            .filter((i: any) =>
-              positiveResolutions.includes(i.fields.resolution),
-            )
-            .map((i: any) => i.openedForDays);
-          return monthIssues.length === 0
-            ? null
-            : Math.round(mean(monthIssues));
-        }),
-        backgroundColor: toMaterialStyle('Positive Outcome', 200)
-          .backgroundColor,
-        borderColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
-      },
-      {
-        type: 'line' as const,
-        label: 'Negative Outcome',
-        data: monthsFilled.map((m: any) => {
-          const monthIssues = m.issues
-            .filter((i: any) =>
-              negativeResolutions.includes(i.fields.resolution),
-            )
-            .map((i: any) => i.openedForDays);
-          return monthIssues.length === 0
-            ? null
-            : Math.round(mean(monthIssues));
-        }),
-        backgroundColor: toMaterialStyle('Negative Outcome', 200)
-          .backgroundColor,
-        borderColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
-      },
+      ...datasets,
       {
         type: 'line' as const,
         label: 'Overall MMTR',
