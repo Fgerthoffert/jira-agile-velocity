@@ -189,6 +189,7 @@ export const global: Global = {
             accessToken,
             authUser: user,
           });
+          this.refreshTeams();
         } else {
           this.setCallbackState({
             loggedIn: isLoggedIn,
