@@ -55,20 +55,20 @@ const MttrTable: FC<Props> = ({ months, jiraHost }) => {
         <TableRow>
           <TableCell align="center" colSpan={3}></TableCell>
           <TableCell align="center" colSpan={7}>
-            Quantiles
+            Quantiles - MTTR (issues count)
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell style={{ width: 150 }}>Month</TableCell>
-          <TableCell style={{ width: 100 }}>Issues #</TableCell>
-          <TableCell style={{ width: 100 }}>Points</TableCell>
-          <TableCell style={{ width: 150 }}>Min</TableCell>
-          <TableCell style={{ width: 150 }}>Max</TableCell>
-          <TableCell style={{ width: 150 }}>25%</TableCell>
-          <TableCell style={{ width: 150 }}>50%</TableCell>
-          <TableCell style={{ width: 150 }}>75%</TableCell>
-          <TableCell style={{ width: 150 }}>90%</TableCell>
-          <TableCell style={{ width: 150 }}>95%</TableCell>
+          <TableCell>Month</TableCell>
+          <TableCell>Issues #</TableCell>
+          <TableCell>Points</TableCell>
+          <TableCell>Min</TableCell>
+          <TableCell>Max</TableCell>
+          <TableCell>25%</TableCell>
+          <TableCell>50%</TableCell>
+          <TableCell>75%</TableCell>
+          <TableCell>90%</TableCell>
+          <TableCell>95%</TableCell>
           <TableCell></TableCell>
         </TableRow>
       </TableHead>

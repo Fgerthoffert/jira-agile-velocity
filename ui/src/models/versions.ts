@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as log from 'loglevel';
 import axios from 'axios';
+import { startOfMonth, sub } from 'date-fns';
+import { min, max, quantile } from 'simple-statistics';
 
 // import { CompletionStream, CompletionDay, JiraIssue } from '../global';
 
@@ -52,11 +54,237 @@ export const processRestPayload = (payload: any, callback: any) => {
   callback(coreData);
 };
 
+const getMonthsBetweenDates = (startMonth: Date, endMonth: Date) => {
+  const months: Array<Date> = [];
+  const currentDate = startMonth;
+  while (currentDate <= endMonth) {
+    if (
+      !months
+        .map((m) => m.getTime())
+        .includes(startOfMonth(new Date(currentDate)).getTime())
+    ) {
+      months.push(startOfMonth(new Date(currentDate)));
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return months;
+};
+
+export const generateReleaseMonthsWithMovingAverage = (
+  monthsToChart: number,
+  rollingWindow: number,
+  versions: any,
+) => {
+  const chartStartDate = sub(new Date(), { months: monthsToChart });
+  const filteredVersions = versions.filter(
+    (v: any) => new Date(v.releaseDate).getTime() > chartStartDate.getTime(),
+  );
+
+  // Look for the first and last month
+  let startMonth = new Date();
+  for (const v of filteredVersions) {
+    if (new Date(v.releaseDate) < startMonth) {
+      startMonth = startOfMonth(new Date(v.releaseDate));
+    }
+  }
+  const months = getMonthsBetweenDates(startMonth, startOfMonth(new Date()));
+
+  // Create a array of issues delivered for each month
+  const monthsWithIssues = months.reduce((acc: Array<any>, m: Date) => {
+    const releases = filteredVersions.filter(
+      (v: any) =>
+        m.getTime() === startOfMonth(new Date(v.releaseDate)).getTime(),
+    );
+    const issues = [];
+    for (const r of releases) {
+      for (const i of r.issues) {
+        issues.push({ ...i, release: r });
+      }
+    }
+    acc.push({
+      monthStart: m,
+      issues: issues,
+    });
+    return acc;
+  }, []);
+
+  // Create rolling average array
+  const monthsMovingAverage = monthsWithIssues.reduce(
+    (acc: Array<any>, month: any, idx: number) => {
+      const movingIssues: Array<any> = [];
+      // Push issues for the current month
+      for (let i = 0; i < rollingWindow; i++) {
+        if (idx - i >= 0) {
+          movingIssues.push(...monthsWithIssues[idx - i].issues);
+        }
+      }
+      const stats: any = {
+        rolling: {
+          monthsToRelease: {
+            datapoints: movingIssues
+              .filter(
+                (i) => i.daysToRelease >= 0 && i.monthsToRelease !== undefined,
+              ) // Filter negatives numbers (if any)
+              .map((i) => i.monthsToRelease),
+            quantiles: {
+              min: { value: 'N/A', issues: [] },
+              max: { value: 'N/A', issues: [] },
+              25: { value: 'N/A', issues: [] },
+              50: { value: 'N/A', issues: [] },
+              75: { value: 'N/A', issues: [] },
+              90: { value: 'N/A', issues: [] },
+              95: { value: 'N/A', issues: [] },
+            },
+          },
+        },
+        current: {
+          monthsToRelease: {
+            datapoints: month.issues
+              .filter(
+                (i: any) =>
+                  i.daysToRelease >= 0 && i.monthsToRelease !== undefined,
+              ) // Filter negatives numbers (if any)
+              .map((i: any) => i.monthsToRelease),
+            quantiles: {
+              min: { value: 'N/A', issues: [] },
+              max: { value: 'N/A', issues: [] },
+              25: { value: 'N/A', issues: [] },
+              50: { value: 'N/A', issues: [] },
+              75: { value: 'N/A', issues: [] },
+              90: { value: 'N/A', issues: [] },
+              95: { value: 'N/A', issues: [] },
+            },
+          },
+        },
+      };
+      if (stats.rolling.monthsToRelease.datapoints.length > 0) {
+        stats.rolling.monthsToRelease.quantiles.min.value = min(
+          stats.rolling.monthsToRelease.datapoints,
+        );
+        stats.rolling.monthsToRelease.quantiles.max.value = max(
+          stats.rolling.monthsToRelease.datapoints,
+        );
+        stats.rolling.monthsToRelease.quantiles[25].value = quantile(
+          stats.rolling.monthsToRelease.datapoints,
+          0.25,
+        );
+        stats.rolling.monthsToRelease.quantiles[50].value = quantile(
+          stats.rolling.monthsToRelease.datapoints,
+          0.5,
+        );
+        stats.rolling.monthsToRelease.quantiles[75].value = quantile(
+          stats.rolling.monthsToRelease.datapoints,
+          0.75,
+        );
+        stats.rolling.monthsToRelease.quantiles[90].value = quantile(
+          stats.rolling.monthsToRelease.datapoints,
+          0.9,
+        );
+        stats.rolling.monthsToRelease.quantiles[95].value = quantile(
+          stats.rolling.monthsToRelease.datapoints,
+          0.95,
+        );
+        stats.rolling.monthsToRelease.quantiles.min.issues =
+          movingIssues.filter(
+            (i) =>
+              i.monthsToRelease ===
+              stats.rolling.monthsToRelease.quantiles.min.value,
+          );
+        stats.rolling.monthsToRelease.quantiles.max.issues =
+          movingIssues.filter(
+            (i) =>
+              i.monthsToRelease ===
+              stats.rolling.monthsToRelease.quantiles.max.value,
+          );
+      }
+      if (stats.current.monthsToRelease.datapoints.length > 0) {
+        stats.current.monthsToRelease.quantiles.min.value = min(
+          stats.current.monthsToRelease.datapoints,
+        );
+        stats.current.monthsToRelease.quantiles.max.value = max(
+          stats.current.monthsToRelease.datapoints,
+        );
+        stats.current.monthsToRelease.quantiles[25].value = quantile(
+          stats.current.monthsToRelease.datapoints,
+          0.25,
+        );
+        stats.current.monthsToRelease.quantiles[50].value = quantile(
+          stats.current.monthsToRelease.datapoints,
+          0.5,
+        );
+        stats.current.monthsToRelease.quantiles[75].value = quantile(
+          stats.current.monthsToRelease.datapoints,
+          0.75,
+        );
+        stats.current.monthsToRelease.quantiles[90].value = quantile(
+          stats.current.monthsToRelease.datapoints,
+          0.9,
+        );
+        stats.current.monthsToRelease.quantiles[95].value = quantile(
+          stats.current.monthsToRelease.datapoints,
+          0.95,
+        );
+        stats.current.monthsToRelease.quantiles.min.issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease ===
+              stats.current.monthsToRelease.quantiles.min.value,
+          );
+        stats.current.monthsToRelease.quantiles.max.issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease ===
+              stats.current.monthsToRelease.quantiles.max.value,
+          );
+        stats.current.monthsToRelease.quantiles[25].issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease <=
+              stats.current.monthsToRelease.quantiles[25].value,
+          );
+        stats.current.monthsToRelease.quantiles[50].issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease <=
+              stats.current.monthsToRelease.quantiles[50].value,
+          );
+        stats.current.monthsToRelease.quantiles[75].issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease <=
+              stats.current.monthsToRelease.quantiles[75].value,
+          );
+        stats.current.monthsToRelease.quantiles[90].issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease <=
+              stats.current.monthsToRelease.quantiles[90].value,
+          );
+        stats.current.monthsToRelease.quantiles[95].issues =
+          month.issues.filter(
+            (i: any) =>
+              i.monthsToRelease <=
+              stats.current.monthsToRelease.quantiles[95].value,
+          );
+      }
+      acc.push({
+        ...month,
+        movingIssues: movingIssues,
+        stats: stats,
+      });
+      return acc;
+    },
+    [],
+  );
+  return monthsMovingAverage;
+};
+
 export const versions: Versions = {
   state: {
     loading: false,
     rawVersions: [],
     versions: [],
+    monthsReleases: [],
     filterName: '',
     filterLabel: '',
     filterProjectKey: '',
@@ -75,6 +303,9 @@ export const versions: Versions = {
   reducers: {
     setVersions(state: any, payload: any) {
       return { ...state, versions: payload };
+    },
+    setMonthsReleases(state: any, payload: any) {
+      return { ...state, monthsReleases: payload };
     },
     setRawVersions(state: any, payload: any) {
       return { ...state, rawVersions: payload };
@@ -162,6 +393,8 @@ export const versions: Versions = {
         logger.disableAll();
       }
       const setVersions = this.setVersions;
+      const setMonthsReleases = this.setMonthsReleases;
+
       logger.info('Refreshing filters');
       // Filters are applied in this order: Release Name, Project, Label
 
@@ -244,6 +477,16 @@ export const versions: Versions = {
         '[Versions]: Versions resulting of the filters are: ',
         labelFiltered,
       );
+      const monthsWithMovingAverage = generateReleaseMonthsWithMovingAverage(
+        rootState.versions.monthsToChart,
+        rootState.versions.rollingWindow,
+        filterEmptyVersions,
+      );
+      console.log(
+        '[Versions]: MTTR generated for the versions are: ',
+        monthsWithMovingAverage,
+      );
+      setMonthsReleases(monthsWithMovingAverage);
       setVersions(filterEmptyVersions);
     },
 

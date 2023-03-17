@@ -7,12 +7,14 @@ import Typography from '@mui/material/Typography';
 import { RootState, Dispatch } from '../../store';
 
 import IssuesModal from './issuesModal';
-import Schedule from './schedule';
-import TimeToRelease from './timeToRelease';
+import ReleaseScheduleChart from './releaseScheduleChart';
 import ReleasePipeline from './releasePipeline';
 import DataStatus from './DataStatus';
 import Filters from './filters';
 import DeliveredReleases from './deliveredReleased';
+import MTTRDistributionChart from './MTTRDistributionChart';
+import MTTRQuantileChart from './MTTRQuantileChart';
+import MTTRQuantileTable from './MTTRQuantileTable';
 
 const Releases = () => {
   const dispatch = useDispatch<Dispatch>();
@@ -46,9 +48,6 @@ const Releases = () => {
           <Filters />
         </Grid>
         <Grid item>
-          <TimeToRelease />
-        </Grid>
-        <Grid item>
           <Grid
             container
             direction="row"
@@ -56,21 +55,25 @@ const Releases = () => {
             alignItems="stretch"
             spacing={3}
           >
-            <Grid item xs={5}>
-              <DeliveredReleases />
+            <Grid item xs={4}>
+              <ReleaseScheduleChart />
             </Grid>
-            <Grid item xs={7}>
-              <ReleasePipeline />
+            <Grid item xs={4}>
+              <MTTRQuantileChart />
+            </Grid>
+            <Grid item xs={4}>
+              <MTTRDistributionChart />
             </Grid>
           </Grid>
-          <Typography variant="caption">
-            Note: In most cases, data inconsistency is related to release dates
-            missing in Jira (version marked as released, but without release
-            date provided). Begin by fixing the inconsistencies in Jira.
-          </Typography>
         </Grid>
         <Grid item>
-          <Schedule />
+          <MTTRQuantileTable />
+        </Grid>
+        <Grid item>
+          <DeliveredReleases />
+        </Grid>
+        <Grid item>
+          <ReleasePipeline />
         </Grid>
       </Grid>
     </>

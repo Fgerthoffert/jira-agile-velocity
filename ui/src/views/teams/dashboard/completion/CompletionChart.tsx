@@ -14,7 +14,11 @@ import {
 import { Chart, getDatasetAtEvent, getElementAtEvent } from 'react-chartjs-2';
 import { format } from 'date-fns';
 import toMaterialStyle from 'material-color-hash';
-import { JiraIssue } from '../../../global';
+import {
+  JiraIssue,
+  CompletionStream,
+  CompletionWeek,
+} from '../../../../global';
 
 ChartJS.register(
   LinearScale,
@@ -26,23 +30,61 @@ ChartJS.register(
   Tooltip,
 );
 
-const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
-  const labels = completionStreams[0].weeks.map((w: any) =>
+interface Props {
+  completionStreams: Array<CompletionStream>;
+  metric: string;
+  jiraHost: string;
+}
+
+interface ChartDataset {
+  type?: string;
+  label: string;
+  data: Array<number>;
+  borderWidth?: number;
+  borderColor?: string;
+  backgroundColor: string;
+  stack: string;
+}
+
+const CompletionChart: FC<Props> = ({
+  completionStreams,
+  metric,
+  jiraHost,
+}) => {
+  const labels = completionStreams[0].weeks.map((w: CompletionWeek) =>
     format(w.firstDay, 'LLL do'),
   );
 
-  const datasets = completionStreams.map((s: any) => {
+  const datasets: Array<any> = completionStreams.map((s: CompletionStream) => {
     return {
       label: s.name,
-      data: s.weeks.map(
-        (w: any) => Math.round(w.metrics[metric].distribution * 10) / 10,
-      ),
+      data: s.weeks.map((w: CompletionWeek) => {
+        if (metric === 'points') {
+          return w.metrics.points.count;
+        }
+        return w.metrics.issues.count;
+      }),
       backgroundColor: toMaterialStyle(s.name, 200).backgroundColor,
-      barPercentage: 1,
-      categoryPercentage: 1,
       stack: 'Stack 0',
     };
   });
+
+  if (completionStreams.length > 0) {
+    datasets.unshift({
+      type: 'line' as const,
+      label: 'Velocity (All)',
+      borderWidth: 2,
+      data: completionStreams[0].weeks.map((w: CompletionWeek) => {
+        if (metric === 'points') {
+          return w.metrics.points.totalStreams;
+        }
+        return w.metrics.issues.totalStreams;
+      }),
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgb(255, 99, 132)',
+      stack: 'Stack 1',
+    });
+  }
 
   const data = {
     labels,
@@ -56,10 +98,10 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
       title: {
         display: true,
       },
-      tooltip: {
-        callbacks: {
-          label: function (context: any) {
-            return `${context.dataset.label}: ${context.parsed.y} %`;
+      legend: {
+        labels: {
+          filter: (item: { text: string }) => {
+            return item.text != 'Velocity (All)';
           },
         },
       },
@@ -71,10 +113,9 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
       },
       y: {
         stacked: true,
-        max: 100,
         title: {
           display: true,
-          text: 'Distribution (%)',
+          text: metric,
         },
       },
     },
@@ -93,7 +134,7 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
     const datasetIndex = fullDataset[0].datasetIndex;
     const datasetName = data.datasets[datasetIndex].label;
     const clickedDataset = completionStreams.find(
-      (s: any) => s.name === datasetName,
+      (s: CompletionStream) => s.name === datasetName,
     );
 
     // Get the label of the element clicked
@@ -102,17 +143,19 @@ const CompletionChart: FC<any> = ({ completionStreams, metric, jiraHost }) => {
     const xAxis = data.labels[index];
 
     // From there, get the datapoint clicked
-    const clickedPoint = clickedDataset.weeks.find(
-      (w: any) => format(w.firstDay, 'LLL do') === xAxis,
-    );
-
-    const url =
-      jiraHost +
-      '/issues/?jql=key in (' +
-      clickedPoint.velocity.issues.map((i: JiraIssue) => i.key).join() +
-      ')';
-
-    window.open(url, '_blank');
+    if (clickedDataset !== undefined) {
+      const clickedPoint = clickedDataset.weeks.find(
+        (w: CompletionWeek) => format(w.firstDay, 'LLL do') === xAxis,
+      );
+      if (clickedPoint !== undefined) {
+        const url =
+          jiraHost +
+          '/issues/?jql=key in (' +
+          clickedPoint.completed.issues.map((i: JiraIssue) => i.key).join() +
+          ')';
+        window.open(url, '_blank');
+      }
+    }
   };
 
   return (

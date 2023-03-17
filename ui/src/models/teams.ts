@@ -345,6 +345,7 @@ export const teams: Teams = {
   state: {
     selectedTeam: null,
     selectedTeamId: null,
+    selectedTabId: 'dashboard',
     loading: false,
     loadingForecast: false,
     jiraHost: null,
@@ -368,6 +369,9 @@ export const teams: Teams = {
   reducers: {
     setTeams(state: any, payload: any) {
       return { ...state, teams: payload };
+    },
+    setSelectedTabId(state: any, payload: any) {
+      return { ...state, selectedTabId: payload };
     },
     setCoreData(state: any, payload: any) {
       return {
@@ -431,8 +435,10 @@ export const teams: Teams = {
         logger.disableAll();
       }
 
-      const { selectedTeamId } = teamObj;
+      const { selectedTeamId, selectedTabId } = teamObj;
       logger.info(`Initialized Team view (tean: ${selectedTeamId})`);
+
+      this.setSelectedTabId(selectedTabId);
 
       // this.loadCompletionFromCache(selectedTeamId);
       if (

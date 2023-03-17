@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import { RootState } from '../../../store';
+import { RootState } from '../../../../store';
 import RoadmapChart from './RoadmapChart';
 import RoadmapChartR from './RoadmapChartR';
 

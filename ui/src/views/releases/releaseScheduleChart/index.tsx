@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
@@ -91,49 +90,41 @@ const Schedule = () => {
 
   if (versions.length > 0) {
     return (
-      <Grid container spacing={1}>
-        <Grid item xs={4}>
-          <Paper>
-            <Typography variant="h5" component="h5">
-              Releases Schedule
-            </Typography>
-            <SimpleChart
-              data={{
-                labels,
-                datasets: [
-                  {
-                    label: 'Number of releases',
-                    data: monthsMovingAverage.map(
-                      (m: any) => m.releases.length,
-                    ),
-                    backgroundColor: toMaterialStyle('Number of releases', 200)
-                      .backgroundColor,
-                    borderColor: toMaterialStyle('Number of releases', 200)
-                      .backgroundColor,
-                  },
-                  {
-                    type: 'line' as const,
-                    label: `${rollingWindow} months rolling window`,
-                    borderWidth: 2,
-                    data: monthsMovingAverage.map((m: any) =>
-                      Math.round(m.movingReleases.length / rollingWindow),
-                    ),
-                    borderColor: toMaterialStyle('3 months Rolling window', 200)
-                      .backgroundColor,
-                    backgroundColor: toMaterialStyle(
-                      '3 months Rolling window',
-                      200,
-                    ).backgroundColor,
-                  },
-                ],
-              }}
-            />
-            <Typography component="p">
-              Number fo releases performed each month.
-            </Typography>
-          </Paper>
-        </Grid>
-      </Grid>
+      <Paper>
+        <Typography variant="h6" component="h6">
+          Releases Schedule
+        </Typography>
+        <SimpleChart
+          data={{
+            labels,
+            datasets: [
+              {
+                label: 'Number of releases',
+                data: monthsMovingAverage.map((m: any) => m.releases.length),
+                backgroundColor: toMaterialStyle('Number of releases', 200)
+                  .backgroundColor,
+                borderColor: toMaterialStyle('Number of releases', 200)
+                  .backgroundColor,
+              },
+              {
+                type: 'line' as const,
+                label: `${rollingWindow} months rolling window`,
+                borderWidth: 2,
+                data: monthsMovingAverage.map((m: any) =>
+                  Math.round(m.movingReleases.length / rollingWindow),
+                ),
+                borderColor: toMaterialStyle('3 months Rolling window', 200)
+                  .backgroundColor,
+                backgroundColor: toMaterialStyle('3 months Rolling window', 200)
+                  .backgroundColor,
+              },
+            ],
+          }}
+        />
+        <Typography component="p">
+          Number fo releases performed each month.
+        </Typography>
+      </Paper>
     );
   }
   return null;

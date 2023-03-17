@@ -229,7 +229,7 @@ const DeliveredReleases = () => {
     return (
       <Paper>
         <Typography variant="h5" component="h5">
-          Completed releases
+          Mean time to release for completed releases
         </Typography>
         <div style={{ height: 800, width: '100%' }}>
           <DataGrid

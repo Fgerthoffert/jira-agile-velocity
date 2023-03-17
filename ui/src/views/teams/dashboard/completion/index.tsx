@@ -5,19 +5,21 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import { RootState } from '../../../store';
+import { RootState } from '../../../../store';
 
 import CompletionChart from './CompletionChart';
 import VelocityChart from './VelocityChart';
 import DistributionChart from './DistributionChart';
 
-const Completion = () => {
+interface Props {
+  completionStreams: any;
+}
+
+const Completion: FC<Props> = ({ completionStreams }) => {
   const defaultPoints = useSelector(
     (state: RootState) => state.global.defaultPoints,
   );
-  const completionStreams = useSelector(
-    (state: RootState) => state.teams.completionStreams,
-  );
+
   const jiraHost = useSelector((state: RootState) => state.teams.jiraHost);
 
   const metric = !defaultPoints ? 'issues' : 'points';

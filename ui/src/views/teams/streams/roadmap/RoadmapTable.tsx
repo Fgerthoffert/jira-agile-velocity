@@ -17,9 +17,9 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-import { RootState, Dispatch } from '../../../store';
+import { RootState, Dispatch } from '../../../../store';
 
-import { getProgress, getBarVariant, getEstimateState } from '../utils';
+import { getProgress, getBarVariant, getEstimateState } from '../../utils';
 
 interface Props {
   defaultPoints: boolean;

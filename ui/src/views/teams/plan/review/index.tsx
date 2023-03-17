@@ -12,9 +12,9 @@ import TextField from '@mui/material/TextField';
 
 import { format } from 'date-fns';
 
-import { RootState, Dispatch } from '../../../store';
+import { RootState, Dispatch } from '../../../../store';
 
-import { CompletionStream } from '../../../global';
+import { CompletionStream } from '../../../../global';
 
 const Review = () => {
   const dispatch = useDispatch<Dispatch>();

@@ -2,18 +2,16 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import Grid from '@mui/material/Grid';
-
-import Completion from './completion';
-import CompletionDetails from './completionDetails';
-import Forecast from './forecast';
-import Roadmap from './roadmap';
-import Review from './review';
 import GraphModal from './graphModal';
 import DeleteModal from './deleteModal';
 
 import { RootState, Dispatch } from '../../store';
 import DataStatus from './DataStatus';
+import TeamTabs from './TeamTabs';
+
+import Dashboard from './dashboard';
+import Plan from './plan';
+import Streams from './streams';
 
 const Teams = () => {
   const dispatch = useDispatch<Dispatch>();
@@ -26,6 +24,9 @@ const Teams = () => {
   const setShowMenu = dispatch.global.setShowMenu;
 
   const params = useParams();
+  const selectedTabId = useSelector(
+    (state: RootState) => state.teams.selectedTabId,
+  );
 
   useEffect(() => {
     setPageTitle(`Team metrics: ${params.teamId}`);
@@ -34,7 +35,11 @@ const Teams = () => {
       (selectedTeamId === null || selectedTeamId !== params.teamId) &&
       (loggedIn === true || JSON.parse(window._env_.AUTH0_DISABLED) === true)
     ) {
-      initView({ selectedTeamId: params.teamId, tab: params.tab });
+      initView({
+        selectedTeamId: params.teamId,
+        tab: params.tab,
+        selectedTabId: 'dashboard',
+      });
     }
   });
 
@@ -42,30 +47,13 @@ const Teams = () => {
     <>
       <GraphModal />
       <DeleteModal />
-      <Grid
-        container
-        direction="column"
-        justifyContent="flex-start"
-        alignItems="stretch"
-        spacing={3}
-      >
-        <Grid item>
-          <DataStatus />
-        </Grid>
-        <Grid item>
-          <Completion />
-        </Grid>
-        <Grid item>
-          <Review />
-        </Grid>
-        <Grid item>
-          <CompletionDetails />
-        </Grid>
-        <Grid item>
-          <Forecast />
-        </Grid>
-        <Roadmap />
-      </Grid>
+      <TeamTabs />
+      <DataStatus />
+      {selectedTabId === 'dashboard' && <Dashboard />}
+      {selectedTabId === 'plan' && <Plan />}
+      {selectedTabId !== 'dashboard' && selectedTabId !== 'plan' && (
+        <Streams streamId={selectedTabId} />
+      )}
     </>
   );
 };

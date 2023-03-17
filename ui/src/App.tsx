@@ -40,6 +40,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="teams/:teamId" element={<Teams />} />
+            <Route path="teams/:teamId/:tabId" element={<Teams />} />
             <Route path="releases/" element={<Releases />} />
             <Route path="*" element={<Default />} />
           </Route>

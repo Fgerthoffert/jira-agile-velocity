@@ -34,7 +34,8 @@ const DataStatus = () => {
     >
       <Grid item>
         <span>
-          Last updated: {format(new Date(updatedAt), 'E yyyy/MM/dd, hh:mm a')}{' '}
+          Data last updated:{' '}
+          {format(new Date(updatedAt), 'E yyyy/MM/dd, hh:mm a')}{' '}
         </span>
       </Grid>
       <Grid item xs={12} sm container></Grid>

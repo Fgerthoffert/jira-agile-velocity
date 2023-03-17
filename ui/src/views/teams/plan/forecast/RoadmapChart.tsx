@@ -32,7 +32,7 @@ import toMaterialStyle from 'material-color-hash';
 
 // import { ResponsiveHeatMap, ComputedCell } from '@nivo/heatmap';
 
-import { Stream, StreamWeek, StreamItem } from '../../../global';
+import { Stream, StreamWeek, StreamItem } from '../../../../global';
 import { SpaOutlined } from '@mui/icons-material';
 
 interface DatasetObj {
