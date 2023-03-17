@@ -22,7 +22,7 @@ export default abstract class extends Command {
       excludeDays: ['1900-01-01'],
       resolutions: {
         positive: ['Done'],
-        negative: [],
+        negative: ['Incomplete'],
         ignore: ['Duplicate'],
       },
     },
