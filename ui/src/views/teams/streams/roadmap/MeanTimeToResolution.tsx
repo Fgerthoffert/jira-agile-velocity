@@ -108,7 +108,6 @@ const MeanTimeToResolution: FC<any> = ({
     },
     [],
   );
-  console.log(monthsRolling);
 
   const labels = monthsFilled.map((m: any) => format(m.monthStart, 'LLL yyyy'));
 
