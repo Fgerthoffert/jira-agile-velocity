@@ -106,6 +106,24 @@ const MeanTimeToResolution: FC<any> = ({
     [],
   );
 
+  const monthsCumulative = monthsFilled.reduce(
+    (acc: Array<any>, m: any, idx: number) => {
+      const movingIssues: Array<any> = [];
+      // Push issues for the current month
+      for (let i = 0; i < monthsFilled.length; i++) {
+        if (idx - i >= 0) {
+          movingIssues.push(...monthsFilled[idx - i].issues);
+        }
+      }
+      acc.push({
+        ...m,
+        issues: movingIssues,
+      });
+      return acc;
+    },
+    [],
+  );
+
   const labels = monthsFilled.map((m: any) => format(m.monthStart, 'LLL yyyy'));
 
   const datasets = [];
@@ -150,8 +168,20 @@ const MeanTimeToResolution: FC<any> = ({
             ? null
             : Math.round(mean(monthIssues));
         }),
-        backgroundColor: toMaterialStyle('Overall', 200).backgroundColor,
-        borderColor: toMaterialStyle('Overall', 200).backgroundColor,
+        backgroundColor: toMaterialStyle('Rolling', 200).backgroundColor,
+        borderColor: toMaterialStyle('Rolling', 200).backgroundColor,
+      },
+      {
+        type: 'line' as const,
+        label: 'Overall MMTR (Cumulative)',
+        data: monthsCumulative.map((m: any) => {
+          const monthIssues = m.issues.map((i: any) => i.openedForDays);
+          return monthIssues.length === 0
+            ? null
+            : Math.round(mean(monthIssues));
+        }),
+        backgroundColor: toMaterialStyle('Cumulative', 200).backgroundColor,
+        borderColor: toMaterialStyle('Cumulative', 200).backgroundColor,
       },
       {
         type: 'bar' as const,

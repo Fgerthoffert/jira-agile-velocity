@@ -97,9 +97,12 @@ const Roadmap: FC<Props> = ({ streamId }) => {
                       ignoreResolutions={ignoreResolutions}
                     />
                     <Typography component="p">
-                      Rolling average calculating using the mean time to
+                      Rolling average calculated using the mean time to
                       resolution of all tickets over a 3 months window (current
-                      month, month-1 and month-2)
+                      month, month-1 and month-2) <br />
+                      Cumulative average calculated using the mean time to
+                      resolutions of all issues closed during or before the
+                      current month.
                     </Typography>
                   </Paper>
                 </Grid>
