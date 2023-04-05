@@ -49,6 +49,7 @@ const MeanTimeToResolution: FC<any> = ({
   negativeResolutions,
   ignoreResolutions,
 }) => {
+  const rollingWindow = 3;
   const currentCompletionStream = completionStreams.find(
     (s: any) => s.key === streamKey,
   );
@@ -90,46 +91,77 @@ const MeanTimeToResolution: FC<any> = ({
     [],
   );
 
+  const monthsRolling = monthsFilled.reduce(
+    (acc: Array<any>, m: any, idx: number) => {
+      const movingIssues: Array<any> = [];
+      // Push issues for the current month
+      for (let i = 0; i < rollingWindow; i++) {
+        if (idx - i >= 0) {
+          movingIssues.push(...monthsFilled[idx - i].issues);
+        }
+      }
+      acc.push({
+        ...m,
+        issues: movingIssues,
+      });
+      return acc;
+    },
+    [],
+  );
+  console.log(monthsRolling);
+
   const labels = monthsFilled.map((m: any) => format(m.monthStart, 'LLL yyyy'));
 
-  const datasets = [];
-  if (positiveResolutions.length > 0) {
-    datasets.push({
-      type: 'line' as const,
-      label: 'Positive Outcome',
-      data: monthsFilled.map((m: any) => {
-        const monthIssues = m.issues
-          .filter((i: any) => positiveResolutions.includes(i.fields.resolution))
-          .map((i: any) => i.openedForDays);
-        return monthIssues.length === 0 ? null : Math.round(mean(monthIssues));
-      }),
-      backgroundColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
-      borderColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
-    });
-  }
-  if (negativeResolutions.length > 0) {
-    datasets.push({
-      type: 'line' as const,
-      label: 'Negative Outcome',
-      data: monthsFilled.map((m: any) => {
-        const monthIssues = m.issues
-          .filter((i: any) => negativeResolutions.includes(i.fields.resolution))
-          .map((i: any) => i.openedForDays);
-        return monthIssues.length === 0 ? null : Math.round(mean(monthIssues));
-      }),
-      backgroundColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
-      borderColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
-    });
-  }
+  // const datasets = [];
+  // if (positiveResolutions.length > 0) {
+  //   datasets.push({
+  //     type: 'line' as const,
+  //     label: 'Positive Outcome',
+  //     data: monthsFilled.map((m: any) => {
+  //       const monthIssues = m.issues
+  //         .filter((i: any) => positiveResolutions.includes(i.fields.resolution))
+  //         .map((i: any) => i.openedForDays);
+  //       return monthIssues.length === 0 ? null : Math.round(mean(monthIssues));
+  //     }),
+  //     backgroundColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
+  //     borderColor: toMaterialStyle('Positive Outcome', 200).backgroundColor,
+  //   });
+  // }
+  // if (negativeResolutions.length > 0) {
+  //   datasets.push({
+  //     type: 'line' as const,
+  //     label: 'Negative Outcome',
+  //     data: monthsFilled.map((m: any) => {
+  //       const monthIssues = m.issues
+  //         .filter((i: any) => negativeResolutions.includes(i.fields.resolution))
+  //         .map((i: any) => i.openedForDays);
+  //       return monthIssues.length === 0 ? null : Math.round(mean(monthIssues));
+  //     }),
+  //     backgroundColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
+  //     borderColor: toMaterialStyle('Negative Outcome', 200).backgroundColor,
+  //   });
+  // }
 
   const chartData = {
     labels,
     datasets: [
-      ...datasets,
+      // ...datasets,
       {
-        type: 'line' as const,
+        type: 'bar' as const,
         label: 'Overall MMTR',
         data: monthsFilled.map((m: any) => {
+          const monthIssues = m.issues.map((i: any) => i.openedForDays);
+          return monthIssues.length === 0
+            ? null
+            : Math.round(mean(monthIssues));
+        }),
+        backgroundColor: toMaterialStyle('Overall', 200).backgroundColor,
+        borderColor: toMaterialStyle('Overall', 200).backgroundColor,
+      },
+      {
+        type: 'line' as const,
+        label: 'Overall MMTR (Rolling)',
+        data: monthsRolling.map((m: any) => {
           const monthIssues = m.issues.map((i: any) => i.openedForDays);
           return monthIssues.length === 0
             ? null

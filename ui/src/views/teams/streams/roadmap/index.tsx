@@ -96,6 +96,11 @@ const Roadmap: FC<Props> = ({ streamId }) => {
                       negativeResolutions={negativeResolutions}
                       ignoreResolutions={ignoreResolutions}
                     />
+                    <Typography component="p">
+                      Rolling average calculating using the mean time to
+                      resolution of all tickets over a 3 months window (current
+                      month, month-1 and month-2)
+                    </Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={4}>

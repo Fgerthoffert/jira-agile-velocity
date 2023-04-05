@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import { format } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import IconButton from '@mui/material/IconButton';
@@ -38,6 +38,13 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
       width: 120,
       valueGetter: (params: GridValueGetterParams) =>
         format(new Date(params.row.created), 'yyyy-MM-dd'),
+    },
+    {
+      field: 'time',
+      headerName: 'Opened for (days)',
+      width: 150,
+      valueGetter: (params: GridValueGetterParams) =>
+        differenceInDays(new Date(), new Date(params.row.created)),
     },
     {
       field: 'assignee',
