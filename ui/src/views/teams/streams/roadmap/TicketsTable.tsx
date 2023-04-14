@@ -5,12 +5,13 @@ import { format, differenceInDays } from 'date-fns';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import IconButton from '@mui/material/IconButton';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
   if (issues.length === 0) {
     return null;
   }
-
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -32,6 +33,20 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
     },
     { field: 'key', headerName: 'Key', width: 100 },
     { field: 'summary', headerName: 'Summary', width: 500 },
+    {
+      field: 'labels',
+      headerName: 'Labels',
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <Stack direction="row" spacing={1}>
+            {params.value.map((label: string) => (
+              <Chip key={label} label={label} size="small" />
+            ))}
+          </Stack>
+        );
+      },
+    },
     {
       field: 'created',
       headerName: 'Created',
