@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import React, { FC, MouseEvent, useRef } from 'react';
 import { startOfMonth, format, sub } from 'date-fns';
 import toMaterialStyle from 'material-color-hash';
 import { mean } from 'simple-statistics';
@@ -14,7 +14,7 @@ import {
   Legend,
   Tooltip,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
+import { Chart, getDatasetAtEvent, getElementAtEvent } from 'react-chartjs-2';
 
 ChartJS.register(
   LinearScale,
@@ -48,6 +48,7 @@ const MeanTimeToResolution: FC<any> = ({
   positiveResolutions,
   negativeResolutions,
   ignoreResolutions,
+  jiraHost,
 }) => {
   const rollingWindow = 3;
   const currentCompletionStream = completionStreams.find(
@@ -165,7 +166,7 @@ const MeanTimeToResolution: FC<any> = ({
       // ...datasets,
       {
         type: 'bar' as const,
-        label: 'Overall MMTR',
+        label: 'MMTR (Monthly)',
         data: monthsFilled.map((m: any) => {
           const monthIssues = m.issues.map((i: any) => i.openedForDays);
           return monthIssues.length === 0
@@ -177,7 +178,7 @@ const MeanTimeToResolution: FC<any> = ({
       },
       {
         type: 'line' as const,
-        label: 'Overall MMTR (Rolling)',
+        label: 'MMTR (Rolling)',
         data: monthsRolling.map((m: any) => {
           const monthIssues = m.issues.map((i: any) => i.openedForDays);
           return monthIssues.length === 0
@@ -189,7 +190,7 @@ const MeanTimeToResolution: FC<any> = ({
       },
       {
         type: 'line' as const,
-        label: 'Overall MMTR (Cumulative)',
+        label: 'MMTR (Cumulative)',
         data: monthsCumulative.map((m: any) => {
           const monthIssues = m.issues.map((i: any) => i.openedForDays);
           return monthIssues.length === 0
@@ -223,9 +224,49 @@ const MeanTimeToResolution: FC<any> = ({
     },
   };
 
+  const onClick = (event: MouseEvent<HTMLCanvasElement>) => {
+    const { current: chart } = chartRef;
+
+    if (!chart) {
+      return;
+    }
+
+    // Get dataset name, and if it doesn't match a name
+    const fullDataset = getDatasetAtEvent(chart, event);
+    const datasetIndex = fullDataset[0].datasetIndex;
+    const datasetName = chartData.datasets[datasetIndex].label;
+
+    // Get the label of the element clicked
+    const elAtEvent = getElementAtEvent(chart, event);
+    const { index } = elAtEvent[0];
+    const xAxis = chartData.labels[index];
+
+    const clickedMonth = monthsFilled.find(
+      (m: any) => format(m.monthStart, 'LLL yyyy') === xAxis,
+    );
+
+    const clickedIssues = clickedMonth.issues;
+    if (clickedIssues.length > 0) {
+      const url =
+        jiraHost +
+        '/issues/?jql=key in (' +
+        clickedIssues.map((i: any) => i.key).join() +
+        ')';
+      window.open(url, '_blank');
+    }
+  };
+
   const chartRef = useRef<ChartJS>(null);
 
-  return <Chart ref={chartRef} type="bar" options={options} data={chartData} />;
+  return (
+    <Chart
+      ref={chartRef}
+      type="bar"
+      onClick={onClick}
+      options={options}
+      data={chartData}
+    />
+  );
 };
 
 export default MeanTimeToResolution;

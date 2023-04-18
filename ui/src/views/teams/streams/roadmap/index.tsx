@@ -95,6 +95,7 @@ const Roadmap: FC<Props> = ({ streamId }) => {
                       positiveResolutions={positiveResolutions}
                       negativeResolutions={negativeResolutions}
                       ignoreResolutions={ignoreResolutions}
+                      jiraHost={jiraHost}
                     />
                     <Typography component="p">
                       Rolling average calculated using the mean time to
