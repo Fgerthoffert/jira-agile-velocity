@@ -18,6 +18,7 @@ export default abstract class extends Command {
         originalPoints: 'customfield_11115',
         parentInitiative: 'customfield_11112',
         parentEpic: 'customfield_10314',
+        sprint: 'customfield_10313',
       },
       excludeDays: ['1900-01-01'],
       resolutions: {

@@ -253,6 +253,7 @@ export interface UserConfigJira {
     originalPoints: string;
     parentInitiative: string;
     parentEpic: string;
+    sprint: string;
   };
   excludeDays: Array<string>;
   resolutions: {

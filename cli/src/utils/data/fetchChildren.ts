@@ -51,7 +51,9 @@ const fetchChildren = async (
         ',issuetype,' +
         jiraConfig.fields.parentInitiative +
         ',' +
-        jiraConfig.fields.parentEpic,
+        jiraConfig.fields.parentEpic +
+        ',' +
+        jiraConfig.fields.sprint,
     );
     const issueFileStream = fs.createWriteStream(childrenCache, {
       flags: 'w',
@@ -63,8 +65,11 @@ const fetchChildren = async (
         // jql: 'issuekey in childIssuesOf(' + issueKey + ')',
         points: returnTicketsPoints(issue, jiraConfig),
       };
-      issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
-      issues.push(cleanIssue(updatedIssue));
+      issueFileStream.write(
+        JSON.stringify(cleanIssue(updatedIssue, jiraConfig.fields.sprint)) +
+          '\n',
+      );
+      issues.push(cleanIssue(updatedIssue, jiraConfig.fields.sprint));
     }
     issueFileStream.end();
   }

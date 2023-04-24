@@ -12,6 +12,7 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
   if (issues.length === 0) {
     return null;
   }
+  console.log(issues);
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -32,6 +33,13 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
       },
     },
     { field: 'key', headerName: 'Key', width: 100 },
+    {
+      field: 'assignee',
+      headerName: 'Assignee',
+      width: 120,
+      valueGetter: (params: GridValueGetterParams) =>
+        params.row.assignee === null ? 'n/a' : params.row.assignee.displayName,
+    },
     { field: 'summary', headerName: 'Summary', width: 500 },
     {
       field: 'labels',
@@ -48,6 +56,15 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
       },
     },
     {
+      field: 'sprint',
+      headerName: 'Sprint',
+      width: 200,
+      valueGetter: (params: GridValueGetterParams) =>
+        params.row.sprint === undefined || params.row.sprint === null
+          ? 'n/a'
+          : params.row.sprint.name,
+    },
+    {
       field: 'created',
       headerName: 'Created',
       width: 120,
@@ -60,13 +77,6 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
       width: 150,
       valueGetter: (params: GridValueGetterParams) =>
         differenceInDays(new Date(), new Date(params.row.created)),
-    },
-    {
-      field: 'assignee',
-      headerName: 'Assignee',
-      width: 120,
-      valueGetter: (params: GridValueGetterParams) =>
-        params.row.assignee === null ? 'n/a' : params.row.assignee.displayName,
     },
     {
       field: 'priority',

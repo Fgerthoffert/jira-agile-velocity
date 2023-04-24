@@ -25,7 +25,8 @@
     "lodash": "^4.17.15",
     "slack": "^11.0.2",
     "symbol-tree": "^3.2.4",
-    "tslib": "^1.11.0"
+    "tslib": "^1.11.0",
+    "xregexp": "^5.1.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",

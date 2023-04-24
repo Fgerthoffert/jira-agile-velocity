@@ -20,6 +20,10 @@ const simplifyIssue = (issue: any) => {
       issue.fields.labels !== undefined && issue.fields.labels !== null
         ? issue.fields.labels
         : [],
+    sprint:
+      issue.fields.sprint !== undefined && issue.fields.sprint !== null
+        ? issue.fields.sprint
+        : [],
     priority:
       issue.fields.priority !== undefined && issue.fields.priority !== null
         ? issue.fields.priority.name

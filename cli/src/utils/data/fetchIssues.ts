@@ -50,6 +50,8 @@ const fetchIssues = async (
         jiraConfig.fields.points +
         ',' +
         jiraConfig.fields.originalPoints +
+        ',' +
+        jiraConfig.fields.sprint +
         ',issuetype,assignee,created,priority,labels',
     );
     const issueFileStream = fs.createWriteStream(initiativesCache, {
@@ -62,8 +64,11 @@ const fetchIssues = async (
         jql: jql,
         points: returnTicketsPoints(issue, jiraConfig),
       };
-      issueFileStream.write(JSON.stringify(cleanIssue(updatedIssue)) + '\n');
-      issues.push(cleanIssue(updatedIssue));
+      issueFileStream.write(
+        JSON.stringify(cleanIssue(updatedIssue, jiraConfig.fields.sprint)) +
+          '\n',
+      );
+      issues.push(cleanIssue(updatedIssue, jiraConfig.fields.sprint));
     }
     issueFileStream.end();
   }
