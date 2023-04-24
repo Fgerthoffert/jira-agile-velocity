@@ -57,12 +57,18 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
     },
     {
       field: 'sprint',
-      headerName: 'Sprint',
+      headerName: 'Open Sprint',
       width: 200,
-      valueGetter: (params: GridValueGetterParams) =>
-        params.row.sprint === undefined || params.row.sprint === null
-          ? 'n/a'
-          : params.row.sprint.name,
+      valueGetter: (params: GridValueGetterParams) => {
+        const nonClosedSprints = params.row.sprint.filter(
+          (s: any) => s.state !== undefined && s.state !== 'CLOSED',
+        );
+        if (nonClosedSprints.length === 0) {
+          return 'n/a';
+        } else {
+          return nonClosedSprints[0].name;
+        }
+      },
     },
     {
       field: 'created',
