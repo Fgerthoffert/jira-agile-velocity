@@ -26,6 +26,8 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 
 import toMaterialStyle from 'material-color-hash';
@@ -110,10 +112,13 @@ const RoadmapChart: FC<any> = ({ streams, metric }) => {
     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
       <TableHead>
         <TableRow>
-          <TableCell rowSpan={2}>Activities</TableCell>
+          <TableCell rowSpan={2} colSpan={2}>
+            Activities
+          </TableCell>
+          <TableCell rowSpan={2}>Total</TableCell>
           {months.sort().map((m: any) => (
             <TableCell key={m.startOfMonth} colSpan={m.colSpan} align="center">
-              {format(new Date(m.startOfMonth), 'LLL')}
+              {format(new Date(m.startOfMonth), 'LLL yy')}
             </TableCell>
           ))}
         </TableRow>
@@ -132,7 +137,23 @@ const RoadmapChart: FC<any> = ({ streams, metric }) => {
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
           >
             <TableCell component="th" scope="row">
+              {i.link !== null && (
+                <IconButton
+                  aria-label="open-external"
+                  size="small"
+                  href={encodeURI(i.link)}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <OpenInNewIcon fontSize="small" />
+                </IconButton>
+              )}
+            </TableCell>
+            <TableCell component="th" scope="row">
               {i.name}
+            </TableCell>
+            <TableCell component="th" scope="row">
+              {i.total}
             </TableCell>
             {weeks.sort().map((weekStartTxt) => {
               let value = '';

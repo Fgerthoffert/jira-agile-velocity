@@ -64,7 +64,10 @@ export const getEmptyCalendar = (from: Date, to: Date) => {
 };
 
 // From completion data, format the streams with the actual velocity
-export const getCompletionStreams = (completionData: CompletionData) => {
+export const getCompletionStreams = (
+  completionData: CompletionData,
+  completionWindowMonths: number,
+) => {
   console.log('[Teams] Calculating Teams completion streams');
   const velocityWeeks = 4;
   const emptyCalendar = getEmptyCalendar(
@@ -80,7 +83,7 @@ export const getCompletionStreams = (completionData: CompletionData) => {
         };
       });
       const emptyCalendarSub = getEmptyCalendar(
-        sub(new Date(), { months: 3 }),
+        sub(new Date(), { months: completionWindowMonths }),
         new Date(),
       );
       return {
@@ -315,10 +318,14 @@ const formatForecastStreams = (
 export const processRestPayload = (
   payload: any,
   defaultPoints: boolean,
+  completionWindowMonths: number,
   callback: any,
 ) => {
   // Formats the streams
-  let completionStreams = getCompletionStreams(payload.completion);
+  let completionStreams = getCompletionStreams(
+    payload.completion,
+    completionWindowMonths,
+  );
   // Adds distribution
   completionStreams = getStreamsDistribution(completionStreams);
 
@@ -357,6 +364,7 @@ export const teams: Teams = {
       ignore: [],
     },
     completionStreams: [],
+    completionWindowMonths: 6,
     forecastStreams: [],
     simulatedStreams: [],
 
@@ -391,6 +399,9 @@ export const teams: Teams = {
     },
     setCompletionStreams(state: any, payload: any) {
       return { ...state, completionStreams: payload };
+    },
+    setCompletionWindowMonths(state: any, payload: any) {
+      return { ...state, completionWindowMonths: payload };
     },
     setForecastData(state: any, payload: any) {
       return { ...state, forecastData: payload };
@@ -468,6 +479,7 @@ export const teams: Teams = {
         processRestPayload(
           reactLocalStorage.getObject(`cache-completion-${teamId}`),
           rootState.global.defaultPoints,
+          rootState.global.completionWindowMonths,
           this.setCoreData,
         );
       }
@@ -504,6 +516,7 @@ export const teams: Teams = {
               processRestPayload(
                 response.data,
                 rootState.global.defaultPoints,
+                rootState.teams.completionWindowMonths,
                 setCoreData,
               );
               reactLocalStorage.setObject(

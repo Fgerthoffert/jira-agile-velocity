@@ -17,7 +17,12 @@ export const getId = (inputstring: string) => {
     .toLowerCase();
 };
 
-const formatCompletedStreams = (streams: any, metric: string) => {
+const formatCompletedStreams = (
+  streams: any,
+  metric: string,
+  windowMonths: number,
+  jiraHost: string,
+) => {
   return streams
     .reduce((acc: Array<any>, stream: any) => {
       if (stream.issues.length > 0) {
@@ -29,12 +34,26 @@ const formatCompletedStreams = (streams: any, metric: string) => {
             acc.push({
               key: `${stream.key}-${i.key}`,
               name: `${stream.name}: ${i.summary}`,
+              link: `${jiraHost}/browse/${i.key}`,
               weeks: i.weeks,
+              total: Math.round(
+                i.weeks
+                  .map((w: any) => w.metrics[metric].count)
+                  .reduce((acc: any, count: any) => acc + count, 0),
+              ),
             });
           }
         }
       } else {
-        acc.push(stream);
+        acc.push({
+          ...stream,
+          link: null,
+          total: Math.round(
+            stream.weeks
+              .map((w: any) => w.metrics[metric].count)
+              .reduce((acc: any, count: any) => acc + count, 0),
+          ),
+        });
       }
       return acc;
     }, [])
@@ -42,10 +61,11 @@ const formatCompletedStreams = (streams: any, metric: string) => {
       return {
         ...s,
         weeks: s.weeks.filter(
-          (w: any) => w.firstDay > sub(new Date(), { months: 6 }),
+          (w: any) => w.firstDay > sub(new Date(), { months: windowMonths }),
         ),
       };
-    });
+    })
+    .filter((s: any) => s.total > 0);
 };
 
 const CompletionDetails = () => {
@@ -55,13 +75,22 @@ const CompletionDetails = () => {
   const completionStreams = useSelector(
     (state: RootState) => state.teams.completionStreams,
   );
+  const jiraHost = useSelector((state: RootState) => state.teams.jiraHost);
+  const completionWindowMonths = useSelector(
+    (state: RootState) => state.teams.completionWindowMonths,
+  );
 
   if (completionStreams.length === 0) {
     return null;
   }
   const metric = !defaultPoints ? 'issues' : 'points';
 
-  const currentStreams = formatCompletedStreams(completionStreams, metric);
+  const currentStreams = formatCompletedStreams(
+    completionStreams,
+    metric,
+    completionWindowMonths,
+    jiraHost,
+  );
 
   return (
     <Paper>
@@ -69,7 +98,8 @@ const CompletionDetails = () => {
         Completion Details
       </Typography>
       <Typography component="p">
-        Number of {metric} completed each week over the past 6 months
+        Number of {metric} completed each week over the past{' '}
+        {completionWindowMonths} months
       </Typography>
       <Typography component="p" variant="subtitle2">
         === TEMPORARY VIEW ===
@@ -82,7 +112,11 @@ const CompletionDetails = () => {
         spacing={1}
       >
         <Grid item xs={12}>
-          <RoadmapChart streams={currentStreams} metric={metric} />
+          <RoadmapChart
+            streams={currentStreams}
+            metric={metric}
+            jiraHost={jiraHost}
+          />
         </Grid>
         {/* <Grid item xs={12}>
           <RoadmapChartR streams={currentStreams} metric={metric} />
