@@ -42,6 +42,10 @@ const simplifyIssue = (issue: any) => {
     points: issue.points,
     metrics: issue.metrics === undefined ? null : issue.metrics,
     assignee: simplifyAssignee(issue),
+    fixVersions:
+      issue.fields.fixVersions === undefined
+        ? []
+        : issue.fields.fixVersions.map((i: any) => i.name),
   };
 };
 

@@ -44,7 +44,7 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
     {
       field: 'labels',
       headerName: 'Labels',
-      width: 200,
+      width: 300,
       renderCell: (params) => {
         return (
           <Stack direction="row" spacing={1}>
@@ -68,6 +68,20 @@ const TicketsTable: FC<any> = ({ issues, jiraHost }) => {
         } else {
           return nonClosedSprints[0].name;
         }
+      },
+    },
+    {
+      field: 'fixVersions',
+      headerName: 'Fix Versions',
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <Stack direction="column" spacing={0} style={{ textAlign: 'left' }}>
+            {params.value.map((label: string) => (
+              <span key={label}>{label}</span>
+            ))}
+          </Stack>
+        );
       },
     },
     {
