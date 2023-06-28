@@ -5,6 +5,7 @@
     "no-await-in-loop": "off",
     "operator-assignment": "off",
     "unicorn/filename-case": "off",
-    "@typescript-eslint/interface-name-prefix": "off"
+    "@typescript-eslint/interface-name-prefix": "off",
+    "unicorn/no-abusive-eslint-disabl": "off"
   }
 }
