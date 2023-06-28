@@ -50,9 +50,9 @@ export const createInitiativeDetails = (
   const issueComments = initiative.jira.fields.comment.comments.filter(
     (c: any) => !c.body.includes('#NO-REPORT'),
   );
-
+  let reversedIssuesComments = [];
   if (issueComments.length > 0) {
-    var reversedIssuesComments = issueComments.slice().reverse();
+    reversedIssuesComments = issueComments.slice().reverse();
     initiativeDetails += `#### 📅 ${format(
       new Date(reversedIssuesComments[0].created),
       'LLLL dd, yyyy HH:mm',

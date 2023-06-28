@@ -1,4 +1,4 @@
-import { startOfWeek, add, isEqual, differenceInWeeks, sub } from 'date-fns';
+import { startOfWeek, add } from 'date-fns';
 
 import { JiraIssue } from '../../global';
 

@@ -1,9 +1,4 @@
-import {
-  CompletionData,
-  CompletionStream,
-  CompletionDay,
-  JiraIssue,
-} from '../../global';
+import { CompletionStream, JiraIssue } from '../../global';
 
 interface CompletionWeek {
   firstDay: Date;

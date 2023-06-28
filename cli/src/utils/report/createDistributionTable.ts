@@ -17,7 +17,7 @@ export const createDistributionTable = (teams: any, userConfig: UserConfig) => {
         .map(s => s.name)
         .join(' | ')} | \n`;
       distributionTable += `| --- | --- | --- | ${completionStreams
-        .map(s => '---')
+        .map(() => '---')
         .join(' | ')} | \n`;
     }
 

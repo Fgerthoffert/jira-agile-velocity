@@ -1,4 +1,4 @@
-import { startOfWeek, add, isEqual, differenceInWeeks, sub } from 'date-fns';
+import { startOfWeek, isEqual, differenceInWeeks, sub } from 'date-fns';
 
 import {
   CompletionData,

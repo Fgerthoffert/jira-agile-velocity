@@ -3,7 +3,7 @@ import { flags } from '@oclif/command';
 import * as fs from 'fs';
 import * as path from 'path';
 import { format } from 'date-fns';
-import { Octokit, App } from 'octokit';
+import { Octokit } from 'octokit';
 
 import Command from '../base';
 
