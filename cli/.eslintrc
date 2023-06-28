@@ -6,6 +6,7 @@
     "operator-assignment": "off",
     "unicorn/filename-case": "off",
     "@typescript-eslint/interface-name-prefix": "off",
-    "unicorn/no-abusive-eslint-disabl": "off"
+    "unicorn/no-abusive-eslint-disabl": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }
