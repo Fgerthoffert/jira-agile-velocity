@@ -19,6 +19,8 @@ export default abstract class extends Command {
         parentInitiative: 'customfield_11112',
         parentEpic: 'customfield_10314',
         sprint: 'customfield_10313',
+        deliveryConfidence: 'customfield_11810',
+        expectedDelivery: 'customfield_11811',
       },
       excludeDays: ['1900-01-01'],
       resolutions: {
@@ -26,6 +28,22 @@ export default abstract class extends Command {
         negative: ['Incomplete'],
         ignore: ['Duplicate'],
       },
+    },
+    report: {
+      github: {
+        token: 'YOUR_PERSONAL_TOKEN',
+        owner: 'fgerthoffert',
+        repository: 'jira-agile-velocity',
+        label: 'delivery-report',
+      },
+      initiatives: {
+        jql: 'labels = delivery-report',
+      },
+      releasePipeline: {
+        jql:
+          'type = Release AND (sprint in (futureSprints(), openSprints()) OR (status = closed and resolutiondate > startOfDay(-30))) ORDER BY status ASC, resolutiondate DESC',
+      },
+      distributionTeams: ['Team A', 'Team B'],
     },
     versions: {
       projectKeys: ['QA', 'BACKLOG'],

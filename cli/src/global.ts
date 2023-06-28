@@ -209,6 +209,21 @@ export interface ICalendarFinal {
 
 export interface UserConfig {
   jira: UserConfigJira;
+  report: {
+    github: {
+      token: string;
+      owner: string;
+      repository: string;
+      label: string;
+    };
+    initiatives: {
+      jql: string;
+    };
+    releasePipeline: {
+      jql: string;
+    };
+    distributionTeams: Array<string>;
+  };
   versions: {
     projectKeys: Array<string>;
     monthsToChart: number;
@@ -254,6 +269,8 @@ export interface UserConfigJira {
     parentInitiative: string;
     parentEpic: string;
     sprint: string;
+    deliveryConfidence: string;
+    expectedDelivery: string;
   };
   excludeDays: Array<string>;
   resolutions: {
@@ -305,4 +322,72 @@ export interface IssueObjChild {
     key: string;
     summary: string;
   };
+}
+
+export interface JiraIssue {
+  key: string;
+  closedAt: string; // new Date().toISOString() representation of the date the issue was closed
+  points: number; // Number of points associated with the issue
+  openedForDays: string; // Number of days the issue was opened for
+  // eslint-disable-next-line
+  fiels: any; // Other Jira issue fields, using "any" for the time being
+}
+
+export interface CompletionData {
+  name: string; // Team Name
+  from: string; // Date from which data collection started
+  excludeDays: Array<string>; // Array of days excluded from analysis
+  completion: Array<CompletionStream>;
+}
+
+export interface CompletionDay {
+  day: Date; // new Date().toISOString() representation of the date
+  issues: Array<JiraIssue>;
+}
+// A completion stream contains data and metrics about elements in the past
+export interface CompletionStream {
+  name: string; // Name of the completion stream
+  key: string; // Key of the stream, automatically generated from the name
+  jql: string; // JQL query used to fetch the completion data
+  childIssues: Array<IssueObjChild>;
+  days: Array<CompletionDay>;
+  childOf: string;
+  weeks: Array<CompletionWeek>;
+  issues: Array<CompletionIssues>;
+}
+
+export interface CompletionWeek {
+  firstDay: Date; // First day of the week
+  issues: Array<JiraIssue>;
+  completed: {
+    // Actual completion for the week
+    days: Array<CompletionDay>;
+    issues: Array<JiraIssue>;
+  };
+  velocity: {
+    // Window of days & issues used for calculating the velocity
+    days: Array<CompletionDay>;
+    issues: Array<JiraIssue>;
+  };
+  metrics: {
+    issues: {
+      count: number;
+      velocity: number;
+      totalStreams: number;
+      distribution: number;
+    };
+    points: {
+      count: number;
+      velocity: number;
+      totalStreams: number;
+      distribution: number;
+    };
+  };
+}
+
+export interface CompletionIssues {
+  key: string;
+  issues: Array<string>;
+  children: Array<string>;
+  weeks: Array<CompletionWeek>;
 }

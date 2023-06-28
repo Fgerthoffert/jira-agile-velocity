@@ -15,6 +15,7 @@ const crunchMetrics = (issuesTree: any, node: any) => {
       if (
         item.points === 0 &&
         issuesTree.hasChildren(item) === false &&
+        item.fields.issuetype.name !== 'Spike' &&
         item.fields.status.statusCategory.name !== 'Done'
       ) {
         acc.points.missing++;

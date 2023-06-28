@@ -146,7 +146,7 @@ jobs:
             cd cli && npm version $IMAGE_TAG
       - run:
           name: Build the typescript app
-          command: cd cli && tsc -b
+          command: cd cli && npx tsc -b
       - run:
           name: Generate the oclif manifest
           command: cd cli && oclif-dev manifest
