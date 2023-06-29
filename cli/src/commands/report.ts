@@ -42,7 +42,7 @@ export default class Report extends Command {
       '*all,-comments,labels,created,summary,status,issuetype,assignee,project,resolution,resolutiondate,fixVersion',
     );
     // For every single release, get the issues part of the release
-    let releaseTickets: any = [];
+    const releaseTickets: any = [];
     for (const release of releaseTicketsRaw) {
       const issues: any = [];
       if (
