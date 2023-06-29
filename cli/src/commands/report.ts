@@ -36,11 +36,35 @@ export default class Report extends Command {
 
     // Get data from Jira
     this.log('Getting Release pipeline issues from Jira');
-    const releaseTickets = await jiraSearchIssues(
+    const releaseTicketsRaw = await jiraSearchIssues(
       userConfig.jira,
       userConfig.report.releasePipeline.jql,
-      '*all,-comments,labels,created,summary,status,issuetype,assignee,project,resolution,resolutiondate',
+      '*all,-comments,labels,created,summary,status,issuetype,assignee,project,resolution,resolutiondate,fixVersion',
     );
+    // For every single release, get the issues part of the release
+    let releaseTickets: any = [];
+    for (const release of releaseTicketsRaw) {
+      const issues: any = [];
+      if (
+        release.fields.fixVersions !== undefined &&
+        release.fields.fixVersions.length > 0
+      ) {
+        const issuesJira = await jiraSearchIssues(
+          userConfig.jira,
+          `fixVersion = "${release.fields.fixVersions[0].name}"`,
+          '*all,-comments,labels,created,summary,status,issuetype,assignee,project,resolution,resolutiondate',
+        );
+        for (const issue of issuesJira) {
+          if (issue.key !== release.key) {
+            issues.push({
+              key: issue.key,
+              status: issue.fields.status,
+            });
+          }
+        }
+      }
+      releaseTickets.push({ ...release, issuesInRelease: issues });
+    }
 
     this.log('Getting initiatives from Jira');
     const initiativesSourceTickets = await jiraSearchIssues(
@@ -132,6 +156,7 @@ export default class Report extends Command {
         {
           owner: userConfig.report.github.owner,
           repo: userConfig.report.github.repository,
+          state: 'all',
           per_page: 100,
         },
       );
@@ -150,7 +175,7 @@ export default class Report extends Command {
           body: deliveryReport,
           labels: [userConfig.report.github.label],
         });
-      } else {
+      } else if (existingReportIssue.state === 'open') {
         // Update Issue
         await octokit.request(
           'PATCH /repos/{owner}/{repo}/issues/{issue_number}',
@@ -162,9 +187,14 @@ export default class Report extends Command {
             body: deliveryReport,
           },
         );
+        this.log(
+          `Updated GitHub Issue # ${existingReportIssue.number} (${existingReportIssue.html_url})`,
+        );
+      } else {
+        this.log(
+          `GitHub Issue # ${existingReportIssue.number} is closed, not updating it (${existingReportIssue.html_url}).`,
+        );
       }
     }
-
-    console.log(deliveryReport);
   }
 }

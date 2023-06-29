@@ -8,8 +8,8 @@ export const createReleasePipelineTable = (
   userConfig: UserConfig,
 ) => {
   let releaseTable = '';
-  releaseTable += `| Release | Status | Sprint | Released date | Ticket | \n`;
-  releaseTable += `| --- | --- | --- | --- | --- | \n`;
+  releaseTable += `| Release | Status | Sprint | Released date | Progress (Tkts) | Ticket | \n`;
+  releaseTable += `| --- | --- | --- | --- | --- | --- | \n`;
   for (let releaseTicket of releaseTickets) {
     releaseTicket = cleanIssue(releaseTicket, userConfig.jira.fields.sprint);
     const sprint =
@@ -31,8 +31,30 @@ export const createReleasePipelineTable = (
         'LLLL dd, yyyy',
       );
     }
+    const allIssues = releaseTicket.issuesInRelease;
+    const completedIssues = releaseTicket.issuesInRelease.filter(
+      (i: any) => i.status.statusCategory.name === 'Done',
+    );
+    let progessTktsPrct = 0;
+    if (completedIssues.length > 0) {
+      progessTktsPrct = Math.round(
+        (completedIssues.length * 100) / allIssues.length,
+      );
+    }
+    const progessTkts = `${progessTktsPrct}% ([${
+      completedIssues.length
+    }](${encodeURI(
+      `${userConfig.jira.host}/issues/?jql=key in (${completedIssues
+        .map((i: any) => i.key)
+        .join()})`,
+    )})/[${allIssues.length}](${encodeURI(
+      `${userConfig.jira.host}/issues/?jql=key in (${allIssues
+        .map((i: any) => i.key)
+        .join()})`,
+    )}))`;
+
     for (const fixVersion of fixVersions) {
-      releaseTable += `| ${fixVersion} | ${releaseTicket.fields.status.name} | ${sprint} | ${resolutionDate} | [${releaseTicket.key}](${userConfig.jira.host}/browse/${releaseTicket.key}) | \n`;
+      releaseTable += `| ${fixVersion} | ${releaseTicket.fields.status.name} | ${sprint} | ${resolutionDate} | ${progessTkts} | [${releaseTicket.key}](${userConfig.jira.host}/browse/${releaseTicket.key}) | \n`;
     }
   }
   releaseTable += `\n`;

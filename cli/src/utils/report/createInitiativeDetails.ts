@@ -64,8 +64,8 @@ export const createInitiativeDetails = (
 
   if (initiative.children !== undefined && initiative.children.length > 0) {
     initiativeDetails += `### Children  \n`;
-    initiativeDetails += `| Title | Progress (Pts) | Progress (Tkts) | Estimated (Tkts) | Ticket | \n`;
-    initiativeDetails += `| --- | --- | --- | --- | --- | \n`;
+    initiativeDetails += `| Title | Status | Progress (Pts) | Progress (Tkts) | Estimated (Tkts) | Ticket | \n`;
+    initiativeDetails += `| --- | --- | --- | --- | --- | --- | \n`;
 
     for (const initiativeChild of initiative.children) {
       let progessPtsPrct = 0;
@@ -86,8 +86,8 @@ export const createInitiativeDetails = (
       }
       const progessTkts = `${progessTktsPrct}% (${initiativeChild.metrics.issues.completed}/${initiativeChild.metrics.issues.total})`;
 
-      initiativeDetails += `| ${
-        initiativeChild.summary
+      initiativeDetails += `| ${initiativeChild.summary} | ${
+        initiativeChild.status.name
       } | ${progessPts} | ${progessTkts} | ${getEstimated(
         initiativeChild,
         userConfig,
