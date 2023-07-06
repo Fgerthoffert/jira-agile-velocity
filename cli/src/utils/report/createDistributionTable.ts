@@ -25,9 +25,9 @@ export const createDistributionTable = (teams: any, userConfig: UserConfig) => {
     // const lastWeek = completionStreams[0].weeks[completionStreams[0].weeks - 1]
     distributionTable += `| ${team.name} | ${Math.round(
       lastWeek.metrics.points.totalStreams,
-    )} | ${Math.round(
+    )} /wk | ${Math.round(
       lastWeek.metrics.issues.totalStreams,
-    )} | ${completionStreams
+    )} /wk | ${completionStreams
       .map(cs => {
         const lastWeek: any = cs.weeks.slice(-3)[2];
         const lastWeekDistribution: number =
