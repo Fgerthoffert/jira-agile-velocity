@@ -67,7 +67,7 @@ export const createInitiativeDetails = (
     initiativeDetails += `| Title | Status | Progress (Pts) | Progress (Tkts) | Estimated (Tkts) | Ticket | \n`;
     initiativeDetails += `| --- | --- | --- | --- | --- | --- | \n`;
 
-    for (const initiativeChild of initiative.children) {
+    for (const initiativeChild of initiative.children.filter((c: any) => c.children !== undefined && c.children.length > 0)) {
       let progessPtsPrct = 0;
       if (initiativeChild.metrics.points.completed > 0) {
         progessPtsPrct = Math.round(
@@ -95,6 +95,49 @@ export const createInitiativeDetails = (
         initiativeChild.key
       }) | \n`;
     }
+
+    // Group issues without children into one single line
+    const individualTickets = initiative.children.filter((c: any) => c.children === undefined || c.children.length === 0)
+    if (individualTickets.length > 0) {
+      const closedTickets = individualTickets.filter(
+        (i: any) => i.status.category === 'Done',
+      );
+      const openTickets = individualTickets.filter(
+        (i: any) => i.status.category !== 'Done',
+      );
+
+      let progessPtsPrct = 0;
+      const closedTicketsPts = closedTickets
+        .map((i: any) => i.metrics.points.total)
+        .reduce((acc: number, value: number) => acc + value, 0)
+        
+      const individualTicketsPts = individualTickets
+        .map((i: any) => i.metrics.points.total)
+        .reduce((acc: number, value: number) => acc + value, 0)
+
+      if (closedTicketsPts > 0) {
+        progessPtsPrct = Math.round(
+          (closedTicketsPts * 100) /
+          individualTicketsPts,
+        );
+      }      
+      const progessPts = `${progessPtsPrct}% (${closedTicketsPts}/${individualTicketsPts})`;
+
+      let progessTktsPrct = 0;
+      if (closedTickets.length > 0) {
+        progessTktsPrct = Math.round(
+          (closedTickets.length * 100) /
+          individualTickets.length,
+        );
+      }
+
+      const progessTkts = `${progessTktsPrct}% (${closedTickets.length}/${individualTickets.length})`;
+      initiativeDetails += `| _Individual tickets_ | n/a | ${progessPts} | ${progessTkts} | ${getEstimated(
+        {...initiative, children: individualTickets},
+        userConfig,
+      )} | [${initiative.key}](${userConfig.jira.host}/browse/${initiative.key}) | \n`;      
+    }
+
   }
 
   if (issueComments.length > 0 && reversedIssuesComments.slice(1).length > 1) {

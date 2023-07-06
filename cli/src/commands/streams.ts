@@ -184,13 +184,14 @@ export default class Streams extends Command {
               issue.key,
               cacheDir,
               flags.useCache,
-            );
+            );           
           }
           for (const l1child of children
             .filter((c: any) => !allForecastIssuesKeys.includes(c.key))
             .filter(
               (ic: any) =>
                 ic.fields[userConfig.jira.fields.parentInitiative] ===
+                issue.key || ic.fields[userConfig.jira.fields.parentEpic] ===
                 issue.key,
             )) {
             issuesTree.appendChild(issue, l1child);
