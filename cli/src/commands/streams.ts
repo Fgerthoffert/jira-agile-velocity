@@ -191,7 +191,7 @@ export default class Streams extends Command {
             .filter(
               (ic: any) =>
                 ic.fields[userConfig.jira.fields.parentInitiative] ===
-                issue.key || ic.fields[userConfig.jira.fields.parentEpic] ===
+                issue.key || ic.fields[userConfig.jira.fields.parentEpic] ===
                 issue.key,
             )) {
             issuesTree.appendChild(issue, l1child);

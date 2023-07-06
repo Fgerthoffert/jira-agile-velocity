@@ -102,9 +102,6 @@ export const createInitiativeDetails = (
       const closedTickets = individualTickets.filter(
         (i: any) => i.status.category === 'Done',
       );
-      const openTickets = individualTickets.filter(
-        (i: any) => i.status.category !== 'Done',
-      );
 
       let progessPtsPrct = 0;
       const closedTicketsPts = closedTickets
