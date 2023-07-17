@@ -1,7 +1,5 @@
 import { UserConfig } from '../../global';
-import { getEstimated } from '../report/getEstimated';
 import { getEstimatedHtml } from '../report/getEstimatedHtml';
-import { getMarkdownLink } from '../report/getMarkdownLink';
 import { getSpikesHtml } from './getSpikesHtml';
 
 export const createInitiativesOverviewTable = (
