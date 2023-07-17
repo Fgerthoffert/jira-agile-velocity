@@ -8,7 +8,7 @@ export const getSpikesHtml = (initiativeIssue: any, userConfig: any) => {
       `${userConfig.jira.host}/issues/?jql=key in (${openSpikes.map((i: any) => i.key).join()})`,
     )}">${
       openSpikes.length
-    } Open spikes.</a>`;
+    } Open spikes</a>`;
   } else {
     openSpikesMsg = `0 Open spikes`
   }

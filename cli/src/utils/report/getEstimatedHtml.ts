@@ -5,7 +5,7 @@ export const getEstimatedHtml = (initiativeIssue: any, userConfig: any) => {
   let missingPointsMsg = '';
   if (missingPoints.length > 0) {
     missingPointsMsg = ` (<a href="${encodeURI(
-      `${userConfig.jira.host}/issues/?jql=key in (${missingPoints.join()}`,
+      `${userConfig.jira.host}/issues/?jql=key in (${missingPoints.join()})`,
     )}">${
       initiativeIssue.metrics.points.missing
     } miss.</a>)`;

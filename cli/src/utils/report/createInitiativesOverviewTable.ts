@@ -11,11 +11,11 @@ export const createInitiativesOverviewTable = (
   let iTable = '';
   iTable += `<table> \n`;
   iTable += `<th> \n`;
-  iTable += `<td>Owner</td> \n`;
-  iTable += `<td>Delivery</td> \n`;
-  iTable += `<td>Progress</td> \n`;
-  iTable += `<td>Estimated (Tkts)</td> \n`;
-  iTable += `<td>Status</td> \n`;
+  iTable += `<td><b>Owner</b></td> \n`;
+  iTable += `<td><b>Delivery</b></td> \n`;
+  iTable += `<td><b>Progress</b></td> \n`;
+  iTable += `<td><b>Estimated (Tkts)</b></td> \n`;
+  iTable += `<td><b>Status</b></td> \n`;
   iTable += `</th> \n`;
 
   for (const i of initiatives) {
@@ -55,7 +55,7 @@ export const createInitiativesOverviewTable = (
 
   iTable += `</table> \n`;
   iTable += `\n`;
-  iTable += `<sub>ℹ️ Displays initiatives with the "delivery-report" label.</sub> \n`;
+  iTable += `<sub>ℹ️ Displays tickets with the "delivery-report" label.</sub> \n`;
   iTable += `\n`;
 
   return iTable;
