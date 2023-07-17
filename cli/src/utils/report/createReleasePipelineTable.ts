@@ -8,8 +8,8 @@ export const createReleasePipelineTable = (
   userConfig: UserConfig,
 ) => {
   let releaseTable = '';
-  releaseTable += `| Release | Status | Sprint | Released date | Progress (Tkts) | Ticket | \n`;
-  releaseTable += `| --- | --- | --- | --- | --- | --- | \n`;
+  releaseTable += `| Release | Status | Sprint | Released date | Progress (Tkts) | \n`;
+  releaseTable += `| --- | --- | --- | --- | --- | \n`;
   for (let releaseTicket of releaseTickets) {
     releaseTicket = cleanIssue(releaseTicket, userConfig.jira.fields.sprint);
     const sprint =
@@ -28,7 +28,7 @@ export const createReleasePipelineTable = (
     ) {
       resolutionDate = format(
         new Date(releaseTicket.fields.resolutiondate),
-        'LLLL dd, yyyy',
+        'LLL dd, yyyy',
       );
     }
     const allIssues = releaseTicket.issuesInRelease;
@@ -54,7 +54,7 @@ export const createReleasePipelineTable = (
     )}))`;
 
     for (const fixVersion of fixVersions) {
-      releaseTable += `| ${fixVersion} | ${releaseTicket.fields.status.name} | ${sprint} | ${resolutionDate} | ${progessTkts} | [${releaseTicket.key}](${userConfig.jira.host}/browse/${releaseTicket.key}) | \n`;
+      releaseTable += `| [${fixVersion}](${userConfig.jira.host}/browse/${releaseTicket.key}) | ${releaseTicket.fields.status.name} | ${sprint} | ${resolutionDate} | ${progessTkts} | \n`;
     }
   }
   releaseTable += `\n`;
