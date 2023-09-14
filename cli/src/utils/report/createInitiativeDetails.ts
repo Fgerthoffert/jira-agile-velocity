@@ -139,12 +139,17 @@ export const createInitiativeDetails = (
 
   if (issueComments.length > 0 && reversedIssuesComments.slice(1).length > 1) {
     initiativeDetails += `### Previous minutes  \n`;
-    for (const comment of reversedIssuesComments.slice(1)) {
+    for (const comment of reversedIssuesComments.slice(1).slice(0,3)) {
       initiativeDetails += `#### 📅 ${format(
         new Date(comment.created),
         'LLLL dd, yyyy HH:mm',
       )} \n`;
       initiativeDetails += `${comment.body} \n`;
+      initiativeDetails += `\n`;
+    }
+    if (reversedIssuesComments.length > 3) {
+      initiativeDetails += `\n`;
+      initiativeDetails += `<sub>ℹ️ Older minutes available in the Jira ticket.</sub> \n`;
       initiativeDetails += `\n`;
     }
   }

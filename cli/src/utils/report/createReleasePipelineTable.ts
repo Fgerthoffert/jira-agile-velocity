@@ -44,13 +44,15 @@ export const createReleasePipelineTable = (
     const progessTkts = `${progessTktsPrct}% ([${
       completedIssues.length
     }](${encodeURI(
-      `${userConfig.jira.host}/issues/?jql=key in (${completedIssues
-        .map((i: any) => i.key)
-        .join()})`,
+      // `${userConfig.jira.host}/issues/?jql=key in (${completedIssues
+      //   .map((i: any) => i.key)
+      //   .join()})`,
+        `${userConfig.jira.host}/issues/?jql=fixVersion = ${fixVersions[0]} and statusCategory = Done`,        
     )})/[${allIssues.length}](${encodeURI(
-      `${userConfig.jira.host}/issues/?jql=key in (${allIssues
-        .map((i: any) => i.key)
-        .join()})`,
+      // `${userConfig.jira.host}/issues/?jql=key in (${allIssues
+      //   .map((i: any) => i.key)
+      //   .join()})`,
+        `${userConfig.jira.host}/issues/?jql=fixVersion = ${fixVersions[0]}`,        
     )}))`;
 
     for (const fixVersion of fixVersions) {
